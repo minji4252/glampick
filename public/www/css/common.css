@@ -30,7 +30,7 @@ body {
 }
 .inner {
   width: calc(100% - 30px);
-  max-width: 940px;
+  max-width: 1200px;
   display: flex;
   align-items: center;
   justify-content: space-between;
