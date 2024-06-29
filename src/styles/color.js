@@ -1,0 +1,39 @@
+// color system
+// primary는 주색상, 숫자가 높아질수록 어두워짐
+export const colorSystem = {
+  primary: "#355179",
+  p100: "#5c82b8",
+  p200: "#4c75ae",
+  p300: "#45699c",
+  p400: "#3d5d8b",
+  p500: "#355179",
+  p600: "#2d4567",
+  p700: "#253956",
+  p800: "#1e2d44",
+  p900: "#162132",
+
+  // gray scale, 숫자가 높아질수록 어두워짐
+  g100: "#f5f5f5",
+  g200: "#dbdbdb",
+  g300: "#c2c2c2",
+  g400: "#a8a8a8",
+  g500: "#8f8f8f",
+  g600: "#757575",
+  g700: "#5c5c5c",
+  g800: "#424242",
+  g900: "#292929",
+
+  // 기타
+  title: "#",
+  itemtitle: "#",
+  placeholder: "#BCB6B2",
+  error: "#FF5858",
+  white: "#fff",
+  black: "#000",
+  beige: "#FFF9EA",
+  background: "#F5F7FA",
+};
+
+export const fontSystem = {
+  title: "36px",
+};

@@ -1,0 +1,34 @@
+/* 프리텐다드 , font-weight : 100~900으로 두께조절 가능 */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #fefbf8;
+  font-family: "Pretendard Variable" !important;
+}
+
+.wrap {
+  position: relative;
+}
+.inner {
+  width: calc(100% - 30px);
+  max-width: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px auto;
+}
