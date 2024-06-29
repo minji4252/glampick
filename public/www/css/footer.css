@@ -1,6 +1,30 @@
-footer {
-  height: 110px;
+.footer {
+  height: 300px;
   width: 100%;
   max-width: 100%;
-  background-color: aqua;
+  background-color: #eaeff6;
+  font-size: 14px;
+  color: #4f565f;
+  line-height: 130%;
+}
+
+.footer-inner {
+  padding: 80px 0 50px 80px;
+}
+
+.footer-top {
+  list-style-type: none;
+  display: flex;
+  margin-bottom: 30px;
+  flex-direction: flex-start;
+}
+.footer-top li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.footer-bottom {
+  display: block;
+}
+.footer-bottom p {
 }

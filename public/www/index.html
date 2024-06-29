@@ -7,14 +7,119 @@
     <link rel="stylesheet" href="./css/common.css" />
     <link rel="stylesheet" href="./css/header.css" />
     <link rel="stylesheet" href="./css/main.css" />
-    <!-- <link rel="stylesheet" href="./css/footer.css" /> -->
+    <link rel="stylesheet" href="./css/footer.css" />
     <title>글램픽</title>
   </head>
   <body>
-    <div class="wrap">
-      <header></header>
-      <main></main>
-      <footer></footer>
+    <div class="wrap main-wrap">
+      <header class="header"></header>
+      <main class="main">
+        <section class="main-sec-1">
+          <div class="m-big-title">
+            <p>별빛 아래, 자연과 하나 되는 특별한 밤을 예약하세요.</p>
+          </div>
+          <div class="m-search">
+            <ul class="m-search-content">
+              <li class="m-sc-place">
+                <select name="place" id="place">
+                  <option value="none" disabled>지역</option>
+                  <option value="seoul" selected>서울/경기</option>
+                  <option value="gangwon">강원</option>
+                  <option value="cn">충북</option>
+                  <option value="cs">충남</option>
+                  <option value="tk">경북</option>
+                  <option value="pk">경남</option>
+                  <option value="jn">전북</option>
+                  <option value="js">전남</option>
+                  <option value="jeju">제주</option>
+                </select>
+              </li>
+              <li class="m-sc-date">
+                <input type="date" />
+                <input type="date" />
+              </li>
+              <li class="m-sc-member">
+                <a href="#" class="m-sc-member-icon">
+                  <img />
+                </a>
+                <input type="number" min="2" max="6" value="2" id="" />
+              </li>
+              <li class="m-sc-input">
+                <div class="m-sc-input-field">
+                  <img
+                    class="image"
+                    alt=""
+                    src="./image/icon-search-white.png"
+                  />
+                  <input
+                    class="input"
+                    placeholder="여행지나 숙소 검색"
+                    type="text"
+                  />
+                </div>
+              </li>
+              <li class="m-sc-search">
+                <button>
+                  <p>검색</p>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section class="main-sec-2">
+          <div class="m-list">
+            <div class="m-list-title">
+              <p>🥇 지금 가장 인기있는</p>
+            </div>
+            <div class="m-list-contents">
+              <article class="m-lc-article"></article>
+              <article class="m-lc-article"></article>
+              <article class="m-lc-article"></article>
+            </div>
+          </div>
+          <div class="m-list">
+            <div class="m-list-title">
+              <p>🐶 반려동물과 함께할 수 있는</p>
+            </div>
+            <div class="m-list-contents">
+              <article class="m-lc-article"></article>
+              <article class="m-lc-article"></article>
+              <article class="m-lc-article"></article>
+            </div>
+          </div>
+          <div class="m-list">
+            <div class="m-list-title">
+              <p>🏕️ 산속에서 즐기는</p>
+            </div>
+            <div class="m-list-contents">
+              <article class="m-lc-article"></article>
+              <article class="m-lc-article"></article>
+              <article class="m-lc-article"></article>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer class="footer">
+        <div class="footer-inner">
+          <ul class="footer-top">
+            <li>고객센터</li>
+            <li>이용약관</li>
+            <li>개인정보처리방침</li>
+            <li>이메일무단수집금지</li>
+          </ul>
+          <div class="footer-bottom">
+            <p>
+              대구광역시 중구 109-2 5층
+              <br />대표자 조수현 | 1588-1588 | glamping@zzang.joa<br />
+              사업자등록번호 : 053-08-00811 | 통신판매신고번호 : 2024-06-0624<br />
+              (주)글램픽은 통신판매 중개자로서 통신판매의 당사자가 아니며 상품의
+              예약, 이용 및 환불 등과 관련한 의무와 책임은 각 판매자에게
+              있습니다.
+              <br /><br />Copyright © 2024 GLAMPICK Co. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   </body>
 </html>
