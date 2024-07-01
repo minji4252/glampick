@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  width: 760px;
+  height: 800px;
+  /* 높이 임시로 설정 */
+  margin: 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrap {
+  width: 100%;
+}
+
+h2 {
+  font-size: 25px;
+}
+
+.signup-form {
+  width: 80%;
+  margin: 0 auto;
+  background-color: pink;
+}
+
+.form-group {
+  background-color: skyblue;
+}
+
+.form-group label {
+}
+
+.form-group input {
+}

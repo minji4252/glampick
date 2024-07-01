@@ -88,10 +88,37 @@ h2 {
 }
 
 .sns-login {
+  width: 60%;
+  margin: 0 auto;
 }
 
 .sns-login p {
+  display: flex;
   font-size: 20px;
-  margin-top: 40px;
+  margin-top: 45px;
   text-align: center;
+}
+
+.sns-login p::before,
+.sns-login p::after {
+  content: "";
+  flex: 1;
+  border-top: 1px dashed #000;
+  margin: 0 10px; /* 텍스트와 선 사이 간격 */
+  align-self: center;
+}
+
+.sns-login-list {
+  display: flex;
+  margin-top: 24px;
+  gap: 30px;
+  justify-content: center;
+}
+.sns-login-item {
+}
+.sns-login-link {
+}
+.sns-login img {
+  width: 48px;
+  height: 48px;
 }
