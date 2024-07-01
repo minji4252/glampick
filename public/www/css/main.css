@@ -93,6 +93,7 @@
 .m-list {
 }
 .m-list-title {
+  font-size: 20px;
 }
 .m-list-contents {
   display: flex;
