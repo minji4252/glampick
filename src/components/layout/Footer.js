@@ -5,19 +5,19 @@ import "../../styles/footer.css";
 
 const Footer = () => {
   return (
-    <footer class="footer">
-      <div class="footer-inner">
-        <ul class="footer-top">
+    <footer className="footer">
+      <div className="footer-inner">
+        <ul className="footer-top">
           <li>고객센터</li>
           <li>이용약관</li>
           <li>개인정보처리방침</li>
           <li>이메일무단수집금지</li>
         </ul>
-        <div class="footer-bottom">
+        <div className="footer-bottom">
           <p>
             대구광역시 중구 109-2 5층
             <br />
-            대표자 조수현 | 1588-1588 | glamping@zzang.joa
+            대표자 조수현 | 1588-1588 | glamping@zzang.joa
             <br />
             사업자등록번호 : 053-08-00811 | 통신판매신고번호 : 2024-06-0624
             <br />
