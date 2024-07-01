@@ -30,7 +30,7 @@ export const colorSystem = {
   error: "#FF5858",
   white: "#fff",
   black: "#000",
-  beige: "#FFF9EA",
+  beige: "#FCF5E7",
   background: "#F5F7FA",
 };
 
