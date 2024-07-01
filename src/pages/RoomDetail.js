@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-import "./swiper.css";
+import "../styles/swiper.css";
 import room1 from "../images/Rectangle 90.png";
 import room2 from "../images/Rectangle 91.png";
 import room3 from "../images/Rectangle 92.png";
@@ -15,7 +15,7 @@ import room4 from "../images/Rectangle 93.png";
 import room5 from "../images/Rectangle 94.png";
 import room6 from "../images/Rectangle 95.png";
 
-export default function App() {
+const RoomDetail = () => {
   const [slides, setSlides] = useState([
     <img src={room1} alt="Room 1" />,
     <img src={room2} alt="Room 2" />,
@@ -46,4 +46,6 @@ export default function App() {
       </Swiper>
     </>
   );
-}
+};
+
+export default RoomDetail;

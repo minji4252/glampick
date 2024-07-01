@@ -2,14 +2,52 @@ import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL } from "react-icons/ri";
+import { RiDoubleQuotesR } from "react-icons/ri";
 import { MainButton } from "../components/common/Button";
 import Image from "../images/pic.jpg";
 import Room from "../images/roomin.png";
 import { colorSystem } from "../styles/color";
 
+const UnderLine = styled.div`
+  border-bottom: 1px solid ${colorSystem.g400};
+`;
+
 const WrapStyle = styled.div`
   .inner {
     flex-direction: column;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  ul {
+    margin-top: 20px;
+    margin-left: 30px;
+    font-weight: 300;
+    line-height: 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  h4:before {
+    content: "·";
+    font-size: 27px;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+
+  h4 {
+    font-size: 0.95rem;
+    line-height: 1.6rem;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    font-weight: 300;
+  }
+
+  button {
+    cursor: pointer;
   }
 `;
 
@@ -20,7 +58,7 @@ const RoomProperty = styled.div``;
 const RoomPic = styled.div`
   display: grid;
   grid-auto-flow: column;
-  gap: 8px;
+  gap: 10px;
 
   .main-img {
     grid-row: span 2 / span 2;
@@ -79,6 +117,7 @@ const ReviewContent = styled.div`
   margin-top: 15px;
   display: flex;
   gap: 20px;
+  align-items: center;
 
   .review-content-item {
     width: 100%;
@@ -93,11 +132,22 @@ const ReviewContent = styled.div`
   }
 
   .review-more {
+    height: fit-content;
     color: ${colorSystem.primary};
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+
     button {
       background-color: transparent;
       border: 0px;
       font-family: "Pretendard Variable";
+      font-weight: 700;
+      color: ${colorSystem.primary};
+      height: 20px;
+    }
+
+    svg {
     }
   }
 `;
@@ -107,8 +157,6 @@ const RoomOption = styled.div`
   margin-top: 20px;
 
   .option-title {
-    font-size: 1.2rem;
-    font-weight: 700;
     margin: 15px 0 10px 10px;
   }
 `;
@@ -139,13 +187,9 @@ const RoomSelect = styled.div`
 const RoomSelectTitle = styled.div`
   margin-top: 20px;
   margin-bottom: 10px;
-
-  > span {
-    font-weight: 800;
-    font-size: 1.1rem;
-  }
 `;
 const RoomCard = styled.div`
+  width: 90%;
   display: flex;
   gap: 20px;
   background-color: ${colorSystem.background};
@@ -168,6 +212,7 @@ const RoomCard = styled.div`
 
     > span {
       font-weight: 700;
+      font-size: 1.1rem;
     }
 
     > div {
@@ -219,55 +264,52 @@ const RoomInfo = styled.div`
   width: 100%;
 
   h3 {
-    font-weight: 700;
     margin: 20px 0;
   }
-
-  ul {
-    margin-top: 20px;
-    margin-left: 30px;
-    font-weight: 300;
-    line-height: 1.5rem;
-    font-size: 0.8rem;
-  }
-
-  li {
-    list-style: disc;
-  }
-
-  /* li:before {
-    content: "·";
-    font-size: 30px;
-    vertical-align: middle;
-    margin-right: 5px;
-  } */
 `;
 
 const RoomIntro = styled.div`
   margin-top: 20px;
+  position: relative;
 
-  > svg {
+  svg {
     color: ${colorSystem.g200};
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     margin-bottom: 10px;
   }
 
+  > div {
+    position: absolute;
+    right: 0;
+  }
+
   > p {
-    font-weight: 700;
-    color: ${colorSystem.g700};
-    font-size: 0.8rem;
-    line-height: 1rem;
+    font-weight: 600;
+    color: ${colorSystem.g600};
+    font-size: 0.95rem;
+    line-height: 1.3rem;
+    letter-spacing: 1.5px;
   }
 `;
 const RoomInfomation = styled.div`
   margin-top: 40px;
-
+`;
+const InfoGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
   .info-item {
     > span {
       color: ${colorSystem.primary};
+      font-weight: 500;
+    }
+
+    > div {
+      margin-top: 15px;
     }
   }
 `;
+
 const RoomLocation = styled.div`
   margin-top: 20px;
   margin-bottom: 30px;
@@ -282,15 +324,20 @@ const RoomLocation = styled.div`
   .location-info {
     margin-top: 10px;
     margin-bottom: 40px;
+
     > span {
       color: ${colorSystem.g500};
       font-weight: 600;
       font-size: 0.9rem;
     }
+
+    > div {
+      margin-top: 15px;
+    }
   }
 `;
 
-const RoomDetail = () => {
+const GlampingDetail = () => {
   return (
     <WrapStyle>
       <div className="inner">
@@ -331,8 +378,8 @@ const RoomDetail = () => {
             </ReviewContent>
           </RoomReview>
           <RoomOption>
-            <hr />
-            <div className="option-title">서비스 및 부대시설</div>
+            <UnderLine />
+            <h3 className="option-title">서비스 및 부대시설</h3>
             <OptionItems>
               <div className="option-item">
                 <div></div>
@@ -346,10 +393,34 @@ const RoomDetail = () => {
           </RoomOption>
         </RoomProperty>
         <RoomSelect>
-          <hr />
+          <UnderLine />
           <RoomSelectTitle>
-            <span>객실선택</span>
+            <h3>객실선택</h3>
           </RoomSelectTitle>
+          <RoomCard>
+            <div className="roomcard-left">
+              <div></div>
+            </div>
+            <div className="roomcard-right">
+              <span>감성카라반</span>
+              <div className="roomcard-booking">
+                <p>입실 15:00</p>
+                <p>퇴실 11:00</p>
+                <span>148,000원</span>
+                <MainButton label="객실 예약" />
+              </div>
+              <div className="roomcard-txt">
+                <div className="txt-top">
+                  <span>객실정보</span>
+                  <p>기준 2일 ~ 최대 4인 (유료)</p>
+                </div>
+                <div>
+                  <span>추가정보</span>
+                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
+                </div>
+              </div>
+            </div>
+          </RoomCard>
           <RoomCard>
             <div className="roomcard-left">
               <div></div>
@@ -426,43 +497,64 @@ const RoomDetail = () => {
 
         <RoomInfo>
           <RoomIntro>
-            <hr />
+            <UnderLine />
             <h3>숙소 소개</h3>
             <RiDoubleQuotesL />
             <p>
               서울 잠실 40분 거리에 2022년 11월 신축 오픈 캠핑장입니다. <br />
               남이섬, 쁘띠프랑스, 설악 양떼목장 등 다양한 주변 명소가 있습니다.
             </p>
+            <div>
+              <RiDoubleQuotesR />
+            </div>
           </RoomIntro>
           <RoomInfomation>
-            <hr />
+            <UnderLine />
             <h3>숙소 이용정보</h3>
-            <div className="info-item">
-              <span>기본정보</span>
-              <ul>
-                <li>
-                  입실 : 15:00 | 퇴실 : 11:00 (퇴실시간 이후 30분당 오버타임
-                  요금 부과됩니다 퇴실시간을 꼭 지켜주세요)
-                </li>
-                <li>22시 이후 입실 시 사전문의 (필수)</li>
-                <li>전 객실 금연</li>
-                <li>주차 가능 (1대 주차 무료 / 1대 추가시 10,000원)</li>
-              </ul>
-            </div>
+            <InfoGroup>
+              <div className="info-item">
+                <span>기본정보</span>
+                <div>
+                  <h4>
+                    입실 : 15:00 | 퇴실 : 11:00 (퇴실시간 이후 30분당 오버타임
+                    요금 부과됩니다 퇴실시간을 꼭 지켜주세요)
+                  </h4>
+                  <h4>22시 이후 입실 시 사전문의 (필수)</h4>
+                  <h4>전 객실 금연</h4>
+                  <h4>주차 가능 (1대 주차 무료 / 1대 추가시 10,000원)</h4>
+                </div>
+              </div>
+              <div className="info-item">
+                <span>주차장정보</span>
+                <div>
+                  <h4>주차장정보가 들어갑니다</h4>
+                  <h4>주차 가능 (1대 주차 무료 / 1대 추가시 10,000원)</h4>
+                </div>
+              </div>
+              <div className="info-item">
+                <span>유의사항</span>
+                <div>
+                  <h4>최대 인원 초과시 입실이 불가 합니다 (방문객 불가)</h4>
+                  <h4>객실 내 육류, 튀김류, 생선류 조리를 할 수 없습니다</h4>
+                  <h4>전 객실 애완동물 출입이 불가합니다</h4>
+                  <h4>보호자 동반없는 미성년자는 이용하실 수 없습니다</h4>
+                </div>
+              </div>
+            </InfoGroup>
           </RoomInfomation>
           <RoomLocation>
-            <hr />
+            <UnderLine />
             <h3>위치</h3>
-            <p>지도</p>
+            <p></p>
             <div className="location-info">
               <span>경기 포천시 이동면 연곡리 932</span>
-              <ul>
-                <li>산사원 차량 15분</li>
-                <li>산정호수 차량 10분</li>
-                <li>아트밸리 차량 20분</li>
-              </ul>
+              <div>
+                <h4>산사원 차량 15분</h4>
+                <h4>산정호수 차량 10분</h4>
+                <h4>아트밸리 차량 20분</h4>
+              </div>
             </div>
-            <hr />
+            <UnderLine />
           </RoomLocation>
         </RoomInfo>
       </div>
@@ -470,4 +562,4 @@ const RoomDetail = () => {
   );
 };
 
-export default RoomDetail;
+export default GlampingDetail;
