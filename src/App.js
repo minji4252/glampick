@@ -15,11 +15,17 @@ import GlampingDetail from "./pages/GlampingDetail";
 import RoomDetail from "./pages/RoomDetail";
 import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
+import SearchPage from "./pages/SearchPage";
+
 
 function App() {
   return (
     <BrowserRouter>
       <div>
+        {/* <Routes>
+          <Route path="/" element={<MainPage></MainPage>}></Route>
+        </Routes> */}
+
         <Header>글램픽 glampick</Header>
         <Routes>
           <Route path="/" element={<MainPage></MainPage>}></Route>
@@ -34,6 +40,7 @@ function App() {
           <Route path="/myreview" element={<MyReview />} />
           <Route path="/favorite" element={<Favorite />} />
           <Route path="/userinfo" element={<UserInfo />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
         <Footer></Footer>
       </div>

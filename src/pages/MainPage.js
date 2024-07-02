@@ -1,13 +1,15 @@
 import styled from "@emotion/styled";
 import React from "react";
-import Footer from "../components/layout/Footer";
-import Header from "../components/layout/Header";
+// import Footer from "../components/layout/Footer";
+// import Header from "../components/layout/Header";
 import ArticleImage from "../images/main-list-1.png";
 import MainBigImage from "../images/main-big.png";
 import SearchIcon from "../images/icon-search-white.png";
+import MemberIcon from "../images/main-member-icon.png";
 import { FaStar } from "react-icons/fa";
 import { colorSystem } from "../styles/color";
 import "../styles/common.css";
+import "../styles/reset.css";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -44,6 +46,7 @@ const MainBigTitle = styled.div`
 
 // 메인 검색창
 const MainSearch = styled.div`
+  height: 100px;
   margin-bottom: 350px;
   display: flex;
   justify-content: center;
@@ -77,6 +80,7 @@ const MainSearchContent = styled.ul`
       font-size: 20px;
       color: ${colorSystem.white};
       text-align: center;
+      outline: none;
       > option {
         color: ${colorSystem.primary};
       }
@@ -84,20 +88,45 @@ const MainSearchContent = styled.ul`
   }
 
   .m-sc-date {
-    border-left: 1px solid ${colorSystem.white};
+    border-left: 2px solid ${colorSystem.white};
     height: 50px;
     padding-left: 20px;
     margin: 0 20px;
   }
 
   .m-sc-member {
-    border-left: 1px solid ${colorSystem.white};
+    border-left: 2px solid ${colorSystem.white};
     height: 50px;
     padding-left: 20px;
     margin: 0 20px;
+    display: flex;
+    align-items: center;
+    .m-sc-member-icon {
+      margin-right: 10px;
+      width: 40px;
+      height: 40px;
+      background: url(${MemberIcon}) no-repeat center;
+    }
+    > input {
+      width: 30px;
+      height: 50px;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      border: none;
+      font-size: 20px;
+      color: ${colorSystem.white};
+      background: rgba(255, 255, 255, 0);
+      outline: none;
+    }
+    > p {
+      font-size: 20px;
+      color: ${colorSystem.white};
+    }
   }
   .m-sc-input {
-    border-left: 1px solid ${colorSystem.white};
+    border-left: 2px solid ${colorSystem.white};
     height: 50px;
     padding-left: 20px;
     margin: 0 20px;
@@ -109,20 +138,25 @@ const MainSearchContent = styled.ul`
         background: url(${SearchIcon}) no-repeat center;
       }
       > input {
-        width:;
+        width: 180px;
         background: rgba(255, 255, 255, 0.7);
         border: none;
         border-radius: 10px;
+        font-family: "Pretendard Variable";
+        font-size: 20px;
+        color: ${colorSystem.p500};
+        padding-left: 10px;
         ::placeholder {
-          font-size: 20px;
+          /* font-family: "Pretendard Variable";
+          font-size: 20px; */
         }
       }
     }
   }
   .m-sc-search button {
     display: flex;
-    width: 130px;
-    height: 50px;
+    width: 110px;
+    height: 45px;
     /* padding: 10px 20px; */
     justify-content: center;
     align-items: center;
@@ -266,16 +300,15 @@ const MainPage = () => {
                 <input type="date" />
               </li>
               <li className="m-sc-member">
-                <a href="#" className="m-sc-member-icon">
-                  <img />
-                </a>
+                <div className="m-sc-member-icon"></div>
                 <input
                   type="number"
                   min="2"
                   max="6"
-                  value={2}
+                  defaultValue={2}
                   id="memberinput"
                 />
+                <p>명</p>
               </li>
               <li className="m-sc-input">
                 <div className="m-sc-input-field">
