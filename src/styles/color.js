@@ -32,6 +32,7 @@ export const colorSystem = {
   black: "#000",
   beige: "#FCF5E7",
   background: "#F5F7FA",
+  star: "#ffd233",
 };
 
 export const fontSystem = {

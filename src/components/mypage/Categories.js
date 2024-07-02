@@ -5,9 +5,9 @@ import { colorSystem } from "../../styles/color";
 
 const CategoriesStyle = styled.div`
   position: fixed;
-  top: 170px;
+  top: 280px;
   left: 90px;
-  max-width: 290px;
+  max-width: 270px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -23,6 +23,12 @@ const CategoriesStyle = styled.div`
   h2 {
     font-size: 1rem;
     color: ${colorSystem.g400};
+  }
+
+  @media all and (max-width: 1910px) {
+    position: relative;
+    top: 100px;
+    left: 20px;
   }
 `;
 
