@@ -2,8 +2,12 @@ import React from "react";
 import "../../styles/common.css";
 import "../../styles/reset.css";
 import "../../styles/footer.css";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const locationNow = useLocation();
+  // 메인 페이지 (Root)에서 Footer 임시 숨김
+  if (locationNow.pathname === "/") return null;
   return (
     <footer className="footer">
       <div className="footer-inner">
