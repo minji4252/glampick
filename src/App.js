@@ -13,7 +13,10 @@ import MyReview from "./pages/mypage/MyReview";
 import UserInfo from "./pages/mypage/UserInfo";
 import GlampingDetail from "./pages/GlampingDetail";
 import RoomDetail from "./pages/RoomDetail";
+import LoginPage from "./pages/user/LoginPage";
+import SignupPage from "./pages/user/SignupPage";
 import SearchPage from "./pages/SearchPage";
+
 
 function App() {
   return (
@@ -31,6 +34,8 @@ function App() {
             element={<GlampingDetail></GlampingDetail>}
           ></Route>
           <Route path="/roomdetail" element={<RoomDetail></RoomDetail>}></Route>
+          <Route path="/login" element={<LoginPage></LoginPage>}></Route>
+          <Route path="/signup" element={<SignupPage></SignupPage>}></Route>
           <Route path="/bookingdetail" element={<BookingDetail />} />
           <Route path="/myreview" element={<MyReview />} />
           <Route path="/favorite" element={<Favorite />} />
