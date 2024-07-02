@@ -1,6 +1,13 @@
 .header {
+  /* position: relative; */
   height: 110px;
   width: 100%;
   max-width: 100%;
-  background-color: #762423;
+  background: pink;
 }
+/* 
+.header-logo {
+  width: 90px;
+  height: 90px;
+  background: url("../images/glampick_logo.png");
+} */

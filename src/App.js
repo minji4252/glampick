@@ -1,7 +1,5 @@
-
 import React from "react";
 import "./App.css";
-import GlampingDetail from "./임시/GlampingDetail";
 import "../src/styles/reset.css";
 import "../src/styles/common.css";
 import "../src/styles/color";
@@ -9,16 +7,22 @@ import MainPage from "./pages/MainPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
-import RoomDetail from "./임시/GlampingDetail";
 import BookingDetail from "./pages/mypage/BookingDetail";
 import Favorite from "./pages/mypage/Favorite";
 import MyReview from "./pages/mypage/MyReview";
 import UserInfo from "./pages/mypage/UserInfo";
+import GlampingDetail from "./pages/GlampingDetail";
+import RoomDetail from "./pages/RoomDetail";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
     <BrowserRouter>
       <div>
+        {/* <Routes>
+          <Route path="/" element={<MainPage></MainPage>}></Route>
+        </Routes> */}
+
         <Header>글램픽 glampick</Header>
         <Routes>
           <Route path="/" element={<MainPage></MainPage>}></Route>
@@ -31,6 +35,7 @@ function App() {
           <Route path="/myreview" element={<MyReview />} />
           <Route path="/favorite" element={<Favorite />} />
           <Route path="/userinfo" element={<UserInfo />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
         <Footer></Footer>
       </div>
@@ -39,4 +44,3 @@ function App() {
 }
 
 export default App;
-
