@@ -7,6 +7,7 @@ import MainBigImage from "../images/main-big.png";
 import SearchIcon from "../images/icon-search-white.png";
 import MemberIcon from "../images/main-member-icon.png";
 import { FaStar } from "react-icons/fa";
+import { MdPlace } from "react-icons/md";
 import { colorSystem } from "../styles/color";
 import "../styles/common.css";
 import "../styles/reset.css";
@@ -192,7 +193,7 @@ const MainList = styled.div``;
 const MainListTitle = styled.div`
   font-size: 20px;
   font-weight: 500;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 `;
 const MainListContents = styled.div`
   display: flex;
@@ -211,10 +212,31 @@ const MainArticle = styled.article`
   display: flex;
   flex-direction: column;
   .article-image {
+    position: relative;
     width: 290px;
     height: 190px;
     border-radius: 32px;
     background: url(${ArticleImage}) no-repeat center;
+    .article-place {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      width: 290px;
+      height: 34px;
+      border-radius: 0px 0px 32px 32px;
+      background: rgba(123, 123, 123, 0.5);
+      padding: 0 20px;
+      font-size: 16px;
+      color: #fff;
+      font-weight: 600;
+      svg {
+        width: 20px;
+        height: 20px;
+        color: #fff;
+        margin-right: 2px;
+      }
+    }
   }
 `;
 
@@ -247,6 +269,7 @@ const ArticleContent = styled.div`
     justify-content: space-between;
     align-items: flex-end;
     > button {
+      cursor: pointer;
       width: 65px;
       height: 30px;
       justify-content: center;
@@ -335,7 +358,12 @@ const MainPage = () => {
             </MainListTitle>
             <MainListContents>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    가평
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">조이글램핑</div>
@@ -352,7 +380,12 @@ const MainPage = () => {
                 </ArticleContent>
               </MainArticle>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    가평
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">조이글램핑</div>
@@ -369,7 +402,12 @@ const MainPage = () => {
                 </ArticleContent>
               </MainArticle>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    가평
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">조이글램핑</div>
@@ -393,7 +431,12 @@ const MainPage = () => {
             </MainListTitle>
             <MainListContents>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    제주
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">메이더카라반</div>
@@ -410,7 +453,12 @@ const MainPage = () => {
                 </ArticleContent>
               </MainArticle>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    제주
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">메이더카라반</div>
@@ -427,7 +475,12 @@ const MainPage = () => {
                 </ArticleContent>
               </MainArticle>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    제주
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">메이더카라반</div>
@@ -451,7 +504,12 @@ const MainPage = () => {
             </MainListTitle>
             <MainListContents>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    합천
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">코지글램핑&카라반</div>
@@ -468,7 +526,12 @@ const MainPage = () => {
                 </ArticleContent>
               </MainArticle>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    합천
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">코지글램핑&카라반</div>
@@ -485,7 +548,12 @@ const MainPage = () => {
                 </ArticleContent>
               </MainArticle>
               <MainArticle>
-                <div className="article-image"></div>
+                <div className="article-image">
+                  <div className="article-place">
+                    <MdPlace />
+                    합천
+                  </div>
+                </div>
                 <ArticleContent>
                   <div className="article-top">
                     <div className="glamping-name">코지글램핑&카라반</div>
