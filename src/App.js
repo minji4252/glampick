@@ -16,6 +16,7 @@ import RoomDetail from "./pages/RoomDetail";
 import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
 import SearchPage from "./pages/SearchPage";
+import Good from "./pages/Good";
 
 function App() {
   return (
@@ -32,7 +33,11 @@ function App() {
             path="/glampingdetail"
             element={<GlampingDetail></GlampingDetail>}
           ></Route>
+
           <Route path="/roomdetail" element={<RoomDetail></RoomDetail>}></Route>
+
+          <Route path="/good" element={<Good></Good>}></Route>
+
           <Route path="/login" element={<LoginPage></LoginPage>}></Route>
           <Route path="/signup" element={<SignupPage></SignupPage>}></Route>
           <Route path="/bookingdetail" element={<BookingDetail />} />

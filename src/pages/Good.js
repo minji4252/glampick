@@ -1,26 +1,9 @@
-/* eslint-disable react/jsx-key */
-
 import styled from "@emotion/styled";
+import React, { useState } from "react";
 import { colorSystem } from "../styles/color";
 import { MdOutlineArrowBackIos } from "react-icons/md";
 
-import { Virtual, Navigation, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-
-import "../styles/swiper.css";
-import room1 from "../images/Rectangle 90.png";
-import room2 from "../images/Rectangle 91.png";
-import room3 from "../images/Rectangle 92.png";
-import room4 from "../images/Rectangle 93.png";
-import room5 from "../images/Rectangle 94.png";
-import room6 from "../images/Rectangle 95.png";
-import { useState } from "react";
-
-const RoomDetail = () => {
+const Good = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
   const menuArr = [
@@ -30,15 +13,6 @@ const RoomDetail = () => {
     { name: "메트로폴리탄 룸 (에어컨, 냉장...)", content: "메트로폴리탄 룸" },
   ];
 
-  const [slides, setSlides] = useState([
-    <img src={room1} alt="Room 1" />,
-    <img src={room2} alt="Room 2" />,
-    <img src={room3} alt="Room 3" />,
-    <img src={room4} alt="Room 4" />,
-    <img src={room5} alt="Room 5" />,
-    <img src={room6} alt="Room 6" />,
-  ]);
-
   const selectMenuHandler = index => {
     setCurrentTab(index);
   };
@@ -47,12 +21,9 @@ const RoomDetail = () => {
     .inner {
       flex-direction: column;
     }
-
-    margin-bottom: 50px;
   `;
 
   const TitleStyle = styled.div`
-    margin-top: 20px;
     height: 60px;
     display: flex;
     justify-content: center;
@@ -102,7 +73,7 @@ const RoomDetail = () => {
     }
   `;
 
-  const LargeSwiper = styled.div`
+  const BoxStyle = styled.div`
     width: 100%;
     height: 660px;
     background-color: ${colorSystem.background};
@@ -132,46 +103,11 @@ const RoomDetail = () => {
             })}
           </div>
         </ListStyle>
-        <LargeSwiper>
-          {/* <Swiper
-            modules={[Virtual, Navigation, Pagination]}
-            slidesPerView={3}
-            centeredSlides={true}
-            spaceBetween={70}
-            pagination={{
-              type: "fraction",
-            }}
-            navigation={true}
-            virtual
-          >
-            {slides.map((slideContent, index) => (
-              <SwiperSlide key={index} virtualIndex={index}>
-                {slideContent}
-              </SwiperSlide>
-            ))}
-          </Swiper> */}
-        </LargeSwiper>
-        <Swiper
-          modules={[Virtual, Navigation, Pagination]}
-          slidesPerView={3}
-          centeredSlides={true}
-          spaceBetween={70}
-          pagination={{
-            type: "fraction",
-          }}
-          navigation={true}
-          virtual
-        >
-          {slides.map((slideContent, index) => (
-            <SwiperSlide key={index} virtualIndex={index}>
-              {slideContent}
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <BoxStyle></BoxStyle>
         <h1>{menuArr[currentTab].content}</h1>
       </div>
     </WrapStyle>
   );
 };
 
-export default RoomDetail;
+export default Good;
