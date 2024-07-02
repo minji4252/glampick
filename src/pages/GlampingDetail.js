@@ -7,12 +7,15 @@ import { MainButton } from "../components/common/Button";
 import Image from "../images/pic.jpg";
 import Room from "../images/roomin.png";
 import { colorSystem } from "../styles/color";
+import { IoHeartSharp } from "react-icons/io5";
 
 const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g400};
 `;
 
 const WrapStyle = styled.div`
+  margin-top: 30px;
+
   .inner {
     flex-direction: column;
   }
@@ -21,14 +24,6 @@ const WrapStyle = styled.div`
     font-size: 1.2rem;
     font-weight: 700;
   }
-
-  /* ul {
-    margin-top: 20px;
-    margin-left: 30px;
-    font-weight: 300;
-    line-height: 1.5rem;
-    font-size: 0.8rem;
-  } */
 
   h4:before {
     content: "·";
@@ -84,6 +79,16 @@ const RoomTitle = styled.div`
   font-size: 1.8rem;
   font-weight: 700;
   margin-top: 70px;
+  position: relative;
+
+  svg {
+    /* 임시 색깔 */
+    color: ${colorSystem.error};
+    font-size: 3rem;
+    position: absolute;
+    right: 100px;
+    bottom: 5px;
+  }
 `;
 
 // 옵션 3
@@ -351,6 +356,7 @@ const GlampingDetail = () => {
           </RoomPic>
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
+            <IoHeartSharp />
           </RoomTitle>
           <RoomReview>
             <ReviewTitle>

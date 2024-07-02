@@ -29,7 +29,11 @@ function App() {
             path="/glampingdetail"
             element={<GlampingDetail></GlampingDetail>}
           ></Route>
+
           <Route path="/roomdetail" element={<RoomDetail></RoomDetail>}></Route>
+
+          <Route path="/good" element={<Good></Good>}></Route>
+
           <Route path="/login" element={<LoginPage></LoginPage>}></Route>
           <Route path="/signup" element={<SignupPage></SignupPage>}></Route>
           <Route path="/bookingdetail" element={<BookingDetail />} />
