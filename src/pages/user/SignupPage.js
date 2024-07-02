@@ -19,19 +19,22 @@ const WrapStyle = styled.div`
   }
 
   h2 {
-    margin-top: 25px;
-    margin-bottom: 70px;
+    margin-top: 40px;
+    margin-bottom: 40px;
     font-size: 25px;
   }
 
+  /* 구분선 */
+  .line {
+    width: 80%;
+    border-bottom: 2px solid ${colorSystem.g400};
+    margin-bottom: 30px;
+  }
+
+  /* 회원가입 폼 */
   .signup-form {
     width: 80%;
     margin: 0 auto;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
   }
 
   .form-group label {
@@ -61,6 +64,7 @@ const WrapStyle = styled.div`
     font-size: 16px;
   }
 
+  // 버튼 없는 input에 마진 주기
   .password-input,
   .confirm-password-input,
   .name-input {
@@ -81,6 +85,7 @@ const WrapStyle = styled.div`
     cursor: pointer;
   }
 
+  /* 회원가입 버튼 */
   .signup-btn {
     width: 100%;
     height: 50px;
@@ -95,18 +100,54 @@ const WrapStyle = styled.div`
     margin-top: 20px;
     margin-bottom: 50px;
   }
+`;
 
+/* 약관동의 */
+const TermsGroupStyle = styled.div`
   .terms-group p {
-    font-size: 23px;
+    font-size: 20px;
     font-weight: 600;
     margin-bottom: 25px;
   }
 
+  .agree-all {
+    font-weight: 600;
+  }
+  .terms-group ul {
+  }
   .terms-group li {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .terms-group input {
+    width: 18px;
+    height: 18px;
+  }
+  .terms-group label {
+    font-size: 18px;
+  }
+  .terms-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  .left-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .left-content input {
+    width: 20px;
+    height: 20px;
   }
 
-  .terms-group input {
+  .view-terms-btn {
+    font-size: 16px;
+    color: ${colorSystem.g700};
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
   }
 `;
 
@@ -117,6 +158,7 @@ const SignupPage = () => {
         <div className="inner">
           <div className="container">
             <h2>회원가입</h2>
+            <div className="line"></div>
             <div className="wrap">
               <form className="signup-form">
                 <fieldset>
@@ -213,36 +255,50 @@ const SignupPage = () => {
                     </div>
                   </div>
                 </fieldset>
-                <div className="terms-group">
-                  <p>이용약관 동의</p>
-                  <ul>
-                    <li>
-                      <input type="checkbox" id="agree-all" />
-                      <label htmlFor="agree-all" className="agree-all">
-                        모두 동의
-                      </label>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="agree-terms" />
-                      <label htmlFor="agree-terms">(필수)이용약관</label>
-                      <a href="#">약관보기</a>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="agree-privacy" />
-                      <label htmlFor="agree-privacy">
-                        (필수)개인정보 처리방침
-                      </label>
-                      <a href="#">약관보기</a>
-                    </li>
-                    <li>
-                      <input type="checkbox" id="agree-marketing" />
-                      <label htmlFor="agree-marketing">
-                        (선택)이벤트 정보 및 마케팅 수신활용
-                      </label>
-                      <a href="#">약관보기</a>
-                    </li>
-                  </ul>
-                </div>
+                <TermsGroupStyle>
+                  <div className="terms-group">
+                    <p>이용약관 동의</p>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="agree-all" />
+                        <label htmlFor="agree-all" className="agree-all">
+                          모두 동의
+                        </label>
+                      </li>
+                      <li className="terms-item">
+                        <div className="left-content">
+                          <input type="checkbox" id="agree-terms" />
+                          <label htmlFor="agree-terms">(필수) 이용약관</label>
+                        </div>
+                        <button type="button" className="view-terms-btn">
+                          약관보기 &gt;
+                        </button>
+                      </li>
+                      <li className="terms-item">
+                        <div className="left-content">
+                          <input type="checkbox" id="agree-privacy" />
+                          <label htmlFor="agree-privacy">
+                            (필수) 개인정보 처리방침
+                          </label>
+                        </div>
+                        <button type="button" className="view-terms-btn">
+                          약관보기 &gt;
+                        </button>
+                      </li>
+                      <li className="terms-item">
+                        <div className="left-content">
+                          <input type="checkbox" id="agree-marketing" />
+                          <label htmlFor="agree-marketing">
+                            (선택) 이벤트 정보 및 마케팅 수신활용
+                          </label>
+                        </div>
+                        <button type="button" className="view-terms-btn">
+                          약관보기 &gt;
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </TermsGroupStyle>
                 <input type="submit" value="회원가입" className="signup-btn" />
               </form>
             </div>
