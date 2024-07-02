@@ -3,6 +3,7 @@ import GlampickLogo from "../../images/glampick_logo.png";
 import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
 import { colorSystem } from "../../styles/color";
+import { Link } from "react-router-dom";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -179,9 +180,9 @@ const LoginPage = () => {
                 <button type="submit">로그인</button>
               </form>
               <div className="signup">
-                <a href="#">
+                <Link to="/signup" className="signup-btn">
                   <p>회원가입</p>
-                </a>
+                </Link>
               </div>
               <div className="sns-login">
                 <p>sns 로그인</p>
