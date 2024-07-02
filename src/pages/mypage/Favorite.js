@@ -15,10 +15,13 @@ const WrapStyle = styled.div`
     font-weight: 700;
     color: ${colorSystem.g900};
   }
+`;
 
-  .임시 {
-    height: 1000px;
-  }
+const FavoriteContents = styled.div`
+  margin-top: 65px;
+  width: 100%;
+  height: 1000px;
+  background-color: pink;
 `;
 
 const Favorite = () => {
@@ -27,9 +30,7 @@ const Favorite = () => {
       <Categories />
       <div className="inner">
         <h3>관심 목록</h3>
-        <div className="임시">
-          {/* 작업하실때 임시부분만 지우고 사용하세용 @@ */}
-        </div>
+        <FavoriteContents></FavoriteContents>
       </div>
     </WrapStyle>
   );
