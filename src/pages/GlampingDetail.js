@@ -22,13 +22,13 @@ const WrapStyle = styled.div`
     font-weight: 700;
   }
 
-  ul {
+  /* ul {
     margin-top: 20px;
     margin-left: 30px;
     font-weight: 300;
     line-height: 1.5rem;
     font-size: 0.8rem;
-  }
+  } */
 
   h4:before {
     content: "·";
@@ -109,7 +109,7 @@ const ReviewTitle = styled.div`
   }
 
   > svg {
-    color: #ffd233;
+    color: ${colorSystem.star};
   }
 `;
 

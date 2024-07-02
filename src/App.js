@@ -17,7 +17,6 @@ import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
 import SearchPage from "./pages/SearchPage";
 
-
 function App() {
   return (
     <BrowserRouter>
