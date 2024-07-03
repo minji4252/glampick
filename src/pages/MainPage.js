@@ -1,16 +1,43 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import Footer from "../components/layout/Footer";
 // import Header from "../components/layout/Header";
-import ArticleImage from "../images/main-list-1.png";
+// import MainBigImage from "../images/main-big.gif";
 import MainBigImage from "../images/main-big.png";
-import SearchIcon from "../images/icon-search-white.png";
-import MemberIcon from "../images/main-member-icon.png";
+import SearchIcon from "../images/icon/icon-search-white.png";
+import MemberIcon from "../images/icon/main-member-icon.png";
+import glampickLogoMain from "../images/glampick_logo_white.png";
 import { FaStar } from "react-icons/fa";
-import { MdPlace } from "react-icons/md";
+
 import { colorSystem } from "../styles/color";
 import "../styles/common.css";
 import "../styles/reset.css";
+import MainCard from "../components/MainCard";
+import { Link } from "react-router-dom";
+
+const MainHeader = styled.div`
+  align-content: center;
+  position: fixed;
+  width: 100%;
+  height: 110px;
+  max-width: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: block;
+  z-index: 999;
+  transition: top 0.3s;
+  button {
+    width: 130px;
+    height: 40px;
+    background: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    p {
+      color: #355179;
+    }
+  }
+`;
 
 const WrapStyle = styled.div`
   position: relative;
@@ -24,14 +51,16 @@ const WrapStyle = styled.div`
 `;
 // 메인 상단 섹션
 const MainSec1 = styled.section`
+  height: 1080px;
   width: 100%;
   max-width: 100%;
   display: block;
+  /* background: url(${MainBigImage}) no-repeat center; */
   background: url(${MainBigImage}) no-repeat center;
 `;
 
 const MainBigTitle = styled.div`
-  margin-top: 345px;
+  margin-top: 380px;
   margin-bottom: 65px;
   display: flex;
   justify-content: center;
@@ -52,6 +81,15 @@ const MainSearch = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  .main-login {
+    width: 130px;
+    height: 40px;
+    background: #355179;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fff;
+  }
 `;
 // 메인 검색 항목
 const MainSearchContent = styled.ul`
@@ -83,7 +121,7 @@ const MainSearchContent = styled.ul`
       text-align: center;
       outline: none;
       > option {
-        color: ${colorSystem.primary};
+        color: ${colorSystem.g800};
       }
     }
   }
@@ -145,7 +183,7 @@ const MainSearchContent = styled.ul`
         border-radius: 10px;
         font-family: "Pretendard Variable";
         font-size: 20px;
-        color: ${colorSystem.p500};
+        color: ${colorSystem.g800};
         padding-left: 10px;
         ::placeholder {
           /* font-family: "Pretendard Variable";
@@ -199,100 +237,52 @@ const MainListContents = styled.div`
   display: flex;
   gap: 40px;
   margin-bottom: 70px;
-
-  .m-lc-article {
-    float: left;
-    background: teal;
-    width: 290px;
-    height: 270px;
-  }
-`;
-
-const MainArticle = styled.article`
-  display: flex;
-  flex-direction: column;
-  .article-image {
-    position: relative;
-    width: 290px;
-    height: 190px;
-    border-radius: 32px;
-    background: url(${ArticleImage}) no-repeat center;
-    .article-place {
-      position: absolute;
-      bottom: 0;
-      display: flex;
-      align-items: center;
-      width: 290px;
-      height: 34px;
-      border-radius: 0px 0px 32px 32px;
-      background: rgba(123, 123, 123, 0.5);
-      padding: 0 20px;
-      font-size: 16px;
-      color: #fff;
-      font-weight: 600;
-      svg {
-        width: 20px;
-        height: 20px;
-        color: #fff;
-        margin-right: 2px;
-      }
-    }
-  }
-`;
-
-const ArticleContent = styled.div`
-  margin: 20px 10px 0 10px;
-  .article-top {
-    display: flex;
-    flex-direction: grid;
-    align-items: flex-end;
-  }
-  .glamping-name {
-    font-size: 20px;
-    font-weight: 600;
-  }
-  svg {
-    margin: 0 5px;
-    color: #ffd233;
-  }
-  .review-score {
-    margin-right: 5px;
-    font-size: 15px;
-    font-weight: 600;
-  }
-  .review-count {
-    font-size: 15px;
-  }
-  .article-bottom {
-    display: flex;
-    margin-top: 3px;
-    justify-content: space-between;
-    align-items: flex-end;
-    > button {
-      cursor: pointer;
-      width: 65px;
-      height: 30px;
-      justify-content: center;
-      align-items: center;
-      border-radius: 500px;
-      border: none;
-      background: ${colorSystem.primary};
-    }
-    p {
-      font-size: 12px;
-      color: ${colorSystem.white};
-      font-family: "Pretendard Variable";
-    }
-    .glamping-price {
-      font-size: 18px;
-      font-weight: 600;
-    }
-  }
 `;
 
 const MainPage = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
+
+  useEffect(() => {
+    function handleScroll() {
+      const currentScrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      if (currentScrollTop > lastScrollTop) {
+        setIsVisible(false); // 스크롤 다운 시 헤더를 숨김
+      } else {
+        setIsVisible(true); // 스크롤 업 시 헤더를 표시
+      }
+      setLastScrollTop(currentScrollTop);
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollTop]);
   return (
     <WrapStyle>
+      <MainHeader style={{ top: isVisible ? "0" : "-110px" }}>
+        <div className="nav-inner">
+          <div className="header-logo">
+            <Link to="/" className="header-logo-link">
+              <img
+                src={glampickLogoMain}
+                alt="글램픽 로고"
+                className="header-logo-img"
+              />
+            </Link>
+          </div>
+          <div className="header-nav">
+            <button className="main-login">
+              <Link to="/login">
+                <p>로그인/회원가입</p>
+              </Link>
+            </button>
+          </div>
+        </div>
+      </MainHeader>
+
       <main className="main">
         <MainSec1>
           <MainBigTitle>
@@ -357,72 +347,9 @@ const MainPage = () => {
               <p>🥇 지금 가장 인기있는</p>
             </MainListTitle>
             <MainListContents>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    가평
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">조이글램핑</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">65,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    가평
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">조이글램핑</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">65,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    가평
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">조이글램핑</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">65,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
+              <MainCard />
+              <MainCard />
+              <MainCard />
             </MainListContents>
           </MainList>
           <MainList>
@@ -430,72 +357,9 @@ const MainPage = () => {
               <p>🐶 반려동물과 함께할 수 있는</p>
             </MainListTitle>
             <MainListContents>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    제주
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">메이더카라반</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">109,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    제주
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">메이더카라반</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">109,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    제주
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">메이더카라반</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">109,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
+              <MainCard />
+              <MainCard />
+              <MainCard />
             </MainListContents>
           </MainList>
           <MainList>
@@ -503,72 +367,9 @@ const MainPage = () => {
               <p>🏕️ 산속에서 즐기는</p>
             </MainListTitle>
             <MainListContents>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    합천
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">코지글램핑&카라반</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">135,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    합천
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">코지글램핑&카라반</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">135,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
-              <MainArticle>
-                <div className="article-image">
-                  <div className="article-place">
-                    <MdPlace />
-                    합천
-                  </div>
-                </div>
-                <ArticleContent>
-                  <div className="article-top">
-                    <div className="glamping-name">코지글램핑&카라반</div>
-                    <FaStar />
-                    <div className="review-score">4.8</div>
-                    <div className="review-count">(리뷰 5개)</div>
-                  </div>
-                  <div className="article-bottom">
-                    <div className="glamping-price">135,000원~</div>
-                    <button>
-                      <p>예약하기</p>
-                    </button>
-                  </div>
-                </ArticleContent>
-              </MainArticle>
+              <MainCard />
+              <MainCard />
+              <MainCard />
             </MainListContents>
           </MainList>
         </MainSec2>
