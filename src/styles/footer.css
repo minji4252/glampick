@@ -1,32 +1,60 @@
 .footer {
-  height: 300px;
+  /* height: 360px; */
   width: 100%;
   max-width: 100%;
-  background-color: #eaeff6;
+  background-color: #fafafa;
   font-size: 14px;
-  color: #4f565f;
+  color: #999999;
   line-height: 130%;
 }
 
 .footer-inner {
-  padding: 80px 0 50px 80px;
+  padding: 40px 0 50px 0;
+  margin: 0 360px;
 }
 
 .footer-top {
   list-style-type: none;
   display: flex;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   flex-direction: flex-start;
 }
-.footer-top li {
-  display: inline-block;
-  margin-right: 20px;
+
+.footer-contents {
+  display: inline-flex;
+  gap: 100px;
+}
+.footer-contents-title {
+  color: #707070;
+  font-size: 18px;
+  font-weight: 600;
+}
+.footer-contents li {
+  margin-top: 16px;
+  font-weight: 400;
+  font-size: 14px;
+}
+.footer-bottom {
+  border-top: 1px solid #e6e6e6;
+  padding-top: 20px;
+}
+.footer-bottom-list {
+  display: inline-flex;
+  gap: 16px;
+}
+.footer-bottom-list li {
+}
+.footer-bottom-list p {
+  color: #333333;
+  font-weight: 600;
 }
 
-.footer-bottom {
+.footer-bottom-detail {
+  margin-top: 30px;
   display: block;
 }
-.footer-bottom p {
+.footer-bottom-detail p {
+  font-size: 12px;
 }
 
 /* 반응형 자리 */

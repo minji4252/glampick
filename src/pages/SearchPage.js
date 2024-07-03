@@ -1,10 +1,17 @@
+import React from "react";
 import styled from "@emotion/styled";
 import "../styles/common.css";
 import "../styles/reset.css";
-import React from "react";
 import { colorSystem } from "../styles/color";
-import SearchImage from "../images/search-pic1.png";
-import { FaStar } from "react-icons/fa";
+import SearchCard from "../components/SearchCard";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import filterPet from "../images/icon/filter-pet.png";
+import filterOcean from "../images/icon/filter-ocean.png";
+import filterMountain from "../images/icon/filter-mountain.png";
+import filterSwim from "../images/icon/filter-swim.png";
+import filterToilet from "../images/icon/filter-toilet.png";
+import filterWifi from "../images/icon/filter-wifi.png";
+import filterBarbecue from "../images/icon/filter-barbecue.png";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -17,7 +24,6 @@ const SearchInner = styled.div`
   justify-content: space-between;
   margin: 0px auto;
 
-  background: aquamarine;
   padding: 90px 0 250px 0;
   flex-direction: column;
 `;
@@ -31,11 +37,18 @@ const SearchTop = styled.div`
   display: flex;
   justify-content: center;
 `;
+const SearchResult = styled.div``;
+//   .result-contents {
+//     > label {
+//     }
+//     > input {
+//     }
+//   }
+// `;
 
 const SearchInnerTop = styled.div`
   width: 1080px;
   height: 105px;
-  background: plum;
   align-content: flex-end;
 `;
 
@@ -45,10 +58,41 @@ const SearchFilter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  .search-filter {
+    display: flex;
+    background-size: auto;
+    gap: 30px;
+    > div {
+      width: 65px;
+      height: 55px;
+    }
+    .filter-pet {
+      background: url(${filterPet}) no-repeat center;
+    }
+    .filter-ocean {
+      background: url(${filterOcean}) no-repeat center;
+    }
+    .filter-mountain {
+      background: url(${filterMountain}) no-repeat center;
+    }
+    .filter-swim {
+      background: url(${filterSwim}) no-repeat center;
+    }
+    .filter-toilet {
+      background: url(${filterToilet}) no-repeat center;
+    }
+    .filter-wifi {
+      background: url(${filterWifi}) no-repeat center;
+    }
+    .filter-barbecue {
+      background: url(${filterBarbecue}) no-repeat center;
+    }
+  }
 `;
 const SearchMenu = styled.div`
   padding: 0 20px;
-  margin: 10px 0 5px;
+  margin: 20px 0 5px;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -81,63 +125,17 @@ const SearchInnerList = styled.div`
   justify-content: center;
   flex-direction: column;
   width: 1080px;
-  padding: 40px 0;
+  padding-bottom: 40px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
 `;
 
-const SearchContent = styled.div`
-  display: flex;
-  width: 950px;
-  height: 240px;
-  background: seagreen;
-  margin-bottom: 40px;
-  border-bottom: 1px solid #4f565f;
-  :last-child {
-    margin-bottom: 0px;
-    border-bottom: none;
-  }
-  .search-image {
-    width: 400px;
-    height: 240px;
-    background: url(${SearchImage}) no-repeat center;
-  }
-  .search-detail {
-    width: 550px;
+const SearchInnerBottom = styled.div`
+  margin-top: 40px;
+  .search-page {
+    font-size: 18px;
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 20px 40px 10px 50px;
-
-    .sc-top {
-      .sc-name {
-        font-size: 22px;
-        margin-bottom: 10px;
-        font-weight: 600;
-      }
-      .sc-review {
-        display: flex;
-        font-size: 15px;
-        svg {
-          margin: 0 5px;
-          color: #ffd233;
-        }
-        .sc-score {
-          margin-right: 15px;
-        }
-        .sc-count {
-        }
-      }
-      .sc-bottom {
-        display: flex;
-        justify-content: flex-end;
-        /* align-self: flex-end; */
-        .sc-price {
-        }
-        button {
-        }
-      }
-    }
+    gap: 40px;
   }
 `;
 
@@ -146,10 +144,39 @@ const SearchPage = () => {
     <WrapStyle>
       <main>
         <div className="search-wrap">
-          <SearchTop>검색 항목</SearchTop>
+          <SearchTop>
+            <SearchResult>
+              {/* <div className="result-contents">
+                <label htmlFor="place">지역</label>
+                <input type="text">서울/경기</input>
+              </div>
+              <div className="result-contents">
+                <label htmlFor="date">날짜</label>
+                <input type="text">2024.06.29 토 - 2024.06.30 일</input>
+              </div>
+              <div className="result-contents">
+                <label htmlFor="member">인원</label>
+                <input type="text">2 명</input>
+              </div> */}
+              {/* <div className="result-contents">
+                <label htmlFor="search-input">검색어</label>
+                <input type="text">"검색어"</input>
+              </div> */}
+            </SearchResult>
+          </SearchTop>
           <SearchInner>
             <SearchInnerTop>
-              <SearchFilter>필터 항목 (5개)</SearchFilter>
+              <SearchFilter>
+                <div className="search-filter">
+                  <div className="filter-pet" />
+                  <div className="filter-ocean" />
+                  <div className="filter-mountain" />
+                  <div className="filter-swim" />
+                  <div className="filter-toilet" />
+                  <div className="filter-wifi" />
+                  <div className="filter-barbecue" />
+                </div>
+              </SearchFilter>
               <SearchMenu>
                 <div className="search-aline">
                   <select name="aline" id="aline">
@@ -163,29 +190,22 @@ const SearchPage = () => {
               </SearchMenu>
             </SearchInnerTop>
             <SearchInnerList>
-              <SearchContent>
-                <div className="search-image"></div>
-                <div className="search-detail">
-                  <div className="sc-top">
-                    <div className="sc-name">그린 파인트리글램핑&카라반</div>
-                    <div className="sc-review">
-                      <FaStar />
-                      <div className="sc-score">4.6</div>
-                      <div className="sc-count">1,234 개 리뷰</div>
-                    </div>
-                  </div>
-                  <div className="sc-bottom">
-                    <div className="sc-price">85,000원 ~</div>
-                    <button>예약하기</button>
-                  </div>
-                </div>
-              </SearchContent>
-              <SearchContent></SearchContent>
-              <SearchContent></SearchContent>
-              <SearchContent></SearchContent>
-              <SearchContent></SearchContent>
+              <SearchCard />
+              <SearchCard />
+              <SearchCard />
+              <SearchCard />
+              <SearchCard />
             </SearchInnerList>
-            <div className="search-inner-bottom">페이지</div>
+            <SearchInnerBottom>
+              <ul className="search-page">
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+                <li>5</li>
+                <MdOutlineKeyboardArrowRight />
+              </ul>
+            </SearchInnerBottom>
           </SearchInner>
         </div>
       </main>
