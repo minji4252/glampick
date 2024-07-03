@@ -17,6 +17,7 @@ import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
 import SearchPage from "./pages/SearchPage";
 import NotfoundPage from "./pages/NotfoundPage";
+import PaymentPage from "./pages/PaymentPage";
 
 function App() {
   return (
@@ -31,8 +32,7 @@ function App() {
           ></Route>
 
           <Route path="/roomdetail" element={<RoomDetail></RoomDetail>}></Route>
-
-          <Route path="/good" element={<Good></Good>}></Route>
+          <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
 
           <Route path="/login" element={<LoginPage></LoginPage>}></Route>
           <Route path="/signup" element={<SignupPage></SignupPage>}></Route>

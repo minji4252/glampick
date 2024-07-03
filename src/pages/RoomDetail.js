@@ -106,6 +106,40 @@ const RoomDetail = () => {
     width: 100%;
     height: 660px;
     background-color: ${colorSystem.background};
+
+    .swiper {
+      max-width: 70% !important;
+      max-height: 100% !important;
+      height: 100% !important;
+      margin: 0 auto !important;
+    }
+
+    .swiper-slide-prev {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .swiper-slide-active {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .swiper-slide-next {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .swiper-wrapper {
+      position: relative;
+      overflow: visible !important;
+    }
+
+    .swiper-button-next {
+      position: absolute;
+      /* right: -50px; */
+      background-color: pink;
+      right: -20px;
+      z-index: 99999;
+    }
   `;
 
   return (
@@ -133,23 +167,11 @@ const RoomDetail = () => {
           </div>
         </ListStyle>
         <LargeSwiper>
-          {/* <Swiper
-            modules={[Virtual, Navigation, Pagination]}
-            slidesPerView={3}
-            centeredSlides={true}
-            spaceBetween={70}
-            pagination={{
-              type: "fraction",
-            }}
-            navigation={true}
-            virtual
-          >
+          <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
             {slides.map((slideContent, index) => (
-              <SwiperSlide key={index} virtualIndex={index}>
-                {slideContent}
-              </SwiperSlide>
+              <SwiperSlide key={index}>{slideContent}</SwiperSlide>
             ))}
-          </Swiper> */}
+          </Swiper>
         </LargeSwiper>
         <Swiper
           modules={[Virtual, Navigation, Pagination]}

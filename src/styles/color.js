@@ -14,6 +14,7 @@ export const colorSystem = {
 
   // gray scale, 숫자가 높아질수록 어두워짐
   g100: "#f5f5f5",
+  g150: "#ebebeb",
   g200: "#dbdbdb",
   g300: "#c2c2c2",
   g400: "#a8a8a8",
