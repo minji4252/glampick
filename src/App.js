@@ -15,6 +15,7 @@ import GlampingDetail from "./pages/GlampingDetail";
 import RoomDetail from "./pages/RoomDetail";
 import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
+import SnsSignupPage from "./pages/user/SnsSignUpPage";
 import SearchPage from "./pages/SearchPage";
 import NotfoundPage from "./pages/NotfoundPage";
 
@@ -34,6 +35,10 @@ function App() {
 
           <Route path="/login" element={<LoginPage></LoginPage>}></Route>
           <Route path="/signup" element={<SignupPage></SignupPage>}></Route>
+          <Route
+            path="/sns-signup"
+            element={<SnsSignupPage></SnsSignupPage>}
+          ></Route>
           <Route path="/bookingdetail" element={<BookingDetail />} />
           <Route path="/myreview" element={<MyReview />} />
           <Route path="/favorite" element={<Favorite />} />

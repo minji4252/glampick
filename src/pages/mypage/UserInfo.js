@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem } from "../../styles/color";
+import { FaUser } from "react-icons/fa6";
+import { PiPencilSimpleLine } from "react-icons/pi";
 
 const WrapStyle = styled.div`
   .inner {
@@ -23,15 +25,51 @@ const WrapStyle = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: skyblue;
+    margin-top: 65px;
+  }
+
+  /* 프로필 기본 사진 */
+  .userprofile {
+    position: relative;
+    width: 170px;
+    height: 170px;
+    margin-bottom: 50px;
+    border-radius: 50%;
+    /* 자식 요소가 부모 요소를 벗어나지 않도록 설정 */
+    background-color: aliceblue;
   }
 
   .userprofile-img {
-    width: 170px;
-    height: 170px;
-    margin-top: 100px;
-    margin-bottom: 50px;
-    background-color: aliceblue;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    color: ${colorSystem.p500};
+  }
+
+  /* 프로필 사진 수정 */
+  .profile-edit {
+    position: absolute;
+    bottom: -10px; /* 원하는 위치로 조정 */
+    right: -8px; /* 원하는 위치로 조정 */
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profile-label {
+    cursor: pointer;
+  }
+
+  .profile-input {
+    display: none;
+  }
+
+  /* 프로필 수정 아이콘 */
+  .pencil-icon {
+    color: ${colorSystem.p500};
+    width: 35px;
+    height: 35px;
   }
   .wrap {
     width: 100%;
@@ -107,8 +145,20 @@ const UserInfo = () => {
         <h3>내 정보 관리</h3>
 
         <div className="container">
-          <div className="userprofile-img">프로필사진</div>
-
+          <div className="userprofile">
+            <FaUser className="userprofile-img" />
+            <div className="profile-edit">
+              <label htmlFor="profileImage" className="profile-label">
+                <PiPencilSimpleLine className="pencil-icon" />
+              </label>
+              <input
+                type="file"
+                id="profileImage"
+                className="profile-input"
+                accept="image/*"
+              />
+            </div>
+          </div>
           <div className="wrap">
             <form className="userInfo-form">
               <div className="form-group">
@@ -153,6 +203,16 @@ const UserInfo = () => {
                 />
               </div>
               <div className="form-group">
+                <label htmlFor="confirm-password">비밀번호 확인</label>
+                <input
+                  type="password"
+                  id="confirm-password"
+                  className="confirm-password-input"
+                  required
+                  placeholder="비밀번호를 한번 더 입력해주세요"
+                />
+              </div>
+              <div className="form-group">
                 <label htmlFor="cellphone">휴대폰</label>
                 <div className="input-group">
                   <input
@@ -162,6 +222,18 @@ const UserInfo = () => {
                     placeholder="휴대폰번호를 정확히 입력해주세요"
                   />
                   <button>인증번호 발송</button>
+                </div>
+              </div>
+              <div className="form-group">
+                <label htmlFor="auth-number">인증번호</label>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    id="auth-number"
+                    required
+                    placeholder="인증번호를 입력해주세요"
+                  />
+                  <button>확인</button>
                 </div>
               </div>
               <input type="submit" value="회원탈퇴" className="withdraw-btn" />

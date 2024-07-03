@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "@emotion/styled";
 import { colorSystem } from "../../styles/color";
 
@@ -64,8 +65,6 @@ const WrapStyle = styled.div`
   }
 
   // 버튼 없는 input에 마진 주기
-  .password-input,
-  .confirm-password-input,
   .name-input {
     margin-bottom: 30px;
   }
@@ -150,7 +149,7 @@ const TermsGroupStyle = styled.div`
   }
 `;
 
-const SignupPage = () => {
+const SnsSignUpPage = () => {
   return (
     <WrapStyle>
       <main>
@@ -162,51 +161,7 @@ const SignupPage = () => {
               <form className="signup-form">
                 <fieldset>
                   <legend></legend>
-                  <div className="form-group">
-                    <label htmlFor="email">이메일</label>
-                    <div className="input-group">
-                      <input
-                        type="email"
-                        id="email"
-                        required
-                        placeholder="glampick@good.kr"
-                      />
-                      <button>인증코드 발송</button>
-                    </div>
-                  </div>
-                  <p className="error-message"></p>
-                  <div className="form-group">
-                    <label htmlFor="auth-code">인증코드</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="auth-code"
-                        required
-                        placeholder="인증코드를 입력해주세요"
-                      />
-                      <button>확인</button>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="password">비밀번호</label>
-                    <input
-                      type="password"
-                      id="password"
-                      className="password-input"
-                      required
-                      placeholder="비밀번호를 입력해주세요"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="confirm-password">비밀번호 확인</label>
-                    <input
-                      type="password"
-                      id="confirm-password"
-                      className="confirm-password-input"
-                      required
-                      placeholder="비밀번호를 한번 더 입력해주세요"
-                    />
-                  </div>
+
                   <div className="form-group">
                     <label htmlFor="name">이름</label>
                     <input
@@ -308,4 +263,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default SnsSignUpPage;
