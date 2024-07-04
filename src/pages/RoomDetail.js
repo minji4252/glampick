@@ -136,9 +136,19 @@ const RoomDetail = () => {
     .swiper-button-next {
       position: absolute;
       /* right: -50px; */
-      background-color: pink;
-      right: -20px;
-      z-index: 99999;
+      /* background-color: pink; */
+      /* right: -20px; */
+      /* z-index: 99999; */
+    }
+
+    .swiper-button-prev::after {
+      color: yellow;
+      font-size: 50px;
+    }
+
+    .swiper-button-next::after {
+      color: yellow;
+      font-size: 50px;
     }
   `;
 
@@ -167,6 +177,8 @@ const RoomDetail = () => {
           </div>
         </ListStyle>
         <LargeSwiper>
+          <h1>{menuArr[currentTab].content}</h1>
+
           <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
             {slides.map((slideContent, index) => (
               <SwiperSlide key={index}>{slideContent}</SwiperSlide>
@@ -190,7 +202,6 @@ const RoomDetail = () => {
             </SwiperSlide>
           ))}
         </Swiper>
-        <h1>{menuArr[currentTab].content}</h1>
       </div>
     </WrapStyle>
   );
