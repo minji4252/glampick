@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { colorSystem } from "../../styles/color";
+import { MainButton } from "../../components/common/Button";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -38,12 +39,8 @@ const WrapStyle = styled.div`
 
   .form-group label {
     display: block;
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 7px;
-  }
-  .form-group label:after {
-    content: "*";
-    color: #ff5858;
   }
 
   .input-group {
@@ -60,7 +57,7 @@ const WrapStyle = styled.div`
     border: none;
     background-color: ${colorSystem.g100};
     padding: 10px;
-    font-size: 16px;
+    font-size: 15px;
   }
 
   // 버튼 없는 input에 마진 주기
@@ -70,34 +67,20 @@ const WrapStyle = styled.div`
     margin-bottom: 30px;
   }
 
-  .form-group button {
-    display: inline-block;
+  /* 폼 버튼 */
+  .form-button > button {
     width: 140px;
     height: 40px;
-    padding: 10px;
-    background-color: ${colorSystem.p500};
-    color: white;
-    font-size: 18px;
-    border-radius: 20px;
-    /* 테두리 수정해야함 */
-    border: none;
-    cursor: pointer;
+    font-size: 15px;
   }
 
   /* 회원가입 버튼 */
-  .signup-btn {
+  .sign-button > button {
     width: 100%;
     height: 50px;
-    padding: 10px;
-    background-color: ${colorSystem.p500};
-    color: white;
-    font-size: 23px;
-    border-radius: 20px;
-    /* 테두리 수정해야함 */
-    border: none;
-    cursor: pointer;
     margin-top: 20px;
     margin-bottom: 50px;
+    font-size: 20px;
   }
 `;
 
@@ -125,7 +108,7 @@ const TermsGroupStyle = styled.div`
     height: 18px;
   }
   .terms-group label {
-    font-size: 18px;
+    font-size: 17px;
   }
   .terms-item {
     display: flex;
@@ -137,8 +120,8 @@ const TermsGroupStyle = styled.div`
     gap: 10px;
   }
   .left-content input {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
   }
 
   .view-terms-btn {
@@ -171,7 +154,9 @@ const SignupPage = () => {
                         required
                         placeholder="glampick@good.kr"
                       />
-                      <button>인증코드 발송</button>
+                      <div className="form-button">
+                        <MainButton label="인증코드 발송" />
+                      </div>
                     </div>
                   </div>
                   <p className="error-message"></p>
@@ -184,7 +169,9 @@ const SignupPage = () => {
                         required
                         placeholder="인증코드를 입력해주세요"
                       />
-                      <button>확인</button>
+                      <div className="form-button">
+                        <MainButton label="인증코드 발송" />
+                      </div>
                     </div>
                   </div>
                   <div className="form-group">
@@ -226,7 +213,9 @@ const SignupPage = () => {
                         required
                         placeholder="닉네임을 입력해주세요"
                       />
-                      <button>중복확인</button>
+                      <div className="form-button">
+                        <MainButton label="중복확인" />
+                      </div>
                     </div>
                   </div>
                   <div className="form-group">
@@ -238,7 +227,9 @@ const SignupPage = () => {
                         required
                         placeholder="휴대폰번호를 정확히 입력해주세요"
                       />
-                      <button>인증번호 발송</button>
+                      <div className="form-button">
+                        <MainButton label="인증번호 발송" />
+                      </div>
                     </div>
                   </div>
                   <div className="form-group">
@@ -250,7 +241,9 @@ const SignupPage = () => {
                         required
                         placeholder="인증번호를 입력해주세요"
                       />
-                      <button>확인</button>
+                      <div className="form-button">
+                        <MainButton label="확인" />
+                      </div>
                     </div>
                   </div>
                 </fieldset>
@@ -298,7 +291,9 @@ const SignupPage = () => {
                     </ul>
                   </div>
                 </TermsGroupStyle>
-                <input type="submit" value="회원가입" className="signup-btn" />
+                <div className="sign-button">
+                  <MainButton label="회원가입" />
+                </div>
               </form>
             </div>
           </div>

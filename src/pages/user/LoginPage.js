@@ -4,6 +4,7 @@ import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
 import { colorSystem } from "../../styles/color";
 import { Link } from "react-router-dom";
+import { MainButton } from "../../components/common/Button";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -74,30 +75,24 @@ const WrapStyle = styled.div`
     margin-top: 5px;
   }
 
-  .login-form button {
+  /* 로그인 버튼 */
+  .login-btn > button {
     width: 100%;
     height: 50px;
-    padding: 10px;
-    background-color: ${colorSystem.p500};
-    color: white;
-    font-size: 23px;
-    border-radius: 20px;
-    /* 테두리 수정해야함 */
-    border: none;
-    cursor: pointer;
-    margin-top: 20px;
+    font-size: 22px;
+    margin-top: 40px;
   }
 
   .signup {
-    position: absolute;
-    right: 160px;
-    /* 글자위치 수정해야 함 */
+    position: relative;
   }
 
   .signup p {
+    position: absolute;
+    right: 145px;
     color: ${colorSystem.g800};
-    font-size: 20px;
-    margin-top: 10px;
+    font-size: 18px;
+    padding: 10px;
   }
 
   .sns-login {
@@ -177,7 +172,9 @@ const LoginPage = () => {
                 <p className="error-message">
                   아이디나 비밀번호가 일치하지 않습니다.
                 </p>
-                <button type="submit">로그인</button>
+                <div className="login-btn">
+                  <MainButton label="로그인" />
+                </div>
               </form>
               <div className="signup">
                 <Link to="/signup" className="signup-btn">
