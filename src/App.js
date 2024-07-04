@@ -10,6 +10,7 @@ import MainPage from "./pages/MainPage";
 import NotfoundPage from "./pages/NotfoundPage";
 import PaymentPage from "./pages/PaymentPage";
 import RoomDetail from "./pages/RoomDetail";
+import Review from "./pages/Review";
 import SearchPage from "./pages/SearchPage";
 import BookingDetail from "./pages/mypage/BookingDetail";
 import Favorite from "./pages/mypage/Favorite";
@@ -18,9 +19,6 @@ import UserInfo from "./pages/mypage/UserInfo";
 import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
 import SnsSignupPage from "./pages/user/SnsSignUpPage";
-import SearchPage from "./pages/SearchPage";
-import NotfoundPage from "./pages/NotfoundPage";
-import PaymentPage from "./pages/PaymentPage";
 import PaymentDone from "./pages/PaymentDone";
 
 function App() {
@@ -30,7 +28,7 @@ function App() {
         <Header>글램픽</Header>
         <Routes>
           {/* 메인 */}
-          <Route path="/" element={<MainPage/>}></Route>
+          <Route path="/" element={<MainPage />}></Route>
 
           {/* 로그인, 회원가입 */}
           <Route path="/login" element={<LoginPage></LoginPage>}></Route>
@@ -40,16 +38,15 @@ function App() {
             element={<SnsSignupPage></SnsSignupPage>}
           ></Route>
 
-          {/* 검색 결과 */}                            
+          {/* 검색 결과 */}
           <Route path="/search" element={<SearchPage></SearchPage>} />
           <Route path="/glampingdetail" element={<GlampingDetail />}></Route>
           <Route path="/roomdetail" element={<RoomDetail />}></Route>
-
+          <Route path="/review" element={<Review />}></Route>
 
           {/* 결제 페이지 */}
           <Route path="/payment" element={<PaymentPage />}></Route>
           <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
-
 
           {/* 유저 페이지 */}
           <Route path="/bookingdetail" element={<BookingDetail />} />

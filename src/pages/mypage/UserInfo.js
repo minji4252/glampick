@@ -26,6 +26,8 @@ const WrapStyle = styled.div`
     align-items: center;
     justify-content: center;
     margin-top: 65px;
+    margin-bottom: 80px;
+    /* 임시로 지정  다시 확인해야함 */
   }
 
   /* 프로필 기본 사진 */
@@ -74,6 +76,7 @@ const WrapStyle = styled.div`
   .wrap {
     width: 100%;
     margin: 0 auto;
+    margin-bottom: 50px;
   }
 
   /* 유저정보 수정폼 */
@@ -119,7 +122,7 @@ const WrapStyle = styled.div`
     cursor: pointer;
   }
 
-  /* 회원가입 버튼 */
+  /* 회원탈퇴 버튼 */
   .withdraw-btn {
     width: 100%;
     height: 50px;
@@ -133,7 +136,6 @@ const WrapStyle = styled.div`
     cursor: pointer;
     margin-top: 100px;
     /* 임시지정 */
-    margin-bottom: 50px;
   }
 `;
 
@@ -143,7 +145,6 @@ const UserInfo = () => {
       <Categories />
       <div className="inner">
         <h3>내 정보 관리</h3>
-
         <div className="container">
           <div className="userprofile">
             <FaUser className="userprofile-img" />
