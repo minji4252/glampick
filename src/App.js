@@ -19,6 +19,7 @@ import SnsSignupPage from "./pages/user/SnsSignUpPage";
 import SearchPage from "./pages/SearchPage";
 import NotfoundPage from "./pages/NotfoundPage";
 import PaymentPage from "./pages/PaymentPage";
+import PaymentDone from "./pages/PaymentDone";
 
 function App() {
   return (
@@ -27,14 +28,11 @@ function App() {
         <Header>글램픽 glampick</Header>
         <Routes>
           <Route path="/" element={<MainPage></MainPage>}></Route>
-          <Route
-            path="/glampingdetail"
-            element={<GlampingDetail></GlampingDetail>}
-          ></Route>
+          <Route path="/glampingdetail" element={<GlampingDetail />}></Route>
 
-          <Route path="/roomdetail" element={<RoomDetail></RoomDetail>}></Route>
-          <Route path="/payment" element={<PaymentPage></PaymentPage>}></Route>
-
+          <Route path="/roomdetail" element={<RoomDetail />}></Route>
+          <Route path="/payment" element={<PaymentPage />}></Route>
+          <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
 
           <Route path="/login" element={<LoginPage></LoginPage>}></Route>
           <Route path="/signup" element={<SignupPage></SignupPage>}></Route>

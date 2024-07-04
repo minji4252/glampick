@@ -6,6 +6,7 @@ import { colorSystem } from "../styles/color";
 import { useState } from "react";
 import kakaopay from "../images/kakaopay.png";
 import tosspay from "../images/tosspay.png";
+import { Link } from "react-router-dom";
 
 const WrapStyle = styled.div`
   .inner {
@@ -95,8 +96,10 @@ const UnderLine = styled.div`
   margin: 30px 0;
 `;
 const PaymentMethod = styled.div`
-  > div {
+  .next-check {
     display: flex;
+    gap: 10px;
+    margin-top: 20px;
   }
 `;
 
@@ -132,7 +135,36 @@ const PaymentTypeList = styled.div`
   }
 `;
 
-const PayButton = styled.div``;
+const PayButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .agree-box {
+    max-width: 290px;
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    background-color: ${colorSystem.g150};
+    padding: 10px;
+    border-radius: 8px;
+
+    > span {
+      font-weight: 700;
+    }
+  }
+
+  button {
+    margin-top: 20px;
+    margin-bottom: 100px;
+    max-width: 290px;
+    width: 100%;
+    border-radius: 10px;
+    height: 50px;
+    font-size: 1rem;
+  }
+`;
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
@@ -199,15 +231,20 @@ const PaymentPage = () => {
                 <img alt="tosspay" src={tosspay} />
               </div>
             </PaymentTypeList>
-            <div>
+            <div className="next-check">
               <input type="checkbox" />
               <p>이 결제 수단을 다음에도 사용</p>
             </div>
           </PaymentMethod>
+
           <PayButton>
-            <div>약관 전체동의</div>
-            <button type="submit">결제하기</button>
-            <MainButton />
+            <div className="agree-box">
+              <input type="checkbox" />
+              <span>약관 전체동의</span>
+            </div>
+            <Link to="/paymentcompleted">
+              <MainButton label="85,000원 결제하기" />
+            </Link>
           </PayButton>
         </PaymentFormStyle>
       </div>
