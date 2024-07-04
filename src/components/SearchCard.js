@@ -5,6 +5,7 @@ import SearchImage from "../images/search-pic1.png";
 import React from "react";
 import { FaStar } from "react-icons/fa";
 import { MainButton } from "./common/Button";
+import { Link } from "react-router-dom";
 
 const SearchContent = styled.div`
   display: flex;
@@ -80,7 +81,9 @@ const SearchCard = () => {
         </div>
         <div className="sc-bottom">
           <div className="sc-price">85,000원 ~</div>
-          <MainButton label="예약하기"></MainButton>
+          <MainButton label="예약하기">
+            <Link to="/glampingdetail" />
+          </MainButton>
         </div>
       </div>
     </SearchContent>

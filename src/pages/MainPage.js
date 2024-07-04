@@ -1,19 +1,15 @@
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
-// import Footer from "../components/layout/Footer";
-// import Header from "../components/layout/Header";
-import MainBigImage from "../images/main-big.gif";
-// import MainBigImage from "../images/main-big.png";
+import { useEffect, useState } from "react";
+import glampickLogoMain from "../images/glampick_logo_white.png";
 import SearchIcon from "../images/icon/icon-search-white.png";
 import MemberIcon from "../images/icon/main-member-icon.png";
-import glampickLogoMain from "../images/glampick_logo_white.png";
-import { FaStar } from "react-icons/fa";
+import MainBigImage from "../images/main-big.gif";
 
+import { Link } from "react-router-dom";
+import MainCard from "../components/MainCard";
 import { colorSystem } from "../styles/color";
 import "../styles/common.css";
 import "../styles/reset.css";
-import MainCard from "../components/MainCard";
-import { Link } from "react-router-dom";
 
 const MainHeader = styled.div`
   align-content: center;
@@ -55,7 +51,6 @@ const MainSec1 = styled.section`
   width: 100%;
   max-width: 100%;
   display: block;
-  /* background: url(${MainBigImage}) no-repeat center; */
   background: url(${MainBigImage}) no-repeat center;
 `;
 
@@ -131,6 +126,24 @@ const MainSearchContent = styled.ul`
     height: 50px;
     padding-left: 20px;
     margin: 0 20px;
+    display: flex;
+    align-items: center;
+    > input {
+      font-size: 17px;
+      width: 180px;
+      height: 40px;
+      justify-content: center;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.7);
+      border: none;
+      border-radius: 10px;
+      color: ${colorSystem.g800};
+    }
+    > p {
+      margin: 0 10px;
+      font-size: 25px;
+      color: ${colorSystem.white};
+    }
   }
 
   .m-sc-member {
@@ -196,7 +209,6 @@ const MainSearchContent = styled.ul`
     display: flex;
     width: 110px;
     height: 45px;
-    /* padding: 10px 20px; */
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -223,7 +235,6 @@ const MainSec2 = styled.section`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  /* background-color: sandybrown; */
 `;
 
 // 추천 글램핑장 리스트 (3 항목)
@@ -248,9 +259,9 @@ const MainPage = () => {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
       if (currentScrollTop > lastScrollTop) {
-        setIsVisible(false); // 스크롤 다운 시 헤더를 숨김
+        setIsVisible(false); // 스크롤 다운시 헤더 숨김
       } else {
-        setIsVisible(true); // 스크롤 업 시 헤더를 표시
+        setIsVisible(true); // 스크롤 업시 헤더 표시
       }
       setLastScrollTop(currentScrollTop);
     }
@@ -260,6 +271,7 @@ const MainPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollTop]);
+
   return (
     <WrapStyle>
       <MainHeader style={{ top: isVisible ? "0" : "-110px" }}>
@@ -310,6 +322,7 @@ const MainPage = () => {
               </li>
               <li className="m-sc-date">
                 <input type="date" />
+                <p>-</p>
                 <input type="date" />
               </li>
               <li className="m-sc-member">
@@ -335,7 +348,9 @@ const MainPage = () => {
               </li>
               <li className="m-sc-search">
                 <button>
-                  <p>검색</p>
+                  <Link to="/search">
+                    <p>검색</p>
+                  </Link>
                 </button>
               </li>
             </MainSearchContent>
