@@ -2,8 +2,7 @@ import React from "react";
 import { colorSystem } from "../styles/color";
 import ClampingImage from "../images/main-list-1.png";
 import styled from "@emotion/styled";
-
-const Container = styled.div``;
+import { MainButton } from "./common/Button";
 
 export const FormContents = styled.div`
   width: 511px;
@@ -35,15 +34,17 @@ export const FormContents = styled.div`
   .bottom-contents {
     width: 100%;
     height: 75%;
-    padding: 25px 20px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
 
   p {
-    font-size: 15px;
+    display: flex;
+    font-size: 13px;
     color: ${colorSystem.g700};
+    margin-left: 5px;
   }
   .reserv-info {
     width: 100%;
@@ -82,15 +83,38 @@ export const FormContents = styled.div`
   }
 
   .cancel-btn {
+    width: 40px;
+    height: 35px;
+    /* 높이 같지 않을 시 글자 위치가 달라짐 */
     font-size: 14px;
     font-weight: 600;
     color: ${colorSystem.error};
+    justify-content: flex-end;
     margin-left: auto;
-    /* 글자 오른쪽 끝에 배치 */
+    border: none;
+    background-color: none;
+    cursor: pointer;
+  }
+
+  .review-btn {
+    display: flex;
+    justify-content: flex-end;
+    > button {
+      width: 80px;
+      height: 35px;
+      font-size: 12px;
+      background-color: white;
+      color: ${colorSystem.g800};
+      border: 1.5px solid ${colorSystem.p700};
+      &:hover {
+        background-color: ${colorSystem.p700};
+        color: white;
+      }
+    }
   }
 `;
 
-export const BookingDetailForm = () => {
+export const BookingDetailForm = ({ isCompleted }) => {
   return (
     <FormContents>
       <div className="top-contents">
@@ -108,7 +132,13 @@ export const BookingDetailForm = () => {
             <div className="check-time">체크인 16:00 | 체크아웃 12:00</div>
           </div>
         </div>
-        <div className="cancel-btn">취소</div>
+        {isCompleted ? (
+          <div className="review-btn">
+            <MainButton label="후기작성" />
+          </div>
+        ) : (
+          <div className="cancel-btn">취소</div>
+        )}
       </div>
     </FormContents>
   );
