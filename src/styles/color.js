@@ -39,3 +39,7 @@ export const colorSystem = {
 export const fontSystem = {
   title: "36px",
 };
+
+export const size = {
+  mid: `@media all and (max-width: 768px)`,
+};
