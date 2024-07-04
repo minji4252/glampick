@@ -18,6 +18,7 @@ const WrapStyle = styled.div`
 
   .inner {
     flex-direction: column;
+    width: 100%;
   }
 
   h3 {
@@ -47,7 +48,9 @@ const WrapStyle = styled.div`
 `;
 
 // 룸 옵션
-const RoomProperty = styled.div``;
+const RoomProperty = styled.div`
+  width: 100%;
+`;
 
 // 옵션 1
 const RoomPic = styled.div`
@@ -56,21 +59,11 @@ const RoomPic = styled.div`
   gap: 10px;
 
   .main-img {
-    grid-row: span 2 / span 2;
     position: relative;
     background: url(${Image}) no-repeat center;
     background-size: cover;
-    size: 100vw;
-    width: 640px;
-    height: 490px;
-  }
-
-  .sub-img {
-    grid-column: span 1 / span 1;
-    background: yellow;
-    position: relative;
-    width: 270px;
-    height: 240px;
+    width: 100%;
+    height: 400px;
   }
 `;
 
@@ -349,10 +342,6 @@ const GlampingDetail = () => {
         <RoomProperty>
           <RoomPic>
             <div className="main-img"></div>
-            <div className="sub-img"></div>
-            <div className="sub-img"></div>
-            <div className="sub-img"></div>
-            <div className="sub-img"></div>
           </RoomPic>
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
