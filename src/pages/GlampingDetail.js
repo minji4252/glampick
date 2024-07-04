@@ -8,6 +8,14 @@ import Image from "../images/pic.jpg";
 import Room from "../images/roomin.png";
 import { colorSystem } from "../styles/color";
 import { IoHeartSharp } from "react-icons/io5";
+import optionPet from "../images/icon/filter-pet.png";
+import optionOcean from "../images/icon/filter-ocean.png";
+import optionMountain from "../images/icon/filter-mountain.png";
+import optionSwim from "../images/icon/filter-swim.png";
+import optionToilet from "../images/icon/filter-toilet.png";
+import optionWifi from "../images/icon/filter-wifi.png";
+import optionBarbecue from "../images/icon/filter-barbecue.png";
+import { Link } from "react-router-dom";
 
 const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g400};
@@ -64,6 +72,10 @@ const RoomPic = styled.div`
     background-size: cover;
     width: 100%;
     height: 400px;
+  }
+
+  .main-img:hover {
+    /* 호버효과 */
   }
 `;
 
@@ -155,7 +167,7 @@ const RoomOption = styled.div`
   margin-top: 20px;
 
   .option-title {
-    margin: 15px 0 10px 10px;
+    margin: 15px 0 15px 10px;
   }
 `;
 
@@ -165,14 +177,33 @@ const OptionItems = styled.div`
   gap: 25px;
 
   .option-item {
+    display: flex;
+    background-size: auto;
+    gap: 30px;
     > div {
-      width: 40px;
-      height: 30px;
-      background-color: yellow;
+      width: 65px;
+      height: 55px;
     }
-    > span {
-      font-weight: 700;
-      font-size: 0.9rem;
+    .option-pet {
+      background: url(${optionPet}) no-repeat center;
+    }
+    .option-ocean {
+      background: url(${optionOcean}) no-repeat center;
+    }
+    .option-mountain {
+      background: url(${optionMountain}) no-repeat center;
+    }
+    .option-swim {
+      background: url(${optionSwim}) no-repeat center;
+    }
+    .option-toilet {
+      background: url(${optionToilet}) no-repeat center;
+    }
+    .option-wifi {
+      background: url(${optionWifi}) no-repeat center;
+    }
+    .option-barbecue {
+      background: url(${optionBarbecue}) no-repeat center;
     }
   }
 `;
@@ -228,16 +259,20 @@ const RoomCard = styled.div`
 
       > p {
         margin-bottom: 20px;
+        font-weight: 400;
+        color: ${colorSystem.g800};
+        font-size: 0.9rem;
       }
 
       > span {
+        font-size: 1rem;
         font-weight: 600;
         position: absolute;
         right: 15px;
         bottom: 70px;
       }
 
-      > button {
+      button {
         position: absolute;
         right: 15px;
         bottom: 15px;
@@ -250,9 +285,16 @@ const RoomCard = styled.div`
         display: flex;
         gap: 35px;
       }
-      .txt-top {
-        margin-bottom: 5px;
+
+      span,
+      p {
+        font-weight: 500;
+        color: ${colorSystem.g700};
       }
+    }
+
+    .txt-top {
+      margin-bottom: 5px;
     }
   }
 `;
@@ -284,9 +326,9 @@ const RoomIntro = styled.div`
   > p {
     font-weight: 600;
     color: ${colorSystem.g600};
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1.3rem;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
   }
 `;
 const RoomInfomation = styled.div`
@@ -340,9 +382,11 @@ const GlampingDetail = () => {
     <WrapStyle>
       <div className="inner">
         <RoomProperty>
-          <RoomPic>
-            <div className="main-img"></div>
-          </RoomPic>
+          <Link to="/roomdetail">
+            <RoomPic>
+              <div className="main-img"></div>
+            </RoomPic>
+          </Link>
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
             <IoHeartSharp />
@@ -377,16 +421,18 @@ const GlampingDetail = () => {
             <h3 className="option-title">서비스 및 부대시설</h3>
             <OptionItems>
               <div className="option-item">
-                <div></div>
-                <span>수영장</span>
-              </div>
-              <div className="option-item">
-                <div></div>
-                <span>반려동물</span>
+                <div className="option-pet" />
+                <div className="option-ocean" />
+                <div className="option-wifi" />
+                {/* <div className="option-mountain" />
+                <div className="option-swim" />
+                <div className="option-toilet" />
+                <div className="option-barbecue" /> */}
               </div>
             </OptionItems>
           </RoomOption>
         </RoomProperty>
+
         <RoomSelect>
           <UnderLine />
           <RoomSelectTitle>
@@ -402,7 +448,9 @@ const GlampingDetail = () => {
                 <p>입실 15:00</p>
                 <p>퇴실 11:00</p>
                 <span>148,000원</span>
-                <MainButton label="객실 예약" />
+                <Link to="/payment">
+                  <MainButton label="객실 예약" />
+                </Link>
               </div>
               <div className="roomcard-txt">
                 <div className="txt-top">

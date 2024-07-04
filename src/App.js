@@ -5,21 +5,21 @@ import "../src/styles/reset.css";
 import "./App.css";
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
-import GlampingDetail from "./pages/GlampingDetail";
 import MainPage from "./pages/MainPage";
-import NotfoundPage from "./pages/NotfoundPage";
-import PaymentPage from "./pages/PaymentPage";
-import RoomDetail from "./pages/RoomDetail";
-import Review from "./pages/Review";
-import SearchPage from "./pages/SearchPage";
-import BookingDetail from "./pages/mypage/BookingDetail";
-import Favorite from "./pages/mypage/Favorite";
-import MyReview from "./pages/mypage/MyReview";
-import UserInfo from "./pages/mypage/UserInfo";
 import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
 import SnsSignupPage from "./pages/user/SnsSignUpPage";
+import SearchPage from "./pages/SearchPage";
+import GlampingDetail from "./pages/GlampingDetail";
+import RoomDetail from "./pages/RoomDetail";
+import Review from "./pages/Review";
+import PaymentPage from "./pages/PaymentPage";
 import PaymentDone from "./pages/PaymentDone";
+import BookingDetail from "./pages/mypage/BookingDetail";
+import MyReview from "./pages/mypage/MyReview";
+import Favorite from "./pages/mypage/Favorite";
+import UserInfo from "./pages/mypage/UserInfo";
+import NotfoundPage from "./pages/NotfoundPage";
 
 function App() {
   return (

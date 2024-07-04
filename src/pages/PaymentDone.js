@@ -70,7 +70,12 @@ const ButtonGroup = styled.div`
   margin-top: 130px;
   margin-bottom: 100px;
 
-  > button {
+  a {
+    width: 100%;
+    max-width: 290px;
+  }
+
+  button {
     max-width: 290px;
     width: 100%;
     height: 50px;
