@@ -76,7 +76,7 @@ const MainSearch = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  .main-login {
+  .header-button {
     width: 130px;
     height: 40px;
     background: #355179;
@@ -188,6 +188,7 @@ const MainSearchContent = styled.ul`
         width: 40px;
         height: 40px;
         background: url(${SearchIcon}) no-repeat center;
+        margin-right: 10px;
       }
       > input {
         width: 180px;
@@ -199,8 +200,7 @@ const MainSearchContent = styled.ul`
         color: ${colorSystem.g800};
         padding-left: 10px;
         ::placeholder {
-          /* font-family: "Pretendard Variable";
-          font-size: 20px; */
+          font-size: 18px;
         }
       }
     }
@@ -286,7 +286,7 @@ const MainPage = () => {
             </Link>
           </div>
           <div className="header-nav">
-            <button className="main-login">
+            <button className="header-button">
               <Link to="/login">
                 <p>로그인/회원가입</p>
               </Link>

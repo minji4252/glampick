@@ -20,26 +20,25 @@ import MyReview from "./pages/mypage/MyReview";
 import Favorite from "./pages/mypage/Favorite";
 import UserInfo from "./pages/mypage/UserInfo";
 import NotfoundPage from "./pages/NotfoundPage";
+import { useState } from "react";
 
 function App() {
+  const [isLogin, setIsLogin] = useState(false);
   return (
     <BrowserRouter>
       <div>
-        <Header>글램픽</Header>
+        <Header isLogin={isLogin} />
         <Routes>
           {/* 메인 */}
           <Route path="/" element={<MainPage />}></Route>
 
           {/* 로그인, 회원가입 */}
-          <Route path="/login" element={<LoginPage></LoginPage>}></Route>
-          <Route path="/signup" element={<SignupPage></SignupPage>}></Route>
-          <Route
-            path="/sns-signup"
-            element={<SnsSignupPage></SnsSignupPage>}
-          ></Route>
+          <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="/signup" element={<SignupPage />}></Route>
+          <Route path="/sns-signup" element={<SnsSignupPage />}></Route>
 
           {/* 검색 결과 */}
-          <Route path="/search" element={<SearchPage></SearchPage>} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/glampingdetail" element={<GlampingDetail />}></Route>
           <Route path="/roomdetail" element={<RoomDetail />}></Route>
           <Route path="/review" element={<Review />}></Route>
@@ -57,7 +56,7 @@ function App() {
           {/* 잘못된 경로 */}
           <Route path="/*" element={<NotfoundPage />} />
         </Routes>
-        <Footer></Footer>
+        <Footer />
       </div>
     </BrowserRouter>
   );

@@ -25,10 +25,7 @@
   width: 87px;
 }
 
-.header-nav {
-}
-
-.main-login {
+.header-login {
   width: 130px;
   height: 40px;
   background: #355179;
@@ -38,7 +35,30 @@
   color: #fff;
 }
 
-.main-login p {
-  font-family: "Pretendard Variable";
+.header-login p {
   color: #fff;
+}
+
+.header-nav {
+  display: flex;
+  gap: 10px;
+}
+
+.header-logout {
+  width: 85px;
+  height: 40px;
+  background: #355179;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.header-logout p {
+  color: #fff;
+}
+
+.header-user-nav {
+  width: 40px;
+  height: 40px;
 }
