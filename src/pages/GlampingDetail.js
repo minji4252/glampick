@@ -1,21 +1,20 @@
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
-import { RiDoubleQuotesL } from "react-icons/ri";
-import { RiDoubleQuotesR } from "react-icons/ri";
-import { MainButton } from "../components/common/Button";
-import Image from "../images/pic.jpg";
-import Room from "../images/roomin.png";
-import { colorSystem } from "../styles/color";
 import { IoHeartSharp } from "react-icons/io5";
-import optionPet from "../images/icon/filter-pet.png";
-import optionOcean from "../images/icon/filter-ocean.png";
+import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
+import { Link } from "react-router-dom";
+import { MainButton } from "../components/common/Button";
+import optionBarbecue from "../images/icon/filter-barbecue.png";
 import optionMountain from "../images/icon/filter-mountain.png";
+import optionOcean from "../images/icon/filter-ocean.png";
+import optionPet from "../images/icon/filter-pet.png";
 import optionSwim from "../images/icon/filter-swim.png";
 import optionToilet from "../images/icon/filter-toilet.png";
 import optionWifi from "../images/icon/filter-wifi.png";
-import optionBarbecue from "../images/icon/filter-barbecue.png";
-import { Link } from "react-router-dom";
+import Image from "../images/pic.jpg";
+import Room from "../images/roomin.png";
+import { colorSystem } from "../styles/color";
 
 const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g400};
@@ -23,7 +22,6 @@ const UnderLine = styled.div`
 
 const WrapStyle = styled.div`
   margin-top: 30px;
-
   .inner {
     flex-direction: column;
     width: 100%;
@@ -74,9 +72,25 @@ const RoomPic = styled.div`
     height: 400px;
   }
 
-  .main-img:hover {
-    /* 호버효과 */
+  /* .main-img:hover {
+    span {
+      display: block;
+      cursor: pointer;
+    }
   }
+
+  span {
+    background-color: rgba(0, 0, 0, 0.3);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: none;
+    color: ${colorSystem.g100};
+    font-size: 2rem;
+    text-align: center;
+    line-height: 400px;
+    font-weight: 200;
+  } */
 `;
 
 // 옵션 2
@@ -227,11 +241,36 @@ const RoomCard = styled.div`
   border-radius: 16px;
 
   .roomcard-left {
-    > div {
-      width: 400px;
-      height: 240px;
-      background: url(${Room}) no-repeat center;
-      background-size: cover;
+    max-width: 400px;
+    width: 100%;
+  }
+
+  .roomcard-img {
+    width: 100%;
+    height: 240px;
+    background: url(${Room}) no-repeat center;
+    background-size: cover;
+    position: relative;
+  }
+
+  .roomcard-img:hover {
+    span {
+      display: block;
+      cursor: pointer;
+    }
+  }
+
+  .roomcard-img {
+    span {
+      background-color: rgba(0, 0, 0, 0.3);
+      width: 100%;
+      position: absolute;
+      display: none;
+      color: ${colorSystem.g100};
+      font-size: 1.6rem;
+      text-align: center;
+      line-height: 240px;
+      font-weight: 200;
     }
   }
 
@@ -382,11 +421,12 @@ const GlampingDetail = () => {
     <WrapStyle>
       <div className="inner">
         <RoomProperty>
-          <Link to="/roomdetail">
-            <RoomPic>
-              <div className="main-img"></div>
-            </RoomPic>
-          </Link>
+          <RoomPic>
+            <div className="main-img">
+              {/* <span>객실 사진 더보기</span> */}
+            </div>
+          </RoomPic>
+
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
             <IoHeartSharp />
@@ -424,10 +464,6 @@ const GlampingDetail = () => {
                 <div className="option-pet" />
                 <div className="option-ocean" />
                 <div className="option-wifi" />
-                {/* <div className="option-mountain" />
-                <div className="option-swim" />
-                <div className="option-toilet" />
-                <div className="option-barbecue" /> */}
               </div>
             </OptionItems>
           </RoomOption>
@@ -440,7 +476,11 @@ const GlampingDetail = () => {
           </RoomSelectTitle>
           <RoomCard>
             <div className="roomcard-left">
-              <div></div>
+              <Link to="/roomdetail">
+                <div className="roomcard-img">
+                  <span>사진 더보기</span>
+                </div>
+              </Link>
             </div>
             <div className="roomcard-right">
               <span>감성카라반</span>
@@ -451,78 +491,6 @@ const GlampingDetail = () => {
                 <Link to="/payment">
                   <MainButton label="객실 예약" />
                 </Link>
-              </div>
-              <div className="roomcard-txt">
-                <div className="txt-top">
-                  <span>객실정보</span>
-                  <p>기준 2일 ~ 최대 4인 (유료)</p>
-                </div>
-                <div>
-                  <span>추가정보</span>
-                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
-                </div>
-              </div>
-            </div>
-          </RoomCard>
-          <RoomCard>
-            <div className="roomcard-left">
-              <div></div>
-            </div>
-            <div className="roomcard-right">
-              <span>감성카라반</span>
-              <div className="roomcard-booking">
-                <p>입실 15:00</p>
-                <p>퇴실 11:00</p>
-                <span>148,000원</span>
-                <MainButton label="객실 예약" />
-              </div>
-              <div className="roomcard-txt">
-                <div className="txt-top">
-                  <span>객실정보</span>
-                  <p>기준 2일 ~ 최대 4인 (유료)</p>
-                </div>
-                <div>
-                  <span>추가정보</span>
-                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
-                </div>
-              </div>
-            </div>
-          </RoomCard>
-          <RoomCard>
-            <div className="roomcard-left">
-              <div></div>
-            </div>
-            <div className="roomcard-right">
-              <span>감성카라반</span>
-              <div className="roomcard-booking">
-                <p>입실 15:00</p>
-                <p>퇴실 11:00</p>
-                <span>148,000원</span>
-                <MainButton label="객실 예약" />
-              </div>
-              <div className="roomcard-txt">
-                <div className="txt-top">
-                  <span>객실정보</span>
-                  <p>기준 2일 ~ 최대 4인 (유료)</p>
-                </div>
-                <div>
-                  <span>추가정보</span>
-                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
-                </div>
-              </div>
-            </div>
-          </RoomCard>
-          <RoomCard>
-            <div className="roomcard-left">
-              <div></div>
-            </div>
-            <div className="roomcard-right">
-              <span>감성카라반</span>
-              <div className="roomcard-booking">
-                <p>입실 15:00</p>
-                <p>퇴실 11:00</p>
-                <span>148,000원</span>
-                <MainButton label="객실 예약" />
               </div>
               <div className="roomcard-txt">
                 <div className="txt-top">

@@ -84,6 +84,7 @@ const UserSection = styled.div`
     svg {
       color: ${colorSystem.g400};
       font-size: 1.5rem;
+      display: none;
     }
 
     p {
