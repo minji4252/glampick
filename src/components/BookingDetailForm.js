@@ -3,6 +3,7 @@ import { colorSystem } from "../styles/color";
 import ClampingImage from "../images/main-list-1.png";
 import styled from "@emotion/styled";
 import { MainButton } from "./common/Button";
+import { Link } from "react-router-dom";
 
 export const FormContents = styled.div`
   width: 511px;
@@ -46,7 +47,8 @@ export const FormContents = styled.div`
     color: ${colorSystem.g700};
     margin-left: 5px;
   }
-  .reserv-info {
+
+  .glampingdetail-link {
     width: 100%;
     display: flex;
     gap: 20px;
@@ -82,6 +84,7 @@ export const FormContents = styled.div`
     font-size: 15px;
   }
 
+  /* 예약취소 작성 버튼 */
   .cancel-btn {
     width: 40px;
     height: 35px;
@@ -96,6 +99,7 @@ export const FormContents = styled.div`
     cursor: pointer;
   }
 
+  /* 리뷰 작성 버튼 */
   .review-btn {
     display: flex;
     justify-content: flex-end;
@@ -124,13 +128,15 @@ export const BookingDetailForm = ({ isCompleted }) => {
       <div className="bottom-contents">
         <p>숙소</p>
         <div className="reserv-info">
-          <div className="reserv-info-img"></div>
-          <div className="reserv-info-txt">
-            <h4>별빛 글램핑</h4>
-            <div className="room-type">A룸 202호</div>
-            <div className="date-used">2024.07.01 ~ 2024.07.02 | 1박</div>
-            <div className="check-time">체크인 16:00 | 체크아웃 12:00</div>
-          </div>
+          <Link to="/glampingdetail" className="glampingdetail-link">
+            <div className="reserv-info-img"></div>
+            <div className="reserv-info-txt">
+              <h4>별빛 글램핑</h4>
+              <div className="room-type">A룸 202호</div>
+              <div className="date-used">2024.07.01 ~ 2024.07.02 | 1박</div>
+              <div className="check-time">체크인 16:00 | 체크아웃 12:00</div>
+            </div>
+          </Link>
         </div>
         {isCompleted ? (
           <div className="review-btn">

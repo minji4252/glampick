@@ -12,6 +12,7 @@ import SnsSignupPage from "./pages/user/SnsSignUpPage";
 import SearchPage from "./pages/SearchPage";
 import GlampingDetail from "./pages/GlampingDetail";
 import RoomDetail from "./pages/RoomDetail";
+import Review from "./pages/Review";
 import PaymentPage from "./pages/PaymentPage";
 import PaymentDone from "./pages/PaymentDone";
 import BookingDetail from "./pages/mypage/BookingDetail";
@@ -41,6 +42,7 @@ function App() {
           <Route path="/search" element={<SearchPage></SearchPage>} />
           <Route path="/glampingdetail" element={<GlampingDetail />}></Route>
           <Route path="/roomdetail" element={<RoomDetail />}></Route>
+          <Route path="/review" element={<Review />}></Route>
 
           {/* 결제 페이지 */}
           <Route path="/payment" element={<PaymentPage />}></Route>
