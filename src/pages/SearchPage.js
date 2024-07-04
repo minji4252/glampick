@@ -12,6 +12,7 @@ import filterSwim from "../images/icon/filter-swim.png";
 import filterToilet from "../images/icon/filter-toilet.png";
 import filterWifi from "../images/icon/filter-wifi.png";
 import filterBarbecue from "../images/icon/filter-barbecue.png";
+import { Link } from "react-router-dom";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -28,7 +29,6 @@ const SearchInner = styled.div`
   flex-direction: column;
 `;
 
-// 상단 검색 결과 항목
 const SearchTop = styled.div`
   width: 100%;
   height: 90px;
@@ -37,14 +37,37 @@ const SearchTop = styled.div`
   display: flex;
   justify-content: center;
 `;
-const SearchResult = styled.div``;
-//   .result-contents {
-//     > label {
-//     }
-//     > input {
-//     }
-//   }
-// `;
+
+const SearchResult = styled.div`
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  font-size: 16px;
+`;
+
+// 상단 검색 결과 항목
+const ResultContents = styled.div`
+  label {
+    font-weight: 600;
+    margin-right: 10px;
+    padding-left: 20px;
+    border-left: 1px solid ${colorSystem.g600};
+    /* :first-child {
+      border-left: none;
+    } */
+  }
+  input {
+    width: 80px;
+    height: 25px;
+    border: none;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0);
+    color: ${colorSystem.g800};
+    margin-left: 10px;
+  }
+`;
 
 const SearchInnerTop = styled.div`
   width: 1080px;
@@ -90,6 +113,7 @@ const SearchFilter = styled.div`
     }
   }
 `;
+
 const SearchMenu = styled.div`
   padding: 0 20px;
   margin: 20px 0 5px;
@@ -130,6 +154,7 @@ const SearchInnerList = styled.div`
   border-bottom: 1px solid black;
 `;
 
+// 페이지
 const SearchInnerBottom = styled.div`
   margin-top: 40px;
   .search-page {
@@ -146,22 +171,22 @@ const SearchPage = () => {
         <div className="search-wrap">
           <SearchTop>
             <SearchResult>
-              {/* <div className="result-contents">
+              <ResultContents>
                 <label htmlFor="place">지역</label>
-                <input type="text">서울/경기</input>
-              </div>
-              <div className="result-contents">
+                <input type="text" value={"서울/경기"}></input>
+              </ResultContents>
+              <ResultContents>
                 <label htmlFor="date">날짜</label>
-                <input type="text">2024.06.29 토 - 2024.06.30 일</input>
-              </div>
-              <div className="result-contents">
+                <input type="text" value={""}></input>
+              </ResultContents>
+              <ResultContents>
                 <label htmlFor="member">인원</label>
-                <input type="text">2 명</input>
-              </div> */}
-              {/* <div className="result-contents">
-                <label htmlFor="search-input">검색어</label>
-                <input type="text">"검색어"</input>
-              </div> */}
+                <input type="text" value={"2명"}></input>
+              </ResultContents>
+              <ResultContents>
+                <label htmlFor="input">검색어</label>
+                <input type="text" value={"검색어"}></input>
+              </ResultContents>
             </SearchResult>
           </SearchTop>
           <SearchInner>
