@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
-// import NotfoundImg from "../images/notfound-img.gif";
-import NotfoundImg from "../images/main-big.png";
+import NotfoundImg from "../images/notfound-img.gif";
+// import NotfoundImg from "../images/main-big.png";
 
 const NotfoundWrap = styled.div`
   position: fixed;
