@@ -20,7 +20,7 @@ const WrapStyle = styled.div`
 
   .container {
     width: 90%;
-    height: 1000px;
+    height: 800px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -29,6 +29,11 @@ const WrapStyle = styled.div`
     /* 이용예정 버튼 */
     > div > button {
       width: 100px;
+    }
+    .completed-reserv {
+      > button {
+        background-color: #cecece;
+      }
     }
   }
 `;
@@ -43,23 +48,23 @@ const BookingDetail = () => {
           <div>
             <MainButton label="이용예정" />
           </div>
-          <BookingDetailForm></BookingDetailForm>
+          <BookingDetailForm />
           <div>
             <MainButton label="이용예정" />
           </div>
-          <BookingDetailForm></BookingDetailForm>
+          <BookingDetailForm />
         </div>
         <h3>이용 내역</h3>
         {/* 버튼 색상 및 폼 디자인 바꿔야 함 */}
         <div className="container">
-          <div>
-            <MainButton label="이용예정" className="upcoming-reserv" />
+          <div className="completed-reserv">
+            <MainButton label="이용완료" />
           </div>
-          <BookingDetailForm></BookingDetailForm>
-          <div>
-            <MainButton label="이용예정" className="completed-reserv" />
+          <BookingDetailForm isCompleted={true} />
+          <div className="completed-reserv">
+            <MainButton label="이용완료" />
           </div>
-          <BookingDetailForm></BookingDetailForm>
+          <BookingDetailForm isCompleted={true} />
         </div>
       </div>
     </WrapStyle>
