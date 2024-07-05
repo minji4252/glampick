@@ -14,7 +14,7 @@ import optionToilet from "../images/icon/filter-toilet.png";
 import optionWifi from "../images/icon/filter-wifi.png";
 import Image from "../images/pic.jpg";
 import Room from "../images/roomin.png";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 
 const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g400};
@@ -25,6 +25,12 @@ const WrapStyle = styled.div`
   .inner {
     flex-direction: column;
     width: 100%;
+  }
+
+  .inner {
+    ${size.mid} {
+      margin-left: 30px;
+    }
   }
 
   h3 {
@@ -60,10 +66,6 @@ const RoomProperty = styled.div`
 
 // 옵션 1
 const RoomPic = styled.div`
-  display: grid;
-  grid-auto-flow: column;
-  gap: 10px;
-
   .main-img {
     position: relative;
     background: url(${Image}) no-repeat center;
@@ -71,26 +73,6 @@ const RoomPic = styled.div`
     width: 100%;
     height: 400px;
   }
-
-  /* .main-img:hover {
-    span {
-      display: block;
-      cursor: pointer;
-    }
-  }
-
-  span {
-    background-color: rgba(0, 0, 0, 0.3);
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    display: none;
-    color: ${colorSystem.g100};
-    font-size: 2rem;
-    text-align: center;
-    line-height: 400px;
-    font-weight: 200;
-  } */
 `;
 
 // 옵션 2
@@ -151,8 +133,15 @@ const ReviewContent = styled.div`
     padding: 20px;
     border-radius: 12px;
     line-height: 1.3rem;
-    color: ${colorSystem.g700};
-    font-size: 0.9rem;
+    > p {
+      color: ${colorSystem.g700};
+      font-size: 0.9rem;
+      overflow: hidden;
+      height: 80px;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
   }
 
   .review-more {
@@ -231,6 +220,7 @@ const RoomSelectTitle = styled.div`
   margin-top: 20px;
   margin-bottom: 10px;
 `;
+
 const RoomCard = styled.div`
   width: 90%;
   display: flex;
@@ -240,10 +230,18 @@ const RoomCard = styled.div`
   margin-top: 20px;
   border-radius: 16px;
 
-  .roomcard-left {
-    max-width: 400px;
-    width: 100%;
+  ${size.mid} {
+    flex-direction: column;
+    div {
+      max-width: 635px;
+      width: 100%;
+    }
   }
+`;
+
+const RoomCardLeft = styled.div`
+  max-width: 400px;
+  width: 100%;
 
   .roomcard-img {
     width: 100%;
@@ -273,68 +271,68 @@ const RoomCard = styled.div`
       font-weight: 200;
     }
   }
+`;
 
-  .roomcard-right {
-    margin-top: 10px;
+const RoomCardRight = styled.div`
+  margin-top: 10px;
+  width: 100%;
+
+  > span {
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  > div {
+    font-weight: 300;
+    background-color: ${colorSystem.white};
+    border-radius: 10px;
+    padding: 15px;
     width: 100%;
+  }
 
-    > span {
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
+  .roomcard-txt {
+    margin-top: 10px;
     > div {
-      font-weight: 300;
-      background-color: ${colorSystem.white};
-      border-radius: 10px;
-      padding: 15px;
-      width: 100%;
+      display: flex;
+      gap: 35px;
     }
 
-    .roomcard-booking {
-      margin-top: 40px;
-      height: 145px;
-      position: relative;
-
-      > p {
-        margin-bottom: 20px;
-        font-weight: 400;
-        color: ${colorSystem.g800};
-        font-size: 0.9rem;
-      }
-
-      > span {
-        font-size: 1rem;
-        font-weight: 600;
-        position: absolute;
-        right: 15px;
-        bottom: 70px;
-      }
-
-      button {
-        position: absolute;
-        right: 15px;
-        bottom: 15px;
-      }
+    span,
+    p {
+      font-weight: 500;
+      color: ${colorSystem.g700};
     }
+  }
 
-    .roomcard-txt {
-      margin-top: 10px;
-      > div {
-        display: flex;
-        gap: 35px;
-      }
+  .txt-top {
+    margin-bottom: 5px;
+  }
+`;
 
-      span,
-      p {
-        font-weight: 500;
-        color: ${colorSystem.g700};
-      }
-    }
+const RoomCardBooking = styled.div`
+  margin-top: 40px;
+  height: 145px;
+  position: relative;
 
-    .txt-top {
-      margin-bottom: 5px;
-    }
+  > p {
+    margin-bottom: 20px;
+    font-weight: 400;
+    color: ${colorSystem.g800};
+    font-size: 0.9rem;
+  }
+
+  > span {
+    font-size: 1rem;
+    font-weight: 600;
+    position: absolute;
+    right: 15px;
+    bottom: 70px;
+  }
+
+  button {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
   }
 `;
 
@@ -377,6 +375,7 @@ const InfoGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
   .info-item {
     > span {
       color: ${colorSystem.primary};
@@ -422,11 +421,8 @@ const GlampingDetail = () => {
       <div className="inner">
         <RoomProperty>
           <RoomPic>
-            <div className="main-img">
-              {/* <span>객실 사진 더보기</span> */}
-            </div>
+            <div className="main-img" />
           </RoomPic>
-
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
             <IoHeartSharp />
@@ -440,15 +436,20 @@ const GlampingDetail = () => {
             </ReviewTitle>
             <ReviewContent>
               <div className="review-content-item">
-                위치: 포천 끝자락 들어가는 초입이 약간 좁고 헷갈리긴하나 딱 헷갈
-                릴 때쯤 표지판이 나옵니다. 들어가는 초입에 사무실이 있습니다.
-                객실: 일단 굉장히 널찍 널찍하고 무엇보다 앞에 백운계곡이 있어서
-                너무 좋습니다. 물멍 불멍 모두 편합니다. -리뷰작성자
+                <p>
+                  위치: 포천 끝자락 들어가는 초입이 약간 좁고 헷갈리긴하나 딱
+                  헷갈 릴 때쯤 표지판이 나옵니다. 들어가는 초입에 사무실이
+                  있습니다. 객실: 일단 굉장히 널찍 널찍하고 무엇보다 앞에
+                  백운계곡이 있어서 너무 좋습니다. 물멍 불멍 모두 편합니다.
+                  -리뷰작성자
+                </p>
               </div>
               <div className="review-content-item">
-                진짜 너무너무 좋은 숙소였어요~!캠핑&글램핑숙소여서 숙면은
-                포기해야겠지 했는데 다들 규칙들을 너무 잘 지켜 주셔서 조용해서
-                너무너무 좋았어요!! -리뷰작성자
+                <p>
+                  진짜 너무너무 좋은 숙소였어요~!캠핑&글램핑숙소여서 숙면은
+                  포기해야겠지 했는데 다들 규칙들을 너무 잘 지켜 주셔서 조용해서
+                  너무너무 좋았어요!! -리뷰작성자
+                </p>
               </div>
               <div className="review-more">
                 <button>더보기</button>
@@ -458,7 +459,7 @@ const GlampingDetail = () => {
           </RoomReview>
           <RoomOption>
             <UnderLine />
-            <h3 className="option-title">서비스 및 부대시설</h3>
+            <h3 className="option-title">테마</h3>
             <OptionItems>
               <div className="option-item">
                 <div className="option-pet" />
@@ -475,23 +476,23 @@ const GlampingDetail = () => {
             <h3>객실선택</h3>
           </RoomSelectTitle>
           <RoomCard>
-            <div className="roomcard-left">
+            <RoomCardLeft>
               <Link to="/roomdetail">
                 <div className="roomcard-img">
                   <span>사진 더보기</span>
                 </div>
               </Link>
-            </div>
-            <div className="roomcard-right">
+            </RoomCardLeft>
+            <RoomCardRight>
               <span>감성카라반</span>
-              <div className="roomcard-booking">
+              <RoomCardBooking>
                 <p>입실 15:00</p>
                 <p>퇴실 11:00</p>
                 <span>148,000원</span>
                 <Link to="/payment">
                   <MainButton label="객실 예약" />
                 </Link>
-              </div>
+              </RoomCardBooking>
               <div className="roomcard-txt">
                 <div className="txt-top">
                   <span>객실정보</span>
@@ -502,7 +503,7 @@ const GlampingDetail = () => {
                   <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
                 </div>
               </div>
-            </div>
+            </RoomCardRight>
           </RoomCard>
         </RoomSelect>
 

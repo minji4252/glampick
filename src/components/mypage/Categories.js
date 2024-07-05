@@ -27,8 +27,8 @@ const CategoriesStyle = styled.div`
 
   @media all and (max-width: 1910px) {
     position: relative;
-    top: 100px;
-    left: 20px;
+    top: 170px;
+    left: 90px;
   }
 `;
 

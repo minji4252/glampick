@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import Categories from "../../components/mypage/Categories";
-import { colorSystem } from "../../styles/color";
+import { colorSystem, size } from "../../styles/color";
 import MainCard from "../../components/MainCard";
 import FavoriteIcon from "../../images/icon/favorite-icon.png";
 
@@ -16,6 +16,20 @@ const WrapStyle = styled.div`
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
+  }
+
+  @media all and (max-width: 1910px) {
+    display: flex;
+    .inner {
+      margin-left: 82px;
+    }
+  }
+
+  ${size.mid} {
+    flex-direction: column;
+    h3 {
+      margin-top: 250px;
+    }
   }
 `;
 

@@ -27,8 +27,11 @@ const PayLeft = styled.div`
 `;
 const PayRoomImg = styled.div`
   height: 100%;
-  img {
-    max-width: 350px;
+  max-width: 350px;
+  width: 100%;
+  .pay-img {
+    background: url(${payImg}) no-repeat center;
+    background-size: cover;
     width: 100%;
     max-height: 208px;
     height: 100%;
@@ -107,7 +110,7 @@ const PaymentCard = () => {
     <WrapStyle>
       <PayLeft>
         <PayRoomImg>
-          <img alt="pay-img" src={payImg} />
+          <div className="pay-img" />
         </PayRoomImg>
         <PayRoomInfo>
           <h3>어쩌구 그린 글램핑</h3>

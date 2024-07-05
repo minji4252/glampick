@@ -7,7 +7,7 @@ import {
   MainButton,
 } from "../../components/common/Button";
 import Categories from "../../components/mypage/Categories";
-import { colorSystem } from "../../styles/color";
+import { colorSystem, size } from "../../styles/color";
 
 const WrapStyle = styled.div`
   .inner {
@@ -132,6 +132,20 @@ const WrapStyle = styled.div`
     &:hover {
       background-color: #ca2929;
       color: ${colorSystem.white};
+    }
+  }
+
+  @media all and (max-width: 1910px) {
+    display: flex;
+    .inner {
+      margin-left: 82px;
+    }
+  }
+
+  ${size.mid} {
+    flex-direction: column;
+    h3 {
+      margin-top: 250px;
     }
   }
 `;
