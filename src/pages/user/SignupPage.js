@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { colorSystem } from "../../styles/color";
+import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "../../components/common/Button";
 
 const WrapStyle = styled.div`
@@ -41,12 +41,22 @@ const WrapStyle = styled.div`
     display: block;
     font-size: 18px;
     margin-bottom: 7px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 15px;
+    }
   }
 
   .input-group {
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
+    /* 반응형 */
+    ${size.mid} {
+      margin-right: 23px;
+      width: 100%;
+      /* 다른 input과 너비 동일하게 맞춤 */
+    }
   }
 
   .form-group input,
@@ -58,6 +68,10 @@ const WrapStyle = styled.div`
     background-color: ${colorSystem.g100};
     padding: 10px;
     font-size: 15px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 12px;
+    }
   }
 
   // 버튼 없는 input에 마진 주기
@@ -72,6 +86,10 @@ const WrapStyle = styled.div`
     width: 140px;
     height: 40px;
     font-size: 15px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 12px;
+    }
   }
 
   /* 회원가입 버튼 */
@@ -81,6 +99,10 @@ const WrapStyle = styled.div`
     margin-top: 20px;
     margin-bottom: 50px;
     font-size: 20px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 18px;
+    }
   }
 `;
 
@@ -90,6 +112,10 @@ const TermsGroupStyle = styled.div`
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 25px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 16px;
+    }
   }
 
   .agree-all {
@@ -103,17 +129,31 @@ const TermsGroupStyle = styled.div`
     align-items: center;
     gap: 10px;
   }
+  /* 모두 동의 체크박스 */
   .terms-group input {
     width: 18px;
     height: 18px;
+    ${size.mid} {
+      width: 15px;
+      height: 15px;
+    }
   }
   .terms-group label {
     font-size: 17px;
+    ${size.mid} {
+      font-size: 14px;
+    }
   }
   .terms-item {
     display: flex;
     justify-content: space-between;
+    /* 반응형 */
+    ${size.mid} {
+      margin-right: 23px;
+    }
   }
+
+  /* 필수, 선택 체크박스 */
   .left-content {
     display: flex;
     align-items: center;
@@ -122,6 +162,10 @@ const TermsGroupStyle = styled.div`
   .left-content input {
     width: 18px;
     height: 18px;
+    ${size.mid} {
+      width: 15px;
+      height: 15px;
+    }
   }
 
   .view-terms-btn {
@@ -130,6 +174,9 @@ const TermsGroupStyle = styled.div`
     border: none;
     background-color: transparent;
     cursor: pointer;
+    ${size.mid} {
+      font-size: 13px;
+    }
   }
 `;
 

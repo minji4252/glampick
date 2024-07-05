@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import GlampickLogo from "../../images/glampick_logo.png";
 import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
-import { colorSystem } from "../../styles/color";
+import { colorSystem, size } from "../../styles/color";
 import { Link } from "react-router-dom";
 import { MainButton } from "../../components/common/Button";
 
@@ -32,6 +32,10 @@ const WrapStyle = styled.div`
     font-size: 30px;
     margin-top: 40px;
     margin-bottom: 40px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 1.5rem;
+    }
   }
 
   .wrap {
@@ -84,12 +88,11 @@ const WrapStyle = styled.div`
   }
 
   .signup {
-    position: relative;
+    position: absolute;
+    right: 145px;
   }
 
   .signup p {
-    position: absolute;
-    right: 145px;
     color: ${colorSystem.g800};
     font-size: 18px;
     padding: 10px;
