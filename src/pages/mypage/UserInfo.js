@@ -1,13 +1,10 @@
 import styled from "@emotion/styled";
 import { FaUser } from "react-icons/fa6";
 import { PiPencilSimpleLine } from "react-icons/pi";
-import {
-  ActionButton,
-  DelectButton,
-  MainButton,
-} from "../../components/common/Button";
+import { DelectButton, MainButton } from "../../components/common/Button";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
+import { useState } from "react";
 
 const WrapStyle = styled.div`
   .inner {
@@ -25,11 +22,12 @@ const WrapStyle = styled.div`
 
   .container {
     display: flex;
-    width: 100%;
+    width: 550px;
     height: 1000px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
     margin-top: 65px;
     margin-bottom: 80px;
     /* 임시로 지정  다시 확인해야함 */
@@ -86,8 +84,11 @@ const WrapStyle = styled.div`
 
   /* 유저정보 수정폼 */
   .userInfo-form {
-    width: 60%;
+    width: 100%;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .form-group label {
@@ -97,13 +98,11 @@ const WrapStyle = styled.div`
   }
 
   .input-group {
-    display: flex;
-    justify-content: space-between;
   }
 
   .form-group input,
   .input-group input {
-    width: calc(100% - 150px - 10px);
+    width: 550px;
     /* 너비 조정: 100%에서 버튼 너비와 마진 값을 뺀 값 */
     height: 40px;
     border: none;
@@ -113,26 +112,35 @@ const WrapStyle = styled.div`
     margin-bottom: 30px;
   }
 
-  /* 폼 버튼 */
+  /* 각 항목 변경하기 버튼 */
   .form-button > button {
     width: 140px;
     height: 40px;
     font-size: 15px;
   }
 
-  /* 회원탈퇴 버튼 */
-  .withdraw-btn > button {
-    width: 100%;
+  /* 변경하기 버튼 */
+  .modify-btn > button {
+    width: 550px;
     height: 50px;
     margin-top: 20px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     font-size: 20px;
-    background-color: ${colorSystem.g500};
+  }
 
-    &:hover {
-      background-color: #ca2929;
-      color: ${colorSystem.white};
-    }
+  /* 회원탈퇴 */
+  .delete-user {
+    /* 버튼 위치 오른쪽 하단에 배치 */
+    position: absolute;
+    bottom: -15px;
+    right: 10px;
+  }
+  .delete-btn {
+    font-size: 16px;
+    color: ${colorSystem.g700};
+    background: none;
+    border: none;
+    cursor: pointer;
   }
 
   @media all and (max-width: 1910px) {
@@ -151,6 +159,13 @@ const WrapStyle = styled.div`
 `;
 
 const UserInfo = () => {
+  // 변경하기 버튼 상태 관리
+  const [showButtons, setShowButtons] = useState(false);
+
+  const handleShowButtons = () => {
+    setShowButtons(true);
+  };
+
   return (
     <WrapStyle>
       <Categories />
@@ -159,52 +174,41 @@ const UserInfo = () => {
         <div className="container">
           <div className="userprofile">
             <FaUser className="userprofile-img" />
-            <div className="profile-edit">
-              <label htmlFor="profileImage" className="profile-label">
-                <PiPencilSimpleLine className="pencil-icon" />
-              </label>
-              <input
-                type="file"
-                id="profileImage"
-                className="profile-input"
-                accept="image/*"
-              />
-            </div>
+            {showButtons && (
+              <div className="profile-edit">
+                <label htmlFor="profileImage" className="profile-label">
+                  <PiPencilSimpleLine className="pencil-icon" />
+                </label>
+                <input
+                  type="file"
+                  id="profileImage"
+                  className="profile-input"
+                  accept="image/*"
+                />
+              </div>
+            )}
           </div>
           <div className="wrap">
             <form className="userInfo-form">
               <div className="form-group">
                 <label htmlFor="email">이메일</label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  placeholder="glampick@good.kr"
-                />
+                <input type="email" id="email" disabled />
               </div>
               <div className="form-group">
                 <label htmlFor="name">이름</label>
-                <input
-                  type="text"
-                  id="name"
-                  className="name-input"
-                  required
-                  placeholder="이름을 입력해주세요"
-                />
+                <input type="text" id="name" className="name-input" disabled />
               </div>
               <div className="form-group">
                 <label htmlFor="nickname">닉네임</label>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    id="nickname"
-                    required
-                    placeholder="닉네임을 입력해주세요"
-                  />
-                  <div className="form-button">
-                    <MainButton label="변경하기" />
-                  </div>
-                </div>
+
+                <input
+                  type="text"
+                  id="nickname"
+                  placeholder="닉네임을 입력해주세요"
+                />
+                {/* <div className="form-button">
+                    {showButtons && <MainButton label="변경하기" />}
+                  </div> */}
               </div>
               <div className="form-group">
                 <label htmlFor="password">비밀번호</label>
@@ -212,7 +216,6 @@ const UserInfo = () => {
                   type="password"
                   id="password"
                   className="password-input"
-                  required
                   placeholder="비밀번호를 입력해주세요"
                 />
               </div>
@@ -222,42 +225,42 @@ const UserInfo = () => {
                   type="password"
                   id="confirm-password"
                   className="confirm-password-input"
-                  required
                   placeholder="비밀번호를 한번 더 입력해주세요"
                 />
               </div>
               <div className="form-group">
                 <label htmlFor="cellphone">휴대폰</label>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    id="cellphone"
-                    required
-                    placeholder="휴대폰번호를 정확히 입력해주세요"
-                  />
-                  <div className="form-button">
-                    <MainButton label="인증번호 발송" />
-                  </div>
-                </div>
+                <input
+                  type="text"
+                  id="cellphone"
+                  placeholder="휴대폰번호를 정확히 입력해주세요"
+                />
+                {/* <div className="form-button">
+                    {showButtons && <MainButton label="변경하기" />}
+                  </div> */}
               </div>
-              <div className="form-group">
+              {/* 휴대폰에 변경하기 버튼을 클릭했을 때 나타나게 해야 함 */}
+              {/* <div className="form-group">
                 <label htmlFor="auth-number">인증번호</label>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    id="auth-number"
-                    required
-                    placeholder="인증번호를 입력해주세요"
-                  />
-                  <div className="form-button">
-                    <MainButton label="확인" />
-                  </div>
-                </div>
-              </div>
-              <div className="withdraw-btn">
-                <DelectButton label="회원탈퇴" />
+                <input
+                  type="text"
+                  id="auth-number"
+                  required
+                  placeholder="인증번호를 입력해주세요"
+                />
+              </div> */}
+              <div className="modify-btn">
+                <MainButton
+                  label="수정하기"
+                  onClick={() => {
+                    handleShowButtons();
+                  }}
+                />
               </div>
             </form>
+            <div className="delete-user">
+              <button className="delete-btn">회원탈퇴</button>
+            </div>
           </div>
         </div>
       </div>
