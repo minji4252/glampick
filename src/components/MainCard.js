@@ -1,4 +1,4 @@
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
@@ -36,31 +36,49 @@ const MainArticle = styled.article`
       }
     }
   }
+  ${size.mid} {
+    display: flex;
+    flex-direction: row;
+  }
 `;
 
 const ArticleContent = styled.div`
   margin: 20px 10px 0 10px;
+  ${size.mid} {
+    margin-left: 20px;
+    align-content: center;
+  }
   .article-top {
     display: flex;
     flex-direction: grid;
     align-items: flex-end;
+
+    ${size.mid} {
+      flex-direction: column;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
   }
   .glamping-name {
     font-size: 18px;
     font-weight: 600;
   }
-  svg {
-    margin: 0 5px;
-    color: #ffd233;
+  .article-detail {
+    display: flex;
+    svg {
+      margin: 0 5px;
+      color: #ffd233;
+    }
+    .review-score {
+      margin-right: 5px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .review-count {
+      font-size: 14px;
+    }
   }
-  .review-score {
-    margin-right: 5px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-  .review-count {
-    font-size: 14px;
-  }
+
   .article-bottom {
     display: flex;
     margin-top: 5px;
@@ -72,6 +90,10 @@ const ArticleContent = styled.div`
       font-weight: 600;
       padding-bottom: 5px;
     }
+    ${size.mid} {
+      margin-top: 20px;
+      flex-direction: column;
+    }
   }
 `;
 
@@ -81,14 +103,16 @@ export const MainCard = () => {
       <div className="article-image">
         <div className="article-place">
           <MdPlace />
-          가평
+          서울/경기
         </div>
       </div>
       <ArticleContent>
         <div className="article-top">
           <div className="glamping-name">조이글램핑</div>
-          <FaStar />
-          <div className="review-score">4.8</div>
+          <div className="article-detail">
+            <FaStar />
+            <div className="review-score">4.8</div>
+          </div>
           <div className="review-count">(리뷰 5개)</div>
         </div>
         <div className="article-bottom">

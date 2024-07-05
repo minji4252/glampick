@@ -3,6 +3,7 @@ import Categories from "../../components/mypage/Categories";
 import { colorSystem } from "../../styles/color";
 import MainCard from "../../components/MainCard";
 import FavoriteIcon from "../../images/icon/favorite-icon.png";
+import { useState } from "react";
 
 const WrapStyle = styled.div`
   .inner {
@@ -43,6 +44,7 @@ const FavoriteContents = styled.div`
 `;
 
 const Favorite = () => {
+  const [isLogin, setIsLogin] = useState(true);
   return (
     <WrapStyle>
       <Categories />

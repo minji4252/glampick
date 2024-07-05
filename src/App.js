@@ -50,7 +50,7 @@ function App() {
           {/* 유저 페이지 */}
           <Route path="/bookingdetail" element={<BookingDetail />} />
           <Route path="/myreview" element={<MyReview />} />
-          <Route path="/favorite" element={<Favorite />} />
+          <Route path="/favorite" element={<Favorite isLogin={isLogin} />} />
           <Route path="/userinfo" element={<UserInfo />} />
 
           {/* 잘못된 경로 */}
