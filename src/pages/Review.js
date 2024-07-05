@@ -4,7 +4,7 @@ import ReviewCard from "../components/ReviewCard";
 import reviewimg1 from "../images/review1.png";
 import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 
 const WrapStyle = styled.div`
   .inner {
@@ -29,6 +29,10 @@ const TopContents = styled.div`
   width: 100%;
   margin-bottom: 50px;
   border-bottom: 2px solid ${colorSystem.g200};
+  ${size.mid} {
+    height: 500px;
+    /* 임시로 지정 */
+  }
 
   > p {
     width: 100%;
@@ -76,6 +80,10 @@ const TopContents = styled.div`
     align-items: center;
     gap: 10px;
     margin: 10px 0px 20px 10px;
+    ${size.mid} {
+      flex-wrap: wrap;
+      /* 너비에 맞춰서 이 */
+    }
   }
 
   .review-img1 {
