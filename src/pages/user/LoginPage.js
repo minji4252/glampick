@@ -25,6 +25,10 @@ const WrapStyle = styled.div`
     height: 180px;
     background: url(${GlampickLogo}) no-repeat center;
     background-size: contain;
+    ${size.mid} {
+      width: 160px;
+      height: 160px;
+    }
   }
 
   h2 {
@@ -34,24 +38,34 @@ const WrapStyle = styled.div`
     margin-bottom: 40px;
     /* 반응형 */
     ${size.mid} {
-      font-size: 1.5rem;
+      font-size: 1.7rem;
+      margin-top: 30px;
+      margin-bottom: 30px;
     }
   }
 
   .wrap {
-    width: 100%;
+    width: 550px;
     position: relative;
+    /* 반응형 */
+    ${size.mid} {
+      width: 70%;
+    }
   }
 
   .login-form {
-    width: 60%;
+    width: 80%;
     margin: 0 auto;
   }
 
   .login-form label {
     display: block;
-    font-size: 20px;
+    font-size: 1.1rem;
     margin-bottom: 15px;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 1.1rem;
+    }
   }
 
   .login-form input {
@@ -70,6 +84,10 @@ const WrapStyle = styled.div`
     font-size: 18px;
     background-color: ${colorSystem.g100};
     font-weight: 300;
+    /* 반응형 */
+    ${size.mid} {
+      font-size: 1rem;
+    }
   }
 
   .error-message {
@@ -85,22 +103,32 @@ const WrapStyle = styled.div`
     height: 50px;
     font-size: 22px;
     margin-top: 40px;
+    ${size.mid} {
+      font-size: 1rem;
+    }
   }
 
+  /* 회원가입 */
   .signup {
     position: absolute;
-    right: 145px;
+    right: 55px;
   }
 
   .signup p {
     color: ${colorSystem.g800};
     font-size: 18px;
     padding: 10px;
+    ${size.mid} {
+      font-size: 1rem;
+    }
   }
 
   .sns-login {
     width: 60%;
     margin: 0 auto;
+    ${size.mid} {
+      margin: 0 auto;
+    }
   }
 
   .sns-login p {
@@ -109,6 +137,10 @@ const WrapStyle = styled.div`
     font-size: 20px;
     margin-top: 45px;
     text-align: center;
+    ${size.mid} {
+      font-size: 1.1rem;
+      margin-top: 35px;
+    }
   }
 
   .sns-login p::before,
@@ -125,6 +157,10 @@ const WrapStyle = styled.div`
     margin-top: 24px;
     gap: 30px;
     justify-content: center;
+    ${size.mid} {
+      margin-top: 20px;
+      gap: 25px;
+    }
   }
   .sns-login-item {
   }
@@ -137,12 +173,20 @@ const WrapStyle = styled.div`
     height: 48px;
     background: url(${KakaoIcon}) no-repeat center;
     background-size: contain;
+    ${size.mid} {
+      width: 42px;
+      height: 42px;
+    }
   }
   .naver-icon {
     width: 48px;
     height: 48px;
     background: url(${NaverIcon}) no-repeat center;
     background-size: contain;
+    ${size.mid} {
+      width: 42px;
+      height: 42px;
+    }
   }
 `;
 

@@ -22,6 +22,9 @@ const WrapStyle = styled.div`
     margin-top: 40px;
     margin-bottom: 40px;
     font-size: 25px;
+    ${size.mid} {
+      font-size: 23px;
+    }
   }
 
   /* 구분선 */
@@ -141,13 +144,12 @@ const TermsGroupStyle = styled.div`
   .terms-group label {
     font-size: 17px;
     ${size.mid} {
-      font-size: 14px;
+      font-size: 15px;
     }
   }
   .terms-item {
     display: flex;
     justify-content: space-between;
-    /* 반응형 */
     ${size.mid} {
       margin-right: 23px;
     }
@@ -175,7 +177,7 @@ const TermsGroupStyle = styled.div`
     background-color: transparent;
     cursor: pointer;
     ${size.mid} {
-      font-size: 13px;
+      font-size: 14px;
     }
   }
 `;
