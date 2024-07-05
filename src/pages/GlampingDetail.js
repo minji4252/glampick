@@ -27,12 +27,6 @@ const WrapStyle = styled.div`
     width: 100%;
   }
 
-  .inner {
-    ${size.mid} {
-      margin-left: 30px;
-    }
-  }
-
   h3 {
     font-size: 1.2rem;
     font-weight: 700;
@@ -145,6 +139,8 @@ const ReviewContent = styled.div`
   }
 
   .review-more {
+    max-width: 50px;
+    min-width: 50px;
     height: fit-content;
     color: ${colorSystem.primary};
     display: flex;
@@ -160,7 +156,8 @@ const ReviewContent = styled.div`
       height: 20px;
     }
 
-    svg {
+    ${size.mid} {
+      margin-left: 0px;
     }
   }
 `;
@@ -475,6 +472,96 @@ const GlampingDetail = () => {
           <RoomSelectTitle>
             <h3>객실선택</h3>
           </RoomSelectTitle>
+          <RoomCard>
+            <RoomCardLeft>
+              <Link to="/roomdetail">
+                <div className="roomcard-img">
+                  <span>사진 더보기</span>
+                </div>
+              </Link>
+            </RoomCardLeft>
+            <RoomCardRight>
+              <span>감성카라반</span>
+              <RoomCardBooking>
+                <p>입실 15:00</p>
+                <p>퇴실 11:00</p>
+                <span>148,000원</span>
+                <Link to="/payment">
+                  <MainButton label="객실 예약" />
+                </Link>
+              </RoomCardBooking>
+              <div className="roomcard-txt">
+                <div className="txt-top">
+                  <span>객실정보</span>
+                  <p>기준 2일 ~ 최대 4인 (유료)</p>
+                </div>
+                <div>
+                  <span>추가정보</span>
+                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
+                </div>
+              </div>
+            </RoomCardRight>
+          </RoomCard>
+          <RoomCard>
+            <RoomCardLeft>
+              <Link to="/roomdetail">
+                <div className="roomcard-img">
+                  <span>사진 더보기</span>
+                </div>
+              </Link>
+            </RoomCardLeft>
+            <RoomCardRight>
+              <span>감성카라반</span>
+              <RoomCardBooking>
+                <p>입실 15:00</p>
+                <p>퇴실 11:00</p>
+                <span>148,000원</span>
+                <Link to="/payment">
+                  <MainButton label="객실 예약" />
+                </Link>
+              </RoomCardBooking>
+              <div className="roomcard-txt">
+                <div className="txt-top">
+                  <span>객실정보</span>
+                  <p>기준 2일 ~ 최대 4인 (유료)</p>
+                </div>
+                <div>
+                  <span>추가정보</span>
+                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
+                </div>
+              </div>
+            </RoomCardRight>
+          </RoomCard>
+          <RoomCard>
+            <RoomCardLeft>
+              <Link to="/roomdetail">
+                <div className="roomcard-img">
+                  <span>사진 더보기</span>
+                </div>
+              </Link>
+            </RoomCardLeft>
+            <RoomCardRight>
+              <span>감성카라반</span>
+              <RoomCardBooking>
+                <p>입실 15:00</p>
+                <p>퇴실 11:00</p>
+                <span>148,000원</span>
+                <Link to="/payment">
+                  <MainButton label="객실 예약" />
+                </Link>
+              </RoomCardBooking>
+              <div className="roomcard-txt">
+                <div className="txt-top">
+                  <span>객실정보</span>
+                  <p>기준 2일 ~ 최대 4인 (유료)</p>
+                </div>
+                <div>
+                  <span>추가정보</span>
+                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
+                </div>
+              </div>
+            </RoomCardRight>
+          </RoomCard>
           <RoomCard>
             <RoomCardLeft>
               <Link to="/roomdetail">
