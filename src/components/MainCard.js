@@ -20,7 +20,7 @@ const MainArticle = styled.article`
       bottom: 0;
       display: flex;
       align-items: center;
-      width: 290px;
+      width: 100%;
       height: 34px;
       border-radius: 0px 0px 32px 32px;
       background: rgba(123, 123, 123, 0.5);
