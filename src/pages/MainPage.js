@@ -12,6 +12,8 @@ import "../styles/common.css";
 import "../styles/reset.css";
 import { ActionButton } from "../components/common/Button";
 
+import MainCalendar from "../components/MainCalendar";
+
 const MainHeader = styled.div`
   align-content: center;
   position: fixed;
@@ -163,7 +165,7 @@ const MainSearchContent = styled.ul`
     margin: 0 20px;
     display: flex;
     align-items: center;
-    > input {
+    /* > input {
       font-size: 17px;
       width: 180px;
       height: 40px;
@@ -178,7 +180,7 @@ const MainSearchContent = styled.ul`
       margin: 0 10px;
       font-size: 25px;
       color: ${colorSystem.white};
-    }
+    } */
     ${size.large} {
       padding: 0;
       border: none;
@@ -242,7 +244,6 @@ const MainSearchContent = styled.ul`
         background: rgba(255, 255, 255, 0.7);
         border: none;
         border-radius: 10px;
-        font-family: "Pretendard Variable";
         font-size: 20px;
         color: ${colorSystem.g800};
         padding-left: 10px;
@@ -286,6 +287,7 @@ const MainSec2 = styled.section`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 80px;
 `;
 
 // 추천 글램핑장 리스트 (3 항목)
@@ -305,6 +307,7 @@ const MainListContents = styled.div`
   display: flex;
   gap: 40px;
   margin-bottom: 70px;
+
   ${size.mid} {
     flex-direction: column;
   }
@@ -384,9 +387,7 @@ const MainPage = () => {
                 </select>
               </li>
               <li className="m-sc-date">
-                <input type="date" />
-                <p>-</p>
-                <input type="date" />
+                <MainCalendar />
               </li>
               <li className="m-sc-member">
                 <div className="m-sc-member-icon"></div>
