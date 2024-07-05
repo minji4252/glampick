@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
 import "../styles/common.css";
 import "../styles/reset.css";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import SearchCard from "../components/SearchCard";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import filterPet from "../images/icon/filter-pet.png";
+import filterPet2 from "../images/icon/filter-pet2.png";
 import filterOcean from "../images/icon/filter-ocean.png";
+import filterOcean2 from "../images/icon/filter-ocean2.png";
 import filterMountain from "../images/icon/filter-mountain.png";
+import filterMountain2 from "../images/icon/filter-mountain2.png";
 import filterSwim from "../images/icon/filter-swim.png";
+import filterSwim2 from "../images/icon/filter-swim2.png";
 import filterToilet from "../images/icon/filter-toilet.png";
+import filterToilet2 from "../images/icon/filter-toilet2.png";
 import filterWifi from "../images/icon/filter-wifi.png";
+import filterWifi2 from "../images/icon/filter-wifi2.png";
 import filterBarbecue from "../images/icon/filter-barbecue.png";
-import { Link } from "react-router-dom";
+import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -24,7 +30,6 @@ const SearchInner = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 0px auto;
-
   padding: 90px 0 250px 0;
   flex-direction: column;
 `;
@@ -36,6 +41,10 @@ const SearchTop = styled.div`
   background: #eaeff6;
   display: flex;
   justify-content: center;
+  align-items: center;
+  @media all and (max-width: 950px) {
+    height: 120px;
+  }
 `;
 
 const SearchResult = styled.div`
@@ -43,21 +52,31 @@ const SearchResult = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
+  gap: 20px;
   font-size: 16px;
+  @media all and (max-width: 950px) {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding-right: 30px;
+  }
 `;
 
 // 상단 검색 결과 항목
 const ResultContents = styled.div`
+  display: flex;
+  align-items: center;
   label {
     font-weight: 600;
-    margin-right: 10px;
-    padding-left: 20px;
+    padding-left: 30px;
     border-left: 1px solid ${colorSystem.g600};
-    /* :first-child {
-      border-left: none;
-    } */
   }
+  .no-border {
+    border-left: none;
+    @media all and (max-width: 950px) {
+      border-left: 1px solid ${colorSystem.g600};
+    }
+  }
+
   input {
     width: 80px;
     height: 25px;
@@ -66,6 +85,9 @@ const ResultContents = styled.div`
     background: rgba(255, 255, 255, 0);
     color: ${colorSystem.g800};
     margin-left: 10px;
+  }
+  .search-date {
+    width: 240px;
   }
 `;
 
@@ -84,32 +106,61 @@ const SearchFilter = styled.div`
 
   .search-filter {
     display: flex;
-    background-size: auto;
     gap: 30px;
+
     > div {
-      width: 65px;
+      width: 52px;
       height: 55px;
+      background-size: auto;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
     }
+
     .filter-pet {
-      background: url(${filterPet}) no-repeat center;
+      background-image: url(${filterPet2});
+    }
+    .filter-pet.active {
+      background-image: url(${filterPet});
     }
     .filter-ocean {
-      background: url(${filterOcean}) no-repeat center;
+      background-image: url(${filterOcean2});
+    }
+    .filter-ocean.active {
+      background-image: url(${filterOcean});
     }
     .filter-mountain {
-      background: url(${filterMountain}) no-repeat center;
+      background-image: url(${filterMountain2});
+    }
+    .filter-mountain.active {
+      background-image: url(${filterMountain});
     }
     .filter-swim {
-      background: url(${filterSwim}) no-repeat center;
+      background-image: url(${filterSwim2});
     }
-    .filter-toilet {
-      background: url(${filterToilet}) no-repeat center;
+    .filter-swim.active {
+      background-image: url(${filterSwim});
     }
     .filter-wifi {
-      background: url(${filterWifi}) no-repeat center;
+      background-image: url(${filterWifi2});
+    }
+    .filter-wifi.active {
+      background-image: url(${filterWifi});
     }
     .filter-barbecue {
-      background: url(${filterBarbecue}) no-repeat center;
+      background-image: url(${filterBarbecue2});
+    }
+    .filter-barbecue.active {
+      background-image: url(${filterBarbecue});
+    }
+    .filter-toilet {
+      width: 65px;
+      background-image: url(${filterToilet2});
+    }
+
+    .filter-toilet.active {
+      width: 65px;
+      background-image: url(${filterToilet});
     }
   }
 `;
@@ -165,6 +216,32 @@ const SearchInnerBottom = styled.div`
 `;
 
 const SearchPage = () => {
+  const [activeFilters, setActiveFilters] = useState({
+    pet: false,
+    ocean: false,
+    mountain: false,
+    swim: false,
+    toilet: false,
+    wifi: false,
+    barbecue: false,
+  });
+
+  // 검색 필터 아이콘 토글 (중복 선택 가능)
+  const toggleFilter = filter => {
+    setActiveFilters(prevState => ({
+      ...prevState,
+      [filter]: !prevState[filter],
+    }));
+  };
+  // 중복 안 되게
+  // const toggleFilter = filter => {
+  //   setActiveFilters(prevState => ({
+  //     ...Object.fromEntries(
+  //       Object.entries(prevState).map(([key]) => [key, key === filter]),
+  //     ),
+  //   }));
+  // };
+
   return (
     <WrapStyle>
       <main>
@@ -172,12 +249,18 @@ const SearchPage = () => {
           <SearchTop>
             <SearchResult>
               <ResultContents>
-                <label htmlFor="place">지역</label>
+                <label htmlFor="place" className="no-border">
+                  지역
+                </label>
                 <input type="text" value={"서울/경기"}></input>
               </ResultContents>
               <ResultContents>
                 <label htmlFor="date">날짜</label>
-                <input type="text" value={""}></input>
+                <input
+                  type="text"
+                  value={"2024.06.29 토 - 2024.06.30 일"}
+                  className="search-date"
+                ></input>
               </ResultContents>
               <ResultContents>
                 <label htmlFor="member">인원</label>
@@ -193,13 +276,49 @@ const SearchPage = () => {
             <SearchInnerTop>
               <SearchFilter>
                 <div className="search-filter">
-                  <div className="filter-pet" />
-                  <div className="filter-ocean" />
-                  <div className="filter-mountain" />
-                  <div className="filter-swim" />
-                  <div className="filter-toilet" />
-                  <div className="filter-wifi" />
-                  <div className="filter-barbecue" />
+                  <div
+                    className={`filter-pet ${
+                      activeFilters.pet ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("pet")}
+                  />
+                  <div
+                    className={`filter-ocean ${
+                      activeFilters.ocean ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("ocean")}
+                  />
+                  <div
+                    className={`filter-mountain ${
+                      activeFilters.mountain ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("mountain")}
+                  />
+                  <div
+                    className={`filter-swim ${
+                      activeFilters.swim ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("swim")}
+                  />
+
+                  <div
+                    className={`filter-wifi ${
+                      activeFilters.wifi ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("wifi")}
+                  />
+                  <div
+                    className={`filter-barbecue ${
+                      activeFilters.barbecue ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("barbecue")}
+                  />
+                  <div
+                    className={`filter-toilet ${
+                      activeFilters.toilet ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("toilet")}
+                  />
                 </div>
               </SearchFilter>
               <SearchMenu>

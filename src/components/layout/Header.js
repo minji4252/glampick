@@ -4,8 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 import headerUser from "../../images/icon/member-icon.png";
 import glampickLogo from "../../images/glampick_logo.png";
 
-const Header = () => {
-  const [isLogin, setIsLogin] = useState(false);
+const Header = ({ isLogin }) => {
+  // const [isLogin, setIsLogin] = useState(false);
   const locationNow = useLocation();
   // 메인 페이지 (Root)에서 Header 임시 숨김
   if (locationNow.pathname === "/") return null;

@@ -7,9 +7,10 @@ import MainBigImage from "../images/main-big.gif";
 
 import { Link } from "react-router-dom";
 import MainCard from "../components/MainCard";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import "../styles/common.css";
 import "../styles/reset.css";
+import { ActionButton } from "../components/common/Button";
 
 const MainHeader = styled.div`
   align-content: center;
@@ -49,9 +50,14 @@ const WrapStyle = styled.div`
 const MainSec1 = styled.section`
   height: 1080px;
   width: 100%;
+  padding: 0 10px;
   max-width: 100%;
   display: block;
   background: url(${MainBigImage}) no-repeat center;
+  ${size.large} {
+    display: inline-flex;
+    flex-direction: column;
+  }
 `;
 
 const MainBigTitle = styled.div`
@@ -60,12 +66,31 @@ const MainBigTitle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  > p {
-    font-weight: bold;
-    font-size: 45px;
-    color: #fff;
-    letter-spacing: -0.9px;
+  .main-title {
+    display: flex;
+    gap: 10px;
+    > p {
+      font-weight: bold;
+      font-size: 45px;
+      color: #fff;
+      letter-spacing: -0.9px;
+    }
+    ${size.large} {
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    ${size.mid} {
+      gap: 10px;
+    }
+  }
+  ${size.large} {
+    margin-top: 230px;
+    margin-bottom: 70px;
+  }
+  ${size.mid} {
+    margin-top: 200px;
+    margin-bottom: 50px;
   }
 `;
 
@@ -85,16 +110,26 @@ const MainSearch = styled.div`
     font-size: 16px;
     color: #fff;
   }
+  ${size.large} {
+    height: auto;
+  }
 `;
 // 메인 검색 항목
 const MainSearchContent = styled.ul`
   margin: 0;
   padding: 0;
   list-style: none;
+  ${size.large} {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  ${size.mid} {
+    gap: 10px;
+  }
 
   > li {
-    /* margin: 0;
-    padding: 0; */
     float: left;
   }
 
@@ -144,6 +179,10 @@ const MainSearchContent = styled.ul`
       font-size: 25px;
       color: ${colorSystem.white};
     }
+    ${size.large} {
+      padding: 0;
+      border: none;
+    }
   }
 
   .m-sc-member {
@@ -176,12 +215,20 @@ const MainSearchContent = styled.ul`
       font-size: 20px;
       color: ${colorSystem.white};
     }
+    ${size.large} {
+      padding: 0;
+      border: none;
+    }
   }
   .m-sc-input {
     border-left: 2px solid ${colorSystem.white};
     height: 50px;
     padding-left: 20px;
     margin: 0 20px;
+    ${size.large} {
+      padding: 0;
+      border: none;
+    }
     .m-sc-input-field {
       display: flex;
       .search-icon {
@@ -216,13 +263,17 @@ const MainSearchContent = styled.ul`
     border-radius: 500px;
     background: ${colorSystem.white};
     border: none;
-  }
-  .m-sc-search p {
     color: ${colorSystem.primary};
     text-align: center;
     font-size: 20px;
     font-style: normal;
     font-weight: bold;
+    ${size.large} {
+      margin-top: 20px;
+    }
+    ${size.mid} {
+      margin-top: 10px;
+    }
   }
 `;
 
@@ -243,11 +294,20 @@ const MainListTitle = styled.div`
   font-size: 20px;
   font-weight: 500;
   margin-bottom: 20px;
+  color: ${colorSystem.g800};
+  ${size.mid} {
+    display: flex;
+    justify-content: center;
+    font-size: 25px;
+  }
 `;
 const MainListContents = styled.div`
   display: flex;
   gap: 40px;
   margin-bottom: 70px;
+  ${size.mid} {
+    flex-direction: column;
+  }
 `;
 
 const MainPage = () => {
@@ -298,7 +358,10 @@ const MainPage = () => {
       <main className="main">
         <MainSec1>
           <MainBigTitle>
-            <p>별빛 아래, 자연과 하나 되는 특별한 밤을 예약하세요.</p>
+            <div className="main-title">
+              <p>별빛 아래, 자연과 하나 되는</p>
+              <p>특별한 밤을 예약하세요.</p>
+            </div>
           </MainBigTitle>
           <MainSearch>
             <MainSearchContent>
@@ -347,11 +410,9 @@ const MainPage = () => {
                 </div>
               </li>
               <li className="m-sc-search">
-                <button>
-                  <Link to="/search">
-                    <p>검색</p>
-                  </Link>
-                </button>
+                <Link to="/search">
+                  <ActionButton label="검색"></ActionButton>
+                </Link>
               </li>
             </MainSearchContent>
           </MainSearch>
