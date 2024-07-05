@@ -51,7 +51,8 @@ const UserSection = styled.div`
     margin-top: 20px;
 
     > div {
-      width: 180px;
+      max-width: 180px;
+      width: 100%;
       height: 200px;
       border-radius: 25px;
       background-size: cover;
@@ -64,6 +65,32 @@ const UserSection = styled.div`
     }
     .myreview-img3 {
       background: url(${reviewimg3}) no-repeat center;
+    }
+
+    @media all and (min-width: 768px) and (max-width: 850px) {
+      .myreview-img2,
+      .myreview-img3 {
+        display: none;
+      }
+
+      .myreview-img1 {
+        width: 100%;
+        max-width: 370px;
+        background-size: cover;
+      }
+    }
+
+    @media all and (max-width: 540px) {
+      .myreview-img2,
+      .myreview-img3 {
+        display: none;
+      }
+
+      .myreview-img1 {
+        width: 100%;
+        max-width: 370px;
+        background-size: cover;
+      }
     }
   }
 
