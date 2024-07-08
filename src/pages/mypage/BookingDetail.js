@@ -19,24 +19,53 @@ const WrapStyle = styled.div`
   }
 
   .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2개의 컬럼으로 설정 */
+    gap: 40px;
     width: 90%;
-    height: 800px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     margin-top: 65px;
+    ${size.mid} {
+      display: flex;
+      flex-direction: column;
+      margin-top: 40px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
 
     /* 이용예정 버튼 */
     > div > button {
+      display: block;
       width: 100px;
     }
+    /* 이용완료 버튼 */
     .completed-reserv {
       > button {
-        background-color: #cecece;
+        background-color: ${colorSystem.g300};
+        &:hover {
+          border: 1px solid ${colorSystem.g400};
+          background-color: ${colorSystem.g400};
+        }
       }
     }
   }
 
+  /* 지난 이용 내역 텍스트 */
+  .use-detail {
+    width: 100%;
+    margin-top: 20px;
+    margin-left: 120px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: ${colorSystem.g900};
+    ${size.mid} {
+      margin-left: 82px;
+    }
+  }
   @media all and (max-width: 1910px) {
     display: flex;
     .inner {
@@ -48,6 +77,7 @@ const WrapStyle = styled.div`
     flex-direction: column;
     h3 {
       margin-top: 250px;
+      margin-left: 82px;
     }
   }
 `;
@@ -59,26 +89,40 @@ const BookingDetail = () => {
       <div className="inner">
         <h3>예약 내역</h3>
         <div className="container">
-          <div>
-            <MainButton label="이용예정" />
+          <div className="form-group">
+            <div>
+              <MainButton label="이용예정" />
+            </div>
+            <BookingDetailForm />
           </div>
-          <BookingDetailForm />
-          <div>
-            <MainButton label="이용예정" />
+          <div className="form-group">
+            <div>
+              <MainButton label="이용예정" />
+            </div>
+            <BookingDetailForm />
           </div>
-          <BookingDetailForm />
+          <div className="form-group">
+            <div>
+              <MainButton label="이용예정" />
+            </div>
+            <BookingDetailForm />
+          </div>
         </div>
-        <h3>이용 내역</h3>
-        {/* 버튼 색상 및 폼 디자인 바꿔야 함 */}
+
+        <div className="use-detail">지난 이용 내역</div>
         <div className="container">
-          <div className="completed-reserv">
-            <MainButton label="이용완료" />
+          <div className="form-group">
+            <div className="completed-reserv">
+              <MainButton label="이용완료" />
+            </div>
+            <BookingDetailForm isCompleted={true} />
           </div>
-          <BookingDetailForm isCompleted={true} />
-          <div className="completed-reserv">
-            <MainButton label="이용완료" />
+          <div className="form-group">
+            <div className="completed-reserv">
+              <MainButton label="이용완료" />
+            </div>
+            <BookingDetailForm isCompleted={true} />
           </div>
-          <BookingDetailForm isCompleted={true} />
         </div>
       </div>
     </WrapStyle>

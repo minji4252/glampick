@@ -1,12 +1,12 @@
 import React from "react";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import ClampingImage from "../images/main-list-1.png";
 import styled from "@emotion/styled";
 import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
 
 export const FormContents = styled.div`
-  width: 511px;
+  width: 100%;
   height: 278px;
   margin-top: 13px;
   border-radius: 20px;
@@ -22,13 +22,13 @@ export const FormContents = styled.div`
   }
 
   h2 {
-    font-size: 18px;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 5px;
   }
 
   .reserv-number {
-    font-size: 15px;
+    font-size: 0.9rem;
     color: ${colorSystem.g800};
   }
 
@@ -43,7 +43,7 @@ export const FormContents = styled.div`
 
   p {
     display: flex;
-    font-size: 13px;
+    font-size: 0.85rem;
     color: ${colorSystem.g700};
     margin-left: 5px;
   }
@@ -68,20 +68,20 @@ export const FormContents = styled.div`
   }
 
   h4 {
-    font-size: 17px;
+    font-size: 1.1rem;
     font-weight: 600;
   }
 
   .room-type {
-    font-size: 17px;
+    font-size: 1.1rem;
   }
 
   .date-used {
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 
   .check-time {
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 
   /* 예약취소 작성 버튼 */
@@ -89,8 +89,8 @@ export const FormContents = styled.div`
     width: 40px;
     height: 35px;
     /* 높이 같지 않을 시 글자 위치가 달라짐 */
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 500;
     color: ${colorSystem.error};
     justify-content: flex-end;
     margin-left: auto;
@@ -99,14 +99,14 @@ export const FormContents = styled.div`
     cursor: pointer;
   }
 
-  /* 리뷰 작성 버튼 */
+  /* 후기 작성 버튼 */
   .review-btn {
     display: flex;
     justify-content: flex-end;
     > button {
       width: 80px;
       height: 35px;
-      font-size: 12px;
+      font-size: 0.8rem;
       background-color: white;
       color: ${colorSystem.g800};
       border: 1.5px solid ${colorSystem.p700};

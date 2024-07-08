@@ -23,7 +23,6 @@ const WrapStyle = styled.div`
   .container {
     display: flex;
     width: 550px;
-    height: 1000px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -78,7 +77,6 @@ const WrapStyle = styled.div`
   }
   .wrap {
     width: 100%;
-    margin: 0 auto;
     margin-bottom: 50px;
   }
 
@@ -93,22 +91,22 @@ const WrapStyle = styled.div`
 
   .form-group label {
     display: block;
-    font-size: 18px;
+    font-size: 1.1rem;
     margin-bottom: 7px;
   }
 
-  .input-group {
+  .form-group {
+    width: 100%;
   }
 
   .form-group input,
   .input-group input {
-    width: 550px;
-    /* 너비 조정: 100%에서 버튼 너비와 마진 값을 뺀 값 */
+    width: 100%;
     height: 40px;
     border: none;
     background-color: ${colorSystem.g100};
     padding: 10px;
-    font-size: 15px;
+    font-size: 0.9rem;
     margin-bottom: 30px;
   }
 
@@ -116,16 +114,16 @@ const WrapStyle = styled.div`
   .form-button > button {
     width: 140px;
     height: 40px;
-    font-size: 15px;
+    font-size: 0.9rem;
   }
 
-  /* 변경하기 버튼 */
+  /* 수정하기 버튼 */
   .modify-btn > button {
     width: 550px;
     height: 50px;
     margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 20px;
+    font-size: 1.2rem;
   }
 
   /* 회원탈퇴 */
@@ -136,7 +134,7 @@ const WrapStyle = styled.div`
     right: 10px;
   }
   .delete-btn {
-    font-size: 16px;
+    font-size: 1.1rem;
     color: ${colorSystem.g700};
     background: none;
     border: none;
@@ -172,7 +170,9 @@ const UserInfo = () => {
       <div className="inner">
         <h3>내 정보 관리</h3>
         <div className="container">
+          {/* 프로필 사진 등록 */}
           <div className="userprofile">
+            {/* 파일 업로드 버튼 */}
             <FaUser className="userprofile-img" />
             {showButtons && (
               <div className="profile-edit">

@@ -5,6 +5,7 @@ import NaverIcon from "../../images/btn_naver.png";
 import { colorSystem, size } from "../../styles/color";
 import { Link } from "react-router-dom";
 import { MainButton } from "../../components/common/Button";
+import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -25,6 +26,7 @@ const WrapStyle = styled.div`
     height: 180px;
     background: url(${GlampickLogo}) no-repeat center;
     background-size: contain;
+    /* 반응형 */
     ${size.mid} {
       width: 160px;
       height: 160px;
@@ -33,12 +35,11 @@ const WrapStyle = styled.div`
 
   h2 {
     color: ${colorSystem.g800};
-    font-size: 30px;
+    font-size: 1.6rem;
     margin-top: 40px;
     margin-bottom: 40px;
-    /* 반응형 */
     ${size.mid} {
-      font-size: 1.7rem;
+      font-size: 1.5rem;
       margin-top: 30px;
       margin-bottom: 30px;
     }
@@ -47,7 +48,6 @@ const WrapStyle = styled.div`
   .wrap {
     width: 550px;
     position: relative;
-    /* 반응형 */
     ${size.mid} {
       width: 70%;
     }
@@ -60,20 +60,24 @@ const WrapStyle = styled.div`
 
   .login-form label {
     display: block;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-bottom: 15px;
-    /* 반응형 */
     ${size.mid} {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
     }
   }
 
   .login-form input {
     width: 100%;
     height: 50px;
+    font-size: 1.1rem;
+    color: ${colorSystem.g800};
     background-color: ${colorSystem.g100};
     border: none;
     padding: 10px;
+    ${size.mid} {
+      height: 45px;
+    }
   }
 
   .login-form input[type="email"] {
@@ -81,42 +85,50 @@ const WrapStyle = styled.div`
   }
 
   .login-form input::placeholder {
-    font-size: 18px;
+    font-size: 1rem;
     background-color: ${colorSystem.g100};
     font-weight: 300;
-    /* 반응형 */
     ${size.mid} {
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
   }
 
   .error-message {
     display: none;
-    color: #bcb6b2;
-    font-size: 16px;
-    margin-top: 5px;
+    color: ${colorSystem.error};
+    font-size: 0.9rem;
+    margin-top: 7px;
+    margin-left: 5px;
+    ${size.mid} {
+      font-size: 0.8rem;
+    }
   }
 
   /* 로그인 버튼 */
   .login-btn > button {
     width: 100%;
     height: 50px;
-    font-size: 22px;
-    margin-top: 40px;
+    font-size: 1.2rem;
+    margin-top: 30px;
     ${size.mid} {
-      font-size: 1rem;
+      font-size: 1.1rem;
+      height: 45px;
     }
   }
 
   /* 회원가입 */
   .signup {
-    position: absolute;
-    right: 55px;
+    width: 80%;
+    margin: 0 auto;
+    position: relative;
   }
 
   .signup p {
-    color: ${colorSystem.g800};
-    font-size: 18px;
+    position: absolute;
+    right: 0;
+    // 로그인버튼 하단에 위치 고정
+    color: ${colorSystem.g700};
+    font-size: 1.1rem;
     padding: 10px;
     ${size.mid} {
       font-size: 1rem;
@@ -134,11 +146,11 @@ const WrapStyle = styled.div`
   .sns-login p {
     color: ${colorSystem.g700};
     display: flex;
-    font-size: 20px;
+    font-size: 1.1rem;
     margin-top: 45px;
     text-align: center;
     ${size.mid} {
-      font-size: 1.1rem;
+      font-size: 1rem;
       margin-top: 35px;
     }
   }
