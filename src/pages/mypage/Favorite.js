@@ -37,13 +37,10 @@ const WrapStyle = styled.div`
 const FavoriteContents = styled.div`
   margin: 65px 0 200px 0;
   width: 100%;
-  /* height: 1000px; */
-  /* background-color: pink; */
   display: flex;
   flex-wrap: wrap;
   gap: 40px;
-  /* justify-content: center; */
-  padding: 0 150px 0 60px;
+  padding: 0 60px;
   .favorite-content {
     position: relative;
     .favorite-heart {
@@ -53,33 +50,52 @@ const FavoriteContents = styled.div`
       width: 43px;
       height: 38px;
       background: url(${FavoriteIcon}) no-repeat center;
+      cursor: pointer;
+      ${size.mid} {
+        left: 230px;
+      }
     }
   }
 `;
 
 const Favorite = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [visibleItems, setVisibleItems] = useState([true, true, true, true]);
+
+  const toggleVisibility = index => {
+    const newVisibleItems = [...visibleItems];
+    newVisibleItems[index] = !newVisibleItems[index];
+    setVisibleItems(newVisibleItems);
+  };
+
   return (
     <WrapStyle>
       <Categories />
       <div className="inner">
         <h3>관심 목록</h3>
         <FavoriteContents>
+          {visibleItems.map(
+            (isVisible, index) =>
+              isVisible && (
+                <div key={index} className="favorite-content">
+                  <MainCard />
+                  <div
+                    className="favorite-heart"
+                    onClick={() => toggleVisibility(index)}
+                  ></div>
+                </div>
+              ),
+          )}
           <div className="favorite-content">
-            <MainCard> </MainCard>
+            <MainCard />
             <div className="favorite-heart"></div>
           </div>
-
           <div className="favorite-content">
-            <MainCard> </MainCard>
+            <MainCard />
             <div className="favorite-heart"></div>
           </div>
           <div className="favorite-content">
-            <MainCard> </MainCard>
-            <div className="favorite-heart"></div>
-          </div>
-          <div className="favorite-content">
-            <MainCard> </MainCard>
+            <MainCard />
             <div className="favorite-heart"></div>
           </div>
         </FavoriteContents>

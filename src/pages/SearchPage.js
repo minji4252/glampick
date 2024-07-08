@@ -32,6 +32,9 @@ const SearchInner = styled.div`
   margin: 0px auto;
   padding: 90px 0 250px 0;
   flex-direction: column;
+  @media all and (max-width: 950px) {
+    padding: 50px 0 200px 0;
+  }
 `;
 
 const SearchTop = styled.div`
@@ -92,9 +95,15 @@ const ResultContents = styled.div`
 `;
 
 const SearchInnerTop = styled.div`
-  width: 1080px;
+  width: 100%;
+  max-width: 1080px;
   height: 105px;
   align-content: flex-end;
+  ${size.mid} {
+    width: 100%;
+    max-width: 1080px;
+    height: 200px;
+  }
 `;
 
 // 상단 필터 항목
@@ -162,6 +171,26 @@ const SearchFilter = styled.div`
       width: 65px;
       background-image: url(${filterToilet});
     }
+
+    ${size.mid} {
+      max-width: 768px;
+      height: 200px;
+      padding: 0 50px 50px 50px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      display: flex;
+      /* grid-template-columns: repeat(5, 52px); */
+      justify-content: center;
+      gap: 5px 20px;
+      > div {
+        width: 52px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+      }
+    }
+    @media all and (max-width: 493px) {
+      padding: 0 0 50px 0;
+    }
   }
 `;
 
@@ -203,6 +232,10 @@ const SearchInnerList = styled.div`
   padding-bottom: 40px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
+  @media all and (max-width: 950px) {
+    width: 100%;
+    margin: 0 20px;
+  }
 `;
 
 // 페이지
