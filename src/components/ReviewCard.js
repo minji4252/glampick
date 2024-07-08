@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { colorSystem } from "../styles/color";
 import styled from "@emotion/styled";
 import reviewimg1 from "../images/review1.png";
@@ -6,6 +6,7 @@ import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { FaStar } from "react-icons/fa";
 import { RiEdit2Line } from "react-icons/ri";
+import { MainButton } from "./common/Button";
 
 const MyReviewCard = styled.div`
   display: flex;
@@ -101,7 +102,7 @@ const UserSection = styled.div`
     > div {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 10px;
     }
 
     span {
@@ -111,14 +112,42 @@ const UserSection = styled.div`
     svg {
       color: ${colorSystem.g400};
       font-size: 1.5rem;
+      cursor: pointer;
       display: none;
+      margin-left: 10px;
     }
 
-    p {
+    p,
+    textarea {
       margin-top: 15px;
       max-width: 570px;
       line-height: 1.5rem;
       font-size: 0.9rem;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid ${colorSystem.g400};
+      border-radius: 10px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 15px;
+      height: 35px;
+      font-size: 0.9rem;
+    }
+
+    .edited-text {
+      font-size: 0.85rem;
+      color: ${colorSystem.g400};
+      font-weight: 400;
     }
   }
 `;
@@ -148,11 +177,29 @@ const OwnerSection = styled.div`
 
     > p {
       width: 70%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
   }
 `;
 
 const ReviewCard = () => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEdited, setIsEdited] = useState(false);
+
+  const [reviewText, setReviewText] = useState("좋았습니다!");
+
+  const handleEditClick = () => {
+    setIsEditing(!isEditing);
+  };
+
+  const handleSaveClick = () => {
+    setIsEditing(false);
+    setIsEdited(true);
+  };
+
   return (
     <MyReviewCard>
       <div className="myreview-card-left">
@@ -179,14 +226,24 @@ const ReviewCard = () => {
           <div className="myreview-content">
             <div>
               <span>별별 글램핑 (A룸 202호)</span>
-              <RiEdit2Line />
+              {!isEditing && (
+                <>
+                  <RiEdit2Line onClick={handleEditClick} />
+                  {isEdited && <span className="edited-text">수정됨</span>}
+                </>
+              )}
             </div>
-            <p>
-              너무 좋았습니당 어쩌고 저쩌고 다음에 또 갈 수 있으면 얼마나 좋게요
-              ^^ 너무 좋았습니당 어쩌고 저쩌고 다음에 또 갈 수 있으면 얼마나
-              좋게요 ^^ 너무 좋았습니당 어쩌고 저쩌고 다음에 또 갈 수 있으면
-              얼마나 좋게요 ^^
-            </p>
+            {isEditing ? (
+              <>
+                <textarea
+                  value={reviewText}
+                  onChange={e => setReviewText(e.target.value)}
+                />
+                <MainButton onClick={handleSaveClick} label="수정완료" />
+              </>
+            ) : (
+              <p>{reviewText}</p>
+            )}
           </div>
         </UserSection>
         <OwnerSection>

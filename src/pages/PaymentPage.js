@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import PaymentCard from "../components/PaymentCard";
 import { MainButton } from "../components/common/Button";
 import { FaArrowLeft } from "react-icons/fa6";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import { useState } from "react";
 import kakaopay from "../images/kakaopay.png";
 import tosspay from "../images/tosspay.png";
@@ -57,6 +57,11 @@ const InputGroup = styled.div`
   gap: 70px;
   max-width: 770px;
   width: 100%;
+
+  ${size.mid} {
+    flex-direction: column;
+    gap: 20px;
+  }
 `;
 
 const ReservationInput = styled.div`
@@ -71,6 +76,7 @@ const ReservationInput = styled.div`
   }
 
   Input {
+    max-width: 350px;
     height: 50px;
     border: 0px;
     background-color: ${colorSystem.g150};

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import PaymentCard from "../components/PaymentCard";
 import { ActionButton, MainButton } from "../components/common/Button";
 import { FaArrowLeft } from "react-icons/fa6";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import { Link } from "react-router-dom";
 
 const WrapStyle = styled.div`
@@ -54,19 +54,25 @@ const CompletedStyle = styled.div`
 `;
 
 const InfoStyle = styled.div`
+  width: 100%;
   .payment-end-room-info {
     h2 {
-      margin-left: 10px;
+      margin-left: 130px;
       font-size: 1.15rem;
       margin-bottom: 25px;
+      width: 100%;
     }
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   justify-content: center;
-  gap: 170px;
+  gap: 21%;
   margin-top: 130px;
   margin-bottom: 100px;
 
@@ -80,6 +86,10 @@ const ButtonGroup = styled.div`
     width: 100%;
     height: 50px;
     border-radius: 10px;
+  }
+
+  ${size.mid} {
+    gap: 50px;
   }
 `;
 

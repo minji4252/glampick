@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+import React, { useState, useRef } from "react";
 import styled from "@emotion/styled";
 import { colorSystem } from "../styles/color";
 import { MdOutlineArrowBackIos } from "react-icons/md";
@@ -7,14 +7,28 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import "../styles/swiper.css";
-import room1 from "../images/Rectangle 90.png";
-import room2 from "../images/Rectangle 91.png";
-import room3 from "../images/Rectangle 92.png";
-import room4 from "../images/Rectangle 93.png";
-import room5 from "../images/Rectangle 94.png";
-import room6 from "../images/Rectangle 95.png";
-import { useState, useRef } from "react";
+import "../styles/detailswiper.css";
+
+import room1 from "../images/room1.jpg";
+import room2 from "../images/room2.jpg";
+import room3 from "../images/room3.jpg";
+import room4 from "../images/room4.jpg";
+import room5 from "../images/room5.jpg";
+import room6 from "../images/room6.jpg";
+import room7 from "../images/room7.jpg";
+import room8 from "../images/room8.jpg";
+import room9 from "../images/room9.jpg";
+import room10 from "../images/room10.jpg";
+import room11 from "../images/room11.jpg";
+import room12 from "../images/room12.jpg";
+import room13 from "../images/room13.jpg";
+import room14 from "../images/room14.jpg";
+import room15 from "../images/room15.jpg";
+import room16 from "../images/room16.jpg";
+import room17 from "../images/room17.jpg";
+import room18 from "../images/room18.jpg";
+import room19 from "../images/room19.jpg";
+import room20 from "../images/room20.jpg";
 import { IoIosArrowDown } from "react-icons/io";
 
 const RoomDetail = () => {
@@ -24,27 +38,61 @@ const RoomDetail = () => {
   const smallSwiperRef = useRef(null);
 
   const menuArr = [
-    { name: "오픈특가", content: "오픈특가 룸" },
-    { name: "센트럴파크 룸 (에어컨, 냉장고)", content: "센트럴파크 룸" },
-    { name: "엠파이어 룸 (에어컨, 캠프파이어)", content: "엠파이어 룸" },
-    { name: "메트로폴리탄 룸 (에어컨, 냉장고)", content: "메트로폴리탄 룸" },
-    { name: "오픈특가(바베큐 제공, 에어컨)", content: "오픈특가 룸" },
-    { name: "센트럴파크 룸 (에어컨, 냉장고)", content: "센트럴파크 룸" },
-    { name: "엠파이어 룸 (에어컨, 캠프파이어)", content: "엠파이어 룸" },
-    { name: "메트로폴리탄 룸 (에어컨, 냉장고)", content: "메트로폴리탄 룸" },
+    {
+      name: "오픈특가",
+      content: "오픈특가 룸",
+      images: [room1, room2, room3, room4, room5, room6],
+    },
+    {
+      name: "센트럴파크 룸 (에어컨, 냉장고)",
+      content: "센트럴파크 룸",
+      images: [room7, room8, room9, room10, room11, room12],
+    },
+    {
+      name: "엠파이어 룸 (에어컨, 캠프파이어)",
+      content: "엠파이어 룸",
+      images: [room13, room14, room15, room16, room17, room18],
+    },
+    {
+      name: "메트로폴리탄 룸 (에어컨, 냉장고)",
+      content: "메트로폴리탄 룸",
+      images: [room19, room20, room1, room2, room3, room4],
+    },
+    {
+      name: "오픈특가(바베큐 제공, 에어컨)",
+      content: "오픈특가 룸",
+      images: [room5, room6, room7, room8, room9, room10],
+    },
+    {
+      name: "센트럴파크 룸 (에어컨, 냉장고)",
+      content: "센트럴파크 룸",
+      images: [room11, room12, room13, room14, room15, room16],
+    },
+    {
+      name: "엠파이어 룸 (에어컨, 캠프파이어)",
+      content: "엠파이어 룸",
+      images: [room17, room18, room19, room20, room1, room2],
+    },
+    {
+      name: "메트로폴리탄 룸 (에어컨, 냉장고)",
+      content: "메트로폴리탄 룸",
+      images: [room3, room4, room5, room6, room7, room8],
+    },
   ];
 
-  const [slides, setSlides] = useState([
-    <img src={room1} alt="Room 1" />,
-    <img src={room2} alt="Room 2" />,
-    <img src={room3} alt="Room 3" />,
-    <img src={room4} alt="Room 4" />,
-    <img src={room5} alt="Room 5" />,
-    <img src={room6} alt="Room 6" />,
-  ]);
+  const [slides, setSlides] = useState(
+    menuArr[0].images.map((image, index) => (
+      <img key={index} src={image} alt={`Room ${index + 1}`} />
+    )),
+  );
 
   const selectMenuHandler = index => {
     setCurrentTab(index);
+    setSlides(
+      menuArr[index].images.map((image, i) => (
+        <img key={index} src={image} alt={`Room ${i + 1}`} />
+      )),
+    );
   };
 
   const syncSwipers = swiper => {
@@ -232,14 +280,12 @@ const RoomDetail = () => {
   `;
 
   const SmallSwiper = styled.div`
-    max-width: 600px;
-    /* 임시 */
     height: 180px;
     margin-bottom: 20px;
     .swiper {
       width: 100%;
       height: 100%;
-      max-width: 700px;
+      max-width: 320px;
     }
 
     .swiper-wrapper {
@@ -252,16 +298,20 @@ const RoomDetail = () => {
     }
 
     .swiper-slide-prev img {
+      border-radius: 12px;
       width: 60px;
       height: 60px;
     }
 
     .swiper-slide-active img {
+      border-radius: 12px;
       width: 85px;
       height: 85px;
+      border: 4px solid ${colorSystem.p500};
     }
 
     .swiper-slide-next img {
+      border-radius: 12px;
       width: 60px;
       height: 60px;
     }
@@ -271,38 +321,33 @@ const RoomDetail = () => {
       color: ${colorSystem.p300};
       font-size: 20px;
       font-weight: 800;
+      display: none;
     }
 
     .swiper-pagination {
       color: ${colorSystem.primary};
       font-weight: 600;
-      /* font-size: 1rem; */
     }
   `;
 
   return (
     <WrapStyle>
       <div className="inner">
-        <h1>{menuArr[currentTab].content}</h1>
         <TitleStyle>
           <MdOutlineArrowBackIos />
           <h1>뉴욕스카이</h1>
         </TitleStyle>
         <ListStyle>
           <ul style={{ flexWrap: isClick ? "wrap" : "nowrap" }}>
-            {menuArr.map((ele, index) => {
-              return (
-                <li
-                  key={index}
-                  className={
-                    currentTab === index ? "submenu focused" : "submenu"
-                  }
-                  onClick={() => selectMenuHandler(index)}
-                >
-                  {ele.name}
-                </li>
-              );
-            })}
+            {menuArr.map((ele, index) => (
+              <li
+                key={index}
+                className={currentTab === index ? "submenu focused" : "submenu"}
+                onClick={() => selectMenuHandler(index)}
+              >
+                {ele.name}
+              </li>
+            ))}
           </ul>
           <ListButton
             onClick={() => {
