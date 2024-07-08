@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import ReviewCard from "../components/ReviewCard";
 import reviewimg1 from "../images/review1.png";
@@ -28,7 +29,7 @@ const WrapStyle = styled.div`
 const TopContents = styled.div`
   width: 100%;
   margin-bottom: 50px;
-  border-bottom: 2px solid ${colorSystem.g200};
+  border-bottom: 1.5px solid ${colorSystem.g500};
   ${size.mid} {
     height: 500px;
     /* 임시로 지정 */
@@ -37,17 +38,19 @@ const TopContents = styled.div`
   > p {
     width: 100%;
     font-size: 1.1rem;
-    padding: 10px;
+    margin: 0px 0px 7px 15px;
     color: ${colorSystem.g900};
-    font-weight: 600;
+    font-weight: 500;
   }
 
   /* 평점 */
   .rating-details {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    color: ${colorSystem.g900};
     display: flex;
+    align-items: center;
     position: relative;
-    margin: 5px 0px 10px 10px;
+    margin: 0px 0px 7px 15px;
   }
 
   .star {
@@ -56,66 +59,65 @@ const TopContents = styled.div`
   }
 
   .average-rating {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    color: ${colorSystem.g900};
   }
 
   .total-rating {
     position: absolute;
-    top: 3px;
+    top: 2px;
     left: 50px;
     font-size: 1rem;
-    margin-left: 3px;
+    color: ${colorSystem.g900};
   }
 
-  .review-img-txt {
-    margin-left: 10px;
+  /* .review-img-txt {
     color: ${colorSystem.g800};
+    margin-left: 17px;
     font-weight: 500;
-  }
+    font-size: 0.9rem;
+    ${size.mid} {
+      margin-bottom: 10px;
+    }
+  } */
 
   .review-img {
     width: 100%;
-    height: 130px;
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
-    margin: 10px 0px 20px 10px;
+    margin-bottom: 10px;
     ${size.mid} {
-      flex-wrap: wrap;
-      /* 너비에 맞춰서 이 */
     }
   }
 
-  .review-img1 {
+  .review-img div {
     width: 120px;
     height: 120px;
     border-radius: 5px;
-    background: url(${reviewimg1}) no-repeat center;
-  }
-  .review-img2 {
-    width: 120px;
-    height: 120px;
-    border-radius: 5px;
-    background: url(${reviewimg2}) no-repeat center;
-  }
-  .review-img3 {
-    width: 120px;
-    height: 120px;
-    border-radius: 5px;
-    background: url(${reviewimg3}) no-repeat center;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 10px;
+    position: relative;
   }
 
   /* 이미지 더보기 */
   .more-overlay {
-    width: 120px;
-    height: 120px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
-    color: white;
     font-size: 1rem;
     border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.3s ease; /* 투명도 전환 효과 */
+    opacity: 1;
   }
 `;
 
@@ -123,11 +125,54 @@ const BottomContents = styled.div`
   width: 100%;
   height: 670px;
 `;
+
+// 리뷰 이미지 더보기 모달
+const ReviewImgModal = styled.div`
+  position: fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99999;
+`;
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  gap: 20px;
+`;
+
 const Review = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  // 리뷰 이미지 배열
+  const reviewImages = [
+    reviewimg1,
+    reviewimg2,
+    reviewimg3,
+    reviewimg1,
+    reviewimg2,
+    reviewimg3,
+    reviewimg1,
+    reviewimg2,
+    reviewimg3,
+  ];
+
+  // 모달창 열고 닫기
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
   return (
     <WrapStyle>
       <div className="inner">
-        <h3>전체 후기</h3>
+        <h3>숙소 후기</h3>
         <TopContents>
           <p>숙소 평점</p>
           <div className="rating-details">
@@ -135,28 +180,56 @@ const Review = () => {
             <div className="average-rating">4.7</div>
             <div className="total-rating">/5</div>
           </div>
-          <div className="review-img-txt">
-            <div>숙소 후기사진</div>
-          </div>
+          {/* <div className="review-img-txt">
+            <div>후기사진</div>
+          </div> */}
           <div className="review-img">
             {/* 이미지 최대 9개*/}
-            <div className="review-img1"></div>
-            <div className="review-img2"></div>
-            <div className="review-img3"></div>
-            <div className="review-img3"></div>
-            <div className="review-img3"></div>
-            <div className="review-img3"></div>
-            <div className="review-img3"></div>
-            <div className="review-img3"></div>
-            <div className="review-img3">
-              <div className="more-overlay">더보기</div>
-            </div>
+            {reviewImages.map((img, index) => (
+              <div
+                key={index}
+                className={`review-img${index + 1}`}
+                style={{ backgroundImage: `url(${img})` }}
+              >
+                {/* 마지막 사진일 때만 더보기 버튼 표시 */}
+                {index === reviewImages.length - 1 && (
+                  <div className="more-overlay" onClick={toggleModal}>
+                    더보기
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </TopContents>
         <BottomContents>
           <ReviewCard />
         </BottomContents>
       </div>
+      {/* 리뷰 전체이미지 모달 */}
+      {showModal && (
+        <ReviewImgModal
+          onClick={() => {
+            toggleModal();
+          }}
+        >
+          <ModalContent>
+            {reviewImages.map((img, index) => (
+              <div
+                key={index}
+                className={`review-img${index + 1}`}
+                style={{
+                  backgroundImage: `url(${img})`,
+                  width: "100px",
+                  height: "100px",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  marginBottom: "20px",
+                }}
+              ></div>
+            ))}
+          </ModalContent>
+        </ReviewImgModal>
+      )}
     </WrapStyle>
   );
 };

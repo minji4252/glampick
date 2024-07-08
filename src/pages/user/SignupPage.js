@@ -19,19 +19,21 @@ const WrapStyle = styled.div`
   }
 
   h2 {
+    color: ${colorSystem.g800};
     margin-top: 40px;
-    margin-bottom: 40px;
-    font-size: 25px;
+    margin-bottom: 30px;
+    font-size: 1.6rem;
+    /* 반응형 */
     ${size.mid} {
-      font-size: 23px;
+      font-size: 1.4rem;
     }
   }
 
   /* 구분선 */
   .line {
     width: 80%;
-    border-bottom: 2px solid ${colorSystem.g400};
-    margin-bottom: 30px;
+    border-bottom: 1.5px solid ${colorSystem.g500};
+    margin-bottom: 35px;
   }
 
   /* 회원가입 폼 */
@@ -42,11 +44,10 @@ const WrapStyle = styled.div`
 
   .form-group label {
     display: block;
-    font-size: 18px;
+    font-size: 1.1rem;
     margin-bottom: 7px;
-    /* 반응형 */
     ${size.mid} {
-      font-size: 15px;
+      font-size: 1rem;
     }
   }
 
@@ -54,9 +55,7 @@ const WrapStyle = styled.div`
     display: flex;
     justify-content: space-between;
     margin-bottom: 30px;
-    /* 반응형 */
     ${size.mid} {
-      margin-right: 23px;
       width: 100%;
       /* 다른 input과 너비 동일하게 맞춤 */
     }
@@ -70,10 +69,10 @@ const WrapStyle = styled.div`
     border: none;
     background-color: ${colorSystem.g100};
     padding: 10px;
-    font-size: 15px;
-    /* 반응형 */
+    font-size: 0.9rem;
     ${size.mid} {
-      font-size: 12px;
+      width: calc(100% - 140px - 10px);
+      font-size: 0.8rem;
     }
   }
 
@@ -88,10 +87,10 @@ const WrapStyle = styled.div`
   .form-button > button {
     width: 140px;
     height: 40px;
-    font-size: 15px;
-    /* 반응형 */
+    font-size: 0.95rem;
     ${size.mid} {
-      font-size: 12px;
+      width: 130px;
+      font-size: 0.8rem;
     }
   }
 
@@ -100,11 +99,11 @@ const WrapStyle = styled.div`
     width: 100%;
     height: 50px;
     margin-top: 20px;
-    margin-bottom: 50px;
-    font-size: 20px;
-    /* 반응형 */
+    margin-bottom: 100px;
+    font-size: 1.2rem;
     ${size.mid} {
-      font-size: 18px;
+      font-size: 1.1rem;
+      margin-bottom: 80px;
     }
   }
 `;
@@ -112,12 +111,11 @@ const WrapStyle = styled.div`
 /* 약관동의 */
 const TermsGroupStyle = styled.div`
   .terms-group p {
-    font-size: 20px;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 25px;
-    /* 반응형 */
     ${size.mid} {
-      font-size: 16px;
+      font-size: 1rem;
     }
   }
 
@@ -142,9 +140,9 @@ const TermsGroupStyle = styled.div`
     }
   }
   .terms-group label {
-    font-size: 17px;
+    font-size: 1rem;
     ${size.mid} {
-      font-size: 15px;
+      font-size: 0.9rem;
     }
   }
   .terms-item {
@@ -171,13 +169,13 @@ const TermsGroupStyle = styled.div`
   }
 
   .view-terms-btn {
-    font-size: 16px;
+    font-size: 1rem;
     color: ${colorSystem.g700};
     border: none;
     background-color: transparent;
     cursor: pointer;
     ${size.mid} {
-      font-size: 14px;
+      font-size: 0.9rem;
     }
   }
 `;
@@ -219,7 +217,7 @@ const SignupPage = () => {
                         placeholder="인증코드를 입력해주세요"
                       />
                       <div className="form-button">
-                        <MainButton label="인증코드 발송" />
+                        <MainButton label="확인" />
                       </div>
                     </div>
                   </div>
