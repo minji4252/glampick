@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import SearchImage from "../images/search-pic1.png";
 import React from "react";
 import { FaStar } from "react-icons/fa";
@@ -9,7 +9,8 @@ import { Link } from "react-router-dom";
 
 const SearchContent = styled.div`
   display: flex;
-  width: 950px;
+  width: 100%;
+  max-width: 950px;
   height: 240px;
   padding: 40px 0;
   margin: 40px 0;
@@ -22,9 +23,11 @@ const SearchContent = styled.div`
     border-top: none;
   }
   .search-image {
-    width: 400px;
+    max-width: 400px;
+    width: 100%;
     height: 240px;
     background: url(${SearchImage}) no-repeat center;
+    margin-left: 15px;
   }
   .search-detail {
     width: 550px;
@@ -42,14 +45,23 @@ const SearchContent = styled.div`
       .sc-review {
         display: flex;
         font-size: 15px;
-        svg {
-          margin: 0 5px;
-          color: #ffd233;
+        .sc-review-top {
+          display: flex;
+          svg {
+            margin: 0 5px;
+            color: #ffd233;
+          }
+          .sc-score {
+            margin-right: 15px;
+          }
         }
-        .sc-score {
-          margin-right: 15px;
+        .sc-review-bottom {
+          .sc-count {
+          }
         }
-        .sc-count {
+        ${size.mid} {
+          flex-direction: column;
+          gap: 5px;
         }
       }
     }
@@ -64,6 +76,20 @@ const SearchContent = styled.div`
       }
     }
   }
+
+  @media all and (max-width: 950px) {
+    max-width: 950px;
+    width: 100%;
+
+    .search-image {
+      min-width: 240px;
+      background-size: cover;
+      border-radius: 15px;
+    }
+    .search-detail {
+      gap: 30px;
+    }
+  }
 `;
 
 const SearchCard = () => {
@@ -74,9 +100,13 @@ const SearchCard = () => {
         <div className="sc-top">
           <div className="sc-name">그린 파인트리글램핑&카라반</div>
           <div className="sc-review">
-            <FaStar />
-            <div className="sc-score">4.6</div>
-            <div className="sc-count">1,234 개 리뷰</div>
+            <div className="sc-review-top">
+              <FaStar />
+              <div className="sc-score">4.6</div>
+            </div>
+            <div className="sc-review-bottom">
+              <div className="sc-count">1,234 개 리뷰</div>
+            </div>
           </div>
         </div>
         <div className="sc-bottom">

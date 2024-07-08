@@ -4,6 +4,8 @@ import glampickLogoMain from "../images/glampick_logo_white.png";
 import SearchIcon from "../images/icon/icon-search-white.png";
 import MemberIcon from "../images/icon/main-member-icon.png";
 import MainBigImage from "../images/main-big.gif";
+import LoginUserIcon from "../images/icon/main-login-user.png";
+import TopIcon from "../images/icon/gototop.png";
 
 import { Link } from "react-router-dom";
 import MainCard from "../components/MainCard";
@@ -24,9 +26,9 @@ const MainHeader = styled.div`
   display: block;
   z-index: 999;
   transition: top 0.3s;
-  button {
+  .main-login {
     width: 130px;
-    height: 40px;
+    height: 35px;
     background: #fff;
     border: none;
     border-radius: 10px;
@@ -34,6 +36,30 @@ const MainHeader = styled.div`
     font-weight: 500;
     p {
       color: #355179;
+    }
+  }
+  .main-nav {
+    display: flex;
+    gap: 10px;
+  }
+  .main-logout {
+    width: 85px;
+    height: 35px;
+    background: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    p {
+      font-weight: 500;
+      color: #355179;
+    }
+  }
+  .main-user {
+    display: flex;
+    align-items: flex-end;
+    .main-user-icon {
+      width: 35px;
+      height: 35px;
     }
   }
 `;
@@ -56,6 +82,7 @@ const MainSec1 = styled.section`
   max-width: 100%;
   display: block;
   background: url(${MainBigImage}) no-repeat center;
+  background-size: cover;
   ${size.large} {
     display: inline-flex;
     flex-direction: column;
@@ -153,6 +180,8 @@ const MainSearchContent = styled.ul`
       text-align: center;
       outline: none;
       > option {
+        background-color: ${colorSystem.g150};
+        border-radius: 10px;
         color: ${colorSystem.g800};
       }
     }
@@ -165,22 +194,7 @@ const MainSearchContent = styled.ul`
     margin: 0 20px;
     display: flex;
     align-items: center;
-    /* > input {
-      font-size: 17px;
-      width: 180px;
-      height: 40px;
-      justify-content: center;
-      text-align: center;
-      background: rgba(255, 255, 255, 0.7);
-      border: none;
-      border-radius: 10px;
-      color: ${colorSystem.g800};
-    }
-    > p {
-      margin: 0 10px;
-      font-size: 25px;
-      color: ${colorSystem.white};
-    } */
+
     ${size.large} {
       padding: 0;
       border: none;
@@ -190,7 +204,7 @@ const MainSearchContent = styled.ul`
   .m-sc-member {
     border-left: 2px solid ${colorSystem.white};
     height: 50px;
-    padding-left: 20px;
+    padding-left: 40px;
     margin: 0 20px;
     display: flex;
     align-items: center;
@@ -202,6 +216,7 @@ const MainSearchContent = styled.ul`
     }
     > input {
       width: 30px;
+      /* width: 80px; */
       height: 50px;
       text-align: center;
       justify-content: center;
@@ -212,8 +227,10 @@ const MainSearchContent = styled.ul`
       color: ${colorSystem.white};
       background: rgba(255, 255, 255, 0);
       outline: none;
+      /* position: absolute; */
     }
     > p {
+      /* position: relative; */
       font-size: 20px;
       color: ${colorSystem.white};
     }
@@ -304,6 +321,7 @@ const MainListTitle = styled.div`
   }
 `;
 const MainListContents = styled.div`
+  width: 100%;
   display: flex;
   gap: 40px;
   margin-bottom: 70px;
@@ -312,8 +330,19 @@ const MainListContents = styled.div`
     flex-direction: column;
   }
 `;
+const GotoTop = styled.div`
+  .top-icon {
+    width: 43px;
+    height: 43px;
+    position: fixed;
+    cursor: pointer;
+    right: 50px;
+    bottom: 50px;
+    background: url(${TopIcon}) no-repeat center;
+  }
+`;
 
-const MainPage = () => {
+const MainPage = ({ isLogin }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
 
@@ -321,11 +350,23 @@ const MainPage = () => {
     function handleScroll() {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
-      if (currentScrollTop > lastScrollTop) {
-        setIsVisible(false); // 스크롤 다운시 헤더 숨김
+
+      // 위에서부터 400px까지는 항상 헤더 표시, 아래에서부터 1000px 이내 항상 헤더 숨김
+      if (currentScrollTop <= 400) {
+        setIsVisible(true);
+      } else if (
+        currentScrollTop >=
+        document.documentElement.scrollHeight - window.innerHeight - 1100
+      ) {
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // 스크롤 업시 헤더 표시
+        if (currentScrollTop > lastScrollTop) {
+          setIsVisible(false); // 스크롤 다운시 헤더 숨김
+        } else {
+          setIsVisible(true); // 스크롤 업시 헤더 표시
+        }
       }
+
       setLastScrollTop(currentScrollTop);
     }
 
@@ -334,6 +375,11 @@ const MainPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollTop]);
+
+  // "맨 위로" 버튼
+  const MoveToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <WrapStyle>
@@ -348,12 +394,31 @@ const MainPage = () => {
               />
             </Link>
           </div>
-          <div className="header-nav">
-            <button className="header-button">
-              <Link to="/login">
-                <p>로그인/회원가입</p>
-              </Link>
-            </button>
+          <div className="main-nav">
+            {isLogin ? (
+              <>
+                <button className="main-logout">
+                  <Link to="/">
+                    <p>로그아웃</p>
+                  </Link>
+                </button>
+                <div className="main-user">
+                  <Link to="/bookingdetail" className="main-user-nav">
+                    <img
+                      src={LoginUserIcon}
+                      alt="로그인 유저 아이콘"
+                      className="main-user-icon"
+                    />
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <button className="main-login">
+                <Link to="/login">
+                  <p>로그인/회원가입</p>
+                </Link>
+              </button>
+            )}
           </div>
         </div>
       </MainHeader>
@@ -450,6 +515,9 @@ const MainPage = () => {
             </MainListContents>
           </MainList>
         </MainSec2>
+        <GotoTop>
+          <div className="top-icon" onClick={MoveToTop}></div>
+        </GotoTop>
       </main>
     </WrapStyle>
   );

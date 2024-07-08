@@ -23,14 +23,14 @@ import NotfoundPage from "./pages/NotfoundPage";
 import { useState } from "react";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   return (
     <BrowserRouter>
       <div>
         <Header isLogin={isLogin} />
         <Routes>
           {/* 메인 */}
-          <Route path="/" element={<MainPage />}></Route>
+          <Route path="/" element={<MainPage isLogin={isLogin} />}></Route>
 
           {/* 로그인, 회원가입 */}
           <Route path="/login" element={<LoginPage />}></Route>

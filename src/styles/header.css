@@ -46,7 +46,7 @@
 
 .header-logout {
   width: 85px;
-  height: 40px;
+  height: 35px;
   background: #355179;
   border: none;
   border-radius: 10px;
@@ -57,8 +57,12 @@
 .header-logout p {
   color: #fff;
 }
+.header-user {
+  display: flex;
+  align-items: center;
+}
 
-.header-user-nav {
-  width: 40px;
-  height: 40px;
+.header-user-icon {
+  width: 35px;
+  height: 35px;
 }

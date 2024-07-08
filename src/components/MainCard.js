@@ -4,6 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
 import ArticleImage from "../images/main-list-1.png";
 import { MainButton } from "./common/Button";
+import { Link } from "react-router-dom";
 
 const MainArticle = styled.article`
   display: flex;
@@ -57,6 +58,7 @@ const ArticleContent = styled.div`
       flex-direction: column;
       align-items: baseline;
       margin-bottom: 10px;
+      gap: 5px;
     }
   }
   .glamping-name {
@@ -100,15 +102,19 @@ const ArticleContent = styled.div`
 export const MainCard = () => {
   return (
     <MainArticle>
-      <div className="article-image">
-        <div className="article-place">
-          <MdPlace />
-          서울/경기
+      <Link to="/glampingdetail">
+        <div className="article-image">
+          <div className="article-place">
+            <MdPlace />
+            서울/경기
+          </div>
         </div>
-      </div>
+      </Link>
       <ArticleContent>
         <div className="article-top">
-          <div className="glamping-name">조이글램핑</div>
+          <Link to="/glampingdetail">
+            <div className="glamping-name">조이글램핑</div>
+          </Link>
           <div className="article-detail">
             <FaStar />
             <div className="review-score">4.8</div>
@@ -117,7 +123,9 @@ export const MainCard = () => {
         </div>
         <div className="article-bottom">
           <div className="glamping-price">65,000원~</div>
-          <MainButton label="예약하기"></MainButton>
+          <Link to="/glampingdetail">
+            <MainButton label="예약하기"></MainButton>
+          </Link>
         </div>
       </ArticleContent>
     </MainArticle>
