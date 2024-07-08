@@ -42,5 +42,6 @@ export const fontSystem = {
 
 export const size = {
   mid: `@media all and (max-width: 768px)`,
+  mid95: `@media all and (max-width: 950px)`,
   large: `@media all and (max-width: 1200px)`,
 };

@@ -1,10 +1,11 @@
 import styled from "@emotion/styled";
-import { colorSystem } from "../styles/color";
+import { colorSystem, size } from "../styles/color";
 import payImg from "../images/payImg.png";
 
 const WrapStyle = styled.div`
+  min-width: 390px;
   max-width: 1040px;
-  height: 240px;
+  width: 100%;
   border-radius: 10px;
   border: 1px solid ${colorSystem.primary};
 
@@ -15,31 +16,61 @@ const WrapStyle = styled.div`
     font-weight: 800;
     color: ${colorSystem.g900};
   }
+
+  .pay-left {
+    display: flex;
+    max-width: 755px;
+    width: 100%;
+
+    ${size.mid} {
+      flex-direction: column;
+    }
+  }
+
+  ${size.mid95} {
+    flex-direction: column;
+  }
 `;
 
+// 왼쪽
 const PayLeft = styled.div`
   padding: 25px;
-
-  max-width: 750px;
+  max-width: 400px;
   width: 100%;
   display: flex;
-  gap: 35px;
+
+  ${size.mid} {
+    max-width: 750px;
+  }
 `;
 const PayRoomImg = styled.div`
   height: 100%;
-  max-width: 350px;
   width: 100%;
   .pay-img {
+    border-radius: 10px;
+
     background: url(${payImg}) no-repeat center;
     background-size: cover;
     width: 100%;
-    max-height: 208px;
-    height: 100%;
+    height: 190px;
+  }
+`;
+
+// 가운데
+const PayMiddle = styled.div`
+  padding: 25px 25px 25px 5px;
+
+  ${size.mid} {
+    padding: 0 0 25px 25px;
   }
 `;
 const PayRoomInfo = styled.div`
   h3 {
     margin-top: 20px;
+
+    ${size.mid} {
+      margin-top: 0px;
+    }
   }
 `;
 const PayRoomContent = styled.div`
@@ -60,17 +91,42 @@ const PayRoomContent = styled.div`
       font-weight: 500;
     }
   }
+
+  ${size.mid} {
+    margin-top: 25px;
+  }
 `;
 
+// 오른쪽
 const PayRight = styled.div`
-  padding: 40px;
   width: 100%;
-  max-width: 290px;
+  max-width: 285px;
+  display: flex;
+
+  .pay-right {
+    padding: 40px 40px 40px 0;
+    width: 100%;
+
+    ${size.mid95} {
+      padding: 25px 40px 40px 0;
+    }
+  }
 
   .price-item {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+
+    ${size.mid95} {
+      justify-content: flex-start;
+      gap: 20px;
+    }
+  }
+
+  ${size.mid95} {
+    flex-direction: column;
+    max-width: 100%;
+    margin-left: 25px;
   }
 `;
 
@@ -78,7 +134,13 @@ const VerticalLine = styled.div`
   height: 92%;
   width: 1px;
   border: 1px dashed ${colorSystem.g300};
-  margin: 10px 0;
+  margin: 10px 40px 10px 0;
+
+  ${size.mid95} {
+    width: 93%;
+    height: 1px;
+    margin: 0;
+  }
 `;
 const PriceInfo = styled.div`
   p {
@@ -92,6 +154,10 @@ const PriceInfo = styled.div`
 const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g200};
   margin-top: 45px;
+  ${size.mid95} {
+    max-width: 200px;
+    margin-top: 20px;
+  }
 `;
 const PriceTotal = styled.div`
   p {
@@ -108,44 +174,51 @@ const PriceTotal = styled.div`
 const PaymentCard = () => {
   return (
     <WrapStyle>
-      <PayLeft>
-        <PayRoomImg>
-          <div className="pay-img" />
-        </PayRoomImg>
-        <PayRoomInfo>
-          <h3>어쩌구 그린 글램핑</h3>
-          <PayRoomContent>
-            <div className="pay-room-item">
-              <span>객실</span>
-              <p>그린 502호</p>
-            </div>
-            <div className="pay-room-item">
-              <span>일정</span>
-              <p>06.26 (수) 15:00 ~ 06.27 (목) 11:00 (1박)</p>
-            </div>
-            <div className="pay-room-item">
-              <span>기준인원</span>
-              <p>2인, 최대 4인</p>
-            </div>
-          </PayRoomContent>
-        </PayRoomInfo>
-      </PayLeft>
-      <VerticalLine />
+      <div className="pay-left">
+        <PayLeft>
+          <PayRoomImg>
+            <div className="pay-img" />
+          </PayRoomImg>
+        </PayLeft>
+
+        <PayMiddle>
+          <PayRoomInfo>
+            <h3>어쩌구 그린 글램핑</h3>
+            <PayRoomContent>
+              <div className="pay-room-item">
+                <span>객실</span>
+                <p>그린 502호</p>
+              </div>
+              <div className="pay-room-item">
+                <span>일정</span>
+                <p>06.26 (수) 15:00 ~ 06.27 (목) 11:00 (1박)</p>
+              </div>
+              <div className="pay-room-item">
+                <span>기준인원</span>
+                <p>2인, 최대 4인</p>
+              </div>
+            </PayRoomContent>
+          </PayRoomInfo>
+        </PayMiddle>
+      </div>
       <PayRight>
-        <PriceInfo>
-          <h3>결제정보</h3>
-          <div className="price-item">
-            <p>객실 가격</p>
-            <span>85,000원</span>
-          </div>
-        </PriceInfo>
-        <UnderLine />
-        <PriceTotal>
-          <div className="price-item">
-            <p>총 결제 금액</p>
-            <span>85,000원</span>
-          </div>
-        </PriceTotal>
+        <VerticalLine />
+        <div className="pay-right">
+          <PriceInfo>
+            <h3>결제정보</h3>
+            <div className="price-item">
+              <p>객실 가격</p>
+              <span>85,000원</span>
+            </div>
+          </PriceInfo>
+          <UnderLine />
+          <PriceTotal>
+            <div className="price-item">
+              <p>총 결제 금액</p>
+              <span>85,000원</span>
+            </div>
+          </PriceTotal>
+        </div>
       </PayRight>
     </WrapStyle>
   );

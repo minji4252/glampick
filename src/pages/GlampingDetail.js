@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
-import { IoHeartSharp } from "react-icons/io5";
+import { GoHeart } from "react-icons/go";
+import { GoHeartFill } from "react-icons/go";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { MainButton } from "../components/common/Button";
@@ -20,11 +21,12 @@ const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g400};
 `;
 
-const WrapStyle = styled.div`
+const GlampingDetailStyle = styled.div`
   margin-top: 30px;
   .inner {
     flex-direction: column;
     width: 100%;
+    padding: 0 20px;
   }
 
   h3 {
@@ -74,15 +76,17 @@ const RoomTitle = styled.div`
   font-size: 1.8rem;
   font-weight: 700;
   margin-top: 70px;
-  position: relative;
+  display: flex;
+  justify-content: space-between;
+
+  ${size.mid} {
+    flex-direction: column;
+  }
 
   svg {
-    /* 임시 색깔 */
     color: ${colorSystem.error};
     font-size: 3rem;
-    position: absolute;
-    right: 100px;
-    bottom: 5px;
+    margin-right: 90px;
   }
 `;
 
@@ -100,7 +104,7 @@ const ReviewTitle = styled.div`
     color: ${colorSystem.g400};
   }
 
-  > button {
+  button {
     font-weight: 800;
     color: #1273e4;
     background-color: transparent;
@@ -119,9 +123,13 @@ const ReviewContent = styled.div`
   gap: 20px;
   align-items: center;
 
+  .review-content {
+    display: flex;
+    gap: 20px;
+  }
+
   .review-content-item {
     width: 100%;
-    max-width: 480px;
     height: 130px;
     background-color: ${colorSystem.beige};
     padding: 20px;
@@ -130,8 +138,8 @@ const ReviewContent = styled.div`
     > p {
       color: ${colorSystem.g700};
       font-size: 0.9rem;
-      overflow: hidden;
       height: 80px;
+      overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
@@ -139,7 +147,7 @@ const ReviewContent = styled.div`
   }
 
   .review-more {
-    max-width: 50px;
+    width: 100%;
     min-width: 50px;
     height: fit-content;
     color: ${colorSystem.primary};
@@ -157,8 +165,12 @@ const ReviewContent = styled.div`
     }
 
     ${size.mid} {
-      margin-left: 0px;
+      margin-left: 30px;
     }
+  }
+
+  ${size.mid} {
+    flex-direction: column;
   }
 `;
 
@@ -167,7 +179,7 @@ const RoomOption = styled.div`
   margin-top: 20px;
 
   .option-title {
-    margin: 15px 0 15px 10px;
+    margin: 15px 0 25px 10px;
   }
 `;
 
@@ -229,8 +241,9 @@ const RoomCard = styled.div`
 
   ${size.mid} {
     flex-direction: column;
+    width: 100%;
     div {
-      max-width: 635px;
+      max-width: 720px;
       width: 100%;
     }
   }
@@ -414,7 +427,7 @@ const RoomLocation = styled.div`
 
 const GlampingDetail = () => {
   return (
-    <WrapStyle>
+    <GlampingDetailStyle>
       <div className="inner">
         <RoomProperty>
           <RoomPic>
@@ -422,31 +435,36 @@ const GlampingDetail = () => {
           </RoomPic>
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
-            <IoHeartSharp />
+            {/* <GoHeart /> */}
+            <GoHeartFill />
           </RoomTitle>
           <RoomReview>
             <ReviewTitle>
               <FaStar />
               <div className="review-score">9.5</div>
               <div className="review-evaluat">1557명 평가</div>
-              <button>리뷰보기</button>
+              <Link to="/review">
+                <button>리뷰보기</button>
+              </Link>
             </ReviewTitle>
             <ReviewContent>
-              <div className="review-content-item">
-                <p>
-                  위치: 포천 끝자락 들어가는 초입이 약간 좁고 헷갈리긴하나 딱
-                  헷갈 릴 때쯤 표지판이 나옵니다. 들어가는 초입에 사무실이
-                  있습니다. 객실: 일단 굉장히 널찍 널찍하고 무엇보다 앞에
-                  백운계곡이 있어서 너무 좋습니다. 물멍 불멍 모두 편합니다.
-                  -리뷰작성자
-                </p>
-              </div>
-              <div className="review-content-item">
-                <p>
-                  진짜 너무너무 좋은 숙소였어요~!캠핑&글램핑숙소여서 숙면은
-                  포기해야겠지 했는데 다들 규칙들을 너무 잘 지켜 주셔서 조용해서
-                  너무너무 좋았어요!! -리뷰작성자
-                </p>
+              <div className="review-content">
+                <div className="review-content-item">
+                  <p>
+                    위치: 포천 끝자락 들어가는 초입이 약간 좁고 헷갈리긴하나 딱
+                    헷갈 릴 때쯤 표지판이 나옵니다. 들어가는 초입에 사무실이
+                    있습니다. 객실: 일단 굉장히 널찍 널찍하고 무엇보다 앞에
+                    백운계곡이 있어서 너무 좋습니다. 물멍 불멍 모두 편합니다.
+                    -리뷰작성자
+                  </p>
+                </div>
+                <div className="review-content-item">
+                  <p>
+                    진짜 너무너무 좋은 숙소였어요~!캠핑&글램핑숙소여서 숙면은
+                    포기해야겠지 했는데 다들 규칙들을 너무 잘 지켜 주셔서
+                    조용해서 너무너무 좋았어요!! -리뷰작성자
+                  </p>
+                </div>
               </div>
               <div className="review-more">
                 <button>더보기</button>
@@ -657,7 +675,7 @@ const GlampingDetail = () => {
           </RoomLocation>
         </RoomInfo>
       </div>
-    </WrapStyle>
+    </GlampingDetailStyle>
   );
 };
 
