@@ -63,7 +63,7 @@ export const FormContents = styled.div`
   .reserv-info-txt {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-around;
     color: ${colorSystem.g900};
   }
 
@@ -116,14 +116,22 @@ export const FormContents = styled.div`
       }
     }
   }
+
+  /* 빈공간 채우기 */
+  .empty-space {
+    width: 40px;
+    height: 35px;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
 `;
 
-export const BookingDetailForm = ({ isCompleted }) => {
+export const BookingDetailForm = ({ upComing, isCompleted }) => {
   return (
     <FormContents>
       <div className="top-contents">
         <h2>2024.06.27(목)</h2>
-        <div className="reserv-number">예약번호: 000000000</div>
+        <div className="reserv-number">예약번호: 0000000001234</div>
       </div>
       <div className="bottom-contents">
         <p>숙소</p>
@@ -138,12 +146,14 @@ export const BookingDetailForm = ({ isCompleted }) => {
             </div>
           </Link>
         </div>
-        {isCompleted ? (
+        {upComing ? (
+          <div className="cancel-btn">취소</div>
+        ) : isCompleted ? (
           <div className="review-btn">
             <MainButton label="후기작성" />
           </div>
         ) : (
-          <div className="cancel-btn">취소</div>
+          <div className="empty-space"></div>
         )}
       </div>
     </FormContents>

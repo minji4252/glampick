@@ -3,6 +3,7 @@ import BookingDetailForm from "../../components/BookingDetailForm";
 import { MainButton } from "../../components/common/Button";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
+import { useState } from "react";
 
 const WrapStyle = styled.div`
   .inner {
@@ -18,13 +19,39 @@ const WrapStyle = styled.div`
     color: ${colorSystem.g900};
   }
 
+  /* 탭 메뉴 */
+  .tabs {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 110px;
+    margin-top: 20px;
+    font-size: 1rem;
+    color: ${colorSystem.g900};
+    font-weight: 600;
+    margin-top: 20px;
+  }
+
+  .tab {
+    padding: 10px 5px;
+    margin: 0px 10px;
+    cursor: pointer;
+    &.active {
+      font-weight: 600;
+      color: ${colorSystem.p500};
+      border-bottom: 2px solid ${colorSystem.p500};
+    }
+  }
+
   .container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 2개의 컬럼으로 설정 */
-    gap: 40px;
+    gap: 50px;
     width: 90%;
-    margin-top: 65px;
+    margin-top: 40px;
+
     ${size.mid} {
       display: flex;
       flex-direction: column;
@@ -35,22 +62,7 @@ const WrapStyle = styled.div`
       display: flex;
       flex-direction: column;
       width: 100%;
-    }
-
-    /* 이용예정 버튼 */
-    > div > button {
-      display: block;
-      width: 100px;
-    }
-    /* 이용완료 버튼 */
-    .completed-reserv {
-      > button {
-        background-color: ${colorSystem.g300};
-        &:hover {
-          border: 1px solid ${colorSystem.g400};
-          background-color: ${colorSystem.g400};
-        }
-      }
+      margin-bottom: 50px;
     }
   }
 
@@ -66,6 +78,7 @@ const WrapStyle = styled.div`
       margin-left: 82px;
     }
   }
+
   @media all and (max-width: 1910px) {
     display: flex;
     .inner {
@@ -83,47 +96,101 @@ const WrapStyle = styled.div`
 `;
 
 const BookingDetail = () => {
+  const [activeTab, setActiveTab] = useState("upcoming");
   return (
     <WrapStyle>
       <Categories />
       <div className="inner">
         <h3>예약 내역</h3>
-        <div className="container">
-          <div className="form-group">
-            <div>
-              <MainButton label="이용예정" />
-            </div>
-            <BookingDetailForm />
+        <div className="tabs">
+          <div
+            className={`tab ${activeTab === "upcoming" ? "active" : ""}`}
+            onClick={() => {
+              setActiveTab("upcoming");
+            }}
+          >
+            이용예정
           </div>
-          <div className="form-group">
-            <div>
-              <MainButton label="이용예정" />
-            </div>
-            <BookingDetailForm />
+          <div
+            className={`tab ${activeTab === "completed" ? "active" : ""}`}
+            onClick={() => {
+              setActiveTab("completed");
+            }}
+          >
+            이용완료
           </div>
-          <div className="form-group">
-            <div>
-              <MainButton label="이용예정" />
-            </div>
-            <BookingDetailForm />
+          <div
+            className={`tab ${activeTab === "cancelde" ? "active" : ""}`}
+            onClick={() => {
+              setActiveTab("cancelde");
+            }}
+          >
+            취소내역
           </div>
         </div>
 
-        <div className="use-detail">지난 이용 내역</div>
-        <div className="container">
-          <div className="form-group">
-            <div className="completed-reserv">
-              <MainButton label="이용완료" />
+        {/* 이용 예정 */}
+        {activeTab === "upcoming" && (
+          <div className="container">
+            <div className="form-group">
+              {/* <div>
+                <MainButton label="이용예정" />
+              </div> */}
+              <BookingDetailForm upComing={true} />
             </div>
-            <BookingDetailForm isCompleted={true} />
-          </div>
-          <div className="form-group">
-            <div className="completed-reserv">
-              <MainButton label="이용완료" />
+            <div className="form-group">
+              {/* <div>
+                <MainButton label="이용예정" />
+              </div> */}
+              <BookingDetailForm upComing={true} />
             </div>
-            <BookingDetailForm isCompleted={true} />
+            <div className="form-group">
+              {/* <div>
+                <MainButton label="이용예정" />
+              </div> */}
+              <BookingDetailForm upComing={true} />
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* 이용 내역 */}
+        {activeTab === "completed" && (
+          <>
+            <div className="container">
+              <div className="form-group">
+                {/* <div className="completed-reserv">
+                  <MainButton label="이용완료" />
+                </div> */}
+                <BookingDetailForm isCompleted={true} />
+              </div>
+              <div className="form-group">
+                {/* <div className="completed-reserv">
+                  <MainButton label="이용완료" />
+                </div> */}
+                <BookingDetailForm isCompleted={true} />
+              </div>
+            </div>
+          </>
+        )}
+        {/* 취소 내역 */}
+        {activeTab === "cancelde" && (
+          <>
+            <div className="container">
+              <div className="form-group">
+                {/* <div className="completed-reserv">
+                  <MainButton label="이용완료" />
+                </div> */}
+                <BookingDetailForm />
+              </div>
+              <div className="form-group">
+                {/* <div className="completed-reserv">
+                  <MainButton label="이용완료" />
+                </div> */}
+                <BookingDetailForm />
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </WrapStyle>
   );
