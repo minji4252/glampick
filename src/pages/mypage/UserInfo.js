@@ -30,6 +30,9 @@ const WrapStyle = styled.div`
     margin-top: 65px;
     margin-bottom: 80px;
     /* 임시로 지정  다시 확인해야함 */
+    ${size.mid} {
+      width: 100%;
+    }
   }
 
   /* 프로필 기본 사진 */
@@ -75,8 +78,9 @@ const WrapStyle = styled.div`
     width: 35px;
     height: 35px;
   }
+
   .wrap {
-    width: 100%;
+    width: 80%;
     margin-bottom: 50px;
   }
 
@@ -87,6 +91,9 @@ const WrapStyle = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    ${size.mid} {
+      width: 80%;
+    }
   }
 
   .form-group label {
@@ -106,7 +113,7 @@ const WrapStyle = styled.div`
     border: none;
     background-color: ${colorSystem.g100};
     padding: 10px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     margin-bottom: 30px;
   }
 
@@ -118,22 +125,34 @@ const WrapStyle = styled.div`
   }
 
   /* 수정하기 버튼 */
-  .modify-btn > button {
-    width: 550px;
-    height: 50px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
+  .modify-btn {
+    width: 100%;
+    > button {
+      width: 100%;
+      height: 50px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      ${size.mid} {
+      }
+    }
   }
 
   /* 회원탈퇴 */
   .delete-user {
-    /* 버튼 위치 오른쪽 하단에 배치 */
-    position: absolute;
-    bottom: -15px;
-    right: 10px;
+    width: 100%;
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    background-color: skyblue;
+    ${size.mid} {
+      width: 80%;
+    }
   }
+
   .delete-btn {
+    position: absolute;
+    right: 0;
     font-size: 1.1rem;
     color: ${colorSystem.g700};
     background: none;
