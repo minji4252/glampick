@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
-import MainCard from "../../components/MainCard";
 import FavoriteIcon from "../../images/icon/favorite-icon.png";
 import { useState } from "react";
+import FavoriteCard from "../../components/FavoriteCard";
 
 const WrapStyle = styled.div`
   .inner {
@@ -78,7 +78,7 @@ const Favorite = () => {
             (isVisible, index) =>
               isVisible && (
                 <div key={index} className="favorite-content">
-                  <MainCard />
+                  <FavoriteCard />
                   <div
                     className="favorite-heart"
                     onClick={() => toggleVisibility(index)}
@@ -86,18 +86,18 @@ const Favorite = () => {
                 </div>
               ),
           )}
-          <div className="favorite-content">
-            <MainCard />
+          {/* <div className="favorite-content">
+            <FavoriteCard />
             <div className="favorite-heart"></div>
           </div>
           <div className="favorite-content">
-            <MainCard />
+            <FavoriteCard />
             <div className="favorite-heart"></div>
           </div>
           <div className="favorite-content">
-            <MainCard />
+            <FavoriteCard />
             <div className="favorite-heart"></div>
-          </div>
+          </div> */}
         </FavoriteContents>
       </div>
     </WrapStyle>
