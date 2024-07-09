@@ -40,42 +40,34 @@ const RoomDetail = () => {
   const menuArr = [
     {
       name: "오픈특가",
-      content: "오픈특가 룸",
       images: [room1, room2, room3, room4, room5, room6],
     },
     {
       name: "센트럴파크 룸 (에어컨, 냉장고)",
-      content: "센트럴파크 룸",
       images: [room7, room8, room9, room10, room11, room12],
     },
     {
       name: "엠파이어 룸 (에어컨, 캠프파이어)",
-      content: "엠파이어 룸",
       images: [room13, room14, room15, room16, room17, room18],
     },
     {
       name: "메트로폴리탄 룸 (에어컨, 냉장고)",
-      content: "메트로폴리탄 룸",
       images: [room19, room20, room1, room2, room3, room4],
     },
     {
       name: "오픈특가(바베큐 제공, 에어컨)",
-      content: "오픈특가 룸",
       images: [room5, room6, room7, room8, room9, room10],
     },
     {
       name: "센트럴파크 룸 (에어컨, 냉장고)",
-      content: "센트럴파크 룸",
       images: [room11, room12, room13, room14, room15, room16],
     },
     {
       name: "엠파이어 룸 (에어컨, 캠프파이어)",
-      content: "엠파이어 룸",
       images: [room17, room18, room19, room20, room1, room2],
     },
     {
       name: "메트로폴리탄 룸 (에어컨, 냉장고)",
-      content: "메트로폴리탄 룸",
       images: [room3, room4, room5, room6, room7, room8],
     },
   ];
@@ -322,6 +314,22 @@ const RoomDetail = () => {
       font-size: 20px;
       font-weight: 800;
       display: none;
+    }
+
+    .swiper-button-prev {
+      width: 60px;
+      height: 60px;
+      left: 0;
+      top: 82px;
+      border-radius: 12px;
+    }
+
+    .swiper-button-next {
+      width: 60px;
+      height: 60px;
+      right: 0;
+      top: 82px;
+      border-radius: 12px;
     }
 
     .swiper-pagination {
