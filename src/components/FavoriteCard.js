@@ -2,26 +2,20 @@ import { colorSystem, size } from "../styles/color";
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
+import ArticleImage from "../images/main-list-1.png";
 import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
-const MainArticle = styled.article`
+const FavoriteArticle = styled.article`
   display: flex;
   flex-direction: column;
-  :hover {
-    transform: translateY(-5px);
-    transition: 0.5s;
-  }
   .article-image {
     position: relative;
     width: 290px;
     height: 190px;
     border-radius: 32px;
     box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-    background: url(${props => props.bgImage}) no-repeat center;
-    background-size: cover;
+    background: url(${ArticleImage}) no-repeat center;
     .article-place {
       position: absolute;
       bottom: 0;
@@ -105,45 +99,37 @@ const ArticleContent = styled.div`
   }
 `;
 
-const MainCard = ({
-  glampId,
-  glampingName,
-  region,
-  starPoint,
-  reviewCount,
-  price,
-  glampingImg,
-}) => {
+export const FavoriteCard = () => {
   return (
-    <MainArticle bgImage={glampingImg} key={glampId}>
+    <FavoriteArticle>
       <Link to="/glampingdetail">
         <div className="article-image">
           <div className="article-place">
             <MdPlace />
-            {region}
+            서울/경기
           </div>
         </div>
       </Link>
       <ArticleContent>
         <div className="article-top">
           <Link to="/glampingdetail">
-            <div className="glamping-name">{glampingName}</div>
+            <div className="glamping-name">조이글램핑</div>
           </Link>
           <div className="article-detail">
             <FaStar />
-            <div className="review-score">{starPoint}</div>
+            <div className="review-score">4.8</div>
           </div>
-          <div className="review-count">(리뷰 {reviewCount}개)</div>
+          <div className="review-count">(리뷰 5개)</div>
         </div>
         <div className="article-bottom">
-          <div className="glamping-price">{price}원~</div>
+          <div className="glamping-price">65,000원~</div>
           <Link to="/glampingdetail">
-            <MainButton label="예약하기" />
+            <MainButton label="예약하기"></MainButton>
           </Link>
         </div>
       </ArticleContent>
-    </MainArticle>
+    </FavoriteArticle>
   );
 };
 
-export default MainCard;
+export default FavoriteCard;
