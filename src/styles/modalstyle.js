@@ -38,7 +38,7 @@ export const ModalStyle = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   padding-top: 15px;
-  z-index: 99999; // 모달이 가장 위에 표시되도록
+  z-index: 99999;
   > p {
     margin-top: 20px;
     color: ${colorSystem.g800};

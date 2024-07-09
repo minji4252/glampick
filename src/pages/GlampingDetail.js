@@ -1,431 +1,57 @@
-import styled from "@emotion/styled";
+import axios from "axios";
+import { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 import { IoIosArrowForward } from "react-icons/io";
-import { GoHeart } from "react-icons/go";
-import { GoHeartFill } from "react-icons/go";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { Link } from "react-router-dom";
-import { MainButton } from "../components/common/Button";
-import optionBarbecue from "../images/icon/filter-barbecue.png";
-import optionMountain from "../images/icon/filter-mountain.png";
-import optionOcean from "../images/icon/filter-ocean.png";
-import optionPet from "../images/icon/filter-pet.png";
-import optionSwim from "../images/icon/filter-swim.png";
-import optionToilet from "../images/icon/filter-toilet.png";
-import optionWifi from "../images/icon/filter-wifi.png";
-import Image from "../images/pic.jpg";
-import Room from "../images/roomin.png";
-import { colorSystem, size } from "../styles/color";
-
-const UnderLine = styled.div`
-  border-bottom: 1px solid ${colorSystem.g400};
-`;
-
-const GlampingDetailStyle = styled.div`
-  margin-top: 30px;
-  .inner {
-    flex-direction: column;
-    width: 100%;
-    padding: 0 20px;
-  }
-
-  h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-
-  h4:before {
-    content: "·";
-    font-size: 27px;
-    vertical-align: middle;
-    margin-right: 5px;
-  }
-
-  h4 {
-    font-size: 0.95rem;
-    line-height: 1.6rem;
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    font-weight: 300;
-  }
-
-  button {
-    cursor: pointer;
-  }
-`;
-
-// 룸 옵션
-const RoomProperty = styled.div`
-  width: 100%;
-`;
-
-// 옵션 1
-const RoomPic = styled.div`
-  .main-img {
-    position: relative;
-    background: url(${Image}) no-repeat center;
-    background-size: cover;
-    width: 100%;
-    height: 400px;
-  }
-`;
-
-// 옵션 2
-const RoomTitle = styled.div`
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-top: 70px;
-  display: flex;
-  justify-content: space-between;
-
-  ${size.mid} {
-    flex-direction: column;
-  }
-
-  svg {
-    color: ${colorSystem.error};
-    font-size: 3rem;
-    margin-right: 90px;
-  }
-`;
-
-// 옵션 3
-const RoomReview = styled.div`
-  margin-top: 25px;
-`;
-
-const ReviewTitle = styled.div`
-  display: flex;
-  gap: 5px;
-  font-weight: 700;
-
-  .review-evaluat {
-    color: ${colorSystem.g400};
-  }
-
-  button {
-    font-weight: 800;
-    color: #1273e4;
-    background-color: transparent;
-    border: 0px;
-    font-family: "Pretendard Variable";
-  }
-
-  > svg {
-    color: ${colorSystem.star};
-  }
-`;
-
-const ReviewContent = styled.div`
-  margin-top: 15px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-
-  .review-content {
-    display: flex;
-    gap: 20px;
-  }
-
-  .review-content-item {
-    width: 100%;
-    height: 130px;
-    background-color: ${colorSystem.beige};
-    padding: 20px;
-    border-radius: 12px;
-    line-height: 1.3rem;
-    > p {
-      color: ${colorSystem.g700};
-      font-size: 0.9rem;
-      height: 80px;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical;
-    }
-  }
-
-  .review-more {
-    width: 100%;
-    min-width: 50px;
-    height: fit-content;
-    color: ${colorSystem.primary};
-    display: flex;
-    align-items: center;
-    margin-left: 40px;
-
-    button {
-      background-color: transparent;
-      border: 0px;
-      font-family: "Pretendard Variable";
-      font-weight: 700;
-      color: ${colorSystem.primary};
-      height: 20px;
-    }
-
-    ${size.mid} {
-      margin-left: 30px;
-    }
-  }
-
-  ${size.mid} {
-    flex-direction: column;
-  }
-`;
-
-// 옵션 4
-const RoomOption = styled.div`
-  margin-top: 20px;
-
-  .option-title {
-    margin: 15px 0 25px 10px;
-  }
-`;
-
-const OptionItems = styled.div`
-  margin-left: 20px;
-  display: flex;
-  gap: 25px;
-
-  .option-item {
-    display: flex;
-    background-size: auto;
-    gap: 30px;
-    > div {
-      width: 65px;
-      height: 55px;
-    }
-    .option-pet {
-      background: url(${optionPet}) no-repeat center;
-    }
-    .option-ocean {
-      background: url(${optionOcean}) no-repeat center;
-    }
-    .option-mountain {
-      background: url(${optionMountain}) no-repeat center;
-    }
-    .option-swim {
-      background: url(${optionSwim}) no-repeat center;
-    }
-    .option-toilet {
-      background: url(${optionToilet}) no-repeat center;
-    }
-    .option-wifi {
-      background: url(${optionWifi}) no-repeat center;
-    }
-    .option-barbecue {
-      background: url(${optionBarbecue}) no-repeat center;
-    }
-  }
-`;
-
-// 객실선택
-const RoomSelect = styled.div`
-  width: 100%;
-  margin-top: 20px;
-`;
-const RoomSelectTitle = styled.div`
-  margin-top: 20px;
-  margin-bottom: 10px;
-`;
-
-const RoomCard = styled.div`
-  width: 90%;
-  display: flex;
-  gap: 20px;
-  background-color: ${colorSystem.background};
-  padding: 20px;
-  margin-top: 20px;
-  border-radius: 16px;
-
-  ${size.mid} {
-    flex-direction: column;
-    width: 100%;
-    div {
-      max-width: 720px;
-      width: 100%;
-    }
-  }
-`;
-
-const RoomCardLeft = styled.div`
-  max-width: 400px;
-  width: 100%;
-
-  .roomcard-img {
-    width: 100%;
-    height: 240px;
-    background: url(${Room}) no-repeat center;
-    background-size: cover;
-    position: relative;
-  }
-
-  .roomcard-img:hover {
-    span {
-      display: block;
-      cursor: pointer;
-    }
-  }
-
-  .roomcard-img {
-    span {
-      background-color: rgba(0, 0, 0, 0.3);
-      width: 100%;
-      position: absolute;
-      display: none;
-      color: ${colorSystem.g100};
-      font-size: 1.6rem;
-      text-align: center;
-      line-height: 240px;
-      font-weight: 200;
-    }
-  }
-`;
-
-const RoomCardRight = styled.div`
-  margin-top: 10px;
-  width: 100%;
-
-  > span {
-    font-weight: 700;
-    font-size: 1.1rem;
-  }
-
-  > div {
-    font-weight: 300;
-    background-color: ${colorSystem.white};
-    border-radius: 10px;
-    padding: 15px;
-    width: 100%;
-  }
-
-  .roomcard-txt {
-    margin-top: 10px;
-    > div {
-      display: flex;
-      gap: 35px;
-    }
-
-    span,
-    p {
-      font-weight: 500;
-      color: ${colorSystem.g700};
-    }
-  }
-
-  .txt-top {
-    margin-bottom: 5px;
-  }
-`;
-
-const RoomCardBooking = styled.div`
-  margin-top: 40px;
-  height: 145px;
-  position: relative;
-
-  > p {
-    margin-bottom: 20px;
-    font-weight: 400;
-    color: ${colorSystem.g800};
-    font-size: 0.9rem;
-  }
-
-  > span {
-    font-size: 1rem;
-    font-weight: 600;
-    position: absolute;
-    right: 15px;
-    bottom: 70px;
-  }
-
-  button {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-  }
-`;
-
-//객실 정보
-const RoomInfo = styled.div`
-  width: 100%;
-
-  h3 {
-    margin: 20px 0;
-  }
-`;
-
-const RoomIntro = styled.div`
-  margin-top: 20px;
-  position: relative;
-
-  svg {
-    color: ${colorSystem.g200};
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-  }
-
-  > div {
-    position: absolute;
-    right: 0;
-  }
-
-  > p {
-    font-weight: 600;
-    color: ${colorSystem.g600};
-    font-size: 1rem;
-    line-height: 1.3rem;
-    letter-spacing: 1px;
-  }
-`;
-const RoomInfomation = styled.div`
-  margin-top: 40px;
-`;
-const InfoGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-
-  .info-item {
-    > span {
-      color: ${colorSystem.primary};
-      font-weight: 500;
-    }
-
-    > div {
-      margin-top: 15px;
-    }
-  }
-`;
-
-const RoomLocation = styled.div`
-  margin-top: 20px;
-  margin-bottom: 30px;
-
-  > p {
-    width: 100%;
-    height: 500px;
-    background-color: lightblue;
-    border-radius: 20px;
-  }
-
-  .location-info {
-    margin-top: 10px;
-    margin-bottom: 40px;
-
-    > span {
-      color: ${colorSystem.g500};
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    > div {
-      margin-top: 15px;
-    }
-  }
-`;
+import AlertModal from "../components/common/AlertModal";
+import { ActionButton, MainButton } from "../components/common/Button";
+import useModal from "../hooks/UseModal";
+import GlampingDetailStyle, {
+  InfoGroup,
+  OptionItems,
+  ReviewContent,
+  ReviewTitle,
+  RoomCard,
+  RoomCardBooking,
+  RoomCardLeft,
+  RoomCardRight,
+  RoomInfo,
+  RoomInfomation,
+  RoomIntro,
+  RoomLocation,
+  RoomOption,
+  RoomPic,
+  RoomProperty,
+  RoomReview,
+  RoomSelect,
+  RoomSelectTitle,
+  RoomTitle,
+  UnderLine,
+} from "../styles/GlampingDetailStyle";
 
 const GlampingDetail = () => {
+  const [isLiked, setIsLiked] = useState(false);
+  const { openModal, closeModal } = useModal();
+  const [alertMessage, setAlertMessage] = useState("");
+
+  const toggleLike = async () => {
+    try {
+      const res = await axios.get(`/api/glamping/favorite`);
+      if (res.data.resultValue === 1) {
+        setIsLiked(true);
+        setAlertMessage("관심 글램핑장 목록에 추가되었습니다");
+      } else if (res.data.resultValue === 0) {
+        setIsLiked(false);
+        setAlertMessage("관심 글램핑장 목록에서 삭제되었습니다");
+      }
+      openModal();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -435,13 +61,14 @@ const GlampingDetail = () => {
           </RoomPic>
           <RoomTitle>
             <span>그린 파인트리글램핑&카라반</span>
-            {/* <GoHeart /> */}
-            <GoHeartFill />
+            <button onClick={toggleLike}>
+              {isLiked ? <GoHeartFill /> : <GoHeart />}
+            </button>
           </RoomTitle>
           <RoomReview>
             <ReviewTitle>
               <FaStar />
-              <div className="review-score">9.5</div>
+              <div className="review-score">5.0</div>
               <div className="review-evaluat">1557명 평가</div>
               <Link to="/review">
                 <button>리뷰보기</button>
@@ -520,96 +147,9 @@ const GlampingDetail = () => {
               </div>
             </RoomCardRight>
           </RoomCard>
-          <RoomCard>
-            <RoomCardLeft>
-              <Link to="/roomdetail">
-                <div className="roomcard-img">
-                  <span>사진 더보기</span>
-                </div>
-              </Link>
-            </RoomCardLeft>
-            <RoomCardRight>
-              <span>감성카라반</span>
-              <RoomCardBooking>
-                <p>입실 15:00</p>
-                <p>퇴실 11:00</p>
-                <span>148,000원</span>
-                <Link to="/payment">
-                  <MainButton label="객실 예약" />
-                </Link>
-              </RoomCardBooking>
-              <div className="roomcard-txt">
-                <div className="txt-top">
-                  <span>객실정보</span>
-                  <p>기준 2일 ~ 최대 4인 (유료)</p>
-                </div>
-                <div>
-                  <span>추가정보</span>
-                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
-                </div>
-              </div>
-            </RoomCardRight>
-          </RoomCard>
-          <RoomCard>
-            <RoomCardLeft>
-              <Link to="/roomdetail">
-                <div className="roomcard-img">
-                  <span>사진 더보기</span>
-                </div>
-              </Link>
-            </RoomCardLeft>
-            <RoomCardRight>
-              <span>감성카라반</span>
-              <RoomCardBooking>
-                <p>입실 15:00</p>
-                <p>퇴실 11:00</p>
-                <span>148,000원</span>
-                <Link to="/payment">
-                  <MainButton label="객실 예약" />
-                </Link>
-              </RoomCardBooking>
-              <div className="roomcard-txt">
-                <div className="txt-top">
-                  <span>객실정보</span>
-                  <p>기준 2일 ~ 최대 4인 (유료)</p>
-                </div>
-                <div>
-                  <span>추가정보</span>
-                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
-                </div>
-              </div>
-            </RoomCardRight>
-          </RoomCard>
-          <RoomCard>
-            <RoomCardLeft>
-              <Link to="/roomdetail">
-                <div className="roomcard-img">
-                  <span>사진 더보기</span>
-                </div>
-              </Link>
-            </RoomCardLeft>
-            <RoomCardRight>
-              <span>감성카라반</span>
-              <RoomCardBooking>
-                <p>입실 15:00</p>
-                <p>퇴실 11:00</p>
-                <span>148,000원</span>
-                <Link to="/payment">
-                  <MainButton label="객실 예약" />
-                </Link>
-              </RoomCardBooking>
-              <div className="roomcard-txt">
-                <div className="txt-top">
-                  <span>객실정보</span>
-                  <p>기준 2일 ~ 최대 4인 (유료)</p>
-                </div>
-                <div>
-                  <span>추가정보</span>
-                  <p>바닥난방 / 온풍기 / 개별화장실 완비</p>
-                </div>
-              </div>
-            </RoomCardRight>
-          </RoomCard>
+          <div className="view-all">
+            <ActionButton label="모두 보기" />
+          </div>
         </RoomSelect>
 
         <RoomInfo>
@@ -675,6 +215,11 @@ const GlampingDetail = () => {
           </RoomLocation>
         </RoomInfo>
       </div>
+      {/* <AlertModal
+        isOpen={openModal}
+        onClose={closeModal}
+        message={alertMessage}
+      /> */}
     </GlampingDetailStyle>
   );
 };
