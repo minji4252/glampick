@@ -181,6 +181,15 @@ const TermsGroupStyle = styled.div`
 `;
 
 const SignupPage = () => {
+  // 폼 입력 상태 관리 설정
+  // 입력값 변경 핸들러 구현
+  // 회원가입 버튼 클릭 핸들러 구현
+  // 약관동의 상태 관리
+  // 약관 동의 체크 박스 핸들러 구현
+  // 약관보기 모달창 구현
+  // 약관보기 버튼 핸들러 구현
+  //폼 유효성 검사
+
   return (
     <WrapStyle>
       <main>

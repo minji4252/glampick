@@ -15,6 +15,7 @@ import "../styles/reset.css";
 import { ActionButton } from "../components/common/Button";
 
 import MainCalendar from "../components/MainCalendar";
+import axios from "axios";
 
 const MainHeader = styled.div`
   align-content: center;
@@ -111,6 +112,9 @@ const MainBigTitle = styled.div`
     }
     ${size.mid} {
       gap: 10px;
+      > p {
+        font-size: 38px;
+      }
     }
   }
   ${size.large} {
@@ -345,13 +349,66 @@ const GotoTop = styled.div`
 const MainPage = ({ isLogin }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [popularData, setPopularData] = useState([]);
+  const [petData, setPetData] = useState([]);
+  const [mountainData, setMountainData] = useState([]);
 
+  // 지금 가장 인기있는 TOP3
+  useEffect(() => {
+    const getPopularData = async () => {
+      try {
+        const response = await axios.get("/api/main");
+        const popularArray = response.data.popular;
+        console.log("인기 top3");
+        console.log(popularArray);
+        setPopularData(popularArray);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getPopularData();
+  }, []);
+
+  // 반려동물과 함께할 수 있는 TOP 3
+  useEffect(() => {
+    const getPetData = async () => {
+      try {
+        const response = await axios.get("/api/main");
+        const petArray = response.data.petFriendly;
+        console.log("반려동물 top3");
+        console.log(petArray);
+        setPetData(petArray);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getPetData();
+  }, []);
+
+  // 산속에서 즐기는 TOP 3
+  useEffect(() => {
+    const getMountainData = async () => {
+      try {
+        const response = await axios.get("/api/main");
+        const mountainArray = response.data.mountainView;
+        console.log("마운틴뷰 top3");
+        console.log(mountainArray);
+        setMountainData(mountainArray);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getMountainData();
+  }, []);
+
+  // 헤더 숨김, 표시
   useEffect(() => {
     function handleScroll() {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
 
-      // 위에서부터 400px까지는 항상 헤더 표시, 아래에서부터 1000px 이내 항상 헤더 숨김
+      // 위에서부터 400px까지는 항상 헤더 표시하긔
+      // 아래에서부터 1000px 이내 항상 헤더 숨기기
       if (currentScrollTop <= 400) {
         setIsVisible(true);
       } else if (
@@ -489,9 +546,19 @@ const MainPage = ({ isLogin }) => {
               <p>🥇 지금 가장 인기있는</p>
             </MainListTitle>
             <MainListContents>
-              <MainCard />
-              <MainCard />
-              <MainCard />
+              <>
+                {popularData.map(item => (
+                  <MainCard
+                    key={item.glampId}
+                    glampId={item.glampId}
+                    glampingName={item.glampingName}
+                    region={item.region}
+                    starPoint={item.starPoint}
+                    reviewCount={item.reviewCount}
+                    price={item.price}
+                  />
+                ))}
+              </>
             </MainListContents>
           </MainList>
           <MainList>
@@ -499,9 +566,19 @@ const MainPage = ({ isLogin }) => {
               <p>🐶 반려동물과 함께할 수 있는</p>
             </MainListTitle>
             <MainListContents>
-              <MainCard />
-              <MainCard />
-              <MainCard />
+              <>
+                {petData.map(item => (
+                  <MainCard
+                    key={item.glampId}
+                    glampId={item.glampId}
+                    glampingName={item.glampingName}
+                    region={item.region}
+                    starPoint={item.starPoint}
+                    reviewCount={item.reviewCount}
+                    price={item.price}
+                  />
+                ))}
+              </>
             </MainListContents>
           </MainList>
           <MainList>
@@ -509,9 +586,19 @@ const MainPage = ({ isLogin }) => {
               <p>🏕️ 산속에서 즐기는</p>
             </MainListTitle>
             <MainListContents>
-              <MainCard />
-              <MainCard />
-              <MainCard />
+              <>
+                {mountainData.map(item => (
+                  <MainCard
+                    key={item.glampId}
+                    glampId={item.glampId}
+                    glampingName={item.glampingName}
+                    region={item.region}
+                    starPoint={item.starPoint}
+                    reviewCount={item.reviewCount}
+                    price={item.price}
+                  />
+                ))}
+              </>
             </MainListContents>
           </MainList>
         </MainSec2>

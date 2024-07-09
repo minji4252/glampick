@@ -2,10 +2,12 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import ReviewCard from "../components/ReviewCard";
+import ReviewImgModal from "../components/common/ReviewImgModal"; // ReviewImgModal 임포트
 import reviewimg1 from "../images/review1.png";
 import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { colorSystem, size } from "../styles/color";
+import Pagination from "../components/common/Pagination";
 
 const WrapStyle = styled.div`
   .inner {
@@ -43,7 +45,6 @@ const TopContents = styled.div`
     font-weight: 500;
   }
 
-  /* 평점 */
   .rating-details {
     font-size: 1.2rem;
     color: ${colorSystem.g900};
@@ -71,29 +72,19 @@ const TopContents = styled.div`
     color: ${colorSystem.g900};
   }
 
-  /* .review-img-txt {
-    color: ${colorSystem.g800};
-    margin-left: 17px;
-    font-weight: 500;
-    font-size: 0.9rem;
-    ${size.mid} {
-      margin-bottom: 10px;
-    }
-  } */
-
   .review-img {
     width: 100%;
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 10px;
-    ${size.mid} {
-    }
   }
 
   .review-img div {
-    width: 120px;
-    height: 120px;
+    width: 122px;
+    height: 122px;
     border-radius: 5px;
     background-size: cover;
     background-position: center;
@@ -101,7 +92,6 @@ const TopContents = styled.div`
     position: relative;
   }
 
-  /* 이미지 더보기 */
   .more-overlay {
     position: absolute;
     top: 0;
@@ -123,29 +113,8 @@ const TopContents = styled.div`
 
 const BottomContents = styled.div`
   width: 100%;
-  height: 670px;
-`;
-
-// 리뷰 이미지 더보기 모달
-const ReviewImgModal = styled.div`
-  position: fixed;
-  display: flex;
-  top: 0;
-  left: 0;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 99999;
-`;
-const ModalContent = styled.div`
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  display: flex;
-  gap: 20px;
+  height: 2800px;
+  /* 임시로 지정 */
 `;
 
 const Review = () => {
@@ -180,18 +149,13 @@ const Review = () => {
             <div className="average-rating">4.7</div>
             <div className="total-rating">/5</div>
           </div>
-          {/* <div className="review-img-txt">
-            <div>후기사진</div>
-          </div> */}
           <div className="review-img">
-            {/* 이미지 최대 9개*/}
             {reviewImages.map((img, index) => (
               <div
                 key={index}
                 className={`review-img${index + 1}`}
                 style={{ backgroundImage: `url(${img})` }}
               >
-                {/* 마지막 사진일 때만 더보기 버튼 표시 */}
                 {index === reviewImages.length - 1 && (
                   <div className="more-overlay" onClick={toggleModal}>
                     더보기
@@ -203,33 +167,21 @@ const Review = () => {
         </TopContents>
         <BottomContents>
           <ReviewCard />
+          <ReviewCard />
+          <ReviewCard />
+          <ReviewCard />
+          <ReviewCard />
         </BottomContents>
       </div>
-      {/* 리뷰 전체이미지 모달 */}
       {showModal && (
         <ReviewImgModal
-          onClick={() => {
-            toggleModal();
-          }}
-        >
-          <ModalContent>
-            {reviewImages.map((img, index) => (
-              <div
-                key={index}
-                className={`review-img${index + 1}`}
-                style={{
-                  backgroundImage: `url(${img})`,
-                  width: "100px",
-                  height: "100px",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  marginBottom: "20px",
-                }}
-              ></div>
-            ))}
-          </ModalContent>
-        </ReviewImgModal>
+          reviewImages={reviewImages}
+          onClose={toggleModal}
+          onMoreClick={() => alert("더보기 버튼 클릭")}
+          // 더보기 버튼 클릭 핸들러 추가되어야 함
+        />
       )}
+      <Pagination />
     </WrapStyle>
   );
 };
