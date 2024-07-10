@@ -1,354 +1,28 @@
-import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import glampickLogoMain from "../images/glampick_logo_white.png";
-import SearchIcon from "../images/icon/icon-search-white.png";
-import MemberIcon from "../images/icon/main-member-icon.png";
-import MainBigImage from "../images/main-big.gif";
 import LoginUserIcon from "../images/icon/main-login-user.png";
-import TopIcon from "../images/icon/gototop.png";
-
 import { Link } from "react-router-dom";
 import MainCard from "../components/MainCard";
-import { colorSystem, size } from "../styles/color";
 import "../styles/common.css";
 import "../styles/reset.css";
 import { ActionButton } from "../components/common/Button";
-
 import MainCalendar from "../components/MainCalendar";
 import axios from "axios";
 import AlertModal from "../components/common/AlertModal";
 import useModal from "../hooks/UseModal";
-
-const MainHeader = styled.div`
-  align-content: center;
-  position: fixed;
-  width: 100%;
-  height: 110px;
-  max-width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  display: block;
-  z-index: 999;
-  transition: top 0.3s;
-  .main-login {
-    width: 130px;
-    height: 35px;
-    background: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 500;
-    p {
-      color: #355179;
-    }
-  }
-  .main-nav {
-    display: flex;
-    gap: 10px;
-  }
-  .main-logout {
-    width: 85px;
-    height: 35px;
-    background: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    p {
-      font-weight: 500;
-      color: #355179;
-    }
-  }
-  .main-user {
-    display: flex;
-    align-items: flex-end;
-    .main-user-icon {
-      width: 35px;
-      height: 35px;
-    }
-  }
-`;
-
-const WrapStyle = styled.div`
-  position: relative;
-
-  .main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-`;
-// 메인 상단 섹션
-const MainSec1 = styled.section`
-  height: 1080px;
-  width: 100%;
-  padding: 0 10px;
-  max-width: 100%;
-  display: block;
-  background: url(${MainBigImage}) no-repeat center;
-  background-size: cover;
-  ${size.large} {
-    display: inline-flex;
-    flex-direction: column;
-  }
-`;
-
-const MainBigTitle = styled.div`
-  margin-top: 380px;
-  margin-bottom: 65px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .main-title {
-    display: flex;
-    gap: 10px;
-    > p {
-      font-weight: bold;
-      font-size: 45px;
-      color: #fff;
-      letter-spacing: -0.9px;
-    }
-    ${size.large} {
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-    ${size.mid} {
-      gap: 10px;
-      > p {
-        font-size: 38px;
-      }
-    }
-  }
-  ${size.large} {
-    margin-top: 230px;
-    margin-bottom: 70px;
-  }
-  ${size.mid} {
-    margin-top: 200px;
-    margin-bottom: 50px;
-  }
-`;
-
-// 메인 검색창
-const MainSearch = styled.div`
-  height: 100px;
-  margin-bottom: 350px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .header-button {
-    width: 130px;
-    height: 40px;
-    background: #355179;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    color: #fff;
-  }
-  ${size.large} {
-    height: auto;
-  }
-`;
-// 메인 검색 항목
-const MainSearchContent = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  ${size.large} {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-  ${size.mid} {
-    gap: 10px;
-  }
-
-  > li {
-    float: left;
-  }
-
-  .m-sc-place {
-    width: 110px;
-    height: 50px;
-
-    /* border-right: 1px solid ${colorSystem.white}; */
-
-    > select {
-      width: 110px;
-      height: 50px;
-      border-radius: 30px;
-      border: none;
-      font-family: "Pretendard Variable";
-      background: rgba(255, 255, 255, 0);
-      font-size: 20px;
-      color: ${colorSystem.white};
-      text-align: center;
-      outline: none;
-      > option {
-        background-color: ${colorSystem.g150};
-        border-radius: 10px;
-        color: ${colorSystem.g800};
-      }
-    }
-  }
-
-  .m-sc-date {
-    border-left: 2px solid ${colorSystem.white};
-    height: 50px;
-    padding-left: 20px;
-    margin: 0 20px;
-    display: flex;
-    align-items: center;
-
-    ${size.large} {
-      padding: 0;
-      border: none;
-    }
-  }
-
-  .m-sc-member {
-    border-left: 2px solid ${colorSystem.white};
-    height: 50px;
-    padding-left: 40px;
-    margin: 0 20px;
-    display: flex;
-    align-items: center;
-    .m-sc-member-icon {
-      margin-right: 10px;
-      width: 40px;
-      height: 40px;
-      background: url(${MemberIcon}) no-repeat center;
-    }
-    > input {
-      width: 30px;
-      /* width: 80px; */
-      height: 50px;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50px;
-      border: none;
-      font-size: 20px;
-      color: ${colorSystem.white};
-      background: rgba(255, 255, 255, 0);
-      outline: none;
-      /* position: absolute; */
-    }
-    > p {
-      /* position: relative; */
-      font-size: 20px;
-      color: ${colorSystem.white};
-    }
-    ${size.large} {
-      padding: 0;
-      border: none;
-    }
-  }
-  .m-sc-input {
-    border-left: 2px solid ${colorSystem.white};
-    height: 50px;
-    padding-left: 20px;
-    margin: 0 20px;
-    align-items: center;
-    display: flex;
-    ${size.large} {
-      padding: 0;
-      border: none;
-    }
-    .m-sc-input-field {
-      display: flex;
-      .search-icon {
-        width: 40px;
-        height: 40px;
-        background: url(${SearchIcon}) no-repeat center;
-        margin-right: 10px;
-      }
-      > input {
-        width: 180px;
-        background: rgba(255, 255, 255, 0.7);
-        border: none;
-        border-radius: 10px;
-        font-size: 20px;
-        color: ${colorSystem.g800};
-        padding-left: 10px;
-        ::placeholder {
-          font-size: 18px;
-        }
-      }
-    }
-  }
-  .m-sc-search button {
-    display: flex;
-    width: 110px;
-    height: 45px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-    border-radius: 500px;
-    background: ${colorSystem.white};
-    border: none;
-    color: ${colorSystem.primary};
-    text-align: center;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: bold;
-    ${size.large} {
-      margin-top: 20px;
-    }
-    ${size.mid} {
-      margin-top: 10px;
-    }
-  }
-`;
-
-// 메인 하단 섹션
-const MainSec2 = styled.section`
-  padding-top: 100px;
-  padding-bottom: 200px;
-  max-width: 950px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 80px;
-`;
-
-// 추천 글램핑장 리스트 (3 항목)
-const MainList = styled.div``;
-const MainListTitle = styled.div`
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 20px;
-  color: ${colorSystem.g800};
-  ${size.mid} {
-    display: flex;
-    justify-content: center;
-    font-size: 25px;
-  }
-`;
-const MainListContents = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 40px;
-  margin-bottom: 70px;
-
-  ${size.mid} {
-    flex-direction: column;
-  }
-`;
-const GotoTop = styled.div`
-  .top-icon {
-    width: 43px;
-    height: 43px;
-    position: fixed;
-    cursor: pointer;
-    right: 50px;
-    bottom: 50px;
-    background: url(${TopIcon}) no-repeat center;
-  }
-`;
+import MainPageStyle, {
+  GotoTop,
+  MainBigTitle,
+  MainHeader,
+  MainList,
+  MainListContents,
+  MainListTitle,
+  MainSearch,
+  MainSearchContent,
+  MainSec1,
+  MainSec2,
+  WrapStyle,
+} from "../styles/MainPageStyle";
 
 const MainPage = ({ isLogin }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -357,28 +31,26 @@ const MainPage = ({ isLogin }) => {
   const [petData, setPetData] = useState([]);
   const [mountainData, setMountainData] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
-  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜
+  const [selectedDate, setSelectedDate] = useState([null, null]); // 선택된 날짜
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
   const [searchQuery, setSearchQuery] = useState(""); // 검색어
-  // const [openModal, setOpenModal] = useState(false);
-  // const [alertMessage, setAlertMessage] = useState("");
 
   const handleSearch = () => {
     // 날짜 필수 선택
-    if (!selectedDate) {
+    if (!selectedDate[0] || !selectedDate[1]) {
       alert("날짜를 선택해 주세요.");
       return;
     }
-    const baseUrl = "http://localhost:8080/api/glamping/search";
+    console.log("날짜");
     const queryParams = new URLSearchParams({
       region: selectedPlace,
-      inDate: selectedDate.toISOString().slice(0, 10),
-      outDate: selectedDate.toISOString().slice(0, 10),
+      inDate: selectedDate[0].toISOString().slice(0, 10),
+      outDate: selectedDate[1].toISOString().slice(0, 10),
       people: selectedMember,
     });
-    const url = `${baseUrl}?${queryParams.toString()}`;
-    // const url = `${baseUrl}?region=${selectedPlace}&inDate=${inDate}&outDate=${outDate}&people=${selectedMember}`;
-    window.location.href = url;
+
+    const url = `/search?${queryParams.toString()}`;
+    window.location.href = url; // 페이지 이동
   };
 
   // 지금 가장 인기있는 TOP3
@@ -387,8 +59,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const popularArray = response.data.popular;
-        console.log("인기 top3");
-        console.log(popularArray);
+        // console.log("인기 top3");
+        // console.log(popularArray);
         setPopularData(popularArray);
       } catch (error) {
         console.error(error);
@@ -403,8 +75,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const petArray = response.data.petFriendly;
-        console.log("반려동물 top3");
-        console.log(petArray);
+        // console.log("반려동물 top3");
+        // console.log(petArray);
         setPetData(petArray);
       } catch (error) {
         console.error(error);
@@ -419,8 +91,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const mountainArray = response.data.mountainView;
-        console.log("마운틴뷰 top3");
-        console.log(mountainArray);
+        // console.log("마운틴뷰 top3");
+        // console.log(mountainArray);
         setMountainData(mountainArray);
       } catch (error) {
         console.error(error);
@@ -428,6 +100,11 @@ const MainPage = ({ isLogin }) => {
     };
     getMountainData();
   }, []);
+
+  const handleDateSelect = date => {
+    setSelectedDate(date);
+    console.log("선택 날짜:", date);
+  };
 
   // 헤더 숨김, 표시
   useEffect(() => {
@@ -467,7 +144,7 @@ const MainPage = ({ isLogin }) => {
   };
 
   return (
-    <WrapStyle>
+    <MainPageStyle>
       <MainHeader style={{ top: isVisible ? "0" : "-110px" }}>
         <div className="nav-inner">
           <div className="header-logo">
@@ -523,7 +200,10 @@ const MainPage = ({ isLogin }) => {
                   name="place"
                   id="place"
                   value={selectedPlace}
-                  onChange={e => setSelectedPlace(e.target.value)}
+                  onChange={e => {
+                    setSelectedPlace(e.target.value);
+                    console.log("선택한 지역:", e.target.value);
+                  }}
                 >
                   <option value="none" disabled>
                     지역
@@ -532,19 +212,19 @@ const MainPage = ({ isLogin }) => {
                     서울/경기
                   </option>
                   <option value="gangwon">강원</option>
-                  <option value="cn">충북</option>
-                  <option value="cs">충남</option>
-                  <option value="tk">경북</option>
-                  <option value="pk">경남</option>
-                  <option value="jn">전북</option>
-                  <option value="js">전남</option>
+                  <option value="cb">충북</option>
+                  <option value="cn">충남</option>
+                  <option value="kb">경북</option>
+                  <option value="kn">경남</option>
+                  <option value="jb">전북</option>
+                  <option value="jn">전남</option>
                   <option value="jeju">제주</option>
                 </select>
               </li>
               <li className="m-sc-date">
                 <MainCalendar
                   selectedDate={selectedDate}
-                  setSelectedDate={setSelectedDate}
+                  setSelectedDate={handleDateSelect}
                 />
               </li>
               <li className="m-sc-member">
@@ -556,7 +236,10 @@ const MainPage = ({ isLogin }) => {
                   defaultValue={2}
                   id="memberinput"
                   value={selectedMember}
-                  onChange={e => setSelectedMember(e.target.value)}
+                  onChange={e => {
+                    setSelectedMember(e.target.value);
+                    console.log("선택 인원:", e.target.value);
+                  }}
                 />
                 <p>명</p>
               </li>
@@ -652,7 +335,7 @@ const MainPage = ({ isLogin }) => {
         onClose={() => setOpenModal(false)}
         message={alertMessage}
       /> */}
-    </WrapStyle>
+    </MainPageStyle>
   );
 };
 

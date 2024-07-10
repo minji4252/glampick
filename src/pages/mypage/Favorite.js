@@ -68,6 +68,21 @@ const Favorite = () => {
     setVisibleItems(newVisibleItems);
   };
 
+  // const deleteLike = async glampId => {
+  //   try {
+  //     const response = await axios.delete(`/api/glamping/favorite/${glampId}`);
+  //     if (response.data.success) {
+  //       const newVisibleItems = [...visibleItems];
+  //       newVisibleItems.splice(glampId, 1);
+  //       setVisibleItems(newVisibleItems);
+  //     } else {
+  //       console.error("삭제 실패");
+  //     }
+  //   } catch (error) {
+  //     console.error("삭제 오류:", error);
+  //   }
+  // };
+
   return (
     <WrapStyle>
       <Categories />
