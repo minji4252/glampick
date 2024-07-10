@@ -126,19 +126,24 @@ export const ReviewTitle = styled.div`
   }
 `;
 
-export const ReviewContent = styled.div`
+export const ReviewSwiper = styled.div`
   margin-top: 15px;
   display: flex;
-  gap: 20px;
   align-items: center;
+  position: relative;
 
-  .review-content {
+  .swiper {
     width: 100%;
-    display: flex;
-    gap: 20px;
+    height: 100%;
   }
 
-  .review-content-item {
+  .swiper-slide {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     max-width: 360px;
     width: 100%;
     height: 150px;
@@ -147,6 +152,8 @@ export const ReviewContent = styled.div`
     border-radius: 12px;
     line-height: 1.3rem;
     > p {
+      width: 100%;
+      text-align: left;
       color: ${colorSystem.g700};
       font-size: 0.9rem;
       height: 80px;
@@ -166,34 +173,82 @@ export const ReviewContent = styled.div`
     }
   }
 
-  .review-more {
+  .swiper-slide img {
+    display: block;
     width: 100%;
-    max-width: 350px;
-    width: 100%;
-    min-width: 50px;
-    height: fit-content;
-    color: ${colorSystem.primary};
-    display: flex;
-    align-items: center;
-    margin-left: 40px;
+    height: 100%;
+    object-fit: cover;
+  }
 
-    button {
-      background-color: transparent;
-      border: 0px;
-      font-family: "Pretendard Variable";
-      font-weight: 700;
-      color: ${colorSystem.primary};
-      height: 20px;
-    }
+  .swiper-pagination {
+    display: none;
+  }
 
-    ${size.mid} {
-      margin-left: 30px;
-      max-width: 700px;
+  &:hover {
+    .review-all {
+      display: flex;
     }
   }
 
+  .review-all {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    max-width: 83px;
+    max-height: 30px;
+
+    button {
+      display: flex;
+      align-items: center;
+      border: 1px solid ${colorSystem.primary};
+      padding: 10px;
+      border-radius: 30px;
+      background-color: ${colorSystem.white};
+      font-weight: 700;
+      color: ${colorSystem.primary};
+      max-height: 30px;
+    }
+  }
+`;
+
+export const SwiperEndStyle = styled.div`
+  height: 100%;
+  width: 10%;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+  --tw-gradient-from: rgba(255, 255, 255, 0);
+  --tw-gradient-to: rgba(255, 255, 255, 1);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  z-index: 10;
+`;
+
+export const ReviewAll = styled.div`
+  width: 100%;
+  margin-left: 20px;
+  max-width: 50px;
+  min-width: 50px;
+  height: fit-content;
+  color: ${colorSystem.primary};
+  display: flex;
+  align-items: center;
+
+  button {
+    background-color: transparent;
+    border: 0px;
+    font-family: "Pretendard Variable";
+    font-weight: 700;
+    color: ${colorSystem.primary};
+    height: 20px;
+  }
+
   ${size.mid} {
-    flex-direction: column;
+    margin-left: 30px;
+    max-width: 700px;
   }
 `;
 
@@ -424,6 +479,7 @@ export const InfoGroup = styled.div`
 
     > div {
       margin-top: 15px;
+      line-height: 1.3rem;
     }
   }
 `;
