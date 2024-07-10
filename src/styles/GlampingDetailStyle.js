@@ -68,13 +68,10 @@ export const RoomPic = styled.div`
 export const RoomTitle = styled.div`
   font-size: 1.8rem;
   font-weight: 700;
-  margin-top: 70px;
+  margin-top: 60px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-
-  ${size.mid} {
-    flex-direction: column;
-  }
 
   svg {
     color: ${colorSystem.error};
@@ -85,6 +82,7 @@ export const RoomTitle = styled.div`
   button {
     background-color: transparent;
     border: 0px;
+    width: fit-content;
   }
 `;
 
@@ -95,23 +93,36 @@ export const RoomReview = styled.div`
 
 export const ReviewTitle = styled.div`
   display: flex;
+  height: 25px;
+  align-items: center;
   gap: 5px;
+  font-size: 0.95rem;
   font-weight: 700;
+
+  > svg {
+    color: ${colorSystem.star};
+    font-size: 1.1rem;
+  }
+
+  .review-score {
+    margin-top: 4px;
+  }
 
   .review-evaluat {
     color: ${colorSystem.g400};
+    font-weight: 500;
+    margin-top: 4px;
   }
 
   button {
-    font-weight: 800;
+    margin-top: 4px;
+
+    font-weight: 600;
     color: #1273e4;
     background-color: transparent;
     border: 0px;
     font-family: "Pretendard Variable";
-  }
-
-  > svg {
-    color: ${colorSystem.star};
+    font-size: 1rem;
   }
 `;
 
@@ -122,13 +133,15 @@ export const ReviewContent = styled.div`
   align-items: center;
 
   .review-content {
+    width: 100%;
     display: flex;
     gap: 20px;
   }
 
   .review-content-item {
+    max-width: 360px;
     width: 100%;
-    height: 130px;
+    height: 150px;
     background-color: ${colorSystem.beige};
     padding: 20px;
     border-radius: 12px;
@@ -141,10 +154,21 @@ export const ReviewContent = styled.div`
       display: -webkit-box;
       -webkit-line-clamp: 4;
       -webkit-box-orient: vertical;
+      min-width: 160px;
+    }
+
+    h5 {
+      width: 100%;
+      text-align: right;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 10px;
     }
   }
 
   .review-more {
+    width: 100%;
+    max-width: 350px;
     width: 100%;
     min-width: 50px;
     height: fit-content;
@@ -164,6 +188,7 @@ export const ReviewContent = styled.div`
 
     ${size.mid} {
       margin-left: 30px;
+      max-width: 700px;
     }
   }
 

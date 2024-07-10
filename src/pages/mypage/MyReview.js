@@ -2,6 +2,8 @@ import styled from "@emotion/styled";
 import ReviewCard from "../../components/ReviewCard";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const WrapStyle = styled.div`
   .inner {
@@ -75,6 +77,24 @@ const MyReviewGroup = styled.div`
 `;
 
 const MyReview = () => {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          "http://192.168.0.30:8080/api/user/review?userId=1",
+        );
+        setReviews(response.data.userlist);
+        console.log(response.data.userlist);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
   return (
     <WrapStyle>
       <Categories />
@@ -89,8 +109,16 @@ const MyReview = () => {
           <p>후기 삭제는 후기 작성일로부터 30일 이후에 가능합니다.</p>
         </MyReviewInfo>
         <MyReviewGroup>
-          <ReviewCard />
-          <ReviewCard />
+          {reviews.map((review, index) => (
+            <ReviewCard
+              key={index}
+              userNickname={review.userNickname}
+              glampName={review.glampName}
+              roomName={review.roomName}
+              createdAt={review.createdAt}
+              reviewText={review.reviewContent}
+            />
+          ))}
         </MyReviewGroup>
       </div>
     </WrapStyle>
