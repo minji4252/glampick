@@ -11,7 +11,9 @@ import useModal from "../hooks/UseModal";
 import GlampingDetailStyle, {
   InfoGroup,
   OptionItems,
+  ReviewAll,
   ReviewContent,
+  ReviewSwiper,
   ReviewTitle,
   RoomCard,
   RoomCardBooking,
@@ -28,14 +30,19 @@ import GlampingDetailStyle, {
   RoomSelect,
   RoomSelectTitle,
   RoomTitle,
+  SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
+// 리뷰- 스와이퍼 관련
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
 
 const GlampingDetail = () => {
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
-  const { openModal, closeModal } = useModal();
-  const [alertMessage, setAlertMessage] = useState("");
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
   useEffect(() => {
     const fetchGlampingData = async () => {
@@ -60,10 +67,10 @@ const GlampingDetail = () => {
       const res = await axios.get(`/api/glamping/favorite`);
       if (res.data.resultValue === 1) {
         setIsLiked(true);
-        setAlertMessage("관심 글램핑장 목록에 추가되었습니다");
+        openModal({ message: "관심 글램핑장 목록에 추가되었습니다" });
       } else if (res.data.resultValue === 0) {
         setIsLiked(false);
-        setAlertMessage("관심 글램핑장 목록에서 삭제되었습니다");
+        openModal({ message: "관심 글램핑장 목록에서 삭제되었습니다" });
       }
       openModal();
     } catch (error) {
@@ -83,14 +90,44 @@ const GlampingDetail = () => {
     infoNotice,
     countReviewUsers,
     reviewItems,
+    roomItems,
   } = glampingData;
-
-  const { roomItems, roomName, checkInTime, checkOutTime, roomPrice } =
-    glampingData;
 
   const formatTime = time => {
     const [hours, minutes] = time.split(":");
     return `${hours}:${minutes}`;
+  };
+
+  const changeOfLine = text => {
+    return text
+      .split("\r\n")
+      .map(line => {
+        return line.trim().length > 0
+          ? `<span style="font-size: 23px;">·</span> ${line.replace(/^- /, "").trim()}`
+          : "";
+      })
+      .join("<br>");
+  };
+
+  const getServiceClassName = service => {
+    switch (service) {
+      case "바베큐":
+        return "option-barbecue";
+      case "와이파이":
+        return "option-wifi";
+      case "수영장":
+        return "option-swim";
+      case "반려동물 동반":
+        return "option-pet";
+      case "마운틴뷰":
+        return "option-mountain";
+      case "오션뷰":
+        return "option-ocean";
+      case "개별화장실":
+        return "option-toilet";
+      default:
+        return "";
+    }
   };
 
   return (
@@ -115,29 +152,44 @@ const GlampingDetail = () => {
                 <button>리뷰보기</button>
               </Link>
             </ReviewTitle>
-            <ReviewContent>
-              <div className="review-content">
-                {reviewItems.map((item, index) => (
-                  <div className="review-content-item" key={index}>
-                    <p>{item.content}</p>
-                    <h5>{item.userName}</h5>
-                  </div>
-                ))}
-              </div>
-              <div className="review-more">
-                <button>더보기</button>
-                <IoIosArrowForward />
-              </div>
-            </ReviewContent>
+            <ReviewSwiper>
+              <Swiper
+                slidesPerView={3}
+                spaceBetween={20}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[Pagination]}
+                className="mySwiper"
+              >
+                <div>
+                  {reviewItems.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <p>{item.content}</p>
+                      <h5>{item.userName}</h5>
+                    </SwiperSlide>
+                  ))}
+                </div>
+              </Swiper>
+              <SwiperEndStyle />
+              <Link to="/review">
+                <div className="review-all">
+                  <button>
+                    전체보기
+                    <IoIosArrowForward />
+                  </button>
+                </div>
+              </Link>
+            </ReviewSwiper>
           </RoomReview>
           <RoomOption>
             <UnderLine />
             <h3 className="option-title">테마</h3>
             <OptionItems>
               <div className="option-item">
-                <div className="option-pet" />
-                <div className="option-ocean" />
-                <div className="option-wifi" />
+                {glampingData.roomService.map((service, index) => (
+                  <div key={index} className={getServiceClassName(service)} />
+                ))}
               </div>
             </OptionItems>
           </RoomOption>
@@ -210,26 +262,19 @@ const GlampingDetail = () => {
             <InfoGroup>
               <div className="info-item">
                 <span>기본정보</span>
-                <div>
-                  <h4>{infoBasic} </h4>
-                  <h4>{infoBasic} </h4>
-                  <h4>{infoBasic} </h4>
-                  <h4>{infoBasic} </h4>
-                </div>
+                <div
+                  dangerouslySetInnerHTML={{ __html: changeOfLine(infoBasic) }}
+                />
               </div>
               <div className="info-item">
                 <span>주차장정보</span>
                 <div>
-                  <h4>{infoParking}</h4>
                   <h4>{infoParking}</h4>
                 </div>
               </div>
               <div className="info-item">
                 <span>유의사항</span>
                 <div>
-                  <h4>{infoNotice}</h4>
-                  <h4>{infoNotice}</h4>
-                  <h4>{infoNotice}</h4>
                   <h4>{infoNotice}</h4>
                 </div>
               </div>
@@ -251,11 +296,11 @@ const GlampingDetail = () => {
           </RoomLocation>
         </RoomInfo>
       </div>
-      {/* <AlertModal
-        isOpen={openModal}
+      <AlertModal
+        isOpen={isModalOpen}
         onClose={closeModal}
-        message={alertMessage}
-      /> */}
+        message={modalMessage}
+      />
     </GlampingDetailStyle>
   );
 };
