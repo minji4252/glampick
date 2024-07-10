@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import "../styles/common.css";
 import "../styles/reset.css";
@@ -19,6 +19,7 @@ import filterWifi from "../images/icon/filter-wifi.png";
 import filterWifi2 from "../images/icon/filter-wifi2.png";
 import filterBarbecue from "../images/icon/filter-barbecue.png";
 import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
+import axios from "axios";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -238,7 +239,7 @@ const SearchInnerList = styled.div`
   }
 `;
 
-// 페이지
+// 페이지네이션 할 곳
 const SearchInnerBottom = styled.div`
   margin-top: 40px;
   .search-page {
@@ -249,6 +250,8 @@ const SearchInnerBottom = styled.div`
 `;
 
 const SearchPage = () => {
+  const [searchResults, setSearchResults] = useState([]);
+  // 필터 아이콘 선택
   const [activeFilters, setActiveFilters] = useState({
     pet: false,
     ocean: false,
@@ -258,8 +261,12 @@ const SearchPage = () => {
     wifi: false,
     barbecue: false,
   });
+  const [region, setRegion] = useState("");
+  const [inDate, setInDate] = useState("");
+  const [outDate, setOutDate] = useState("");
+  const [people, setPeople] = useState("");
 
-  // 검색 필터 아이콘 토글 (중복 선택 가능)
+  // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
     setActiveFilters(prevState => ({
       ...prevState,
@@ -275,6 +282,26 @@ const SearchPage = () => {
   //   }));
   // };
 
+  useEffect(() => {
+    const getSearchResult = async () => {
+      try {
+        const params = {
+          region,
+          inDate,
+          outDate,
+          people,
+        };
+        const response = await axios.get("/api/glamping/search", { params });
+        setSearchResults(response.data);
+        console.log("검색 결과:", response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getSearchResult();
+  }, [region, inDate, outDate, people]);
+
   return (
     <WrapStyle>
       <main>
@@ -282,26 +309,45 @@ const SearchPage = () => {
           <SearchTop>
             <SearchResult>
               <ResultContents>
-                <label htmlFor="place" className="no-border">
+                {/* <label htmlFor="place" className="no-border">
                   지역
                 </label>
-                <input type="text" value={"서울/경기"}></input>
+                <input type="text" value={region}></input> */}
+                <label htmlFor="place">지역</label>
+                <input
+                  type="text"
+                  value={region}
+                  onChange={e => setRegion(e.target.value)}
+                />
               </ResultContents>
               <ResultContents>
+                {/* <label htmlFor="date">날짜</label>
+                <input
+                  type="text"
+                  value={"inDate - outDate"}
+                  className="search-date"
+                ></input> */}
                 <label htmlFor="date">날짜</label>
                 <input
                   type="text"
-                  value={"2024.06.29 토 - 2024.06.30 일"}
+                  value={`${inDate} - ${outDate}`}
                   className="search-date"
-                ></input>
+                  onChange={e => setInDate(e.target.value)}
+                />
               </ResultContents>
               <ResultContents>
+                {/* <label htmlFor="member">인원</label>
+                <input type="text" value={"{people}명"}></input> */}
                 <label htmlFor="member">인원</label>
-                <input type="text" value={"2명"}></input>
+                <input
+                  type="text"
+                  value={`${people}명`}
+                  onChange={e => setPeople(e.target.value)}
+                />
               </ResultContents>
               <ResultContents>
                 <label htmlFor="input">검색어</label>
-                <input type="text" value={"검색어"}></input>
+                <input type="text" value={"검색어"} readOnly></input>
               </ResultContents>
             </SearchResult>
           </SearchTop>
@@ -363,15 +409,20 @@ const SearchPage = () => {
                     <option value="lowprice">낮은 가격순</option>
                   </select>
                 </div>
-                <div className="search-result">1,234 개 검색 결과</div>
+                <div className="search-result">
+                  {searchResults.length} 개 검색 결과
+                </div>
               </SearchMenu>
             </SearchInnerTop>
             <SearchInnerList>
+              {searchResults.map(result => (
+                <SearchCard key={result.id} {...result} />
+              ))}
+              {/* <SearchCard />
               <SearchCard />
               <SearchCard />
               <SearchCard />
-              <SearchCard />
-              <SearchCard />
+              <SearchCard /> */}
             </SearchInnerList>
             <SearchInnerBottom>
               <ul className="search-page">

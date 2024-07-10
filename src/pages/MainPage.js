@@ -16,6 +16,8 @@ import { ActionButton } from "../components/common/Button";
 
 import MainCalendar from "../components/MainCalendar";
 import axios from "axios";
+import AlertModal from "../components/common/AlertModal";
+import useModal from "../hooks/UseModal";
 
 const MainHeader = styled.div`
   align-content: center;
@@ -248,6 +250,8 @@ const MainSearchContent = styled.ul`
     height: 50px;
     padding-left: 20px;
     margin: 0 20px;
+    align-items: center;
+    display: flex;
     ${size.large} {
       padding: 0;
       border: none;
@@ -352,6 +356,30 @@ const MainPage = ({ isLogin }) => {
   const [popularData, setPopularData] = useState([]);
   const [petData, setPetData] = useState([]);
   const [mountainData, setMountainData] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
+  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜
+  const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
+  const [searchQuery, setSearchQuery] = useState(""); // 검색어
+  // const [openModal, setOpenModal] = useState(false);
+  // const [alertMessage, setAlertMessage] = useState("");
+
+  const handleSearch = () => {
+    // 날짜 필수 선택
+    if (!selectedDate) {
+      alert("날짜를 선택해 주세요.");
+      return;
+    }
+    const baseUrl = "http://localhost:8080/api/glamping/search";
+    const queryParams = new URLSearchParams({
+      region: selectedPlace,
+      inDate: selectedDate.toISOString().slice(0, 10),
+      outDate: selectedDate.toISOString().slice(0, 10),
+      people: selectedMember,
+    });
+    const url = `${baseUrl}?${queryParams.toString()}`;
+    // const url = `${baseUrl}?region=${selectedPlace}&inDate=${inDate}&outDate=${outDate}&people=${selectedMember}`;
+    window.location.href = url;
+  };
 
   // 지금 가장 인기있는 TOP3
   useEffect(() => {
@@ -491,7 +519,12 @@ const MainPage = ({ isLogin }) => {
           <MainSearch>
             <MainSearchContent>
               <li className="m-sc-place">
-                <select name="place" id="place">
+                <select
+                  name="place"
+                  id="place"
+                  value={selectedPlace}
+                  onChange={e => setSelectedPlace(e.target.value)}
+                >
                   <option value="none" disabled>
                     지역
                   </option>
@@ -509,7 +542,10 @@ const MainPage = ({ isLogin }) => {
                 </select>
               </li>
               <li className="m-sc-date">
-                <MainCalendar />
+                <MainCalendar
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                />
               </li>
               <li className="m-sc-member">
                 <div className="m-sc-member-icon"></div>
@@ -519,6 +555,8 @@ const MainPage = ({ isLogin }) => {
                   max="6"
                   defaultValue={2}
                   id="memberinput"
+                  value={selectedMember}
+                  onChange={e => setSelectedMember(e.target.value)}
                 />
                 <p>명</p>
               </li>
@@ -529,12 +567,14 @@ const MainPage = ({ isLogin }) => {
                     className="input"
                     placeholder="여행지나 숙소 검색"
                     type="text"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
                   />
                 </div>
               </li>
               <li className="m-sc-search">
                 <Link to="/search">
-                  <ActionButton label="검색"></ActionButton>
+                  <ActionButton label="검색" onClick={handleSearch} />
                 </Link>
               </li>
             </MainSearchContent>
@@ -606,6 +646,12 @@ const MainPage = ({ isLogin }) => {
           <div className="top-icon" onClick={MoveToTop}></div>
         </GotoTop>
       </main>
+      {/* 모달 관련 */}
+      {/* <AlertModal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        message={alertMessage}
+      /> */}
     </WrapStyle>
   );
 };
