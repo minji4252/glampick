@@ -1,6 +1,8 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "../../components/common/Button";
+import { useState } from "react";
+import { postUserEmail } from "../../apis/userapi";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -33,7 +35,7 @@ const WrapStyle = styled.div`
   .line {
     width: 80%;
     border-bottom: 1.5px solid ${colorSystem.g500};
-    margin-bottom: 35px;
+    margin-bottom: 15px;
   }
 
   /* 회원가입 폼 */
@@ -45,6 +47,7 @@ const WrapStyle = styled.div`
   .form-group label {
     display: block;
     font-size: 1.1rem;
+    margin-top: 20px;
     margin-bottom: 7px;
     ${size.mid} {
       font-size: 1rem;
@@ -54,10 +57,19 @@ const WrapStyle = styled.div`
   .input-group {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    // margin-bottom: 10px;
     ${size.mid} {
       width: 100%;
       /* 다른 input과 너비 동일하게 맞춤 */
+    }
+  }
+
+  .error-message {
+    display: block;
+    color: ${colorSystem.error};
+    font-size: 0.9rem;
+    ${size.mid} {
+      font-size: 0.8rem;
     }
   }
 
@@ -69,6 +81,7 @@ const WrapStyle = styled.div`
     border: none;
     background-color: ${colorSystem.g100};
     padding: 10px;
+    margin-bottom: 10px;
     font-size: 0.9rem;
     ${size.mid} {
       width: calc(100% - 140px - 10px);
@@ -80,7 +93,7 @@ const WrapStyle = styled.div`
   .password-input,
   .confirm-password-input,
   .name-input {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
   }
 
   /* 폼 버튼 */
@@ -113,6 +126,7 @@ const TermsGroupStyle = styled.div`
   .terms-group p {
     font-size: 1.1rem;
     font-weight: 600;
+    margin-top: 20px;
     margin-bottom: 25px;
     ${size.mid} {
       font-size: 1rem;
@@ -182,13 +196,109 @@ const TermsGroupStyle = styled.div`
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정
-  // 입력값 변경 핸들러 구현
-  // 회원가입 버튼 클릭 핸들러 구현
-  // 약관동의 상태 관리
-  // 약관 동의 체크 박스 핸들러 구현
-  // 약관보기 모달창 구현
-  // 약관보기 버튼 핸들러 구현
-  //폼 유효성 검사
+  const [userEmail, setUserEmail] = useState("");
+  const [authCode, setAuthCode] = useState("");
+  const [userPw, setUserPw] = useState("");
+  const [userPwCheck, setUserPwCheck] = useState("");
+  const [userName, setUserName] = useState("");
+  const [userNickName, setUserNickName] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+  const [authNumber, setAuthNumber] = useState("");
+
+  // 문자열 형식 유효성 검사
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const passwordPattern =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const phonePattern = /^[0-9]{11,13}$/;
+  const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
+
+  const [emailValid, setEmailValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [nameValid, setNameValid] = useState(true);
+  const [nickNameValid, setNickNameValid] = useState(true);
+  const [phoneValid, setPhoneValid] = useState(true);
+
+  const [emailSend, setEmailSend] = useState(false);
+
+  // 비밀번호 일치여부 확인
+  const [passwordMatch, setPasswordMatch] = useState(true);
+
+  // 에러 메시지 상태
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // 약관동의 체크박스 상태 관리
+  const [isAgreeAllChecked, setIsAgreeAllChecked] = useState(false);
+  const [checkboxes, setCheckboxes] = useState({
+    agreeTerms: false,
+    agreePrivacy: false,
+    agreeMarketing: false,
+  });
+
+  // 메일 인증코드 전송시 처리할 함수
+  const mailSubmit = async e => {
+    e.preventDefault();
+
+    // 이메일 형식 유효성 검사
+    if (!emailPattern.test(userEmail)) {
+      setEmailValid(false);
+      return;
+    }
+  };
+
+  // 약관 전체동의 체크박스 핸들러
+  const handleAgreeAllChange = e => {
+    // e.preventDefault();
+    const isChecked = e.target.checked;
+    setIsAgreeAllChecked(isChecked);
+    setCheckboxes({
+      agreeTerms: isChecked,
+      agreePrivacy: isChecked,
+      agreeMarketing: isChecked,
+    });
+  };
+
+  // 약관 동의 개별 체크박스 핸들러
+  const handleCheckboxChange = e => {
+    //  e.preventDefault();
+    const { id, checked } = e.target;
+    const updateCheckboxes = {
+      ...checkboxes,
+      [id]: checked,
+    };
+    setCheckboxes(updateCheckboxes);
+    setIsAgreeAllChecked(Object.values(updateCheckboxes).every(value => value));
+  };
+
+  // 폼 제출시 유효성 검사
+  const handleSubmit = e => {
+    e.preventDefault();
+
+    // 비밀번호 일치 여부 확인
+    if (userPw !== userPwCheck) {
+      setPasswordMatch(false);
+      setErrorMessage("비밀번호가 일치하지 않습니다.");
+      return;
+    } else {
+      setPasswordMatch(true);
+    }
+
+    // 기타 입력 값 유효성 검사
+    if (!passwordPattern.test(userPw)) {
+      setErrorMessage(
+        "비밀번호는 대소문자, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.",
+      );
+      return;
+    }
+    if (!phonePattern.test(userPhone)) {
+      setErrorMessage("휴대폰 번호는 11~13자의 숫자여야 합니다.");
+      return;
+    }
+    if ((!nickNamePattern, test(userNickName))) {
+      setErrorMessage(
+        "닉네임은 2~10자의 대소문자, 한글, 숫자로 구성되어야 하며, 숫자는 첫째자리에 올 수 없습니다.",
+      );
+    }
+  };
 
   return (
     <WrapStyle>
@@ -198,7 +308,12 @@ const SignupPage = () => {
             <h2>회원가입</h2>
             <div className="line"></div>
             <div className="wrap">
-              <form className="signup-form">
+              <form
+                className="signup-form"
+                onSubmit={e => {
+                  handleSubmit(e);
+                }}
+              >
                 <fieldset>
                   <legend></legend>
                   <div className="form-group">
@@ -209,13 +324,27 @@ const SignupPage = () => {
                         id="email"
                         required
                         placeholder="glampick@good.kr"
+                        value={userEmail}
+                        onChange={e => {
+                          setUserEmail(e.target.value);
+                          setEmailValid(emailPattern.test(e.target.value));
+                        }}
                       />
                       <div className="form-button">
-                        <MainButton label="인증코드 발송" />
+                        <MainButton
+                          label="인증코드 발송"
+                          onClick={e => {
+                            mailSubmit(e);
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
-                  <p className="error-message"></p>
+                  {!emailValid && (
+                    <p className="error-message">
+                      유효한 이메일 형식이 아닙니다.
+                    </p>
+                  )}
                   <div className="form-group">
                     <label htmlFor="auth-code">인증코드</label>
                     <div className="input-group">
@@ -224,6 +353,8 @@ const SignupPage = () => {
                         id="auth-code"
                         required
                         placeholder="인증코드를 입력해주세요"
+                        value={authCode}
+                        onChange={e => setAuthCode(e.target.value)}
                       />
                       <div className="form-button">
                         <MainButton label="확인" />
@@ -238,8 +369,20 @@ const SignupPage = () => {
                       className="password-input"
                       required
                       placeholder="비밀번호를 입력해주세요"
+                      value={userPw}
+                      onChange={e => {
+                        setUserPw(e.target.value);
+                        setPasswordValid(passwordPattern.test(e.target.value));
+                        setPasswordMatch(e.target.value === userPwCheck);
+                      }}
                     />
+                    {!passwordValid && (
+                      <p className="error-message">
+                        비밀번호가 형식에 맞지 않습니다.
+                      </p>
+                    )}
                   </div>
+
                   <div className="form-group">
                     <label htmlFor="confirm-password">비밀번호 확인</label>
                     <input
@@ -248,7 +391,17 @@ const SignupPage = () => {
                       className="confirm-password-input"
                       required
                       placeholder="비밀번호를 한번 더 입력해주세요"
+                      value={userPwCheck}
+                      onChange={e => {
+                        setUserPwCheck(e.target.value);
+                        setPasswordMatch(e.target.value === userPw);
+                      }}
                     />
+                    {userPwCheck && !passwordMatch && (
+                      <p className="error-message">
+                        비밀번호가 일치하지 않습니다.
+                      </p>
+                    )}
                   </div>
                   <div className="form-group">
                     <label htmlFor="name">이름</label>
@@ -258,6 +411,10 @@ const SignupPage = () => {
                       className="name-input"
                       required
                       placeholder="이름을 입력해주세요"
+                      value={userName}
+                      onChange={e => {
+                        setUserName(e.target.value);
+                      }}
                     />
                   </div>
                   <div className="form-group">
@@ -268,11 +425,23 @@ const SignupPage = () => {
                         id="nickname"
                         required
                         placeholder="닉네임을 입력해주세요"
+                        value={userNickName}
+                        onChange={e => {
+                          setUserNickName(e.target.value);
+                          setNickNameValid(
+                            nickNamePattern.test(e.target.value),
+                          );
+                        }}
                       />
                       <div className="form-button">
                         <MainButton label="중복확인" />
                       </div>
                     </div>
+                    {!nickNameValid && (
+                      <p className="error-message">
+                        닉네임이 형식에 맞지 않습니다.
+                      </p>
+                    )}
                   </div>
                   <div className="form-group">
                     <label htmlFor="cellphone">휴대폰</label>
@@ -282,11 +451,21 @@ const SignupPage = () => {
                         id="cellphone"
                         required
                         placeholder="휴대폰번호를 정확히 입력해주세요"
+                        value={userPhone}
+                        onChange={e => {
+                          setUserPhone(e.target.value);
+                          setPhoneValid(phonePattern.test(e.target.value));
+                        }}
                       />
                       <div className="form-button">
                         <MainButton label="인증번호 발송" />
                       </div>
                     </div>
+                    {!phoneValid && (
+                      <p className="error-message">
+                        핸드폰 번호를 바르게 기재해주세요.
+                      </p>
+                    )}
                   </div>
                   <div className="form-group">
                     <label htmlFor="auth-number">인증번호</label>
@@ -296,6 +475,8 @@ const SignupPage = () => {
                         id="auth-number"
                         required
                         placeholder="인증번호를 입력해주세요"
+                        value={authNumber}
+                        onChange={e => setAuthNumber(e.target.value)}
                       />
                       <div className="form-button">
                         <MainButton label="확인" />
@@ -308,14 +489,28 @@ const SignupPage = () => {
                     <p>이용약관 동의</p>
                     <ul>
                       <li>
-                        <input type="checkbox" id="agree-all" />
+                        <input
+                          type="checkbox"
+                          id="agreeAll"
+                          checked={isAgreeAllChecked}
+                          onChange={() => {
+                            handleAgreeAllChange();
+                          }}
+                        />
                         <label htmlFor="agree-all" className="agree-all">
                           모두 동의
                         </label>
                       </li>
                       <li className="terms-item">
                         <div className="left-content">
-                          <input type="checkbox" id="agree-terms" />
+                          <input
+                            type="checkbox"
+                            id="agreeTerms"
+                            checked={checkboxes.agreeTerms}
+                            onChange={() => {
+                              handleCheckboxChange();
+                            }}
+                          />
                           <label htmlFor="agree-terms">(필수) 이용약관</label>
                         </div>
                         <button type="button" className="view-terms-btn">
@@ -324,7 +519,14 @@ const SignupPage = () => {
                       </li>
                       <li className="terms-item">
                         <div className="left-content">
-                          <input type="checkbox" id="agree-privacy" />
+                          <input
+                            type="checkbox"
+                            id="agreePrivacy"
+                            checked={checkboxes.agreePrivacy}
+                            onChange={() => {
+                              handleCheckboxChange();
+                            }}
+                          />
                           <label htmlFor="agree-privacy">
                             (필수) 개인정보 처리방침
                           </label>
@@ -335,7 +537,14 @@ const SignupPage = () => {
                       </li>
                       <li className="terms-item">
                         <div className="left-content">
-                          <input type="checkbox" id="agree-marketing" />
+                          <input
+                            type="checkbox"
+                            id="agree-marketing"
+                            checked={checkboxes.agreeMarketing}
+                            onChange={() => {
+                              handleCheckboxChange();
+                            }}
+                          />
                           <label htmlFor="agree-marketing">
                             (선택) 이벤트 정보 및 마케팅 수신활용
                           </label>
