@@ -185,11 +185,16 @@ const OwnerSection = styled.div`
   }
 `;
 
-const ReviewCard = () => {
+const ReviewCard = ({
+  userNickname,
+  glampName,
+  roomName,
+  createdAt,
+  reviewText,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
-
-  const [reviewText, setReviewText] = useState("좋았습니다!");
+  const [editedReviewText, setEditedReviewText] = useState(reviewText);
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -200,11 +205,13 @@ const ReviewCard = () => {
     setIsEdited(true);
   };
 
+  const formattedCreatedAt = createdAt.split(" ")[0];
+
   return (
     <MyReviewCard>
       <div className="myreview-card-left">
         <div></div>
-        <span>별하숲</span>
+        <span>{userNickname}</span>
       </div>
       <div className="myreview-card-right">
         <UserSection>
@@ -216,7 +223,7 @@ const ReviewCard = () => {
               <FaStar />
               <FaStar />
             </div>
-            <span>2024/06/15</span>
+            <span>{formattedCreatedAt}</span>
           </div>
           <div className="myreview-img">
             <div className="myreview-img1"></div>
@@ -225,7 +232,8 @@ const ReviewCard = () => {
           </div>
           <div className="myreview-content">
             <div>
-              <span>별별 글램핑 (A룸 202호)</span>
+              <span>{glampName}</span>
+              <span>{roomName}</span>
               {!isEditing && (
                 <>
                   <RiEdit2Line onClick={handleEditClick} />
@@ -236,8 +244,8 @@ const ReviewCard = () => {
             {isEditing ? (
               <>
                 <textarea
-                  value={reviewText}
-                  onChange={e => setReviewText(e.target.value)}
+                  value={editedReviewText}
+                  onChange={e => setEditedReviewText(e.target.value)}
                 />
                 <MainButton onClick={handleSaveClick} label="수정완료" />
               </>

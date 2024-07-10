@@ -19,6 +19,38 @@ const WrapStyle = styled.div`
     font-size: 1.15rem;
     margin-bottom: 25px;
   }
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  .check-label {
+    display: flex;
+    align-items: center;
+  }
+
+  .checkbox-icon::before {
+    content: "";
+    display: block;
+    margin-right: 5px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    background-color: transparent;
+    border: 1px solid #9da3a5;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    border-radius: 50px;
+    margin-top: 2px;
+  }
+
+  .check-label input:checked + .checkbox-icon::before {
+    transition: all 0.15s ease;
+    background: url(https://intranet.adef.co.kr/asset/images/ic_check.png)
+      ${colorSystem.primary} no-repeat center;
+    border: none;
+  }
 `;
 const InfoStyle = styled.div`
   width: 100%;
@@ -90,7 +122,7 @@ const ReservationInput = styled.div`
   }
 
   p {
-    color: ${colorSystem.g300};
+    color: ${colorSystem.g500};
     font-size: 0.8rem;
     margin-top: 3px;
     margin-left: 5px;
@@ -106,6 +138,10 @@ const PaymentMethod = styled.div`
     display: flex;
     gap: 10px;
     margin-top: 20px;
+
+    p {
+      font-weight: 500;
+    }
   }
 `;
 
@@ -149,6 +185,7 @@ const PayButton = styled.div`
 
   .agree-box {
     max-width: 290px;
+    height: 40px;
     width: 100%;
     display: flex;
     gap: 10px;
@@ -156,7 +193,7 @@ const PayButton = styled.div`
     padding: 10px;
     border-radius: 8px;
 
-    > span {
+    span {
       font-weight: 700;
     }
   }
@@ -214,7 +251,7 @@ const PaymentPage = () => {
                   placeholder="010-1234-5678"
                 />
                 <p>
-                  입력하신 휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다.
+                  입력하신 휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다
                 </p>
               </ReservationInput>
             </InputGroup>
@@ -238,15 +275,21 @@ const PaymentPage = () => {
               </div>
             </PaymentTypeList>
             <div className="next-check">
-              <input type="checkbox" />
-              <p>이 결제 수단을 다음에도 사용</p>
+              <label htmlFor="check1" className="check-label">
+                <input type="checkbox" id="check1" />
+                <span className="checkbox-icon"></span>
+                <p>이 결제 수단을 다음에도 사용</p>
+              </label>
             </div>
           </PaymentMethod>
 
           <PayButton>
             <div className="agree-box">
-              <input type="checkbox" />
-              <span>약관 전체동의</span>
+              <label htmlFor="check2" className="check-label">
+                <input type="checkbox" id="check2" />
+                <span className="checkbox-icon"></span>
+                <span>약관 전체동의</span>
+              </label>
             </div>
             <Link to="/paymentcompleted">
               <MainButton label="85,000원 결제하기" />
