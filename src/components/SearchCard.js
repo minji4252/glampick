@@ -92,25 +92,32 @@ const SearchContent = styled.div`
   }
 `;
 
-const SearchCard = () => {
+const SearchCard = ({
+  glampId,
+  glampName,
+  glampPic,
+  starPoint,
+  reviewCount,
+  price,
+}) => {
   return (
-    <SearchContent>
+    <SearchContent key={glampId}>
       <div className="search-image"></div>
       <div className="search-detail">
         <div className="sc-top">
-          <div className="sc-name">그린 파인트리글램핑&카라반</div>
+          <div className="sc-name">{glampName}</div>
           <div className="sc-review">
             <div className="sc-review-top">
               <FaStar />
-              <div className="sc-score">4.6</div>
+              <div className="sc-score">{starPoint}</div>
             </div>
             <div className="sc-review-bottom">
-              <div className="sc-count">1,234 개 리뷰</div>
+              <div className="sc-count">{reviewCount} 개 리뷰</div>
             </div>
           </div>
         </div>
         <div className="sc-bottom">
-          <div className="sc-price">85,000원 ~</div>
+          <div className="sc-price">{price}원 ~</div>
           <MainButton label="예약하기">
             <Link to="/glampingdetail" />
           </MainButton>
