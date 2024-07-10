@@ -6,6 +6,7 @@ import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import MainCardFile from "./MainCardFile";
 
 const MainArticle = styled.article`
   display: flex;
@@ -20,8 +21,8 @@ const MainArticle = styled.article`
     height: 190px;
     border-radius: 32px;
     box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-    background: url(${props => props.bgImage}) no-repeat center;
-    background-size: cover;
+    /* background: url(${props => props.bgImage}) no-repeat center;
+    background-size: cover; */
     .article-place {
       position: absolute;
       bottom: 0;
@@ -115,9 +116,10 @@ const MainCard = ({
   glampingImg,
 }) => {
   return (
-    <MainArticle bgImage={glampingImg} key={glampId}>
+    <MainArticle key={glampId}>
       <Link to="/glampingdetail">
         <div className="article-image">
+          {/* <MainCardFile src={glampingImg} /> */}
           <div className="article-place">
             <MdPlace />
             {region}
