@@ -30,6 +30,7 @@ const MainPage = ({ isLogin }) => {
   const [popularData, setPopularData] = useState([]);
   const [petData, setPetData] = useState([]);
   const [mountainData, setMountainData] = useState([]);
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
   const [selectedDate, setSelectedDate] = useState([null, null]); // 선택된 날짜
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
@@ -37,11 +38,13 @@ const MainPage = ({ isLogin }) => {
 
   const handleSearch = () => {
     // 날짜 필수 선택
-    if (!selectedDate[0] || !selectedDate[1]) {
-      alert("날짜를 선택해 주세요.");
+    if (!selectedDate) {
+      openModal({ message: "날짜를 선택해 주세요." });
       return;
     }
+    openModal();
     console.log("날짜");
+
 
     const formatDate = date => {
       const year = date.getFullYear();
@@ -49,6 +52,7 @@ const MainPage = ({ isLogin }) => {
       const day = date.getDate().toString().padStart(2, "0");
       return `${year}-${month}-${day}`;
     };
+
 
     const queryParams = new URLSearchParams({
       region: selectedPlace,
@@ -67,8 +71,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const popularArray = response.data.popular;
-        // console.log("인기 top3");
-        // console.log(popularArray);
+        console.log("인기 top3");
+        console.log(popularArray);
         setPopularData(popularArray);
       } catch (error) {
         console.error(error);
@@ -83,8 +87,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const petArray = response.data.petFriendly;
-        // console.log("반려동물 top3");
-        // console.log(petArray);
+        console.log("반려동물 top3");
+        console.log(petArray);
         setPetData(petArray);
       } catch (error) {
         console.error(error);
@@ -99,8 +103,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const mountainArray = response.data.mountainView;
-        // console.log("마운틴뷰 top3");
-        // console.log(mountainArray);
+        console.log("마운틴뷰 top3");
+        console.log(mountainArray);
         setMountainData(mountainArray);
       } catch (error) {
         console.error(error);
@@ -340,11 +344,11 @@ const MainPage = ({ isLogin }) => {
         </GotoTop>
       </main>
       {/* 모달 관련 */}
-      {/* <AlertModal
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
-        message={alertMessage}
-      /> */}
+      <AlertModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        message={modalMessage}
+      />
     </MainPageStyle>
   );
 };
