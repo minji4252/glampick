@@ -45,10 +45,19 @@ const MainPage = ({ isLogin }) => {
     openModal();
     console.log("날짜");
 
+
+    const formatDate = date => {
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+
     const queryParams = new URLSearchParams({
       region: selectedPlace,
-      inDate: selectedDate[0].toISOString().slice(0, 10),
-      outDate: selectedDate[1].toISOString().slice(0, 10),
+      inDate: formatDate(selectedDate[0]),
+      outDate: formatDate(selectedDate[1]),
       people: selectedMember,
     });
 
@@ -259,7 +268,9 @@ const MainPage = ({ isLogin }) => {
                 </div>
               </li>
               <li className="m-sc-search">
-                <Link to="/search">
+                <Link
+                  to={`/search?region=${selectedPlace}&inDate=${selectedDate[0]?.toISOString().slice(0, 10)}&outDate=${selectedDate[1]?.toISOString().slice(0, 10)}&people=${selectedMember}`}
+                >
                   <ActionButton label="검색" onClick={handleSearch} />
                 </Link>
               </li>
