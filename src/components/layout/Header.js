@@ -13,6 +13,7 @@ const Header = ({ isLogin }) => {
 
   // 로그아웃 버튼 클릭시 쿠키에 토큰삭제
   const handleLogout = () => {
+    console.log("로그아웃버튼 클릭");
     removeCookie("access-Token", { path: "/" });
     navigate("/login");
   };
@@ -39,9 +40,7 @@ const Header = ({ isLogin }) => {
                   handleLogout();
                 }}
               >
-                <Link to="/">
-                  <p>로그아웃</p>
-                </Link>
+                <p>로그아웃</p>
               </button>
               <div className="header-user">
                 <Link to="/bookingdetail" className="header-user-nav">

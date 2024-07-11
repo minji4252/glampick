@@ -9,6 +9,7 @@ import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
 import { setCookie } from "../../utils/cookie";
 import AlertModal from "../../components/common/AlertModal";
+import useModal from "../../hooks/UseModal";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -210,34 +211,38 @@ const LoginPage = () => {
   const [userPw, setUserPw] = useState("Asdf@1234");
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
 
   // 로그인시 처리할 함수
   const handleLogin = async e => {
     e.preventDefault();
 
-    const result = await postSignIn({ userEmail, userPw });
-    // console.log(result);
-    console.log(result.code);
+    // 입력 필드 검사
+    if (!userEmail || !userPw) {
+      setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
+      return;
+    }
 
+    // api 호출
+    const result = await postSignIn({ userEmail, userPw });
+    // console.log(result.code);
     if (result.code === "SU") {
-      // 로그인 성공 시 쿠키에 사용자 정보 저장
-      // const token = result.code.accessToken;
       console.log(result);
-      console.log(result.accessToken);
+      // console.log(result.accessToken);
+      // 로그인 성공 시 쿠키에 사용자 정보 저장
       setCookie("access-Token", result.accessToken);
-      setIsModalOpen(true);
-      // alert("로그인 성공");
+
+      openModal({ message: "로그인 성공하였습니다!" });
+      setTimeout(() => {
+        navigate("/");
+      }, 1000); // 1초 후에 페이지 이동
     } else {
       console.log("로그인 실패");
-      errorMessage("아이디와 비밀번호가 일치하지 않습니다.");
+      setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
     }
-  };
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-
-    navigate("/");
+    // navigate("/");
   };
 
   return (
@@ -260,7 +265,6 @@ const LoginPage = () => {
                   id="email"
                   name="email"
                   value={userEmail}
-                  required
                   placeholder="glampick@good.kr"
                   onChange={e => {
                     setUserEmail(e.target.value);
@@ -272,7 +276,6 @@ const LoginPage = () => {
                   id="password"
                   name="password"
                   value={userPw}
-                  required
                   placeholder="비밀번호를 입력하세요"
                   onChange={e => {
                     setUserPw(e.target.value);
@@ -285,9 +288,8 @@ const LoginPage = () => {
               </form>
               <AlertModal
                 isOpen={isModalOpen}
-                onClose={() => {
-                  handleCloseModal();
-                }}
+                onClose={closeModal}
+                message={modalMessage}
               />
               <div className="signup">
                 <Link to="/signup" className="signup-btn">
