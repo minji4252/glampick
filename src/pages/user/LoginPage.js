@@ -1,11 +1,14 @@
 import styled from "@emotion/styled";
-import GlampickLogo from "../../images/glampick_logo.png";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { postSignIn } from "../../apis/userapi";
+import { MainButton } from "../../components/common/Button";
 import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
+import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
-import { Link } from "react-router-dom";
-import { MainButton } from "../../components/common/Button";
-import Loading from "../../components/common/Loading";
+import { setCookie } from "../../utils/cookie";
+import AlertModal from "../../components/common/AlertModal";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -70,8 +73,8 @@ const WrapStyle = styled.div`
   .login-form input {
     width: 100%;
     height: 50px;
-    font-size: 1.1rem;
-    color: ${colorSystem.g800};
+    font-size: 1rem;
+
     background-color: ${colorSystem.g100};
     border: none;
     padding: 10px;
@@ -94,7 +97,7 @@ const WrapStyle = styled.div`
   }
 
   .error-message {
-    display: none;
+    display: block;
     color: ${colorSystem.error};
     font-size: 0.9rem;
     margin-top: 7px;
@@ -203,6 +206,40 @@ const WrapStyle = styled.div`
 `;
 
 const LoginPage = () => {
+  const [userEmail, setUserEmail] = useState("test1@test.net");
+  const [userPw, setUserPw] = useState("Asdf@1234");
+  // 에러 메시지 상태
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // 로그인시 처리할 함수
+  const handleLogin = async e => {
+    e.preventDefault();
+
+    const result = await postSignIn({ userEmail, userPw });
+    // console.log(result);
+    console.log(result.code);
+
+    if (result.code === "SU") {
+      // 로그인 성공 시 쿠키에 사용자 정보 저장
+      // const token = result.code.accessToken;
+      console.log(result);
+      console.log(result.accessToken);
+      setCookie("access-Token", result.accessToken);
+      setIsModalOpen(true);
+      // alert("로그인 성공");
+    } else {
+      console.log("로그인 실패");
+      errorMessage("아이디와 비밀번호가 일치하지 않습니다.");
+    }
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+
+    navigate("/");
+  };
+
   return (
     <WrapStyle>
       <main>
@@ -211,30 +248,47 @@ const LoginPage = () => {
             <div className="glampick-logo"></div>
             <h2>로그인</h2>
             <div className="wrap">
-              <form className="login-form">
+              <form
+                className="login-form"
+                onSubmit={e => {
+                  handleLogin(e);
+                }}
+              >
                 <label htmlFor="email">이메일</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
+                  value={userEmail}
                   required
                   placeholder="glampick@good.kr"
+                  onChange={e => {
+                    setUserEmail(e.target.value);
+                  }}
                 />
                 <label htmlFor="password">비밀번호</label>
                 <input
                   type="password"
                   id="password"
                   name="password"
+                  value={userPw}
                   required
                   placeholder="비밀번호를 입력하세요"
+                  onChange={e => {
+                    setUserPw(e.target.value);
+                  }}
                 />
-                <p className="error-message">
-                  아이디나 비밀번호가 일치하지 않습니다.
-                </p>
+                <p className="error-message">{errorMessage}</p>
                 <div className="login-btn">
                   <MainButton label="로그인" />
                 </div>
               </form>
+              <AlertModal
+                isOpen={isModalOpen}
+                onClose={() => {
+                  handleCloseModal();
+                }}
+              />
               <div className="signup">
                 <Link to="/signup" className="signup-btn">
                   <p>회원가입</p>
