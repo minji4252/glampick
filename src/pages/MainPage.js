@@ -25,6 +25,10 @@ import MainPageStyle, {
 } from "../styles/MainPageStyle";
 
 const MainPage = ({ isLogin }) => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const [popularData, setPopularData] = useState([]);
@@ -32,27 +36,17 @@ const MainPage = ({ isLogin }) => {
   const [mountainData, setMountainData] = useState([]);
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
-  const [selectedDate, setSelectedDate] = useState([null, null]); // 선택된 날짜
+  const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
   const [searchQuery, setSearchQuery] = useState(""); // 검색어
 
   const handleSearch = () => {
-    // 날짜 필수 선택
-    if (!selectedDate) {
-      openModal({ message: "날짜를 선택해 주세요." });
-      return;
-    }
-    openModal();
-    console.log("날짜");
-
-
     const formatDate = date => {
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
       return `${year}-${month}-${day}`;
     };
-
 
     const queryParams = new URLSearchParams({
       region: selectedPlace,
@@ -224,12 +218,12 @@ const MainPage = ({ isLogin }) => {
                     서울/경기
                   </option>
                   <option value="gangwon">강원</option>
-                  <option value="cb">충북</option>
-                  <option value="cn">충남</option>
-                  <option value="kb">경북</option>
-                  <option value="kn">경남</option>
-                  <option value="jb">전북</option>
-                  <option value="jn">전남</option>
+                  <option value="chungbuk">충북</option>
+                  <option value="chungnam">충남</option>
+                  <option value="gyeongbuk">경북</option>
+                  <option value="gyeongnam">경남</option>
+                  <option value="jeonbuk">전북</option>
+                  <option value="jeonnam">전남</option>
                   <option value="jeju">제주</option>
                 </select>
               </li>
@@ -343,12 +337,6 @@ const MainPage = ({ isLogin }) => {
           <div className="top-icon" onClick={MoveToTop}></div>
         </GotoTop>
       </main>
-      {/* 모달 관련 */}
-      <AlertModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        message={modalMessage}
-      />
     </MainPageStyle>
   );
 };

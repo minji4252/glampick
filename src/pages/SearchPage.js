@@ -19,7 +19,8 @@ import SearchPageStyle, {
 import { useLocation, useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState({});
+  const [searchData, setSearchData] = useState([]);
   // 필터 아이콘 선택
   const [activeFilters, setActiveFilters] = useState({
     pet: false,
@@ -59,27 +60,27 @@ const SearchPage = () => {
   // };
 
   useEffect(() => {
-    const getSearchResult = async () => {
+    const fetchData = async () => {
       try {
+        // Get search results
+        const searchUrl = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
+        const searchResponse = await axios.get(searchUrl);
+        setSearchResults(searchResponse.data);
+        console.log("검색 결과:", searchResponse.data);
 
-        const url = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
-        console.log("실제로 가는 데이터: ", url);
-
-
-        const response = await axios.get(url);
-
-        // const url = "http://192.168.0.7:8080/api/glamping/search";
-        // const response = await axios.get(url, { params });
-        // `http://192.168.0.7:8080/api/glamping/search?region=&inDate=&outDate=&people= `,);
-        setSearchResults(response.data);
-        console.log("검색 결과:", response.data);
+        // Get glamping list data
+        const glampingUrl = "/api/glamping/search";
+        const glampingResponse = await axios.get(glampingUrl);
+        const glampingArray = glampingResponse.data.glampingListItems;
+        setSearchData(glampingArray);
+        console.log("글램핑 검색 결과 리스트", glampingArray);
       } catch (error) {
-        console.log("검색 중 오류:", error);
+        console.error("데이터 가져오기 오류:", error);
       }
     };
 
-    getSearchResult();
-  }, [region, inDate, outDate, people]);
+    fetchData();
+  }, [region1, inDate1, outDate1, people1]);
 
   return (
     <SearchPageStyle>
@@ -88,40 +89,28 @@ const SearchPage = () => {
           <SearchTop>
             <SearchResult>
               <ResultContents>
-                {/* <label htmlFor="place" className="no-border">
-                  지역
-                </label>
-                <input type="text" value={region}></input> */}
                 <label htmlFor="place">지역</label>
 
                 <input
                   type="text"
-                  value={region}
+                  value={region1}
                   onChange={e => setRegion(e.target.value)}
                 />
               </ResultContents>
               <ResultContents>
-                {/* <label htmlFor="date">날짜</label>
-                <input
-                  type="text"
-                  value={"inDate - outDate"}
-                  className="search-date"
-                ></input> */}
                 <label htmlFor="date">날짜</label>
                 <input
                   type="text"
-                  value={`${inDate} - ${outDate}`}
+                  value={`${inDate1} - ${outDate1}`}
                   className="search-date"
                   onChange={e => setInDate(e.target.value)}
                 />
               </ResultContents>
               <ResultContents>
-                {/* <label htmlFor="member">인원</label>
-                <input type="text" value={"{people}명"}></input> */}
                 <label htmlFor="member">인원</label>
                 <input
                   type="text"
-                  value={`${people}명`}
+                  value={`${people1}명`}
                   onChange={e => setPeople(e.target.value)}
                 />
               </ResultContents>
@@ -190,13 +179,21 @@ const SearchPage = () => {
                   </select>
                 </div>
                 <div className="search-result">
-                  {searchResults.length} 개 검색 결과
+                  {searchResults.searchCount} 개 검색 결과
                 </div>
               </SearchMenu>
             </SearchInnerTop>
             <SearchInnerList>
-              {searchResults.map(result => (
-                <SearchCard key={result.id} {...result} />
+              {searchData.map(item => (
+                <SearchCard
+                  key={item.glampId}
+                  glampId={item.glampId}
+                  glampingName={item.glampingName}
+                  region={item.region}
+                  starPoint={item.starPoint}
+                  reviewCount={item.reviewCount}
+                  price={item.price}
+                />
               ))}
               {/* <SearchCard />
               <SearchCard />
@@ -216,10 +213,10 @@ const SearchPage = () => {
             </SearchInnerBottom>
           </SearchInner>
           {/* 임시 */}
-          <p>지역: {region1}</p>
+          {/* <p>지역: {region1}</p>
           <p>체크인: {inDate1}</p>
           <p>체크아웃: {outDate1}</p>
-          <p>인원: {people1}</p>
+          <p>인원: {people1}</p> */}
         </div>
       </main>
     </SearchPageStyle>
