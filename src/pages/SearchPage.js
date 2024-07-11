@@ -55,8 +55,11 @@ const SearchPage = () => {
   useEffect(() => {
     const getSearchResult = async () => {
       try {
-        const url = `http://192.168.0.208:8080/api/glamping/search?region=${region}&inDate=${inDate}&outDate=${outDate}&people=${people}`;
-        console.log(region);
+        const url = `/api/glamping/search?region=${region}&inDate=${inDate}&outDate=${outDate}&people=${people}`;
+        console.log({ region });
+        console.log({ inDate });
+        console.log({ outDate });
+        console.log({ people });
         const response = await axios.get(url);
         // const url = "http://192.168.0.208:8080/api/glamping/search";
         // const response = await axios.get(url, { params });

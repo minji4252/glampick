@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
-import FavoriteIcon from "../../images/icon/favorite-icon.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FavoriteCard from "../../components/FavoriteCard";
+import axios from "axios";
 
 const WrapStyle = styled.div`
   .inner {
@@ -43,24 +43,28 @@ const FavoriteContents = styled.div`
   padding: 0 60px;
   .favorite-content {
     position: relative;
-    .favorite-heart {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      width: 43px;
-      height: 38px;
-      background: url(${FavoriteIcon}) no-repeat center;
-      cursor: pointer;
-      ${size.mid} {
-        left: 230px;
-      }
-    }
   }
 `;
 
 const Favorite = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [visibleItems, setVisibleItems] = useState([true, true, true, true]);
+  const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await axios.get(
+          "http://192.168.0.7:8080/api/user/favorite-glamping",
+        );
+        setFavorites(response.data.favoritelist);
+        console.log(response.data.favoritelist);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchFavorites();
+  }, []);
 
   const toggleVisibility = index => {
     const newVisibleItems = [...visibleItems];
@@ -93,11 +97,21 @@ const Favorite = () => {
             (isVisible, index) =>
               isVisible && (
                 <div key={index} className="favorite-content">
-                  <FavoriteCard />
-                  <div
+                  {favorites.map(item => (
+                    <FavoriteCard
+                      key={item.glampId}
+                      glampId={item.glampId}
+                      glampingName={item.glampingName}
+                      region={item.region}
+                      starPoint={item.starPoint}
+                      reviewCount={item.reviewCount}
+                      price={item.price}
+                    />
+                  ))}
+                  {/* <div
                     className="favorite-heart"
                     onClick={() => toggleVisibility(index)}
-                  ></div>
+                  ></div> */}
                 </div>
               ),
           )}
