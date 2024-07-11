@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 import "../../styles/header.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import headerUser from "../../images/icon/member-icon.png";
 import glampickLogo from "../../images/glampick_logo.png";
+import { removeCookie } from "../../utils/cookie";
 
 const Header = ({ isLogin }) => {
   // const [isLogin, setIsLogin] = useState(false);
   const locationNow = useLocation();
+  const navigate = useNavigate();
   // 메인 페이지 (Root)에서 Header 임시 숨김
+
+  // 로그아웃 버튼 클릭시 쿠키에 토큰삭제
+  const handleLogout = () => {
+    removeCookie("access-Token", { path: "/" });
+    navigate("/login");
+  };
+
   if (locationNow.pathname === "/") return null;
   return (
     <header className="header">
@@ -24,7 +33,12 @@ const Header = ({ isLogin }) => {
         <div className="header-nav">
           {isLogin ? (
             <>
-              <button className="header-logout">
+              <button
+                className="header-logout"
+                onClick={() => {
+                  handleLogout();
+                }}
+              >
                 <Link to="/">
                   <p>로그아웃</p>
                 </Link>

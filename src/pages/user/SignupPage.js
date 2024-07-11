@@ -1,199 +1,7 @@
-import styled from "@emotion/styled";
-import { colorSystem, size } from "../../styles/color";
-import { MainButton } from "../../components/common/Button";
-import { useEffect, useState } from "react";
-import { postUserEmail } from "../../apis/userapi";
 import axios from "axios";
-
-const WrapStyle = styled.div`
-  position: relative;
-
-  .container {
-    display: flex;
-    width: 760px;
-    margin: 0 auto;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .wrap {
-    width: 100%;
-  }
-
-  h2 {
-    color: ${colorSystem.g800};
-    margin-top: 40px;
-    margin-bottom: 30px;
-    font-size: 1.6rem;
-    /* 반응형 */
-    ${size.mid} {
-      font-size: 1.4rem;
-    }
-  }
-
-  /* 구분선 */
-  .line {
-    width: 80%;
-    border-bottom: 1.5px solid ${colorSystem.g500};
-    margin-bottom: 15px;
-  }
-
-  /* 회원가입 폼 */
-  .signup-form {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 1.1rem;
-    margin-top: 20px;
-    margin-bottom: 7px;
-    ${size.mid} {
-      font-size: 1rem;
-    }
-  }
-
-  .input-group {
-    display: flex;
-    justify-content: space-between;
-    // margin-bottom: 10px;
-    ${size.mid} {
-      width: 100%;
-      /* 다른 input과 너비 동일하게 맞춤 */
-    }
-  }
-
-  .error-message {
-    display: block;
-    color: ${colorSystem.error};
-    font-size: 0.9rem;
-    ${size.mid} {
-      font-size: 0.8rem;
-    }
-  }
-
-  .form-group input,
-  .input-group input {
-    width: calc(100% - 150px - 10px);
-    /* 너비 조정: 100%에서 버튼 너비와 마진 값을 뺀 값 */
-    height: 40px;
-    border: none;
-    background-color: ${colorSystem.g100};
-    padding: 10px;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    ${size.mid} {
-      width: calc(100% - 140px - 10px);
-      font-size: 0.8rem;
-    }
-  }
-
-  // 버튼 없는 input에 마진 주기
-  .password-input,
-  .confirm-password-input,
-  .name-input {
-    margin-bottom: 10px;
-  }
-
-  /* 폼 버튼 */
-  .form-button > button {
-    width: 140px;
-    height: 40px;
-    font-size: 0.95rem;
-    ${size.mid} {
-      width: 130px;
-      font-size: 0.8rem;
-    }
-  }
-
-  /* 회원가입 버튼 */
-  .sign-button > button {
-    width: 100%;
-    height: 50px;
-    margin-top: 20px;
-    margin-bottom: 100px;
-    font-size: 1.2rem;
-    ${size.mid} {
-      font-size: 1.1rem;
-      margin-bottom: 80px;
-    }
-  }
-`;
-
-/* 약관동의 */
-const TermsGroupStyle = styled.div`
-  .terms-group p {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-top: 20px;
-    margin-bottom: 25px;
-    ${size.mid} {
-      font-size: 1rem;
-    }
-  }
-
-  .agree-all {
-    font-weight: 600;
-  }
-  .terms-group ul {
-  }
-  .terms-group li {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  /* 모두 동의 체크박스 */
-  .terms-group input {
-    width: 18px;
-    height: 18px;
-    ${size.mid} {
-      width: 15px;
-      height: 15px;
-    }
-  }
-  .terms-group label {
-    font-size: 1rem;
-    ${size.mid} {
-      font-size: 0.9rem;
-    }
-  }
-  .terms-item {
-    display: flex;
-    justify-content: space-between;
-    ${size.mid} {
-      margin-right: 23px;
-    }
-  }
-
-  /* 필수, 선택 체크박스 */
-  .left-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .left-content input {
-    width: 18px;
-    height: 18px;
-    ${size.mid} {
-      width: 15px;
-      height: 15px;
-    }
-  }
-
-  .view-terms-btn {
-    font-size: 1rem;
-    color: ${colorSystem.g700};
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    ${size.mid} {
-      font-size: 0.9rem;
-    }
-  }
-`;
+import { useState } from "react";
+import { MainButton } from "../../components/common/Button";
+import { TermsGroupStyle, WrapStyle } from "../../styles/signupstyle";
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정
@@ -209,7 +17,7 @@ const SignupPage = () => {
   // 문자열 형식 유효성 검사
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const passwordPattern =
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const phonePattern = /^[0-9]{11,13}$/;
   const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
   const namePattern = /^[가-힣]{1,10}$/;
@@ -240,7 +48,19 @@ const SignupPage = () => {
   });
 
   // 메일 인증
-  const postUserEmail = async userEmail => {
+  // const postUserEmail = async userEmail => {
+  //   try {
+  //     const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
+  //     const response = await axios.post(reqData, { userEmail });
+  //     console.log(response.data.code);
+  //     return response;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // 메일 인증 API 호출 함수
+  const postUserMailSend = async userEmail => {
     try {
       const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
       const response = await axios.post(reqData, { userEmail });
@@ -254,35 +74,28 @@ const SignupPage = () => {
   // 메일 인증시 처리할 함수
   const handlemailSubmit = async e => {
     e.preventDefault();
-    const result = await postUserEmail(userEmail);
+    const result = await postUserMailSend(userEmail);
+    // console.log(result.data);
     console.log(result.data.code);
     if (result.data.code === "SU") {
-      console.log("메일인증 성공");
+      alert("메일인증 성공");
+      // 타이머 넣어야 함
     }
   };
 
-  // 인증코드
-  const postAuthCode = async ({ userEmail, authCode }) => {
-    // console.log(userEmail);
-    // console.log(authCode);
+  // 인증코드 API 호출 함수
+  const postAuthCode = async () => {
     try {
-      const result = await axios.post(`/api/auth/mail-check`, {
-        userEmail,
-        authCode,
+      const response = await axios.post(`/api/auth/mail-check`, {
+        userEmail: userEmail,
+        authKey: authCode,
       });
-      // const reqData = `/api/auth/mail-check`;
-      // console.log(reqData);
-      // const response = await axios.post(reqData, {
-      //   userEmail: userEmail,
-      //   authCode: authCode,
-      // });
-      console.log(result);
-      return result;
+      console.log(response);
+      return response;
     } catch (error) {
       console.log("코드인증에러", error);
     }
   };
-
   // 메일 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async e => {
     e.preventDefault();
@@ -295,7 +108,6 @@ const SignupPage = () => {
       console.log("코드인증 실패");
     }
   };
-
   // 닉네임 중복 확인 결과 처리
 
   // 약관 전체동의 체크박스 핸들러
@@ -324,13 +136,19 @@ const SignupPage = () => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    // 이메일 인증
+    // 이메일 유효성 검사 체크
+    // 이메일 중복확인 체크
+    // 이메일 인증코드 일치여부 체크
 
-    // 닉네임 중복 확인
+    // 비밀번호 유효성 검사 체크
+    if (!passwordPattern.test(userPw)) {
+      setErrorMessage(
+        "비밀번호는 영어, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.",
+      );
+      return;
+    }
 
-    // 핸드폰 인증
-
-    // 비밀번호 일치 여부 확인
+    // 비밀번호 일치 여부 체크
     if (userPw !== userPwCheck) {
       setPasswordMatch(false);
       setErrorMessage("비밀번호가 일치하지 않습니다.");
@@ -339,26 +157,50 @@ const SignupPage = () => {
       setPasswordMatch(true);
     }
 
-    // 기타 입력 값 유효성 검사
-    if (!passwordPattern.test(userPw)) {
-      setErrorMessage(
-        "비밀번호는 대소문자, 숫자, 특수문자를 포함해 8자 이상이어야 합니다.",
-      );
-      return;
-    }
-    if (!phonePattern.test(userPhone)) {
-      setErrorMessage("휴대폰 번호는 11~13자의 숫자여야 합니다.");
-      return;
-    }
+    // 이름 유효성 검사 체크
     if (!namePattern.test(userName)) {
       setErrorMessage("이름은 1~10자 사이 한글만 가능합니다.");
       return;
     }
-    if ((!nickNamePattern, test(userNickName))) {
+    // 닉네임 유효성 검사 체크
+    if (!nickNamePattern.test(userNickName)) {
       setErrorMessage(
         "닉네임은 2~10자의 대소문자, 한글, 숫자로 구성되어야 하며, 숫자는 첫째자리에 올 수 없습니다.",
       );
     }
+    // 닉네임 중복 확인 체크
+
+    // 핸드폰 유효성 검사 체크
+    if (!phonePattern.test(userPhone)) {
+      setErrorMessage("휴대폰 번호는 11~13자의 숫자여야 합니다.");
+      return;
+    }
+    // 핸드폰 중복확인 체크
+    // 핸드폰 인증번호 일치여부 체크
+  };
+
+  // 백엔드에 전달하는 회원가입 정보
+  const signUpReslutFunc = async () => {
+    const signUpRequestData = {
+      userEmail: userEmail,
+      userPw: userPw,
+      userPhone: userPhone,
+      userName: userName,
+      userNickname: userNickName,
+    };
+
+    const postAuthSignUp = async data => {
+      try {
+        const response = await axios.post("api/auth/sign-up", data);
+        return response;
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const signUpResult = await postAuthSignUp(signUpRequestData);
+
+    // 회원가입 성공, 실패 메세지 안내
   };
 
   return (
@@ -444,8 +286,8 @@ const SignupPage = () => {
                     />
                     {!passwordValid && (
                       <p className="error-message">
-                        비밀번호가 형식에 맞지 않습니다 (대소문자, 숫자,
-                        특수문자를 포함해 8자 이상)
+                        비밀번호가 형식에 맞지 않습니다 (영어, 숫자, 특수문자
+                        포함 8자 이상 가능)
                       </p>
                     )}
                   </div>
