@@ -38,6 +38,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
+import { SERVER_URL } from "../apis/config";
 
 const GlampingDetail = () => {
   const [glampingData, setGlampingData] = useState(null);
@@ -50,7 +51,7 @@ const GlampingDetail = () => {
         const glampId = 1;
         const statusId = 0;
         const response = await axios.get(
-          `http://192.168.0.30:8080/api/glamping/info?glampId=${glampId}&status=${statusId}`,
+          `/api/glamping/info?glampId=${glampId}&status=${statusId}`,
         );
         const data = response.data;
         setGlampingData(data);
@@ -205,7 +206,10 @@ const GlampingDetail = () => {
               <RoomCardLeft>
                 <Link to={`/roomdetail/${room.roomId}`}>
                   <div className="roomcard-img">
-                    {/* <img src={room.pic} alt="Room" /> */}
+                    <img
+                      src={`/glamping/${room.glampId}/room/${room.roomId}/abc.png`}
+                      alt="Room"
+                    />
                     <span>사진 더보기</span>
                   </div>
                 </Link>

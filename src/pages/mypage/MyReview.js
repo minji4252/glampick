@@ -4,6 +4,7 @@ import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { SERVER_URL } from "../../apis/config";
 
 const WrapStyle = styled.div`
   .inner {
@@ -82,9 +83,7 @@ const MyReview = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(
-          "http://192.168.0.208:8080/api/user/review?userId=1",
-        );
+        const response = await axios.get(`/api/user/review`);
         setReviews(response.data.userlist);
         console.log(response.data.userlist);
       } catch (error) {
