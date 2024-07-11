@@ -2,6 +2,7 @@ import { colorSystem, size } from "../styles/color";
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
+import FavoriteIcon from "../images/icon/favorite-icon.png";
 import ArticleImage from "../images/main-list-1.png";
 import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
@@ -35,6 +36,18 @@ const FavoriteArticle = styled.article`
         color: #fff;
         margin-right: 2px;
       }
+    }
+  }
+  .favorite-heart {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    width: 43px;
+    height: 38px;
+    background: url(${FavoriteIcon}) no-repeat center;
+    cursor: pointer;
+    ${size.mid} {
+      left: 230px;
     }
   }
   ${size.mid} {
@@ -99,30 +112,43 @@ const ArticleContent = styled.div`
   }
 `;
 
-export const FavoriteCard = () => {
+export const FavoriteCard = (
+  glampId,
+  glampingName,
+  region,
+  starPoint,
+  reviewCount,
+  price,
+  glampingImg,
+) => {
   return (
-    <FavoriteArticle>
+    <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">
         <div className="article-image">
+          {/* <MainCardFile src={glampingImg} /> */}
           <div className="article-place">
             <MdPlace />
             서울/경기
           </div>
         </div>
       </Link>
+      <div
+        className="favorite-heart"
+        // onClick={() => toggleVisibility(index)}
+      ></div>
       <ArticleContent>
         <div className="article-top">
           <Link to="/glampingdetail">
-            <div className="glamping-name">조이글램핑</div>
+            <div className="glamping-name">{glampingName}</div>
           </Link>
           <div className="article-detail">
             <FaStar />
-            <div className="review-score">4.8</div>
+            <div className="review-score">{starPoint}</div>
           </div>
-          <div className="review-count">(리뷰 5개)</div>
+          <div className="review-count">(리뷰 {reviewCount}개)</div>
         </div>
         <div className="article-bottom">
-          <div className="glamping-price">65,000원~</div>
+          <div className="glamping-price">{price}원~</div>
           <Link to="/glampingdetail">
             <MainButton label="예약하기"></MainButton>
           </Link>
