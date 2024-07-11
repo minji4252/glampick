@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { MainButton } from "../../components/common/Button";
 import { TermsGroupStyle, WrapStyle } from "../../styles/signupstyle";
+import { postMailSend } from "../../apis/userapi";
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정
@@ -47,46 +48,24 @@ const SignupPage = () => {
     agreeMarketing: false,
   });
 
-  // 메일 인증
-  // const postUserEmail = async userEmail => {
-  //   try {
-  //     const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
-  //     const response = await axios.post(reqData, { userEmail });
-  //     console.log(response.data.code);
-  //     return response;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // 메일 인증 API 호출 함수
-  const postUserMailSend = async userEmail => {
-    try {
-      const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
-      const response = await axios.post(reqData, { userEmail });
-      console.log(response.data.code);
-      return response;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   // 메일 인증시 처리할 함수
   const handlemailSubmit = async e => {
     e.preventDefault();
-    const result = await postUserMailSend(userEmail);
+    const result = await postMailSend({ userEmail });
     // console.log(result.data);
     console.log(result.data.code);
     if (result.data.code === "SU") {
-      alert("메일인증 성공");
+      alert("인증코드가 발송되었습니다!");
       // 타이머 넣어야 함
     }
   };
 
   // 인증코드 API 호출 함수
-  const postAuthCode = async () => {
+  const postAuthCode = async ({ userEmail, authCode }) => {
     try {
-      const response = await axios.post(`/api/auth/mail-check`, {
+      const reqData = `/api/auth/mail-check?userEmail=${userEmail}&authKey=${authCode}`;
+      console.log(reqData);
+      const response = await axios.post(reqData, {
         userEmail: userEmail,
         authKey: authCode,
       });
@@ -96,6 +75,7 @@ const SignupPage = () => {
       console.log("코드인증에러", error);
     }
   };
+
   // 메일 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async e => {
     e.preventDefault();
@@ -348,9 +328,9 @@ const SignupPage = () => {
                           );
                         }}
                       />
-                      <div className="form-button">
+                      {/* <div className="form-button">
                         <MainButton label="중복확인" />
-                      </div>
+                      </div> */}
                     </div>
                     {!nickNameValid && (
                       <p className="error-message">
