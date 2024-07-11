@@ -83,7 +83,7 @@ const MyReview = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          "http://192.168.0.30:8080/api/user/review?userId=1",
+          "http://192.168.0.208:8080/api/user/review?userId=1",
         );
         setReviews(response.data.userlist);
         console.log(response.data.userlist);

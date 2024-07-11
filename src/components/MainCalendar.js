@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { ko } from "date-fns/locale";
 import "../styles/datepicker.css";
 
-const MainCalendar = () => {
+const MainCalendar = ({ selectedDate, setSelectedDate }) => {
   const [dateRange, setDateRange] = useState([null, null]);
   const [inDate, outDate] = dateRange;
+
+  useEffect(() => {
+    setDateRange(selectedDate);
+  }, [selectedDate]);
 
   // yyyy-MM-dd 형식으루
   const formatDate = date => {
@@ -20,6 +24,7 @@ const MainCalendar = () => {
   // inDate outDate 콘솔
   const handleChange = update => {
     setDateRange(update);
+    setSelectedDate(update);
 
     if (update[0] && update[1]) {
       console.log("inDate(시작):", formatDate(update[0]));

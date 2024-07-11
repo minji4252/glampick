@@ -16,10 +16,9 @@ import SearchPageStyle, {
   SearchResult,
   SearchTop,
 } from "../styles/SearchPageStyle";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {
-  const location = useLocation();
   const [searchResults, setSearchResults] = useState([]);
   // 필터 아이콘 선택
   const [activeFilters, setActiveFilters] = useState({
@@ -35,6 +34,13 @@ const SearchPage = () => {
   const [inDate, setInDate] = useState("");
   const [outDate, setOutDate] = useState("");
   const [people, setPeople] = useState("");
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const region1 = queryParams.get("region");
+  const inDate1 = queryParams.get("inDate");
+  const outDate1 = queryParams.get("outDate");
+  const people1 = queryParams.get("people");
 
   // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
@@ -55,12 +61,13 @@ const SearchPage = () => {
   useEffect(() => {
     const getSearchResult = async () => {
       try {
-        const url = `http://192.168.0.208:8080/api/glamping/search?region=${region}&inDate=${inDate}&outDate=${outDate}&people=${people}`;
-        console.log(region);
+        const url = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
+        console.log("실제로 가는 데이터: ", url);
         const response = await axios.get(url);
-        // const url = "http://192.168.0.208:8080/api/glamping/search";
+
+        // const url = "http://192.168.0.7:8080/api/glamping/search";
         // const response = await axios.get(url, { params });
-        // `http://192.168.0.208:8080/api/glamping/search?region=&inDate=&outDate=&people= `,);
+        // `http://192.168.0.7:8080/api/glamping/search?region=&inDate=&outDate=&people= `,);
         setSearchResults(response.data);
         console.log("검색 결과:", response.data);
       } catch (error) {
@@ -83,6 +90,7 @@ const SearchPage = () => {
                 </label>
                 <input type="text" value={region}></input> */}
                 <label htmlFor="place">지역</label>
+
                 <input
                   type="text"
                   value={region}
@@ -204,6 +212,11 @@ const SearchPage = () => {
               </ul>
             </SearchInnerBottom>
           </SearchInner>
+          {/* 임시 */}
+          <p>지역: {region1}</p>
+          <p>체크인: {inDate1}</p>
+          <p>체크아웃: {outDate1}</p>
+          <p>인원: {people1}</p>
         </div>
       </main>
     </SearchPageStyle>

@@ -205,7 +205,7 @@ const ReviewCard = ({
     setIsEdited(true);
   };
 
-  const formattedCreatedAt = createdAt.split(" ")[0];
+  // const formattedCreatedAt = createdAt.split(" ")[0];
 
   return (
     <MyReviewCard>
@@ -223,7 +223,7 @@ const ReviewCard = ({
               <FaStar />
               <FaStar />
             </div>
-            <span>{formattedCreatedAt}</span>
+            <span>{createdAt}</span>
           </div>
           <div className="myreview-img">
             <div className="myreview-img1"></div>
