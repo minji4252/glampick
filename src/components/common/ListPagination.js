@@ -45,7 +45,7 @@ const PaginationContainer = styled.div`
   }
 `;
 
-const ReviewPagination = () => {
+const ListPagination = () => {
   // 초기 세팅 페이지
   const [activePage, setActivePage] = useState(1);
   // 한 페이지당 목록 수
@@ -85,4 +85,4 @@ const ReviewPagination = () => {
   );
 };
 
-export default ReviewPagination;
+export default ListPagination;

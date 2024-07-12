@@ -7,8 +7,9 @@ import reviewimg1 from "../images/review1.png";
 import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { colorSystem, size } from "../styles/color";
-import Pagination from "../components/common/Pagination";
+import Pagination from "../components/common/ListPagination";
 import axios from "axios";
+import ListPagination from "../components/common/ListPagination";
 
 const WrapStyle = styled.div`
   .inner {
@@ -221,7 +222,7 @@ const Review = () => {
           // 더보기 버튼 클릭 핸들러 추가되어야 함
         />
       )}
-      <Pagination />
+      <ListPagination />
     </WrapStyle>
   );
 };

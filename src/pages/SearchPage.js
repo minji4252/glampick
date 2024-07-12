@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import "../styles/common.css";
 import "../styles/reset.css";
-import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import SearchCard from "../components/SearchCard";
-
+import ListPagination from "../components/common/ListPagination";
 import axios from "axios";
 import SearchPageStyle, {
   ResultContents,
@@ -16,7 +16,6 @@ import SearchPageStyle, {
   SearchResult,
   SearchTop,
 } from "../styles/SearchPageStyle";
-import { useLocation, useSearchParams } from "react-router-dom";
 
 const SearchPage = () => {
   const [searchResults, setSearchResults] = useState({});
@@ -31,16 +30,21 @@ const SearchPage = () => {
     wifi: false,
     barbecue: false,
   });
-  const [region, setRegion] = useState("");
-  const [inDate, setInDate] = useState("");
-  const [outDate, setOutDate] = useState("");
-  const [people, setPeople] = useState("");
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const region1 = searchParams.get("region");
-  const inDate1 = searchParams.get("inDate");
-  const outDate1 = searchParams.get("outDate");
-  const people1 = searchParams.get("people");
+  // 검색 결과
+
+  const [region, setRegion] = useState(""); // 지역 상태
+  const [inDate, setInDate] = useState(""); // 체크인 날짜 상태
+  const [outDate, setOutDate] = useState(""); // 체크아웃 날짜 상태
+  const [people, setPeople] = useState(""); // 인원 상태
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [postPerPage] = useState(5); // 페이지당 보여질 아이템 수
+
+  const [searchParams, setSearchParams] = useSearchParams(); // URL 쿼리 매개변수 관리
+  const region1 = searchParams.get("region"); // URL에서 지역 가져오기
+  const inDate1 = searchParams.get("inDate"); // URL에서 체크인 날짜 가져오기
+  const outDate1 = searchParams.get("outDate"); // URL에서 체크아웃 날짜 가져오기
+  const people1 = searchParams.get("people"); // URL에서 인원 가져오기
 
   // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
@@ -49,41 +53,24 @@ const SearchPage = () => {
       [filter]: !prevState[filter],
     }));
   };
-  // 중복 안 되게
-  // const toggleFilter = filter => {
-  //   setActiveFilters(prevState => ({
-  //     ...Object.fromEntries(
-  //       Object.entries(prevState).map(([key]) => [key, key === filter]),
-  //     ),
-  //   }));
-  // };
 
   const regionNames = {
     seoul: "서울/경기",
     gangwon: "강원",
-    chungbuk: "충청북도",
-    chungnam: "충청남도",
-    gyeongbuk: "경상북도",
-    gyeongnam: "경상남도",
-    jeonbuk: "전라북도",
-    jeonnam: "전라남도",
+    chungbuk: "충북",
+    chungnam: "충남",
+    gyeongbuk: "경북",
+    gyeongnam: "경남",
+    jeonbuk: "전북",
+    jeonnam: "전남",
     jeju: "제주",
-    // 추가적으로 필요한 지역명 추가
   };
 
   useEffect(() => {
-    // 검색 결과는 그냥 {region1 } 이런거 그대로 받아오고 axios없앰 검색 결과만 가져옴
     const fetchData = async () => {
       try {
-        // Get search results
-        // const searchUrl = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
-        const glampingUrl = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
-        // const searchResponse = await axios.get(searchUrl);
-        // setSearchResults(searchResponse.data);
-        // console.log("검색 결과:", searchResponse.data);
-
-        // // Get glamping list data
-        // const glampingUrl = "/api/glamping/search";
+        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&page=${currentPage}`;
+        console.log(glampingUrl);
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
         console.log(glampingResponse.data.glampingListItems);
@@ -97,7 +84,19 @@ const SearchPage = () => {
     };
 
     fetchData();
-  }, [region1, inDate1, outDate1, people1]);
+  }, [region1, inDate1, outDate1, people1, currentPage]);
+
+  // 페이지네이션
+  useEffect(() => {
+    // 페이지가 변경될 때마다 URL 매개변수 업데이트
+    setSearchParams({
+      region: region1,
+      inDate: inDate1,
+      outDate: outDate1,
+      people: people1,
+      page: currentPage,
+    });
+  }, [currentPage]);
 
   return (
     <SearchPageStyle>
@@ -107,7 +106,6 @@ const SearchPage = () => {
             <SearchResult>
               <ResultContents>
                 <label htmlFor="place">지역</label>
-
                 <input
                   type="text"
                   value={regionNames[region1] || ""}
@@ -214,14 +212,12 @@ const SearchPage = () => {
               ))}
             </SearchInnerList>
             <SearchInnerBottom>
-              <ul className="search-page">
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
-                <MdOutlineKeyboardArrowRight />
-              </ul>
+              <ListPagination
+                currentPage={currentPage}
+                totalItems={searchResults.totalItems}
+                itemsPerPage={postPerPage}
+                onPageChange={setCurrentPage}
+              />
             </SearchInnerBottom>
           </SearchInner>
           {/* 임시 */}
