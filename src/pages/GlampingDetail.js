@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { IoIosArrowForward } from "react-icons/io";
@@ -33,17 +33,23 @@ import GlampingDetailStyle, {
   SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
-// 리뷰- 스와이퍼 관련
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
-import { SERVER_URL } from "../apis/config";
+import { animateScroll as scroll } from "react-scroll";
 
 const GlampingDetail = () => {
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
+  const [roomMainImage, setRoomMainImage] = useState(null);
+  const [roomImage, setRoomImage] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [initialRoomItems, setInitialRoomItems] = useState([]);
+
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+
+  const roomSelectRef = useRef(null);
 
   useEffect(() => {
     const fetchGlampingData = async () => {
@@ -55,6 +61,7 @@ const GlampingDetail = () => {
         );
         const data = response.data;
         setGlampingData(data);
+        setInitialRoomItems(data.roomItems.slice(0, 5));
       } catch (error) {
         console.log(error);
       }
@@ -62,6 +69,17 @@ const GlampingDetail = () => {
 
     fetchGlampingData();
   }, []);
+
+  useEffect(() => {
+    if (glampingData && glampingData.roomItems.length > 0) {
+      setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
+      setRoomImage("pic/glamping/1/room/1/room1.jpg");
+      // setRoomMainImage(`pic/glamping/${glampId}/glamp/${glampImage}`);
+      // setRoomImage(
+      //   `pic/glamping/${glampId}/room/${roomItems.roomId}/${roomItems.pic}`,
+      // );
+    }
+  }, [glampingData]);
 
   const toggleLike = async () => {
     try {
@@ -131,12 +149,48 @@ const GlampingDetail = () => {
     }
   };
 
+  const handleMoreView = async () => {
+    try {
+      const glampId = 1;
+      const statusId = 1;
+      const response = await axios.get(
+        `/api/glamping/info/moreRooms?glampId=${glampId}&status=${statusId}`,
+      );
+      const data = response.data;
+      setGlampingData(prevData => ({
+        ...prevData,
+        roomItems: [...prevData.roomItems, ...data.roomItems],
+      }));
+      setIsExpanded(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCollapseView = () => {
+    setGlampingData(prevData => ({
+      ...prevData,
+      roomItems: initialRoomItems,
+    }));
+    setIsExpanded(false);
+    scroll.scrollTo(roomSelectRef.current.offsetTop, {
+      duration: 500,
+      smooth: true,
+    });
+  };
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
         <RoomProperty>
           <RoomPic>
-            <div className="main-img" />
+            <div
+              className="main-img"
+              style={{
+                background: `url(${roomMainImage}) no-repeat center`,
+                backgroundSize: "cover",
+              }}
+            />
           </RoomPic>
           <RoomTitle>
             <span>{glampName}</span>
@@ -196,7 +250,7 @@ const GlampingDetail = () => {
           </RoomOption>
         </RoomProperty>
 
-        <RoomSelect>
+        <RoomSelect ref={roomSelectRef}>
           <UnderLine />
           <RoomSelectTitle>
             <h3>객실선택</h3>
@@ -204,12 +258,15 @@ const GlampingDetail = () => {
           {roomItems.map((room, index) => (
             <RoomCard key={index}>
               <RoomCardLeft>
-                <Link to={`/roomdetail/${room.roomId}`}>
-                  <div className="roomcard-img">
-                    <img
-                      src={`/glamping/${room.glampId}/room/${room.roomId}/abc.png`}
-                      alt="Room"
-                    />
+                <Link to={`/roomdetail`}>
+                  {/* <Link to={`/roomdetail/${room.roomId}`}> */}
+                  <div
+                    className="roomcard-img"
+                    style={{
+                      background: `url(${roomImage}) no-repeat center`,
+                      backgroundSize: "cover",
+                    }}
+                  >
                     <span>사진 더보기</span>
                   </div>
                 </Link>
@@ -246,7 +303,11 @@ const GlampingDetail = () => {
             </RoomCard>
           ))}
           <div className="view-all">
-            <ActionButton label="모두 보기" />
+            {isExpanded ? (
+              <ActionButton label="접기" onClick={handleCollapseView} />
+            ) : (
+              <ActionButton label="모두 보기" onClick={handleMoreView} />
+            )}
           </div>
         </RoomSelect>
 

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import ReviewCard from "../components/ReviewCard";
 import ReviewImgModal from "../components/common/ReviewImgModal"; // ReviewImgModal 임포트
@@ -8,6 +8,7 @@ import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { colorSystem, size } from "../styles/color";
 import Pagination from "../components/common/Pagination";
+import axios from "axios";
 
 const WrapStyle = styled.div`
   .inner {
@@ -119,6 +120,45 @@ const BottomContents = styled.div`
 
 const Review = () => {
   const [showModal, setShowModal] = useState(false);
+  const [reviewImgData, setReviewImgData] = useState(null);
+  const [allReviewImages, setAllReviewImages] = useState([]);
+
+  useEffect(() => {
+    // 숙소 리뷰 데이터
+    const getReviewImgData = async () => {
+      try {
+        const glampId = 1;
+        const page = 1;
+        const response = await axios.get(
+          `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
+        );
+        const data = response.data;
+        setReviewImgData(data);
+        console.log("리뷰 데이터:", data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    // 전체 리뷰 이미지 데이터
+    const getAllReviewImages = async () => {
+      try {
+        const glampId = 1;
+        const page = 1;
+        const response = await axios.get(
+          `/api/glamping?glampId=${glampId}&page=${page}`,
+        );
+        const data = response.data;
+        setAllReviewImages(data);
+        console.log("전체 이미지 :", data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getReviewImgData();
+    getAllReviewImages();
+  }, []);
 
   // 리뷰 이미지 배열
   const reviewImages = [
