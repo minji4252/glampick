@@ -57,8 +57,8 @@ export const RoomProperty = styled.div`
 export const RoomPic = styled.div`
   .main-img {
     position: relative;
-    background: url(${Image}) no-repeat center;
-    background-size: cover;
+    /* background: url(${Image}) no-repeat center; */
+    /* background-size: cover; */
     width: 100%;
     height: 400px;
   }
@@ -210,6 +210,13 @@ export const ReviewSwiper = styled.div`
       font-weight: 700;
       color: ${colorSystem.primary};
       max-height: 30px;
+
+      &:active {
+        border: 1px solid ${colorSystem.primary};
+        background-color: ${colorSystem.primary};
+        color: #fff;
+        font-weight: 600;
+      }
     }
   }
 `;
@@ -341,8 +348,8 @@ export const RoomCardLeft = styled.div`
   .roomcard-img {
     width: 100%;
     height: 240px;
-    background: url(${Room}) no-repeat center;
-    background-size: cover;
+    /* background: url(${Room}) no-repeat center;
+    background-size: cover; */
     position: relative;
   }
 
