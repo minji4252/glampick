@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import "../src/styles/color";
 import "../src/styles/common.css";
 import "../src/styles/reset.css";
@@ -20,13 +26,34 @@ import MyReview from "./pages/mypage/MyReview";
 import Favorite from "./pages/mypage/Favorite";
 import UserInfo from "./pages/mypage/UserInfo";
 import NotfoundPage from "./pages/NotfoundPage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCookie, removeCookie } from "./utils/cookie";
 
 function App() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+  const locationNow = useLocation();
+  const navigate = useNavigate();
+
+  // 페이지 이동할 때마다 로그인 화긴
+  useEffect(() => {
+    const accessToken = getCookie("access-Token");
+    if (accessToken) {
+      setIsLogin(true);
+    } else {
+      setIsLogin(false);
+    }
+  }, [locationNow]); // location 변경시마다
+
+  // 로그아웃
+  const handleLogout = () => {
+    removeCookie("access-Token", { path: "/" });
+    setIsLogin(false);
+    navigate("/login");
+  };
+
   return (
     <div>
-      <Header isLogin={isLogin} />
+      <Header isLogin={isLogin} handleLogout={handleLogout} />
       <Routes>
         {/* 메인 */}
         <Route path="/" element={<MainPage isLogin={isLogin} />}></Route>

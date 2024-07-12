@@ -5,20 +5,11 @@ import headerUser from "../../images/icon/member-icon.png";
 import glampickLogo from "../../images/glampick_logo.png";
 import { removeCookie } from "../../utils/cookie";
 
-const Header = ({ isLogin }) => {
-  // const [isLogin, setIsLogin] = useState(false);
+const Header = ({ isLogin, handleLogout }) => {
   const locationNow = useLocation();
-  const navigate = useNavigate();
-  // 메인 페이지 (Root)에서 Header 임시 숨김
-
-  // 로그아웃 버튼 클릭시 쿠키에 토큰삭제
-  const handleLogout = () => {
-    console.log("로그아웃버튼 클릭");
-    removeCookie("access-Token", { path: "/" });
-    navigate("/login");
-  };
-
+  // 메인에서 header 숨김
   if (locationNow.pathname === "/") return null;
+
   return (
     <header className="header">
       <div className="nav-inner">
