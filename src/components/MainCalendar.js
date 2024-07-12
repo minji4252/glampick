@@ -45,6 +45,7 @@ const MainCalendar = ({ selectedDate, setSelectedDate }) => {
       locale={ko}
       dateFormat="yyyy-MM-dd"
       placeholderText="날짜를 선택하세요"
+      minDate={new Date()} // 지난 날짜 선택 못하게
       className="datepicker-custom"
     />
   );

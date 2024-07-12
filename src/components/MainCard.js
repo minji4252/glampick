@@ -6,7 +6,6 @@ import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import MainCardFile from "./MainCardFile";
 
 const MainArticle = styled.article`
   display: flex;
@@ -115,14 +114,36 @@ const MainCard = ({
   price,
   glampingImg,
 }) => {
+  const [roomMainImage, setRoomMainImage] = useState(null);
+  useEffect(() => {
+    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
+  }, []);
+
+  const regionNames = {
+    seoul: "서울/경기",
+    gangwon: "강원",
+    chungbuk: "충북",
+    chungnam: "충남",
+    gyeongbuk: "경북",
+    gyeongnam: "경남",
+    jeonbuk: "전북",
+    jeonnam: "전남",
+    jeju: "제주",
+  };
+
   return (
     <MainArticle key={glampId}>
       <Link to="/glampingdetail">
-        <div className="article-image">
-          {/* <MainCardFile src={glampingImg} /> */}
+        <div
+          className="article-image"
+          style={{
+            background: `url(${roomMainImage}) no-repeat center`,
+            backgroundSize: "cover",
+          }}
+        >
           <div className="article-place">
             <MdPlace />
-            {region}
+            {regionNames[region] || ""}
           </div>
         </div>
       </Link>
