@@ -89,7 +89,11 @@ const ReviewImgModal = ({ reviewImages, onClose, onMoreClick }) => {
       <ModalContent>
         <ModalHeader>
           <ModalTitle>사진 전체보기</ModalTitle>
-          <CloseButton onClick={onClose}>
+          <CloseButton
+            onClick={() => {
+              onClose();
+            }}
+          >
             <IoClose />
           </CloseButton>
         </ModalHeader>

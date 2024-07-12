@@ -1,8 +1,16 @@
-import axios from "axios";
 import { useState } from "react";
+import {
+  postAuthCode,
+  postCheckSms,
+  postMailSend,
+  postSendSms,
+  postSignUp,
+} from "../../apis/userapi";
+import AlertModal from "../../components/common/AlertModal";
 import { MainButton } from "../../components/common/Button";
+import TermsModal from "../../components/common/TermsModal";
+import useModal from "../../hooks/UseModal";
 import { TermsGroupStyle, WrapStyle } from "../../styles/signupstyle";
-import { postMailSend } from "../../apis/userapi";
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정
@@ -23,20 +31,17 @@ const SignupPage = () => {
   const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
   const namePattern = /^[가-힣]{1,10}$/;
 
-  // 닉네임 중복 확인
-  const [isCheckNickName, setIsCheckNickName] = useState(false);
-
+  // 문자열 형식 유효성 일치여부 확인
   const [emailValid, setEmailValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const [nameValid, setNameValid] = useState(true);
   const [nickNameValid, setNickNameValid] = useState(true);
   const [phoneValid, setPhoneValid] = useState(true);
 
-  const [emailSend, setEmailSend] = useState(false);
-
   // 비밀번호 일치여부 확인
   const [passwordMatch, setPasswordMatch] = useState(true);
-
+  // 메일발송 여부 확인
+  const [emailSend, setEmailSend] = useState(false);
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -47,39 +52,49 @@ const SignupPage = () => {
     agreePrivacy: false,
     agreeMarketing: false,
   });
+  // Alert 모달 관련 상태와 함수
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+  // 약관보기 모달 관련 상태 및 함수
+  const [isTermsModalOpen, setIsModalOpen] = useState(false);
+  const [selectedModal, setSelectedModal] = useState(null);
+
+  const openTermsModal = modalType => {
+    setSelectedModal(modalType);
+    setIsModalOpen(true);
+  };
+
+  const closeTermsModal = () => {
+    setIsModalOpen(false);
+  };
 
   // 메일 인증시 처리할 함수
-  const handlemailSubmit = async e => {
+  const handlEmailSubmit = async e => {
     e.preventDefault();
     const result = await postMailSend({ userEmail });
     // console.log(result.data);
     console.log(result.data.code);
     if (result.data.code === "SU") {
-      alert("인증코드가 발송되었습니다!");
+      openModal({
+        message: "인증코드가 발송되었습니다. 메일을 확인해주세요",
+      });
+      // alert("인증코드가 발송되었습니다!");
       // 타이머 넣어야 함
     }
-  };
-
-  // 인증코드 API 호출 함수
-  const postAuthCode = async ({ userEmail, authCode }) => {
-    try {
-      const reqData = `/api/auth/mail-check?userEmail=${userEmail}&authKey=${authCode}`;
-      console.log(reqData);
-      const response = await axios.post(reqData, {
-        userEmail: userEmail,
-        authKey: authCode,
+    if (result.data.code === "DE") {
+      openModal({
+        message: "중복된 이메일입니다.",
       });
-      console.log(response);
-      return response;
-    } catch (error) {
-      console.log("코드인증에러", error);
+    } else {
+      openModal({
+        message: "메일 발송에 실패하였습니다. 다시 시도해주세요.",
+      });
     }
+    openModal();
   };
 
-  // 메일 인증코드 확인 시 처리할 함수
+  // 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async e => {
     e.preventDefault();
-
     const result = await postAuthCode({ userEmail, authCode });
     console.log(result.data);
     if (result.data.code === "SU") {
@@ -88,7 +103,30 @@ const SignupPage = () => {
       console.log("코드인증 실패");
     }
   };
-  // 닉네임 중복 확인 결과 처리
+
+  // 핸드폰 인증시 처리할 함수
+  const handleSmsSubmit = async e => {
+    e.preventDefault();
+    const result = await postSendSms({ userPhone });
+    console.log(result.data);
+    if (result.data.code === "SU") {
+      console.log("핸드폰 인증번호 발송 성공");
+    } else {
+      console.log("핸드폰 인증번호 발송 실패");
+    }
+  };
+
+  // 핸드폰 인증코드 처리할 함수
+  const handleAuthNumberSubmit = async e => {
+    e.preventDefault();
+    const result = await postCheckSms({ userPhone, authNumber });
+    console.log(result);
+    if (result.data.code === "SU") {
+      console.log("인증번호 인증 성공");
+    } else {
+      console.log("인증번호 인증 실패");
+    }
+  };
 
   // 약관 전체동의 체크박스 핸들러
   const handleAgreeAllChange = e => {
@@ -113,8 +151,22 @@ const SignupPage = () => {
   };
 
   // 회원가입시 처리할 함수
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
+    const result = await postSignUp({
+      userEmail,
+      userPw,
+      userPhone,
+      userName,
+      userNickName,
+    });
+    console.log(result.data);
+    if (result.data.code === "SU") {
+      console.log("회원가입 성공");
+    } else {
+      console.log("회원가입 실패");
+    }
 
     // 이메일 유효성 검사 체크
     // 이메일 중복확인 체크
@@ -156,31 +208,6 @@ const SignupPage = () => {
       return;
     }
     // 핸드폰 중복확인 체크
-    // 핸드폰 인증번호 일치여부 체크
-  };
-
-  // 백엔드에 전달하는 회원가입 정보
-  const signUpReslutFunc = async () => {
-    const signUpRequestData = {
-      userEmail: userEmail,
-      userPw: userPw,
-      userPhone: userPhone,
-      userName: userName,
-      userNickname: userNickName,
-    };
-
-    const postAuthSignUp = async data => {
-      try {
-        const response = await axios.post("api/auth/sign-up", data);
-        return response;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const signUpResult = await postAuthSignUp(signUpRequestData);
-
-    // 회원가입 성공, 실패 메세지 안내
   };
 
   return (
@@ -217,8 +244,13 @@ const SignupPage = () => {
                         <MainButton
                           label="인증코드 발송"
                           onClick={e => {
-                            handlemailSubmit(e);
+                            handlEmailSubmit(e);
                           }}
+                        />
+                        <AlertModal
+                          isOpen={isModalOpen}
+                          onClose={closeModal}
+                          message={modalMessage}
                         />
                       </div>
                     </div>
@@ -354,7 +386,12 @@ const SignupPage = () => {
                         }}
                       />
                       <div className="form-button">
-                        <MainButton label="인증번호 발송" />
+                        <MainButton
+                          label="인증번호 발송"
+                          onClick={e => {
+                            handleSmsSubmit(e);
+                          }}
+                        />
                       </div>
                     </div>
                     {!phoneValid && (
@@ -376,7 +413,12 @@ const SignupPage = () => {
                         onChange={e => setAuthNumber(e.target.value)}
                       />
                       <div className="form-button">
-                        <MainButton label="확인" />
+                        <MainButton
+                          label="확인"
+                          onClick={e => {
+                            handleAuthNumberSubmit(e);
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -412,9 +454,30 @@ const SignupPage = () => {
                           />
                           <label htmlFor="agreeTerms">(필수) 이용약관</label>
                         </div>
-                        <button type="button" className="view-terms-btn">
+                        <button
+                          type="button"
+                          className="view-terms-btn"
+                          onClick={() => {
+                            openTermsModal("terms");
+                          }}
+                        >
                           약관보기 &gt;
                         </button>
+                        {selectedModal === "terms" && (
+                          <TermsModal
+                            isOpen={isTermsModalOpen}
+                            onClose={closeTermsModal}
+                            title="이용약관"
+                            content="제 1 조 (목적) 이 약관은 [주식회사 글램픽] (이하 서비스)의 이용과 관련하여
+        서비스 제공자와 회원 간의 권리, 의무 및 책임사항 등을 규정하는 것을
+        목적으로 합니다. 제 2 조 (정의) 서비스란 [주식회사 글램픽]이 제공하는
+        [서비스 내용]을 말합니다. 회원이란 본 약관에 동의하고 서비스에 가입하여
+        이용자 아이디(ID)를 부여받은 자를 말합니다. 아이디(ID)란 회원의 식별과
+        서비스 이용을 위하여 회원이 설정하고 서비스 제공자가 승인하는 문자와
+        숫자의 조합을 말합니다. 비밀번호란 회원의 동일성 확인과 비밀 보호를 위해
+        회원이 설정한 문자와 숫자의 조합을 말합니다."
+                          />
+                        )}
                       </li>
                       <li className="terms-item">
                         <div className="left-content">
@@ -430,9 +493,23 @@ const SignupPage = () => {
                             (필수) 개인정보 처리방침
                           </label>
                         </div>
-                        <button type="button" className="view-terms-btn">
+                        <button
+                          type="button"
+                          className="view-terms-btn"
+                          onClick={() => {
+                            openTermsModal("privacy");
+                          }}
+                        >
                           약관보기 &gt;
                         </button>
+                        {selectedModal === "privacy" && (
+                          <TermsModal
+                            isOpen={isTermsModalOpen}
+                            onClose={closeTermsModal}
+                            title="개인정보 처리방침"
+                            content="개인정보 처리방침 내용을 여기에 작성하세요."
+                          />
+                        )}
                       </li>
                       <li className="terms-item">
                         <div className="left-content">
@@ -448,15 +525,34 @@ const SignupPage = () => {
                             (선택) 이벤트 정보 및 마케팅 수신활용
                           </label>
                         </div>
-                        <button type="button" className="view-terms-btn">
+                        <button
+                          type="button"
+                          className="view-terms-btn"
+                          onClick={() => {
+                            openTermsModal("marketing");
+                          }}
+                        >
                           약관보기 &gt;
                         </button>
+                        {selectedModal === "marketing" && (
+                          <TermsModal
+                            isOpen={isTermsModalOpen}
+                            onClose={closeTermsModal}
+                            title="마케팅 수신활용"
+                            content="마케팅수신활용 내용을 여기에 작성하세요."
+                          />
+                        )}
                       </li>
                     </ul>
                   </div>
                 </TermsGroupStyle>
                 <div className="sign-button">
-                  <MainButton label="회원가입" />
+                  <MainButton
+                    label="회원가입"
+                    onClick={e => {
+                      handleSubmit(e);
+                    }}
+                  />
                 </div>
               </form>
             </div>
