@@ -224,12 +224,10 @@ const LoginPage = () => {
       return;
     }
 
-    // api 호출
     const result = await postSignIn({ userEmail, userPw });
     // console.log(result.code);
     if (result.code === "SU") {
       console.log(result);
-      // console.log(result.accessToken);
       // 로그인 성공 시 쿠키에 사용자 정보 저장
       setCookie("access-Token", result.accessToken);
 
