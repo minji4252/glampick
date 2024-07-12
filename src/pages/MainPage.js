@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import glampickLogoMain from "../images/glampick_logo_white.png";
 import LoginUserIcon from "../images/icon/main-login-user.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MainCard from "../components/MainCard";
 import "../styles/common.css";
 import "../styles/reset.css";
@@ -23,6 +23,7 @@ import MainPageStyle, {
   MainSec2,
   WrapStyle,
 } from "../styles/MainPageStyle";
+import { removeCookie } from "../utils/cookie";
 
 const MainPage = ({ isLogin }) => {
   const today = new Date();
@@ -39,6 +40,13 @@ const MainPage = ({ isLogin }) => {
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
   const [searchQuery, setSearchQuery] = useState(""); // 검색어
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    console.log("로그아웃버튼 클릭");
+    removeCookie("access-Token", { path: "/" });
+    navigate("/login");
+  };
 
   const handleSearch = () => {
     const formatDate = date => {
@@ -165,10 +173,13 @@ const MainPage = ({ isLogin }) => {
           <div className="main-nav">
             {isLogin ? (
               <>
-                <button className="main-logout">
-                  <Link to="/">
-                    <p>로그아웃</p>
-                  </Link>
+                <button
+                  className="main-logout"
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
+                  <p>로그아웃</p>
                 </button>
                 <div className="main-user">
                   <Link to="/bookingdetail" className="main-user-nav">

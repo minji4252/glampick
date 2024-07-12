@@ -36,12 +36,11 @@ const SearchPage = () => {
   const [outDate, setOutDate] = useState("");
   const [people, setPeople] = useState("");
 
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const region1 = queryParams.get("region");
-  const inDate1 = queryParams.get("inDate");
-  const outDate1 = queryParams.get("outDate");
-  const people1 = queryParams.get("people");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const region1 = searchParams.get("region");
+  const inDate1 = searchParams.get("inDate");
+  const outDate1 = searchParams.get("outDate");
+  const people1 = searchParams.get("people");
 
   // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
@@ -60,19 +59,24 @@ const SearchPage = () => {
   // };
 
   useEffect(() => {
+    // 검색 결과는 그냥 {region1 } 이런거 그대로 받아오고 axios없앰 검색 결과만 가져옴
     const fetchData = async () => {
       try {
         // Get search results
-        const searchUrl = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
-        const searchResponse = await axios.get(searchUrl);
-        setSearchResults(searchResponse.data);
-        console.log("검색 결과:", searchResponse.data);
+        // const searchUrl = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
+        const glampingUrl = `http://192.168.0.7:8080/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}`;
+        // const searchResponse = await axios.get(searchUrl);
+        // setSearchResults(searchResponse.data);
+        // console.log("검색 결과:", searchResponse.data);
 
-        // Get glamping list data
-        const glampingUrl = "/api/glamping/search";
+        // // Get glamping list data
+        // const glampingUrl = "/api/glamping/search";
         const glampingResponse = await axios.get(glampingUrl);
+        console.log(glampingResponse.data);
+        console.log(glampingResponse.data.glampingListItems);
         const glampingArray = glampingResponse.data.glampingListItems;
         setSearchData(glampingArray);
+        setSearchResults(glampingResponse.data);
         console.log("글램핑 검색 결과 리스트", glampingArray);
       } catch (error) {
         console.error("데이터 가져오기 오류:", error);
@@ -188,18 +192,13 @@ const SearchPage = () => {
                 <SearchCard
                   key={item.glampId}
                   glampId={item.glampId}
-                  glampingName={item.glampingName}
+                  glampName={item.glampName}
                   region={item.region}
                   starPoint={item.starPoint}
                   reviewCount={item.reviewCount}
                   price={item.price}
                 />
               ))}
-              {/* <SearchCard />
-              <SearchCard />
-              <SearchCard />
-              <SearchCard />
-              <SearchCard /> */}
             </SearchInnerList>
             <SearchInnerBottom>
               <ul className="search-page">
