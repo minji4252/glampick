@@ -79,8 +79,7 @@ const SignupPage = () => {
       });
       // alert("인증코드가 발송되었습니다!");
       // 타이머 넣어야 함
-    }
-    if (result.data.code === "DE") {
+    } else if (result.data.code === "DE") {
       openModal({
         message: "중복된 이메일입니다.",
       });
@@ -89,7 +88,6 @@ const SignupPage = () => {
         message: "메일 발송에 실패하였습니다. 다시 시도해주세요.",
       });
     }
-    openModal();
   };
 
   // 인증코드 확인 시 처리할 함수
@@ -98,9 +96,18 @@ const SignupPage = () => {
     const result = await postAuthCode({ userEmail, authCode });
     console.log(result.data);
     if (result.data.code === "SU") {
-      console.log("코드인증 성공");
+      openModal({
+        message: "메일 인증이 완료되었습니다.",
+      });
+    } else if (result.data.code === "IC") {
+      // openModal({
+      //   message: "인증코드가 올바르지 않습니다.",
+      // });
+      console.log("인증번호 올바르지 않음");
     } else {
-      console.log("코드인증 실패");
+      openModal({
+        message: "인증에 실패하였습니다. 다시 시도해주세요",
+      });
     }
   };
 

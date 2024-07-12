@@ -18,6 +18,7 @@ export const postMailSend = async ({ userEmail }) => {
   try {
     const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
     const response = await axios.post(reqData, { userEmail });
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -27,7 +28,7 @@ export const postMailSend = async ({ userEmail }) => {
 // 인증코드 api 호출
 export const postAuthCode = async ({ userEmail, authCode }) => {
   try {
-    const reqData = `/api/auth/mail-check?userEmail=${userEmail}&authKey=${authCode}`;
+    const reqData = `/api/auth/mail-check?userEmail=${userEmail}&emailKey=${authCode}`;
     const response = await axios.post(reqData, {
       userEmail: userEmail,
       authKey: authCode,
