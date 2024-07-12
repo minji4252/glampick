@@ -61,6 +61,22 @@ export const WrapStyle = styled.div`
     }
   }
 
+  .timer {
+    color: ${colorSystem.error};
+    font-size: 0.9rem;
+    ${size.mid} {
+      font-size: 0.8rem;
+    }
+  }
+
+  .time-over {
+    color: ${colorSystem.error};
+    font-size: 0.9rem;
+    ${size.mid} {
+      font-size: 0.8rem;
+    }
+  }
+
   .error-message {
     display: block;
     color: ${colorSystem.error};

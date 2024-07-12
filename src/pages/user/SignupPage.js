@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   postAuthCode,
   postCheckSms,
@@ -25,23 +25,39 @@ const SignupPage = () => {
 
   // 문자열 형식 유효성 검사
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const authCodePattern = /^[0-9]{6}$/;
   const passwordPattern =
     /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const phonePattern = /^[0-9]{11,13}$/;
   const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
   const namePattern = /^[가-힣]{1,10}$/;
+  const authNumberPattern = /^[0-9]{6}$/;
 
   // 문자열 형식 유효성 일치여부 확인
   const [emailValid, setEmailValid] = useState(true);
+  const [authCodeValid, setAuthCodeValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const [nameValid, setNameValid] = useState(true);
   const [nickNameValid, setNickNameValid] = useState(true);
   const [phoneValid, setPhoneValid] = useState(true);
+  const [authNumberValid, setAuthNumberValid] = useState(true);
 
   // 비밀번호 일치여부 확인
   const [passwordMatch, setPasswordMatch] = useState(true);
+
   // 메일발송 여부 확인
-  const [emailSend, setEmailSend] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
+
+  // 인증코드 발송시 타이머 상태 추가
+  const [timer, setTimer] = useState(299);
+  const [timerId, setTimerId] = useState(null); // 타이머 ID
+
+  // 인증 완료 여부 상태 추가
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isAuthNumberVerified, setIsAuthNumberVerified] = useState(false);
+
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -58,6 +74,7 @@ const SignupPage = () => {
   const [isTermsModalOpen, setIsModalOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
 
+  // 약관보기 모달
   const openTermsModal = modalType => {
     setSelectedModal(modalType);
     setIsModalOpen(true);
@@ -66,6 +83,21 @@ const SignupPage = () => {
   const closeTermsModal = () => {
     setIsModalOpen(false);
   };
+
+  // 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    let intervalId = null;
+    if (timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+    } else {
+      clearInterval(timerId);
+    }
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [timer]); // timer만 의존성 배열에 넣어줍니다.
 
   // 메일 인증시 처리할 함수
   const handlEmailSubmit = async e => {
@@ -77,11 +109,22 @@ const SignupPage = () => {
       openModal({
         message: "인증코드가 발송되었습니다. 메일을 확인해주세요",
       });
-      // alert("인증코드가 발송되었습니다!");
-      // 타이머 넣어야 함
+      // 메일발송 성공
+      setIsEmailSent(true);
+      // 타이머
+      setTimer(299);
+      // 타이머 시작
+      const id = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+      setTimerId(id);
     } else if (result.data.code === "DE") {
       openModal({
         message: "중복된 이메일입니다.",
+      });
+    } else if (result.data.code === "EE") {
+      openModal({
+        message: "메일 주소를 입력해주세요.",
       });
     } else {
       openModal({
@@ -90,20 +133,31 @@ const SignupPage = () => {
     }
   };
 
+  // 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatTimer = () => {
+    const minutes = Math.floor(timer / 60);
+    const seconds = timer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
   // 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async e => {
     e.preventDefault();
     const result = await postAuthCode({ userEmail, authCode });
     console.log(result.data);
     if (result.data.code === "SU") {
+      setIsEmailVerified(true);
       openModal({
-        message: "메일 인증이 완료되었습니다.",
+        message: "인증이 완료되었습니다.",
       });
     } else if (result.data.code === "IC") {
-      // openModal({
-      //   message: "인증코드가 올바르지 않습니다.",
-      // });
-      console.log("인증번호 올바르지 않음");
+      openModal({
+        message: "인증코드가 올바르지 않습니다.",
+      });
+    } else if (result.data.code === "VF") {
+      openModal({
+        message: "인증코드를 입력해주세요.",
+      });
     } else {
       openModal({
         message: "인증에 실패하였습니다. 다시 시도해주세요",
@@ -117,21 +171,39 @@ const SignupPage = () => {
     const result = await postSendSms({ userPhone });
     console.log(result.data);
     if (result.data.code === "SU") {
-      console.log("핸드폰 인증번호 발송 성공");
+      openModal({
+        message: "인증코드가 발송되었습니다. 문자메세지를 확인해주세요",
+      });
+    } else if (result.data.code === "IPH") {
+      openModal({
+        message: "전화번호 형식이 올바르지 않습니다.",
+      });
     } else {
-      console.log("핸드폰 인증번호 발송 실패");
+      openModal({
+        message: "발송 실패하였습니다. 다시 시도해주세요",
+      });
     }
   };
 
   // 핸드폰 인증코드 처리할 함수
   const handleAuthNumberSubmit = async e => {
     e.preventDefault();
+
     const result = await postCheckSms({ userPhone, authNumber });
     console.log(result);
     if (result.data.code === "SU") {
-      console.log("인증번호 인증 성공");
+      setIsPhoneVerified(true);
+      openModal({
+        message: "인증이 완료되었습니다.",
+      });
+    } else if (result.data.code === "IC") {
+      openModal({
+        message: "인증코드가 올바르지 않습니다.",
+      });
     } else {
-      console.log("인증번호 인증 실패");
+      openModal({
+        message: "인증에 실패하였습니다. 다시 시도해주세요",
+      });
     }
   };
 
@@ -161,24 +233,54 @@ const SignupPage = () => {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const result = await postSignUp({
-      userEmail,
-      userPw,
-      userPhone,
-      userName,
-      userNickName,
-    });
-    console.log(result.data);
-    if (result.data.code === "SU") {
-      console.log("회원가입 성공");
-    } else {
-      console.log("회원가입 실패");
+    // 입력창이 비어있을 경우 체크
+    if (
+      !userEmail ||
+      !authCode ||
+      !userPw ||
+      !userPwCheck ||
+      !userName ||
+      !userNickName ||
+      !userPhone ||
+      !authNumber
+    ) {
+      openModal({
+        message: "입력창을 모두 기재해주세요",
+      });
+      return; // 회원가입을 막고 여기서 함수 실행을 종료
     }
-
-    // 이메일 유효성 검사 체크
-    // 이메일 중복확인 체크
-    // 이메일 인증코드 일치여부 체크
-
+    //  이메일 인증
+    if (!isEmailVerified) {
+      setIsModalOpen(true);
+      openModal({
+        message: "이메일을 인증해주세요",
+      });
+      return;
+    }
+    // 이메일 인증코드 확인
+    if (!isAuthCodeVerified) {
+      setIsModalOpen(true);
+      openModal({
+        message: "인증코드를 확인해주세요",
+      });
+      return;
+    }
+    //  핸드폰 인증
+    if (!isPhoneVerified) {
+      setIsModalOpen(true);
+      openModal({
+        message: "핸드폰을 인증해주세요",
+      });
+      return;
+    }
+    // 핸드폰 인증번호 확인
+    if (!isAuthNumberVerified) {
+      setIsModalOpen(true);
+      openModal({
+        message: "핸드폰을 인증해주세요",
+      });
+      return;
+    }
     // 비밀번호 유효성 검사 체크
     if (!passwordPattern.test(userPw)) {
       setErrorMessage(
@@ -207,14 +309,39 @@ const SignupPage = () => {
         "닉네임은 2~10자의 대소문자, 한글, 숫자로 구성되어야 하며, 숫자는 첫째자리에 올 수 없습니다.",
       );
     }
-    // 닉네임 중복 확인 체크
-
     // 핸드폰 유효성 검사 체크
     if (!phonePattern.test(userPhone)) {
       setErrorMessage("휴대폰 번호는 11~13자의 숫자여야 합니다.");
       return;
     }
-    // 핸드폰 중복확인 체크
+
+    // 필수 이용약관 체크 여부 확인
+    if (!checkboxes.agreeTerms || !checkboxes.agreePrivacy) {
+      setIsModalOpen(true);
+      openModal({
+        message: "필수 이용약관에 동의해주세요",
+      });
+      return;
+    }
+    // 백엔드에 전달할 회원가입 유저 정보
+    const result = await postSignUp({
+      userEmail,
+      userPw,
+      userPhone,
+      userName,
+      userNickName,
+    });
+
+    console.log(result.data);
+    if (result.data.code === "SU") {
+      openModal({
+        message: "회원가입이 완료되었습니다! 로그인 후 이용해주세요",
+      });
+    } else if (result.data.code === "DN") {
+      openModal({
+        message: "이미 사용중인 닉네임입니다.",
+      });
+    }
   };
 
   return (
@@ -246,6 +373,7 @@ const SignupPage = () => {
                           setUserEmail(e.target.value);
                           setEmailValid(emailPattern.test(e.target.value));
                         }}
+                        disabled={isEmailVerified}
                       />
                       <div className="form-button">
                         <MainButton
@@ -273,10 +401,16 @@ const SignupPage = () => {
                       <input
                         type="text"
                         id="auth-code"
-                        required
-                        placeholder="인증코드를 입력해주세요"
+                        maxLength="6"
+                        pattern="\d{6}"
+                        placeholder="인증코드 6자리를 입력해주세요"
                         value={authCode}
-                        onChange={e => setAuthCode(e.target.value)}
+                        onChange={e => {
+                          setAuthCode(e.target.value);
+                          setAuthCodeValid(
+                            authCodePattern.test(e.target.value),
+                          );
+                        }}
                       />
                       <div className="form-button">
                         <MainButton
@@ -288,6 +422,23 @@ const SignupPage = () => {
                       </div>
                     </div>
                   </div>
+                  {/* 타이머 */}
+                  {isEmailSent && (
+                    <div>
+                      {timer > 0 ? (
+                        <p className="timer">남은 시간: {formatTimer()}</p>
+                      ) : (
+                        <p className="time-over">
+                          인증 시간이 만료되었습니다. 다시 발송해주세요.
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  {/* {!authCodeValid && (
+                    <p className="error-message">
+                      인증코드는 숫자로만 입력해주세요.
+                    </p>
+                  )} */}
                   <div className="form-group">
                     <label htmlFor="password">비밀번호</label>
                     <input
@@ -310,7 +461,6 @@ const SignupPage = () => {
                       </p>
                     )}
                   </div>
-
                   <div className="form-group">
                     <label htmlFor="confirm-password">비밀번호 확인</label>
                     <input
@@ -391,6 +541,7 @@ const SignupPage = () => {
                           setUserPhone(e.target.value);
                           setPhoneValid(phonePattern.test(e.target.value));
                         }}
+                        disabled={isPhoneVerified}
                       />
                       <div className="form-button">
                         <MainButton
@@ -414,10 +565,16 @@ const SignupPage = () => {
                       <input
                         type="text"
                         id="auth-number"
-                        required
-                        placeholder="인증번호를 입력해주세요"
+                        maxLength="6"
+                        pattern="\d{6}"
+                        placeholder="인증번호 6자리를 입력해주세요"
                         value={authNumber}
-                        onChange={e => setAuthNumber(e.target.value)}
+                        onChange={e => {
+                          setAuthNumber(e.target.value);
+                          setAuthNumberValid(
+                            authNumberPattern.test(e.target.value),
+                          );
+                        }}
                       />
                       <div className="form-button">
                         <MainButton
@@ -429,6 +586,11 @@ const SignupPage = () => {
                       </div>
                     </div>
                   </div>
+                  {/* {!authNumberValid && (
+                    <p className="error-message">
+                      인증번호는 숫자로만 입력해주세요.
+                    </p>
+                  )} */}
                 </fieldset>
 
                 {/* 약관 동의 */}

@@ -9,6 +9,10 @@ export const postSignIn = async ({ userEmail, userPw }) => {
     });
     return response.data;
   } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
     console.log(error);
   }
 };
@@ -21,6 +25,10 @@ export const postMailSend = async ({ userEmail }) => {
     console.log(response);
     return response;
   } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
     console.log(error);
   }
 };
@@ -36,6 +44,10 @@ export const postAuthCode = async ({ userEmail, authCode }) => {
     console.log(response);
     return response;
   } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
     console.log("코드인증에러", error);
   }
 };
@@ -48,6 +60,10 @@ export const postSendSms = async ({ userPhone }) => {
     console.log(response);
     return response;
   } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
     console.log(error);
   }
 };
@@ -63,6 +79,10 @@ export const postCheckSms = async ({ userPhone, authNumber }) => {
     console.log(response);
     return response;
   } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
     console.log(error);
   }
 };
@@ -86,6 +106,10 @@ export const postSignUp = async ({
     console.log(response);
     return response;
   } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
     console.log(error);
   }
 };
