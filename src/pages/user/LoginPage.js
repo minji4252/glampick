@@ -211,7 +211,6 @@ const LoginPage = () => {
   const [userPw, setUserPw] = useState("Asdf@1234");
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
-  // const [isModalOpen, setIsModalOpen] = useState(false);
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
 
