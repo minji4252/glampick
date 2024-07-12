@@ -38,6 +38,11 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
 import { animateScroll as scroll } from "react-scroll";
+import {
+  fetchGlampingData,
+  toggleLikeGlamping,
+  fetchMoreRooms,
+} from "../apis/glamping";
 
 const GlampingDetail = () => {
   const [glampingData, setGlampingData] = useState(null);
@@ -46,20 +51,25 @@ const GlampingDetail = () => {
   const [roomImage, setRoomImage] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [initialRoomItems, setInitialRoomItems] = useState([]);
+  // 임시데이터(삭제예정)
+  const glampId = 1;
+  const statusId = 0;
+  const startDate = "2024-06-10";
+  const endDate = "2024-06-15";
 
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
   const roomSelectRef = useRef(null);
 
   useEffect(() => {
-    const fetchGlampingData = async () => {
+    const fetchData = async () => {
       try {
-        const glampId = 1;
-        const statusId = 0;
-        const response = await axios.get(
-          `/api/glamping/info?glampId=${glampId}&status=${statusId}`,
+        const data = await fetchGlampingData(
+          glampId,
+          startDate,
+          endDate,
+          statusId,
         );
-        const data = response.data;
         setGlampingData(data);
         setInitialRoomItems(data.roomItems.slice(0, 5));
       } catch (error) {
@@ -67,27 +77,25 @@ const GlampingDetail = () => {
       }
     };
 
-    fetchGlampingData();
+    fetchData();
   }, []);
 
   useEffect(() => {
     if (glampingData && glampingData.roomItems.length > 0) {
-      setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
+      setRoomMainImage(
+        "https://image.goodchoice.kr/affiliate/2024/02/08/13/1688124778035BHcflwXaBvI11wUgnwW.jpg",
+      );
       setRoomImage("pic/glamping/1/room/1/room1.jpg");
-      // setRoomMainImage(`pic/glamping/${glampId}/glamp/${glampImage}`);
-      // setRoomImage(
-      //   `pic/glamping/${glampId}/room/${roomItems.roomId}/${roomItems.pic}`,
-      // );
     }
   }, [glampingData]);
 
   const toggleLike = async () => {
     try {
-      const res = await axios.get(`/api/glamping/favorite`);
-      if (res.data.resultValue === 1) {
+      const resultValue = await toggleLikeGlamping();
+      if (resultValue === 1) {
         setIsLiked(true);
         openModal({ message: "관심 글램핑장 목록에 추가되었습니다" });
-      } else if (res.data.resultValue === 0) {
+      } else if (resultValue === 0) {
         setIsLiked(false);
         openModal({ message: "관심 글램핑장 목록에서 삭제되었습니다" });
       }
@@ -150,13 +158,10 @@ const GlampingDetail = () => {
   };
 
   const handleMoreView = async () => {
+    const statusId = 1;
+
     try {
-      const glampId = 1;
-      const statusId = 1;
-      const response = await axios.get(
-        `/api/glamping/info/moreRooms?glampId=${glampId}&status=${statusId}`,
-      );
-      const data = response.data;
+      const data = await fetchMoreRooms(glampId, startDate, endDate, statusId);
       setGlampingData(prevData => ({
         ...prevData,
         roomItems: [...prevData.roomItems, ...data.roomItems],
