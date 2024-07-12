@@ -73,8 +73,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const popularArray = response.data.popular;
-        console.log("인기 top3");
-        console.log(popularArray);
+        // console.log("인기 top3");
+        // console.log(popularArray);
         setPopularData(popularArray);
       } catch (error) {
         console.error(error);
@@ -89,8 +89,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const petArray = response.data.petFriendly;
-        console.log("반려동물 top3");
-        console.log(petArray);
+        // console.log("반려동물 top3");
+        // console.log(petArray);
         setPetData(petArray);
       } catch (error) {
         console.error(error);
@@ -105,8 +105,8 @@ const MainPage = ({ isLogin }) => {
       try {
         const response = await axios.get("/api/main");
         const mountainArray = response.data.mountainView;
-        console.log("마운틴뷰 top3");
-        console.log(mountainArray);
+        // console.log("마운틴뷰 top3");
+        // console.log(mountainArray);
         setMountainData(mountainArray);
       } catch (error) {
         console.error(error);

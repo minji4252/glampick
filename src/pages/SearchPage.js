@@ -58,6 +58,19 @@ const SearchPage = () => {
   //   }));
   // };
 
+  const regionNames = {
+    seoul: "서울/경기",
+    gangwon: "강원",
+    chungbuk: "충청북도",
+    chungnam: "충청남도",
+    gyeongbuk: "경상북도",
+    gyeongnam: "경상남도",
+    jeonbuk: "전라북도",
+    jeonnam: "전라남도",
+    jeju: "제주",
+    // 추가적으로 필요한 지역명 추가
+  };
+
   useEffect(() => {
     // 검색 결과는 그냥 {region1 } 이런거 그대로 받아오고 axios없앰 검색 결과만 가져옴
     const fetchData = async () => {
@@ -97,7 +110,7 @@ const SearchPage = () => {
 
                 <input
                   type="text"
-                  value={region1}
+                  value={regionNames[region1] || ""}
                   onChange={e => setRegion(e.target.value)}
                 />
               </ResultContents>
@@ -120,7 +133,7 @@ const SearchPage = () => {
               </ResultContents>
               <ResultContents>
                 <label htmlFor="input">검색어</label>
-                <input type="text" value={"검색어"} readOnly></input>
+                <input type="text" value={""} readOnly></input>
               </ResultContents>
             </SearchResult>
           </SearchTop>
@@ -193,7 +206,7 @@ const SearchPage = () => {
                   key={item.glampId}
                   glampId={item.glampId}
                   glampName={item.glampName}
-                  region={item.region}
+                  region={regionNames[item.region] || ""}
                   starPoint={item.starPoint}
                   reviewCount={item.reviewCount}
                   price={item.price}

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 
 import { colorSystem, size } from "../styles/color";
 import SearchImage from "../images/search-pic1.png";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
@@ -26,8 +26,9 @@ const SearchContent = styled.div`
     max-width: 400px;
     width: 100%;
     height: 240px;
-    background: url(${SearchImage}) no-repeat center;
+    /* background: url(${SearchImage}) no-repeat center; */
     margin-left: 15px;
+    border-radius: 20px;
   }
   .search-detail {
     width: 550px;
@@ -100,9 +101,24 @@ const SearchCard = ({
   reviewCount,
   price,
 }) => {
+  const handleButtonClick = () => {
+    console.log("예약하기");
+  };
+  const [roomMainImage, setRoomMainImage] = useState(null);
+  useEffect(() => {
+    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
+  }, []);
+
   return (
     <SearchContent key={glampId}>
-      <div className="search-image"></div>
+      {/* <div className="search-image"></div> */}
+      <div
+        className="search-image"
+        style={{
+          background: `url(${roomMainImage}) no-repeat center`,
+          backgroundSize: "cover",
+        }}
+      />
       <div className="search-detail">
         <div className="sc-top">
           <div className="sc-name">{glampName}</div>
@@ -118,9 +134,9 @@ const SearchCard = ({
         </div>
         <div className="sc-bottom">
           <div className="sc-price">{price}원 ~</div>
-          <MainButton label="예약하기">
-            <Link to="/glampingdetail" />
-          </MainButton>
+          <Link to="/glampingdetail">
+            <MainButton onClick={handleButtonClick} label="예약하기" />{" "}
+          </Link>
         </div>
       </div>
     </SearchContent>
