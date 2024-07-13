@@ -33,11 +33,12 @@ const SearchPage = () => {
 
   // 검색 결과
 
-  const [region, setRegion] = useState(""); // 지역 상태
-  const [inDate, setInDate] = useState(""); // 체크인 날짜 상태
-  const [outDate, setOutDate] = useState(""); // 체크아웃 날짜 상태
-  const [people, setPeople] = useState(""); // 인원 상태
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [region, setRegion] = useState(""); // 지역
+  const [inDate, setInDate] = useState(""); // 체크인
+  const [outDate, setOutDate] = useState(""); // 체크아웃
+  const [people, setPeople] = useState(""); // 인원
+  const [sort, setSort] = useState(1); // 정렬 (초기값 1 - 추천순)
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(5); // 페이지당 보여질 아이템 수
 
   const [searchParams, setSearchParams] = useSearchParams(); // URL 쿼리 매개변수 관리
@@ -46,14 +47,18 @@ const SearchPage = () => {
   const outDate1 = searchParams.get("outDate"); // URL에서 체크아웃 날짜 가져오기
   const people1 = searchParams.get("people"); // URL에서 인원 가져오기
 
-  // 필터 아이콘 토글 (중복 선택 가능)
-  const toggleFilter = filter => {
-    setActiveFilters(prevState => ({
-      ...prevState,
-      [filter]: !prevState[filter],
-    }));
+  // 필터 아이콘 번호로 매핑
+  const filterMapping = {
+    pet: 1,
+    ocean: 2,
+    mountain: 3,
+    swim: 4,
+    toilet: 5,
+    wifi: 6,
+    barbecue: 7,
   };
 
+  // 지역명 한글로
   const regionNames = {
     seoul: "서울/경기",
     gangwon: "강원",
@@ -66,10 +71,43 @@ const SearchPage = () => {
     jeju: "제주",
   };
 
+  // 정렬 select값 정수로
+  const handleSortChange = e => {
+    setSort(parseInt(e.target.value));
+  };
+
+  // 필터 아이콘 토글 (중복 선택 가능)
+  const toggleFilter = filter => {
+    setActiveFilters(prevState => ({
+      ...prevState,
+      [filter]: !prevState[filter],
+    }));
+  };
+
+  useEffect(() => {
+    // 페이지가 변경될 때마다 URL 매개변수 업데이트
+    setSearchParams({
+      region: region1,
+      inDate: inDate1,
+      outDate: outDate1,
+      people: people1,
+      sortType: sort,
+      page: currentPage,
+      filter: Object.keys(activeFilters)
+        .filter(key => activeFilters[key])
+        .map(key => filterMapping[key])
+        .join(","),
+    });
+  }, [sort, currentPage, activeFilters]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&page=${currentPage}`;
+        const filterParams = Object.keys(activeFilters)
+          .filter(key => activeFilters[key])
+          .map(key => filterMapping[key])
+          .join(",");
+        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}`;
         console.log(glampingUrl);
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
@@ -84,19 +122,7 @@ const SearchPage = () => {
     };
 
     fetchData();
-  }, [region1, inDate1, outDate1, people1, currentPage]);
-
-  // 페이지네이션
-  useEffect(() => {
-    // 페이지가 변경될 때마다 URL 매개변수 업데이트
-    setSearchParams({
-      region: region1,
-      inDate: inDate1,
-      outDate: outDate1,
-      people: people1,
-      page: currentPage,
-    });
-  }, [currentPage]);
+  }, [region1, inDate1, outDate1, people1, sort, currentPage, activeFilters]);
 
   return (
     <SearchPageStyle>
@@ -186,11 +212,17 @@ const SearchPage = () => {
               </SearchFilter>
               <SearchMenu>
                 <div className="search-aline">
-                  <select name="aline" id="aline">
-                    <option value="star">평점 높은순</option>
-                    <option value="review">리뷰 많은순</option>
-                    <option value="highprice">높은 가격순</option>
-                    <option value="lowprice">낮은 가격순</option>
+                  <select
+                    name="aline"
+                    id="aline"
+                    value={sort}
+                    onChange={handleSortChange}
+                  >
+                    <option value="1">추천순</option>
+                    <option value="2">평점 높은순</option>
+                    <option value="3">리뷰 많은순</option>
+                    <option value="4">낮은 가격순</option>
+                    <option value="5">높은 가격순</option>
                   </select>
                 </div>
                 <div className="search-result">
@@ -214,7 +246,7 @@ const SearchPage = () => {
             <SearchInnerBottom>
               <ListPagination
                 currentPage={currentPage}
-                totalItems={searchResults.totalItems}
+                totalItems={searchResults.totalItems || 1}
                 itemsPerPage={postPerPage}
                 onPageChange={setCurrentPage}
               />

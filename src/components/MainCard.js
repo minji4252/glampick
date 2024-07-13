@@ -114,6 +114,9 @@ const MainCard = ({
   price,
   glampingImg,
 }) => {
+  // 가격 단위
+  const formattedPrice = price.toLocaleString();
+
   const [roomMainImage, setRoomMainImage] = useState(null);
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
@@ -159,7 +162,7 @@ const MainCard = ({
           <div className="review-count">(리뷰 {reviewCount}개)</div>
         </div>
         <div className="article-bottom">
-          <div className="glamping-price">{price}원~</div>
+          <div className="glamping-price">{formattedPrice} 원~</div>
           <Link to="/glampingdetail">
             <MainButton label="예약하기" />
           </Link>

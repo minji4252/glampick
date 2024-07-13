@@ -45,29 +45,33 @@ const PaginationContainer = styled.div`
   }
 `;
 
-const ListPagination = () => {
-  // 초기 세팅 페이지
-  const [activePage, setActivePage] = useState(1);
-  // 한 페이지당 목록 수
-  const itemsCountPerPage = 5;
-  // 총 게시물 목록 수
-  const totalItemsCount = 300;
+const ListPagination = (
+  currentPage,
+  totalItems,
+  itemsPerPage,
+  onPageChange,
+) => {
+  // // 초기 세팅 페이지
+  // const [activePage, setActivePage] = useState(1);
+  // // 한 페이지당 목록 수
+  // const itemsCountPerPage = 5;
+  // // 총 게시물 목록 수
+  // const totalItemsCount = 300;
 
   const handlePageChange = pageNumber => {
-    console.log(`active page is ${pageNumber}`);
-    setActivePage(pageNumber);
+    console.log(`선택된 페이지 ${pageNumber}`);
+    onPageChange(pageNumber);
     // 여기서 데이터를 가져오거나, 다시 렌더링을 처리할 수 있음
   };
 
   return (
     <PaginationContainer>
       <Pagination
-        activePage={activePage}
-        itemsCountPerPage={itemsCountPerPage}
-        totalItemsCount={totalItemsCount}
+        activePage={currentPage}
+        itemsCountPerPage={itemsPerPage}
+        totalItemsCount={totalItems}
         pageRangeDisplayed={5}
         onChange={handlePageChange}
-        e
         itemClass="page-item"
         linkClass="page-link"
         prevPageText={

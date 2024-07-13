@@ -47,15 +47,40 @@ const FavoriteContents = styled.div`
 `;
 
 const Favorite = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [visibleItems, setVisibleItems] = useState([true, true, true, true]);
   const [favorites, setFavorites] = useState([]);
+  const [accessToken, setAccessToken] = useState("");
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        // 쿠키에서 access-Token 가쟈옴
+        const accessTokenFromCookie = getCookie("access-Token");
+        if (accessTokenFromCookie) {
+          setAccessToken(accessTokenFromCookie);
+        } else {
+          console.log("쿠키에 access-Token 없음");
+        }
+      } catch (error) {
+        console.log("ccess-Token 가져오는 중 에러:", error);
+      }
+    };
+
+    fetchAccessToken();
+  }, []);
 
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
+        if (!accessToken) return; // accessToken이 없으면 요청을 보내지 않음
+
+        axios.defaults.withCredentials = true; // withCredentials 옵션 활성화
         const response = await axios.get(
           "http://192.168.0.7:8080/api/user/favorite-glamping",
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
         );
         setFavorites(response.data.favoritelist);
         console.log(response.data.favoritelist);
@@ -63,29 +88,9 @@ const Favorite = () => {
         console.log(error);
       }
     };
+
     fetchFavorites();
-  }, []);
-
-  const toggleVisibility = index => {
-    const newVisibleItems = [...visibleItems];
-    newVisibleItems[index] = !newVisibleItems[index];
-    setVisibleItems(newVisibleItems);
-  };
-
-  // const deleteLike = async glampId => {
-  //   try {
-  //     const response = await axios.delete(`/api/glamping/favorite/${glampId}`);
-  //     if (response.data.success) {
-  //       const newVisibleItems = [...visibleItems];
-  //       newVisibleItems.splice(glampId, 1);
-  //       setVisibleItems(newVisibleItems);
-  //     } else {
-  //       console.error("삭제 실패");
-  //     }
-  //   } catch (error) {
-  //     console.error("삭제 오류:", error);
-  //   }
-  // };
+  }, [accessToken]); // accessToken이 업데이트될 때마다 다시 요청을 보냄
 
   return (
     <WrapStyle>
@@ -93,40 +98,17 @@ const Favorite = () => {
       <div className="inner">
         <h3>관심 목록</h3>
         <FavoriteContents>
-          {visibleItems.map(
-            (isVisible, index) =>
-              isVisible && (
-                <div key={index} className="favorite-content">
-                  {favorites.map(item => (
-                    <FavoriteCard
-                      key={item.glampId}
-                      glampId={item.glampId}
-                      glampingName={item.glampingName}
-                      region={item.region}
-                      starPoint={item.starPoint}
-                      reviewCount={item.reviewCount}
-                      price={item.price}
-                    />
-                  ))}
-                  {/* <div
-                    className="favorite-heart"
-                    onClick={() => toggleVisibility(index)}
-                  ></div> */}
-                </div>
-              ),
-          )}
-          {/* <div className="favorite-content">
-            <FavoriteCard />
-            <div className="favorite-heart"></div>
-          </div>
-          <div className="favorite-content">
-            <FavoriteCard />
-            <div className="favorite-heart"></div>
-          </div>
-          <div className="favorite-content">
-            <FavoriteCard />
-            <div className="favorite-heart"></div>
-          </div> */}
+          {favorites.map(item => (
+            <FavoriteCard
+              key={item.glampId}
+              glampId={item.glampId}
+              glampName={item.glampName}
+              glampLocation={item.glampLocation}
+              starPoint={item.starPoint}
+              reviewCount={item.reviewCount}
+              price={item.price}
+            />
+          ))}
         </FavoriteContents>
       </div>
     </WrapStyle>
@@ -134,3 +116,11 @@ const Favorite = () => {
 };
 
 export default Favorite;
+
+// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
+function getCookie(name) {
+  const cookieValue = document.cookie.match(
+    "(^|;)\\s*" + name + "\\s*=\\s*([^;]*)",
+  );
+  return cookieValue ? cookieValue.pop() : "";
+}
