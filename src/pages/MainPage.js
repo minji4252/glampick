@@ -42,8 +42,8 @@ const MainPage = ({ isLogin }) => {
   const [searchQuery, setSearchQuery] = useState(""); // 검색어
   const navigate = useNavigate();
 
+  // 로그아웃
   const handleLogout = () => {
-    console.log("로그아웃버튼 클릭");
     removeCookie("access-Token", { path: "/" });
     navigate("/login");
   };

@@ -101,6 +101,10 @@ const SearchCard = ({
   reviewCount,
   price,
 }) => {
+  // 가격 단위
+  const formattedPrice = price.toLocaleString();
+
+  // 예약
   const handleButtonClick = () => {
     console.log("예약하기");
   };
@@ -133,7 +137,7 @@ const SearchCard = ({
           </div>
         </div>
         <div className="sc-bottom">
-          <div className="sc-price">{price}원 ~</div>
+          <div className="sc-price">{formattedPrice} 원 ~</div>
           <Link to="/glampingdetail">
             <MainButton onClick={handleButtonClick} label="예약하기" />{" "}
           </Link>

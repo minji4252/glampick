@@ -113,22 +113,22 @@ const ArticleContent = styled.div`
 `;
 
 export const FavoriteCard = (
-  glampId,
-  glampingName,
-  region,
-  starPoint,
   reviewCount,
   price,
-  glampingImg,
+  starPoint,
+  glampImage,
+  glampLocation,
+  glampName,
+  glampId,
 ) => {
   return (
     <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">
         <div className="article-image">
-          {/* <MainCardFile src={glampingImg} /> */}
+          {/* <MainCardFile src={glampImage} /> */}
           <div className="article-place">
             <MdPlace />
-            서울/경기
+            {glampLocation}
           </div>
         </div>
       </Link>
@@ -139,7 +139,7 @@ export const FavoriteCard = (
       <ArticleContent>
         <div className="article-top">
           <Link to="/glampingdetail">
-            <div className="glamping-name">{glampingName}</div>
+            <div className="glamping-name">{glampName}</div>
           </Link>
           <div className="article-detail">
             <FaStar />
