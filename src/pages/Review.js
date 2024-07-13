@@ -8,11 +8,7 @@ import ReviewImgModal from "../components/common/ReviewImgModal"; // ReviewImgMo
 import reviewimg1 from "../images/review1.png";
 import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
-import { colorSystem, size } from "../styles/color"
-import Pagination from "../components/common/ListPagination";
-import axios from "axios";
-import ListPagination from "../components/common/ListPagination";
-
+import { colorSystem, size } from "../styles/color";
 
 const WrapStyle = styled.div`
   .inner {

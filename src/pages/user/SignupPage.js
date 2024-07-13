@@ -47,10 +47,16 @@ const SignupPage = () => {
 
   // 메일발송 여부 확인
   const [isEmailSent, setIsEmailSent] = useState(false);
+  // 핸드폰 발송 여부 확인
+  const [isSmsSent, setIsSmsSent] = useState(false);
 
-  // 인증코드 발송시 타이머 상태 추가
-  const [timer, setTimer] = useState(299);
-  const [timerId, setTimerId] = useState(null); // 타이머 ID
+  // 이메일 인증을 위한 타이머 변수
+  const [emailTimer, setEmailTimer] = useState(0);
+  const [emailTimerId, setEmailTimerId] = useState(null);
+
+  // 핸드폰 인증을 위한 타이머 변수
+  const [phoneTimer, setPhoneTimer] = useState(0);
+  const [phoneTimerId, setPhoneTimerId] = useState(null);
 
   // 인증 완료 여부 상태 추가
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -84,20 +90,43 @@ const SignupPage = () => {
     setIsModalOpen(false);
   };
 
-  // 인증 타이머 초기화 및 정리
+  // 메일 인증 타이머 초기화 및 정리
   useEffect(() => {
-    let intervalId = null;
-    if (timer > 0) {
-      intervalId = setInterval(() => {
-        setTimer(prevTimer => prevTimer - 1);
-      }, 1000);
-    } else {
-      clearInterval(timerId);
+    if (emailTimer > 0 && !emailTimerId) {
+      const id = setInterval(() => {
+        setEmailTimer(prevemailTimer => prevemailTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setEmailTimerId(id);
+    } else if (emailTimer === 0 && emailTimerId) {
+      clearInterval(emailTimerId);
+      setEmailTimerId(null);
     }
     return () => {
-      clearInterval(intervalId);
+      if (emailTimerId) {
+        clearInterval(emailTimerId);
+        setEmailTimerId(null);
+      }
     };
-  }, [timer]); // timer만 의존성 배열에 넣어줍니다.
+  }, [emailTimer, emailTimerId]);
+
+  // 핸드폰 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    if (phoneTimer > 0 && !phoneTimerId) {
+      const id = setInterval(() => {
+        setPhoneTimer(prevPhoneTimer => prevPhoneTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setPhoneTimerId(id);
+    } else if (phoneTimer === 0 && phoneTimerId) {
+      clearInterval(phoneTimerId);
+      setPhoneTimerId(null);
+    }
+    return () => {
+      if (phoneTimerId) {
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
+    };
+  }, [phoneTimer, phoneTimerId]);
 
   // 메일 인증시 처리할 함수
   const handlEmailSubmit = async e => {
@@ -111,13 +140,7 @@ const SignupPage = () => {
       });
       // 메일발송 성공
       setIsEmailSent(true);
-      // 타이머
-      setTimer(299);
-      // 타이머 시작
-      const id = setInterval(() => {
-        setTimer(prevTimer => prevTimer - 1);
-      }, 1000);
-      setTimerId(id);
+      setEmailTimer(299);
     } else if (result.data.code === "DE") {
       openModal({
         message: "중복된 이메일입니다.",
@@ -126,18 +149,15 @@ const SignupPage = () => {
       openModal({
         message: "메일 주소를 입력해주세요.",
       });
+    } else if (result.data.code === "IE") {
+      openModal({
+        message: "메일 형식이 올바르지 않습니다.",
+      });
     } else {
       openModal({
         message: "메일 발송에 실패하였습니다. 다시 시도해주세요.",
       });
     }
-  };
-
-  // 타이머 포맷 함수 (분:초 형식으로 표시)
-  const formatTimer = () => {
-    const minutes = Math.floor(timer / 60);
-    const seconds = timer % 60;
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
   // 인증코드 확인 시 처리할 함수
@@ -147,9 +167,17 @@ const SignupPage = () => {
     console.log(result.data);
     if (result.data.code === "SU") {
       setIsEmailVerified(true);
+      setIsAuthCodeVerified(true);
       openModal({
         message: "인증이 완료되었습니다.",
       });
+      setIsEmailSent(false);
+      setEmailTimer(0);
+      if (emailTimerId) {
+        // 타이머 중지
+        clearInterval(emailTimerId);
+        setEmailTimerId(null);
+      }
     } else if (result.data.code === "IC") {
       openModal({
         message: "인증코드가 올바르지 않습니다.",
@@ -165,6 +193,13 @@ const SignupPage = () => {
     }
   };
 
+  // 이메일 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatEmailTimer = () => {
+    const minutes = Math.floor(emailTimer / 60);
+    const seconds = emailTimer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
   // 핸드폰 인증시 처리할 함수
   const handleSmsSubmit = async e => {
     e.preventDefault();
@@ -174,6 +209,9 @@ const SignupPage = () => {
       openModal({
         message: "인증코드가 발송되었습니다. 문자메세지를 확인해주세요",
       });
+      // Sms 발송 성공
+      setIsSmsSent(true);
+      setPhoneTimer(299);
     } else if (result.data.code === "IPH") {
       openModal({
         message: "전화번호 형식이 올바르지 않습니다.",
@@ -193,9 +231,17 @@ const SignupPage = () => {
     console.log(result);
     if (result.data.code === "SU") {
       setIsPhoneVerified(true);
+      setIsAuthNumberVerified(true);
       openModal({
         message: "인증이 완료되었습니다.",
       });
+      setIsSmsSent(false);
+      setPhoneTimer(0);
+      if (phoneTimerId) {
+        // 타이머 중지
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
     } else if (result.data.code === "IC") {
       openModal({
         message: "인증코드가 올바르지 않습니다.",
@@ -205,6 +251,13 @@ const SignupPage = () => {
         message: "인증에 실패하였습니다. 다시 시도해주세요",
       });
     }
+  };
+
+  // 핸드폰 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatPhoneTimer = () => {
+    const minutes = Math.floor(phoneTimer / 60);
+    const seconds = phoneTimer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
   // 약관 전체동의 체크박스 핸들러
@@ -261,7 +314,7 @@ const SignupPage = () => {
     if (!isAuthCodeVerified) {
       setIsModalOpen(true);
       openModal({
-        message: "인증코드를 확인해주세요",
+        message: "이메일 인증코드를 확인해주세요",
       });
       return;
     }
@@ -277,7 +330,7 @@ const SignupPage = () => {
     if (!isAuthNumberVerified) {
       setIsModalOpen(true);
       openModal({
-        message: "핸드폰을 인증해주세요",
+        message: "핸드폰 인증코드를 확인해주세요",
       });
       return;
     }
@@ -340,6 +393,14 @@ const SignupPage = () => {
     } else if (result.data.code === "DN") {
       openModal({
         message: "이미 사용중인 닉네임입니다.",
+      });
+    } else if (result.data.code === "IN") {
+      openModal({
+        message: "닉네임이 형식에 맞지 않습니다.",
+      });
+    } else if (result.data.code === "IP") {
+      openModal({
+        message: "비밀번호가 형식에 맞지 않습니다.",
       });
     }
   };
@@ -423,15 +484,16 @@ const SignupPage = () => {
                     </div>
                   </div>
                   {/* 타이머 */}
-                  {isEmailSent && (
+                  {isEmailSent && emailTimer > 0 && (
                     <div>
-                      {timer > 0 ? (
-                        <p className="timer">남은 시간: {formatTimer()}</p>
-                      ) : (
-                        <p className="time-over">
-                          인증 시간이 만료되었습니다. 다시 발송해주세요.
-                        </p>
-                      )}
+                      <p className="timer">남은 시간: {formatEmailTimer()}</p>
+                    </div>
+                  )}
+                  {isEmailSent && emailTimer === 0 && (
+                    <div>
+                      <p className="time-over">
+                        인증 시간이 만료되었습니다. 다시 발송해주세요.
+                      </p>
                     </div>
                   )}
                   {/* {!authCodeValid && (
@@ -586,6 +648,19 @@ const SignupPage = () => {
                       </div>
                     </div>
                   </div>
+                  {/* 타이머 */}
+                  {isSmsSent && phoneTimer > 0 && (
+                    <div>
+                      <p className="timer">남은 시간: {formatPhoneTimer()}</p>
+                    </div>
+                  )}
+                  {isSmsSent && phoneTimer === 0 && (
+                    <div>
+                      <p className="time-over">
+                        인증 시간이 만료되었습니다. 다시 발송해주세요.
+                      </p>
+                    </div>
+                  )}
                   {/* {!authNumberValid && (
                     <p className="error-message">
                       인증번호는 숫자로만 입력해주세요.
