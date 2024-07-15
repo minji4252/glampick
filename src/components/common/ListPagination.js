@@ -45,12 +45,12 @@ const PaginationContainer = styled.div`
   }
 `;
 
-const ListPagination = (
+const ListPagination = ({
   currentPage,
   totalItems,
   itemsPerPage,
   onPageChange,
-) => {
+}) => {
   // // 초기 세팅 페이지
   // const [activePage, setActivePage] = useState(1);
   // // 한 페이지당 목록 수

@@ -118,9 +118,8 @@ const Favorite = () => {
 export default Favorite;
 
 // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
+
 function getCookie(name) {
-  const cookieValue = document.cookie.match(
-    "(^|;)\\s*" + name + "\\s*=\\s*([^;]*)",
-  );
+  const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
   return cookieValue ? cookieValue.pop() : "";
 }
