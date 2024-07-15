@@ -1,9 +1,11 @@
 import styled from "@emotion/styled";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import BookingDetailForm from "../../components/BookingDetailForm";
-import { MainButton } from "../../components/common/Button";
 import Categories from "../../components/mypage/Categories";
+import notBookingImg from "../../images/notbookingImg.png";
 import { colorSystem, size } from "../../styles/color";
-import { useState } from "react";
+import { getCookie } from "../../utils/cookie";
 
 const WrapStyle = styled.div`
   .inner {
@@ -95,8 +97,111 @@ const WrapStyle = styled.div`
   }
 `;
 
+const NotContentStyle = styled.div`
+  width: 70%;
+  background-color: ${colorSystem.background};
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin-top: 65px;
+  margin-bottom: 250px;
+  letter-spacing: 2px;
+  .logo-img {
+    background: url(${notBookingImg}) no-repeat center;
+    background-size: cover;
+    width: 150px;
+    height: 100px;
+    margin-top: 100px;
+  }
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 10px;
+  }
+  .room-search-btn {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    position: relative;
+    button {
+      width: 180px;
+      height: 40px;
+      text-align: left;
+    }
+    svg {
+      width: 38px;
+      height: 38px;
+      color: ${colorSystem.white};
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 10%;
+      pointer-events: none;
+    }
+  }
+`;
+
 const BookingDetail = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
+  const [accessToken, setAccessToken] = useState("");
+  const [bookingDetails, setBookingDetails] = useState([]);
+  const [completeReservation, setCompleteReservation] = useState(null);
+
+  // 토큰정보 불러오기
+  useEffect(() => {
+    const fetchAccessToken = () => {
+      try {
+        const accessTokenFromCookie = getCookie("access-Token");
+        if (accessTokenFromCookie) {
+          setAccessToken(accessTokenFromCookie);
+        } else {
+          console.log("엑세스 토큰 없음");
+        }
+      } catch (error) {
+        console.log("엑세스토큰 가져오는 중 에러", error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
+
+  useEffect(() => {
+    const getUserBook = async () => {
+      if (!accessToken) return;
+      try {
+        const response = await axios.get(`/api/user/book`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        // console.log(response);
+        // console.log(response.data);
+        // console.log(response.data.reservationBeforeResultSetList);
+        // console.log(response.data.reservationCancelResultSetList);
+        // console.log(response.data.reservationCompleteResultSetList);
+        console.log(response.data.reservationCompleteResultSetList[0]);
+        const completeReservation =
+          response.data.reservationCompleteResultSetList[0];
+        setCompleteReservation(completeReservation); // completeReservation 상태 설정
+        console.log(completeReservation);
+
+        // const reservationList =
+        //   response.data.reservationBeforeResultSetList || [];
+        // setBookingDetails(
+        //   Array.isArray(reservationList) ? reservationList : [],
+        // );
+        // console.log(reservationList);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUserBook();
+  }, [accessToken]);
+
+  const handleTabClick = tab => {
+    setActiveTab(tab);
+  };
+
   return (
     <WrapStyle>
       <Categories />
@@ -106,7 +211,7 @@ const BookingDetail = () => {
           <div
             className={`tab ${activeTab === "upcoming" ? "active" : ""}`}
             onClick={() => {
-              setActiveTab("upcoming");
+              handleTabClick("upcoming");
             }}
           >
             이용예정
@@ -114,7 +219,7 @@ const BookingDetail = () => {
           <div
             className={`tab ${activeTab === "completed" ? "active" : ""}`}
             onClick={() => {
-              setActiveTab("completed");
+              handleTabClick("completed");
             }}
           >
             이용완료
@@ -122,7 +227,7 @@ const BookingDetail = () => {
           <div
             className={`tab ${activeTab === "cancelde" ? "active" : ""}`}
             onClick={() => {
-              setActiveTab("cancelde");
+              handleTabClick("cancelde");
             }}
           >
             취소내역
@@ -133,21 +238,12 @@ const BookingDetail = () => {
         {activeTab === "upcoming" && (
           <div className="container">
             <div className="form-group">
-              {/* <div>
-                <MainButton label="이용예정" />
-              </div> */}
               <BookingDetailForm upComing={true} />
             </div>
             <div className="form-group">
-              {/* <div>
-                <MainButton label="이용예정" />
-              </div> */}
               <BookingDetailForm upComing={true} />
             </div>
             <div className="form-group">
-              {/* <div>
-                <MainButton label="이용예정" />
-              </div> */}
               <BookingDetailForm upComing={true} />
             </div>
           </div>
@@ -158,16 +254,13 @@ const BookingDetail = () => {
           <>
             <div className="container">
               <div className="form-group">
-                {/* <div className="completed-reserv">
-                  <MainButton label="이용완료" />
-                </div> */}
                 <BookingDetailForm isCompleted={true} />
               </div>
               <div className="form-group">
-                {/* <div className="completed-reserv">
-                  <MainButton label="이용완료" />
-                </div> */}
-                <BookingDetailForm isCompleted={true} />
+                <BookingDetailForm
+                  completeReservation={completeReservation}
+                  isCompleted={true}
+                />
               </div>
             </div>
           </>
@@ -177,15 +270,9 @@ const BookingDetail = () => {
           <>
             <div className="container">
               <div className="form-group">
-                {/* <div className="completed-reserv">
-                  <MainButton label="이용완료" />
-                </div> */}
                 <BookingDetailForm />
               </div>
               <div className="form-group">
-                {/* <div className="completed-reserv">
-                  <MainButton label="이용완료" />
-                </div> */}
                 <BookingDetailForm />
               </div>
             </div>

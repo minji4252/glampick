@@ -127,9 +127,13 @@ export const FormContents = styled.div`
   }
 `;
 
-export const BookingDetailForm = ({ upComing, isCompleted }) => {
+export const BookingDetailForm = ({
+  booking,
+  upComing,
+  isCompleted,
+  completeReservation,
+}) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-
   const handleOpenCreateReviewModal = () => {
     setIsReviewModalOpen(true);
   };
@@ -142,18 +146,28 @@ export const BookingDetailForm = ({ upComing, isCompleted }) => {
     <FormContents>
       <div className="top-contents">
         <h2>2024.06.27(목)</h2>
-        <div className="reserv-number">예약번호: 0000000001234</div>
+        <div className="reserv-number">예약번호: </div>
       </div>
       <div className="bottom-contents">
         <p>숙소</p>
         <div className="reserv-info">
           <Link to="/glampingdetail" className="glampingdetail-link">
-            <div className="reserv-info-img"></div>
+            <div className="reserv-info-img">
+              {completeReservation && completeReservation.glampImage}
+            </div>
             <div className="reserv-info-txt">
-              <h4>별빛 글램핑</h4>
-              <div className="room-type">A룸 202호</div>
-              <div className="date-used">2024.07.01 ~ 2024.07.02 | 1박</div>
-              <div className="check-time">체크인 16:00 | 체크아웃 12:00</div>
+              <h4>{completeReservation && completeReservation.glampName}</h4>
+              <div className="room-type">
+                {completeReservation && completeReservation.roomName}
+              </div>
+              <div className="date-used">
+                {completeReservation &&
+                  `${completeReservation.checkInDate} ~ ${completeReservation.checkOutDate} | 1박`}
+              </div>
+              <div className="check-time">
+                {completeReservation &&
+                  `체크인 ${completeReservation.checkInTime} | 체크아웃 ${completeReservation.checkOutTime}`}
+              </div>
             </div>
           </Link>
         </div>
@@ -161,13 +175,23 @@ export const BookingDetailForm = ({ upComing, isCompleted }) => {
           <div className="cancel-btn">취소</div>
         ) : isCompleted ? (
           <div className="review-btn">
-            <MainButton label="후기작성" onClick={()=>{handleOpenCreateReviewModal()}} />
+            <MainButton
+              label="후기작성"
+              onClick={() => {
+                handleOpenCreateReviewModal();
+              }}
+            />
           </div>
         ) : (
           <div className="empty-space"></div>
         )}
       </div>
-      <CreateReviewModal isOpen={isReviewModalOpen} onClose={()=>{handleCloseCreateReviewModal()}}/>
+      <CreateReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => {
+          handleCloseCreateReviewModal();
+        }}
+      />
     </FormContents>
   );
 };
