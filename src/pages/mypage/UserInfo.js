@@ -1,10 +1,12 @@
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa6";
 import { PiPencilSimpleLine } from "react-icons/pi";
-import { DelectButton, MainButton } from "../../components/common/Button";
+import { MainButton } from "../../components/common/Button";
+import DeleteModal from "../../components/common/DeleteModal";
+import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
-import { useState } from "react";
 
 const WrapStyle = styled.div`
   .inner {
@@ -178,9 +180,36 @@ const WrapStyle = styled.div`
 const UserInfo = () => {
   // 변경하기 버튼 상태 관리
   const [showButtons, setShowButtons] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  useEffect(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 수정하기 아이콘
   const handleShowButtons = () => {
     setShowButtons(true);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  // 회원 탈퇴
+  const handleConfirmDelete = () => {
+    // 회원 탈퇴 로직 추가
+
+    console.log("회원 탈퇴 처리");
+    setIsDeleteModalOpen(false); // 탈퇴 처리 후 모달 닫기
   };
 
   return (
@@ -278,11 +307,28 @@ const UserInfo = () => {
               </div>
             </form>
             <div className="delete-user">
-              <button className="delete-btn">회원탈퇴</button>
+              <button
+                className="delete-btn"
+                onClick={() => {
+                  handleOpenDeleteModal();
+                }}
+              >
+                회원탈퇴
+              </button>
             </div>
           </div>
         </div>
       </div>
+      <PasswordCheckModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          handleCloseDeleteModal();
+        }}
+        onConfirm={() => {
+          handleConfirmDelete();
+        }}
+      />
     </WrapStyle>
   );
 };

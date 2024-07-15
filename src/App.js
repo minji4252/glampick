@@ -72,11 +72,18 @@ function App() {
         {/* 결제 페이지 */}
         <Route path="/payment" element={<PaymentPage />}></Route>
         <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
+        {/* 
+        <Route path="/payment" element={
+          <PrivateRoute isLogin={isLogin}>
+            <PaymentPage />
+          </PrivateRoute>
+          }
+        /> */}
 
         {/* 유저 페이지 */}
         <Route path="/bookingdetail" element={<BookingDetail />} />
         <Route path="/myreview" element={<MyReview />} />
-        <Route path="/favorite" element={<Favorite isLogin={isLogin} />} />
+        <Route path="/favorite" element={<Favorite />} />
         <Route path="/userinfo" element={<UserInfo />} />
 
         {/* 잘못된 경로 */}

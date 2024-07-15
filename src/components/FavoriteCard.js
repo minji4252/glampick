@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 const FavoriteArticle = styled.article`
   display: flex;
   flex-direction: column;
+  position: relative;
   .article-image {
     position: relative;
     width: 290px;
@@ -112,7 +113,7 @@ const ArticleContent = styled.div`
   }
 `;
 
-export const FavoriteCard = (
+export const FavoriteCard = ({
   reviewCount,
   price,
   starPoint,
@@ -120,7 +121,7 @@ export const FavoriteCard = (
   glampLocation,
   glampName,
   glampId,
-) => {
+}) => {
   // 가격 단위
   const formattedPrice = price.toLocaleString();
 

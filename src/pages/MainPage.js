@@ -81,7 +81,6 @@ const MainPage = ({ isLogin }) => {
       const petArray = await getPetData();
       setPetData(petArray);
     };
-
     fetchPetData();
   }, []);
 

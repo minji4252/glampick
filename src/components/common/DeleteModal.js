@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
-import { ActionButton, DelectButton } from "../components/common/Button";
-import { colorSystem } from "../styles/color";
+import { ActionButton, DeleteButton } from "../../components/common/Button";
+import { colorSystem } from "../../styles/color";
 
 const DeleteModalStyle = styled.div`
   position: fixed;
@@ -86,7 +86,7 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
 
   return (
     <DeleteModalStyle>
-      <button className="close-btn" type="button">
+      <button className="close-btn" type="button" onClick={onClose}>
         <IoClose />
       </button>
       <DeleteIcon>
@@ -99,7 +99,7 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
         </p>
       </DeleteText>
       <DeleteModalBtn>
-        <DelectButton label="탈퇴" onClick={onConfirm} />
+        <DeleteButton label="탈퇴" onClick={onConfirm} />
         <ActionButton label="취소" onClick={onClose} />
       </DeleteModalBtn>
     </DeleteModalStyle>
