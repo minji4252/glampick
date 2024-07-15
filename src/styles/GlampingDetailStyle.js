@@ -322,6 +322,35 @@ export const RoomSelectTitle = styled.div`
   margin-bottom: 10px;
 `;
 
+export const RoomSoldOutCard = styled.div`
+  background-color: ${colorSystem.background};
+  width: 70%;
+  padding: 60px 20px;
+  margin-top: 20px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+
+  svg {
+    width: 40px;
+    height: 40px;
+    color: ${colorSystem.g300};
+    margin-bottom: 10px;
+  }
+
+  h5 {
+    font-size: 1.3rem;
+    color: ${colorSystem.g600};
+    font-weight: 700;
+  }
+
+  p {
+    color: ${colorSystem.g500};
+  }
+`;
+
 export const RoomCard = styled.div`
   width: 90%;
   display: flex;

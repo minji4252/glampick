@@ -4,6 +4,7 @@ import { FaStar } from "react-icons/fa";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
+import { FaRegCalendar } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import AlertModal from "../components/common/AlertModal";
 import { ActionButton, MainButton } from "../components/common/Button";
@@ -29,6 +30,7 @@ import GlampingDetailStyle, {
   RoomReview,
   RoomSelect,
   RoomSelectTitle,
+  RoomSoldOutCard,
   RoomTitle,
   SwiperEndStyle,
   UnderLine,
@@ -52,7 +54,7 @@ const GlampingDetail = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [initialRoomItems, setInitialRoomItems] = useState([]);
   // 임시데이터(삭제예정)
-  const glampId = 1;
+  const glamp_Id = 1;
   const statusId = 0;
   const startDate = "2024-06-10";
   const endDate = "2024-06-15";
@@ -62,10 +64,11 @@ const GlampingDetail = () => {
   const roomSelectRef = useRef(null);
 
   useEffect(() => {
+    // 1. 글램핑디테일페이지 정보 불러오기
     const fetchData = async () => {
       try {
         const data = await fetchGlampingData(
-          glampId,
+          glamp_Id,
           startDate,
           endDate,
           statusId,
@@ -83,14 +86,25 @@ const GlampingDetail = () => {
   useEffect(() => {
     if (glampingData && glampingData.roomItems.length > 0) {
       setRoomMainImage(
-        "https://image.goodchoice.kr/affiliate/2024/02/08/13/1688124778035BHcflwXaBvI11wUgnwW.jpg",
+        `pic/glamping/${glampingData.glampId}/glamp/${glampingData.glampImage}`,
       );
-      setRoomImage("pic/glamping/1/room/1/room1.jpg");
+      console.log(
+        "1번",
+        `pic/glamping/${glampingData.glampId}/glamp/${glampingData.glampImage}`,
+      );
+      setRoomImage(
+        `pic/glamping/${glampingData.glampId}/room/${glampingData.roomItems[0].roomId}/${glampingData.roomItems[0].pic}`,
+      );
+      console.log(
+        "2번",
+        `pic/glamping/${glampingData.glampId}/room/${glampingData.roomItems[0].roomId}/${glampingData.roomItems[0].pic}`,
+      );
     }
   }, [glampingData]);
 
   const toggleLike = async () => {
     try {
+      // 2. 관심 글램핑장 하트 버튼
       const resultValue = await toggleLikeGlamping();
       if (resultValue === 1) {
         setIsLiked(true);
@@ -108,6 +122,8 @@ const GlampingDetail = () => {
   if (!glampingData) return null;
 
   const {
+    glampId,
+    glampImage,
     glampName,
     starPointAvg,
     glampLocation,
@@ -161,6 +177,7 @@ const GlampingDetail = () => {
     const statusId = 1;
 
     try {
+      // 3. 모두보기 클릭시 객실 정보 더 불러오기
       const data = await fetchMoreRooms(glampId, startDate, endDate, statusId);
       setGlampingData(prevData => ({
         ...prevData,
@@ -192,7 +209,9 @@ const GlampingDetail = () => {
             <div
               className="main-img"
               style={{
-                background: `url(${roomMainImage}) no-repeat center`,
+                backgroundImage: `url(${roomMainImage})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
                 backgroundSize: "cover",
               }}
             />
@@ -260,6 +279,11 @@ const GlampingDetail = () => {
           <RoomSelectTitle>
             <h3>객실선택</h3>
           </RoomSelectTitle>
+          <RoomSoldOutCard>
+            <FaRegCalendar />
+            <h5>선택한 날짜의 객실은 매진되었어요</h5>
+            <p>상단 검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
+          </RoomSoldOutCard>
           {roomItems.map((room, index) => (
             <RoomCard key={index}>
               <RoomCardLeft>
@@ -268,7 +292,9 @@ const GlampingDetail = () => {
                   <div
                     className="roomcard-img"
                     style={{
-                      background: `url(${roomImage}) no-repeat center`,
+                      backgroundImage: `url(${roomImage})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
                       backgroundSize: "cover",
                     }}
                   >

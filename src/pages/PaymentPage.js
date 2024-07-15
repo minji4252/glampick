@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
+import { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
 import PaymentCard from "../components/PaymentCard";
 import { MainButton } from "../components/common/Button";
-import { FaArrowLeft } from "react-icons/fa6";
-import { colorSystem, size } from "../styles/color";
-import { useState } from "react";
 import kakaopay from "../images/kakaopay.png";
 import tosspay from "../images/tosspay.png";
-import { Link } from "react-router-dom";
+import { colorSystem, size } from "../styles/color";
 
 const WrapStyle = styled.div`
   .inner {
@@ -68,6 +68,17 @@ const InfoStyle = styled.div`
 
     h1 {
       font-weight: 700;
+    }
+
+    button {
+      background-color: transparent;
+      border: 0px;
+      cursor: pointer;
+    }
+
+    svg {
+      width: 30px;
+      height: 23px;
     }
   }
 
@@ -211,6 +222,10 @@ const PayButton = styled.div`
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
+  const navigate = useNavigate();
+  const onClickBtn = () => {
+    navigate(-1);
+  };
 
   const handlePaymentClick = paymentType => {
     setSelectedPayment(paymentType);
@@ -221,7 +236,9 @@ const PaymentPage = () => {
       <div className="inner">
         <InfoStyle>
           <div className="payment-title">
-            <FaArrowLeft />
+            <button onClick={onClickBtn}>
+              <FaArrowLeft />
+            </button>
             <h1>예약 및 결제</h1>
           </div>
           <div className="payment-room-info">

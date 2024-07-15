@@ -43,3 +43,20 @@ export const fetchMoreRooms = async (glampId, startDate, endDate, statusId) => {
     throw error;
   }
 };
+
+// *** RoomDetail.js 함수 ****
+
+// 1. 방 이름 & 사진 정보 불러오기
+export const fetchRoomImages = async glampId => {
+  try {
+    const response = await axios.get(
+      `/api/glamping/info/moreRoomImages?glampId=${glampId}`,
+    );
+    if (response.data.code === "SU") {
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
