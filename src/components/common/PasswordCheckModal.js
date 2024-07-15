@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { FaArrowLeft } from "react-icons/fa6";
 import { SlLock } from "react-icons/sl";
-import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { colorSystem } from "../../styles/color";
 import { MainButton } from "./Button";
@@ -36,11 +36,11 @@ const ModalContent = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 
-  .close-btn {
+  .back-btn {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 1.2rem;
+    top: 20px;
+    left: 20px;
+    font-size: 1.3rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -107,6 +107,10 @@ const ModalContent = styled.div`
 const PasswordCheckModal = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  // 이전 버튼 클릭시 이전 페이지로 돌아감
+  const onClickBtn = () => {
+    navigate(-1);
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -119,13 +123,8 @@ const PasswordCheckModal = ({ isOpen, onClose }) => {
   return (
     <ModalWrapper>
       <ModalContent>
-        <button
-          className="close-btn"
-          onClick={() => {
-            onClose();
-          }}
-        >
-          <IoClose />
+        <button className="back-btn" onClick={onClickBtn}>
+          <FaArrowLeft />
         </button>
         <div className="privacy">
           <SlLock className="lock-img" />
