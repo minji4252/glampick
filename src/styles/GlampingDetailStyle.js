@@ -540,10 +540,6 @@ export const RoomLocation = styled.div`
       font-weight: 600;
       font-size: 0.9rem;
     }
-
-    > div {
-      margin-top: 15px;
-    }
   }
 `;
 

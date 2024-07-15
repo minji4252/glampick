@@ -133,7 +133,7 @@ export const LargeSwiper = styled.div`
     height: 100%;
   }
 
-  .swiper-slide img {
+  .swiper-slide div {
     width: 70%;
   }
 
@@ -178,6 +178,7 @@ export const LargeSwiper = styled.div`
 `;
 
 export const SmallSwiper = styled.div`
+  width: 100%;
   height: 180px;
   margin-bottom: 20px;
   .swiper {
@@ -191,24 +192,24 @@ export const SmallSwiper = styled.div`
     align-items: center;
   }
 
-  .swiper-slide img {
+  .swiper-slide div {
     max-width: 85px;
   }
 
-  .swiper-slide-prev img {
+  .swiper-slide-prev div {
     border-radius: 12px;
     width: 60px;
     height: 60px;
   }
 
-  .swiper-slide-active img {
+  .swiper-slide-active div {
     border-radius: 12px;
     width: 85px;
     height: 85px;
     border: 4px solid ${colorSystem.p500};
   }
 
-  .swiper-slide-next img {
+  .swiper-slide-next div {
     border-radius: 12px;
     width: 60px;
     height: 60px;

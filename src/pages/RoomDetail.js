@@ -16,7 +16,7 @@ import {
   SmallSwiper,
 } from "../styles/RoomDetailStyle";
 import { fetchRoomImages } from "../apis/glamping";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const RoomDetail = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -25,9 +25,8 @@ const RoomDetail = () => {
   const smallSwiperRef = useRef(null);
   const [roomData, setRoomData] = useState({});
   const navigate = useNavigate();
-  const onClickBtn = () => {
-    navigate(-1);
-  };
+  const location = useLocation();
+  const glampName = location.state.glampName;
 
   useEffect(() => {
     const getRoomImages = async () => {
@@ -56,6 +55,10 @@ const RoomDetail = () => {
     }
   };
 
+  const onClickBtn = () => {
+    navigate(-1);
+  };
+
   return (
     <WrapStyle>
       <div className="inner">
@@ -63,7 +66,7 @@ const RoomDetail = () => {
           <button onClick={onClickBtn}>
             <MdOutlineArrowBackIos />
           </button>
-          <h1>뉴욕스카이</h1>
+          <h1>{glampName}</h1>
         </TitleStyle>
         <ListStyle>
           <ul style={{ flexWrap: isClick ? "wrap" : "nowrap" }}>
@@ -97,10 +100,12 @@ const RoomDetail = () => {
                   <div
                     style={{
                       // 임시
-                      background: `url(pic/glamping/1/room/1/${image}) no-repeat center center`,
+                      backgroundImage: `url(pic/glamping/1/room/1/${image})`,
                       // background: `url(glamping/${glampId}/room/${roomId}/${image}) no-repeat center center`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
                       backgroundSize: "cover",
-                      width: "100%",
+                      width: "70%",
                       height: "550px",
                     }}
                   ></div>
@@ -126,11 +131,10 @@ const RoomDetail = () => {
                 <SwiperSlide key={index} virtualIndex={index}>
                   <div
                     style={{
-                      background: `url(pic/glamping/1/room/1/${image}) no-repeat center center`,
+                      backgroundImage: `url(pic/glamping/1/room/1/${image})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
                       backgroundSize: "cover",
-                      width: "85px",
-                      height: "85px",
-                      borderRadius: "12px",
                     }}
                   ></div>
                 </SwiperSlide>

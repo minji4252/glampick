@@ -3,10 +3,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ReviewCard from "../../components/ReviewCard";
 import Categories from "../../components/mypage/Categories";
+import emptyImg from "../../images/emptyImg.png";
 import { colorSystem, size } from "../../styles/color";
-import coffeeImg from "../../images/coffeeImg.png";
-import { MainButton } from "../../components/common/Button";
-import { IoIosArrowRoundForward } from "react-icons/io";
+import ListPagination from "../../components/common/ListPagination";
 
 const WrapStyle = styled.div`
   .inner {
@@ -92,7 +91,7 @@ const NoReviewsStyle = styled.div`
   letter-spacing: 2px;
 
   .no-review-img {
-    background: url(${coffeeImg}) no-repeat center;
+    background: url(${emptyImg}) no-repeat center;
     background-size: cover;
     width: 50px;
     height: 50px;
@@ -111,27 +110,66 @@ const NoReviewsStyle = styled.div`
 
 const MyReview = () => {
   const [reviews, setReviews] = useState([]);
+  const [accessToken, setAccessToken] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const itemsPerPage = 5; // 페이지 당 리뷰 개수
+
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const accessTokenFromCookie = getCookie("access-Token");
+        if (accessTokenFromCookie) {
+          setAccessToken(accessTokenFromCookie);
+        } else {
+          console.log("쿠키에 access-Token 없음");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchAccessToken();
+  }, []);
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(`/api/user/review`);
-        setReviews(response.data.userlist);
-        console.log(response.data.userlist);
+        if (!accessToken) return;
+        axios.defaults.withCredentials = true;
+
+        const response = await axios.get(
+          `/api/user/review?page=${currentPage}`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+        setReviews(response.data.reviewListItems);
+        // 전체 리뷰 개수 설정
+        // setTotalReviews(response.data.totalItems);
+        console.log(response.data.reviewListItems);
+        console.log("fff", response.data);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchReviews();
-  }, []);
+  }, [accessToken, currentPage]);
+
+  const handlePageChange = pageNumber => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <WrapStyle>
       <Categories />
       <div className="inner">
-        <h3>나의 후기 ({reviews.length}개)</h3>
-        {reviews.length > 0 && (
+        <h3>나의 후기 ({reviews?.length}개)</h3>
+
+        {reviews?.length > 0 && (
           <MyReviewInfo>
             <p>
               후기는 작성 후 48시간 이내에 본문만 수정이 가능하며, 작성자는 현재
@@ -142,15 +180,18 @@ const MyReview = () => {
           </MyReviewInfo>
         )}
         <MyReviewGroup>
-          {reviews.length > 0 ? (
+          {reviews?.length > 0 ? (
             reviews.map((review, index) => (
               <ReviewCard
                 key={index}
-                userNickname={review.userNickname}
+                userNickName={review.userNickName}
                 glampName={review.glampName}
                 roomName={review.roomName}
                 createdAt={review.createdAt}
-                reviewText={review.reviewContent}
+                userReviewContent={review.userReviewContent}
+                ownerReviewContent={review.ownerReviewContent}
+                starPoint={review.starPoint}
+                reviewImages={review.reviewImages}
               />
             ))
           ) : (
@@ -159,19 +200,25 @@ const MyReview = () => {
               <h4>작성한 후기가 없습니다</h4>
               <p>숙소 이용 후 후기를 남겨주세요</p>
             </NoReviewsStyle>
-            // <NoReviewsStyle>
-            //   <div className="no-review-img" />
-            //   <h4>예약된 글램핑장이 없습니다</h4>
-            //   <div className="room-search-btn">
-            //     <MainButton label="숙소 검색하러 가기" />
-            //     <IoIosArrowRoundForward />
-            //   </div>
-            // </NoReviewsStyle>
           )}
         </MyReviewGroup>
+        {reviews?.length > 0 && (
+          <ListPagination
+            currentPage={currentPage}
+            totalItems={totalReviews}
+            itemsPerPage={itemsPerPage}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </WrapStyle>
   );
 };
 
 export default MyReview;
+
+// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
+function getCookie(name) {
+  const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
+  return cookieValue ? cookieValue.pop() : "";
+}
