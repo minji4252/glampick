@@ -1,12 +1,10 @@
-import React, { useState } from "react";
 import { colorSystem } from "../styles/color";
 import styled from "@emotion/styled";
 import reviewimg1 from "../images/review1.png";
 import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { FaStar } from "react-icons/fa";
-import { RiEdit2Line } from "react-icons/ri";
-import { MainButton } from "./common/Button";
+import { FaRegStar } from "react-icons/fa6";
 
 const MyReviewCard = styled.div`
   display: flex;
@@ -109,14 +107,6 @@ const UserSection = styled.div`
       font-weight: 600;
     }
 
-    svg {
-      color: ${colorSystem.g400};
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: none;
-      margin-left: 10px;
-    }
-
     p,
     textarea {
       margin-top: 15px;
@@ -129,25 +119,10 @@ const UserSection = styled.div`
       -webkit-box-orient: vertical;
     }
 
-    textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      border: 1px solid ${colorSystem.g400};
-      border-radius: 10px;
-      resize: none;
-    }
-
     button {
       margin-top: 15px;
       height: 35px;
       font-size: 0.9rem;
-    }
-
-    .edited-text {
-      font-size: 0.85rem;
-      color: ${colorSystem.g400};
-      font-weight: 400;
     }
   }
 `;
@@ -186,44 +161,45 @@ const OwnerSection = styled.div`
 `;
 
 const ReviewCard = ({
-  userNickname,
+  userNickName,
   glampName,
   roomName,
   createdAt,
-  reviewText,
+  userReviewContent,
+  ownerReviewContent,
+  starPoint,
+  reviewImages,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isEdited, setIsEdited] = useState(false);
-  const [editedReviewText, setEditedReviewText] = useState(reviewText);
+  //2024-00-00 형식으로 변경
+  const date = new Date(createdAt);
+  const formattedDate = date.toISOString().split("T")[0];
 
-  const handleEditClick = () => {
-    setIsEditing(!isEditing);
+  const renderStars = starPoint => {
+    const stars = [];
+    const totalStars = 5;
+
+    for (let i = 0; i < starPoint; i++) {
+      stars.push(<FaStar key={`star-${i}`} />);
+    }
+
+    for (let i = starPoint; i < totalStars; i++) {
+      stars.push(<FaRegStar key={`star-${i}`} />);
+    }
+
+    return stars;
   };
-
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    setIsEdited(true);
-  };
-
-  // const formattedCreatedAt = createdAt.split(" ")[0];
 
   return (
     <MyReviewCard>
       <div className="myreview-card-left">
         <div></div>
-        <span>{userNickname}</span>
+        <span>{userNickName}</span>
       </div>
       <div className="myreview-card-right">
         <UserSection>
           <div className="myreview-title">
-            <div className="myreview-score">
-              <FaStar />
-              <FaStar />
-              <FaStar />
-              <FaStar />
-              <FaStar />
-            </div>
-            <span>{createdAt}</span>
+            <div className="myreview-score">{renderStars(starPoint)}</div>
+            <span>{formattedDate}</span>
           </div>
           <div className="myreview-img">
             <div className="myreview-img1"></div>
@@ -234,24 +210,8 @@ const ReviewCard = ({
             <div>
               <span>{glampName}</span>
               <span>{roomName}</span>
-              {!isEditing && (
-                <>
-                  <RiEdit2Line onClick={handleEditClick} />
-                  {isEdited && <span className="edited-text">수정됨</span>}
-                </>
-              )}
             </div>
-            {isEditing ? (
-              <>
-                <textarea
-                  value={editedReviewText}
-                  onChange={e => setEditedReviewText(e.target.value)}
-                />
-                <MainButton onClick={handleSaveClick} label="수정완료" />
-              </>
-            ) : (
-              <p>{reviewText}</p>
-            )}
+            <p>{userReviewContent}</p>
           </div>
         </UserSection>
         <OwnerSection>
@@ -259,11 +219,7 @@ const ReviewCard = ({
             <h4>숙소 답변</h4>
           </div>
           <div className="owner-content">
-            <p>
-              길동님 안녕하세요!! 저희 글램핑장 이용해주셔서 감사합니다 다음에
-              또 방문하면 깜짝 선물이 ^^ 길동님 안녕하세요!! 저희 글램핑장
-              이용해주셔서 감사합니다 다음에 또 방문하면 깜짝 선물이 ^^
-            </p>
+            <p>{ownerReviewContent}</p>
           </div>
         </OwnerSection>
       </div>

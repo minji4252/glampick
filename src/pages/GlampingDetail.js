@@ -5,7 +5,7 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { FaRegCalendar } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AlertModal from "../components/common/AlertModal";
 import { ActionButton, MainButton } from "../components/common/Button";
 import useModal from "../hooks/UseModal";
@@ -282,7 +282,7 @@ const GlampingDetail = () => {
           <RoomSoldOutCard>
             <FaRegCalendar />
             <h5>선택한 날짜의 객실은 매진되었어요</h5>
-            <p>상단 검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
+            <p>검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
           </RoomSoldOutCard>
           {roomItems.map((room, index) => (
             <RoomCard key={index}>
@@ -298,7 +298,12 @@ const GlampingDetail = () => {
                       backgroundSize: "cover",
                     }}
                   >
-                    <span>사진 더보기</span>
+                    <Link
+                      to={`/roomdetail`}
+                      state={{ glampName: glampingData.glampName }}
+                    >
+                      <span>사진 더보기</span>
+                    </Link>
                   </div>
                 </Link>
               </RoomCardLeft>
@@ -382,11 +387,6 @@ const GlampingDetail = () => {
             <p></p>
             <div className="location-info">
               <span>{glampLocation}</span>
-              <div>
-                <h4>산사원 차량 15분</h4>
-                <h4>산정호수 차량 10분</h4>
-                <h4>아트밸리 차량 20분</h4>
-              </div>
             </div>
             <UnderLine />
           </RoomLocation>

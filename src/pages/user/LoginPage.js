@@ -207,8 +207,8 @@ const WrapStyle = styled.div`
 `;
 
 const LoginPage = () => {
-  const [userEmail, setUserEmail] = useState("test1@test.net");
-  const [userPw, setUserPw] = useState("Asdf@1234");
+  const [userEmail, setUserEmail] = useState("mybirth811@gmail.com");
+  const [userPw, setUserPw] = useState("Tngus811!");
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
