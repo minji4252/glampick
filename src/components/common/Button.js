@@ -42,7 +42,7 @@ const ActionButtonStyle = styled(ButtonStyle)`
   }
 `;
 
-const DelectButtonStyle = styled(ButtonStyle)`
+const DeleteButtonStyle = styled(ButtonStyle)`
   background-color: ${colorSystem.error};
   color: ${colorSystem.white};
 
@@ -61,8 +61,8 @@ const ActionButton = ({ label = "버튼", onClick }) => {
   return <ActionButtonStyle onClick={onClick}>{label}</ActionButtonStyle>;
 };
 
-const DelectButton = ({ label = "버튼", onClick }) => {
-  return <DelectButtonStyle onClick={onClick}>{label}</DelectButtonStyle>;
+const DeleteButton = ({ label = "버튼", onClick }) => {
+  return <DeleteButtonStyle onClick={onClick}>{label}</DeleteButtonStyle>;
 };
 
-export { MainButton, ActionButton, DelectButton };
+export { MainButton, ActionButton, DeleteButton };
