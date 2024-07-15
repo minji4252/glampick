@@ -7,6 +7,7 @@ import { removeCookie } from "../../utils/cookie";
 
 const Header = ({ isLogin, handleLogout }) => {
   const locationNow = useLocation();
+
   // 메인에서 header 숨김
   if (locationNow.pathname === "/") return null;
 

@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { IoClose } from "react-icons/io5";
 import { colorSystem } from "../../styles/color";
 
- export const ModalBackdrop = styled.div`
+export const ModalBackdrop = styled.div`
   position: fixed;
   top: 0;
   left: 0;

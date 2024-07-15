@@ -4,6 +4,7 @@ import { colorSystem, size } from "../../styles/color";
 import { useEffect, useState } from "react";
 import FavoriteCard from "../../components/FavoriteCard";
 import axios from "axios";
+import emptyImg from "../../images/coffeeImg.png";
 
 const WrapStyle = styled.div`
   .inner {
@@ -46,6 +47,33 @@ const FavoriteContents = styled.div`
   }
 `;
 
+const EmptyStyle = styled.div`
+  width: 70%;
+  background-color: ${colorSystem.background};
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin-bottom: 250px;
+  letter-spacing: 2px;
+
+  .empty-img {
+    background: url(${emptyImg}) no-repeat center;
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    margin-top: 100px;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 20px;
+    margin-bottom: 100px;
+  }
+`;
+
 const Favorite = () => {
   const [favorites, setFavorites] = useState([]);
   const [accessToken, setAccessToken] = useState("");
@@ -74,14 +102,11 @@ const Favorite = () => {
         if (!accessToken) return; // accessToken이 없으면 요청을 보내지 않음
 
         axios.defaults.withCredentials = true; // withCredentials 옵션 활성화
-        const response = await axios.get(
-          "http://192.168.0.7:8080/api/user/favorite-glamping",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+        const response = await axios.get("/api/user/favorite-glamping", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
           },
-        );
+        });
         setFavorites(response.data.favoritelist);
         console.log(response.data.favoritelist);
       } catch (error) {
@@ -97,19 +122,28 @@ const Favorite = () => {
       <Categories />
       <div className="inner">
         <h3>관심 목록</h3>
-        <FavoriteContents>
-          {favorites.map(item => (
-            <FavoriteCard
-              key={item.glampId}
-              glampId={item.glampId}
-              glampName={item.glampName}
-              glampLocation={item.glampLocation}
-              starPoint={item.starPoint}
-              reviewCount={item.reviewCount}
-              price={item.price}
-            />
-          ))}
-        </FavoriteContents>
+        {favorites.length > 0 ? (
+          <FavoriteContents>
+            {favorites.map(item => (
+              <FavoriteCard
+                key={item.glampId}
+                glampId={item.glampId}
+                glampName={item.glampName}
+                glampLocation={item.glampLocation}
+                starPoint={item.starPoint}
+                reviewCount={item.reviewCount}
+                price={item.price}
+              />
+            ))}
+          </FavoriteContents>
+        ) : (
+          <FavoriteContents>
+            <EmptyStyle>
+              <div className="empty-img" />
+              <h4>관심 목록이 비어있습니다</h4>
+            </EmptyStyle>
+          </FavoriteContents>
+        )}
       </div>
     </WrapStyle>
   );
