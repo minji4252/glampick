@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { colorSystem, size } from "../styles/color";
 import ClampingImage from "../images/main-list-1.png";
 import styled from "@emotion/styled";
 import { MainButton } from "./common/Button";
 import { Link } from "react-router-dom";
+import CreateReviewModal from "./common/CreateReviewModal";
 
 export const FormContents = styled.div`
   width: 100%;
@@ -127,6 +128,16 @@ export const FormContents = styled.div`
 `;
 
 export const BookingDetailForm = ({ upComing, isCompleted }) => {
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+
+  const handleOpenCreateReviewModal = () => {
+    setIsReviewModalOpen(true);
+  };
+
+  const handleCloseCreateReviewModal = () => {
+    setIsReviewModalOpen(false);
+  };
+
   return (
     <FormContents>
       <div className="top-contents">
@@ -150,12 +161,13 @@ export const BookingDetailForm = ({ upComing, isCompleted }) => {
           <div className="cancel-btn">취소</div>
         ) : isCompleted ? (
           <div className="review-btn">
-            <MainButton label="후기작성" />
+            <MainButton label="후기작성" onClick={()=>{handleOpenCreateReviewModal()}} />
           </div>
         ) : (
           <div className="empty-space"></div>
         )}
       </div>
+      <CreateReviewModal isOpen={isReviewModalOpen} onClose={()=>{handleCloseCreateReviewModal()}}/>
     </FormContents>
   );
 };
