@@ -121,6 +121,9 @@ export const FavoriteCard = (
   glampName,
   glampId,
 ) => {
+  // 가격 단위
+  const formattedPrice = price.toLocaleString();
+
   return (
     <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">
@@ -148,7 +151,7 @@ export const FavoriteCard = (
           <div className="review-count">(리뷰 {reviewCount}개)</div>
         </div>
         <div className="article-bottom">
-          <div className="glamping-price">{price}원~</div>
+          <div className="glamping-price">{formattedPrice}원~</div>
           <Link to="/glampingdetail">
             <MainButton label="예약하기"></MainButton>
           </Link>

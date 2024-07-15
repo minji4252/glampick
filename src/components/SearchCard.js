@@ -19,7 +19,7 @@ const SearchContent = styled.div`
   :last-child {
     border-bottom: none;
   }
-  :first-child {
+  :first-of-type {
     border-top: none;
   }
   .search-image {

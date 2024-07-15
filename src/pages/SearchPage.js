@@ -32,7 +32,6 @@ const SearchPage = () => {
   });
 
   // 검색 결과
-
   const [region, setRegion] = useState(""); // 지역
   const [inDate, setInDate] = useState(""); // 체크인
   const [outDate, setOutDate] = useState(""); // 체크아웃
@@ -42,12 +41,12 @@ const SearchPage = () => {
   const [postPerPage] = useState(5); // 페이지당 보여질 아이템 수
 
   const [searchParams, setSearchParams] = useSearchParams(); // URL 쿼리 매개변수 관리
-  const region1 = searchParams.get("region"); // URL에서 지역 가져오기
-  const inDate1 = searchParams.get("inDate"); // URL에서 체크인 날짜 가져오기
-  const outDate1 = searchParams.get("outDate"); // URL에서 체크아웃 날짜 가져오기
-  const people1 = searchParams.get("people"); // URL에서 인원 가져오기
+  const region1 = searchParams.get("region"); // URL에서 지역 가져옴
+  const inDate1 = searchParams.get("inDate"); // 체크인 날짜 가져옴
+  const outDate1 = searchParams.get("outDate"); // 체크아웃 날짜 가져옴
+  const people1 = searchParams.get("people"); // 인원 가져옴
 
-  // 필터 아이콘 번호로 매핑
+  // 필터 아이콘 번호로
   const filterMapping = {
     pet: 1,
     ocean: 2,
@@ -112,7 +111,10 @@ const SearchPage = () => {
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
         console.log(glampingResponse.data.glampingListItems);
-        const glampingArray = glampingResponse.data.glampingListItems;
+
+        // 검색 결과
+        const glampingArray = glampingResponse.data.glampingListItems || [];
+        const totalItems = glampingResponse.data.totalItems || 0;
         setSearchData(glampingArray);
         setSearchResults(glampingResponse.data);
         console.log("글램핑 검색 결과 리스트", glampingArray);

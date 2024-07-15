@@ -21,9 +21,9 @@ import MainPageStyle, {
   MainSearchContent,
   MainSec1,
   MainSec2,
-  WrapStyle,
 } from "../styles/MainPageStyle";
 import { removeCookie } from "../utils/cookie";
+import { getPetData, getPopularData } from "../apis/main";
 
 const MainPage = ({ isLogin }) => {
   const today = new Date();
@@ -35,7 +35,6 @@ const MainPage = ({ isLogin }) => {
   const [popularData, setPopularData] = useState([]);
   const [petData, setPetData] = useState([]);
   const [mountainData, setMountainData] = useState([]);
-  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
@@ -45,7 +44,7 @@ const MainPage = ({ isLogin }) => {
   // 로그아웃
   const handleLogout = () => {
     removeCookie("access-Token", { path: "/" });
-    navigate("/login");
+    navigate("/");
   };
 
   const handleSearch = () => {
@@ -69,34 +68,21 @@ const MainPage = ({ isLogin }) => {
 
   // 지금 가장 인기있는 TOP3
   useEffect(() => {
-    const getPopularData = async () => {
-      try {
-        const response = await axios.get("/api/main");
-        const popularArray = response.data.popular;
-        // console.log("인기 top3");
-        // console.log(popularArray);
-        setPopularData(popularArray);
-      } catch (error) {
-        console.error(error);
-      }
+    const fetchPopularData = async () => {
+      const popularArray = await getPopularData();
+      setPopularData(popularArray);
     };
-    getPopularData();
+    fetchPopularData();
   }, []);
 
   // 반려동물과 함께할 수 있는 TOP 3
   useEffect(() => {
-    const getPetData = async () => {
-      try {
-        const response = await axios.get("/api/main");
-        const petArray = response.data.petFriendly;
-        // console.log("반려동물 top3");
-        // console.log(petArray);
-        setPetData(petArray);
-      } catch (error) {
-        console.error(error);
-      }
+    const fetchPetData = async () => {
+      const petArray = await getPetData();
+      setPetData(petArray);
     };
-    getPetData();
+
+    fetchPetData();
   }, []);
 
   // 산속에서 즐기는 TOP 3
