@@ -207,6 +207,11 @@ const WrapStyle = styled.div`
 `;
 
 const LoginPage = () => {
+
+  // const [userEmail, setUserEmail] = useState("test1@test.net");
+  // const [userPw, setUserPw] = useState("Asdf@1234");
+
+  // 임시 로그인 계정 (정보 담아둠)
   const [userEmail, setUserEmail] = useState("mybirth811@gmail.com");
   const [userPw, setUserPw] = useState("Tngus811!");
   // 에러 메시지 상태
@@ -233,7 +238,7 @@ const LoginPage = () => {
 
       openModal({ message: "로그인 성공하였습니다!" });
       setTimeout(() => {
-        navigate("/");
+        navigate(-1);
       }, 1000); // 1초 후에 페이지 이동
     } else {
       console.log("로그인 실패");
