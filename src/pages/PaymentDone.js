@@ -3,7 +3,7 @@ import PaymentCard from "../components/PaymentCard";
 import { ActionButton, MainButton } from "../components/common/Button";
 import { FaArrowLeft } from "react-icons/fa6";
 import { colorSystem, size } from "../styles/color";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const WrapStyle = styled.div`
   .inner {
@@ -31,6 +31,17 @@ const CompletedStyle = styled.div`
 
     h1 {
       font-weight: 700;
+    }
+
+    button {
+      background-color: transparent;
+      border: 0px;
+      cursor: pointer;
+    }
+
+    svg {
+      width: 30px;
+      height: 23px;
     }
   }
 
@@ -94,12 +105,19 @@ const ButtonGroup = styled.div`
 `;
 
 const PaymentDone = () => {
+  const navigate = useNavigate();
+  const onClickBtn = () => {
+    navigate(-1);
+  };
+
   return (
     <WrapStyle>
       <div className="inner">
         <CompletedStyle>
           <div className="payment-end-title">
-            <FaArrowLeft />
+            <button onClick={onClickBtn}>
+              <FaArrowLeft />
+            </button>
             <h1>결제 완료</h1>
           </div>
           <div className="payment-end-txt">
