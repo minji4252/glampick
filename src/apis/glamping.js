@@ -21,12 +21,16 @@ export const fetchGlampingData = async (
 };
 
 // 2. 관심 글램핑장 하트 버튼
-export const toggleLikeGlamping = async () => {
+export const toggleLikeGlamping = async (glampId, accessToken) => {
   try {
-    const res = await axios.get(`/api/glamping/favorite`);
+    const res = await axios.get(`/api/glamping/favorite?glampId=${glampId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     return res.data.resultValue;
   } catch (error) {
-    console.error(error);
+    console.error("Error toggling like status:", error);
     throw error;
   }
 };

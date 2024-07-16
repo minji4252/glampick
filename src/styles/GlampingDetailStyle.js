@@ -315,6 +315,11 @@ export const RoomSelect = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 25px;
+
+    button {
+      width: 250px;
+      font-weight: 800;
+    }
   }
 `;
 export const RoomSelectTitle = styled.div`
@@ -445,14 +450,14 @@ export const RoomCardBooking = styled.div`
   height: 145px;
   position: relative;
 
-  > p {
+  p {
     margin-bottom: 20px;
     font-weight: 400;
     color: ${colorSystem.g800};
     font-size: 0.9rem;
   }
 
-  > span {
+  span {
     font-size: 1rem;
     font-weight: 600;
     position: absolute;
@@ -464,6 +469,18 @@ export const RoomCardBooking = styled.div`
     position: absolute;
     right: 15px;
     bottom: 15px;
+  }
+
+  .sold-out-style {
+    span {
+      color: ${colorSystem.g400};
+    }
+
+    button {
+      background-color: ${colorSystem.g400};
+      color: ${colorSystem.white};
+      cursor: default;
+    }
   }
 `;
 

@@ -207,6 +207,7 @@ export const SmallSwiper = styled.div`
     width: 85px;
     height: 85px;
     border: 4px solid ${colorSystem.p500};
+    min-width: 85px;
   }
 
   .swiper-slide-next div {

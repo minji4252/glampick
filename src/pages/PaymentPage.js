@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 import PaymentCard from "../components/PaymentCard";
@@ -19,11 +19,17 @@ import {
   UnderLine,
   WrapStyle,
 } from "../styles/PaymentPageStyle";
+import $ from "jquery";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
   const [userName, setUserName] = useState("");
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+  const [nameValid, setNameValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const namePattern = /^[가-힣]{1,10}$/;
+
   const navigate = useNavigate();
   const onClickBtn = () => {
     navigate(-1);
@@ -67,6 +73,68 @@ const PaymentPage = () => {
       });
       return;
     }
+
+    // 이름 유효성 검사 체크
+    if (!namePattern.test(userName)) {
+      setErrorMessage("이름은 1~10자 사이 한글만 가능합니다.");
+      return;
+    }
+
+    // const Payment = (effect, deps) => {
+    //   useEffect(() => {
+    //     const jquery = document.createElement("script");
+    //     jquery.src = "https://cdn.iamport.kr/v1/iamport.js";
+    //     const iamport = document.createElement("script");
+    //     iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.5.js";
+    //     document.head.appendChild(jquery);
+    //     document.head.appendChild(iamport);
+    //     return () => {
+    //       document.head.removeChild(jquery);
+    //       document.head.removeChild(iamport);
+    //     };
+    //   }, []);
+    //   return;
+    // };
+
+    // // 카카오페이
+    // var IMP = window.IMP;
+    // // const { IMP } = window;
+    // IMP.init("imp10657444");
+    // IMP.request_pay(
+    //   {
+    //     pg: "kakaopay.TC0ONETIME",
+    //     pay_method: "card",
+    //     merchant_uid: "merchant_" + new Date().getTime(), //주문번호
+    //     name: "GOOTTFLEX", //상품명
+    //     amount: $(".amountValue").val(), //가격
+    //     buyer_email: $(".sessionuserID").val(), //구매자 이메일
+    //     buyer_name: "buyer_name", //구매자 이름
+    //     buyer_tel: "hp", //전화번호
+    //     buyer_addr: "addr", //주소
+    //     buyer_postcode: "123-456", //우편번호
+    //   },
+    //   function (data) {
+    //     if (data.success) {
+    //       var msg = "결제 완료";
+    //       msg += "고유ID : " + data.imp_uid; //아임포트 uid는 실제 결제 시 결제 고유번호를 서버와 비교해서 결제처리하는데 필요없긴함.
+    //       msg += "// 상점 거래ID : " + data.merchant_uid;
+    //       msg += "// 결제 금액 : " + data.paid_amount;
+    //       msg += "// 카드 승인번호 : " + data.apply_num;
+
+    //       $.ajax({
+    //         type: "post",
+    //         url: "/paySuccess",
+    //         data: { ID: data.buyer_email, amount: data.paid_amount },
+    //       });
+    //     } else {
+    //       alert("결제실패");
+    //       // var msg = "결제 실패";
+    //       // msg += "에러 내용" + rsp.error_msg;
+    //     }
+    //     alert(msg);
+    //     document.location.href = "/paymentcompleted";
+    //   },
+    // );
 
     navigate("/paymentcompleted", {
       state: {
@@ -117,13 +185,17 @@ const PaymentPage = () => {
                   id="name"
                   className="name-input"
                   autoComplete="off"
+                  placeholder="이름을 입력하세요"
                   value={userName}
                   onChange={e => {
                     setUserName(e.target.value);
+                    setNameValid(namePattern.test(e.target.value));
                   }}
                 />
-                {!userName && (
-                  <p className="error-message">이름이 입력되지 않았습니다</p>
+                {!nameValid && (
+                  <p className="error-message">
+                    이름이 형식에 맞지 않습니다 (1~10자 사이 한글만 가능)
+                  </p>
                 )}
               </ReservationInput>
               <ReservationInput>
@@ -176,9 +248,7 @@ const PaymentPage = () => {
               </label>
             </div>
             <MainButton
-              label={`${roomPrice
-                .toString()
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원 결제하기`}
+              label={`${Number(roomPrice).toLocaleString("ko-KR")}원 결제하기`}
               onClick={e => {
                 handleSubmit(e);
               }}
