@@ -113,3 +113,26 @@ export const postSignUp = async ({
     console.log(error);
   }
 };
+
+// 유저 정보수정 비밀번호 확인 api
+export const postPasswordCheck = async ({ userPw }) => {
+  try {
+    const response = await axios.post(`/api/user/password-check`, {
+      userPw: userPw,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// 회원탈퇴 api 호출
+export const deleteUser = async () => {
+  try {
+    const response = await axios.delete(`/api/user`);
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+};

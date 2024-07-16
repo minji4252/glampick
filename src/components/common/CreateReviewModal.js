@@ -40,7 +40,7 @@ const ReviewModalContent = styled.div`
     }
   }
 
-  .room-info {
+  .glamping-info {
     display: flex;
   }
 
@@ -158,13 +158,13 @@ const CreateReviewModal = ({ isOpen, onClose }) => {
           <IoClose />
         </button>
         <h2>후기 작성하기</h2>
-        <div className="room-info">
-          <div>숙소정보</div>
-          <div>별별 글램핑(A룸 202호) </div>
+        <div className="glamping-info">
+          <div className="room-info">숙소정보</div>
+          <div className="romm-info-content">별별 글램핑(A룸 202호) </div>
         </div>
         <div className="use-info">
           <div>이용정보</div>
-          <div>이용정보</div>
+          <div>2024.06-28-2024.06.29</div>
         </div>
 
         <form className="review-form">
