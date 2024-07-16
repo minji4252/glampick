@@ -25,6 +25,7 @@ const RoomDetail = () => {
   const smallSwiperRef = useRef(null);
   const [roomData, setRoomData] = useState({});
   const navigate = useNavigate();
+
   const location = useLocation();
   const glampName = location.state.glampName;
 

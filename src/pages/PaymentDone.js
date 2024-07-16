@@ -3,7 +3,7 @@ import PaymentCard from "../components/PaymentCard";
 import { ActionButton, MainButton } from "../components/common/Button";
 import { FaArrowLeft } from "react-icons/fa6";
 import { colorSystem, size } from "../styles/color";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const WrapStyle = styled.div`
   .inner {
@@ -110,6 +110,16 @@ const PaymentDone = () => {
     navigate(-1);
   };
 
+  const location = useLocation();
+  const glampName = location.state.glampName;
+  const checkInTime = location.state.checkInTime;
+  const checkOutTime = location.state.checkOutTime;
+  const roomNumPeople = location.state.roomNumPeople;
+  const roomMaxPeople = location.state.roomMaxPeople;
+  const roomName = location.state.roomName;
+  const roomPrice = location.state.roomPrice;
+  const roomMainImage = location.state.roomMainImage;
+
   return (
     <WrapStyle>
       <div className="inner">
@@ -128,7 +138,16 @@ const PaymentDone = () => {
         <InfoStyle>
           <div className="payment-end-room-info">
             <h2>예약 완료된 글램핑</h2>
-            <PaymentCard />
+            <PaymentCard
+              glampName={glampName}
+              checkInTime={checkInTime}
+              checkOutTime={checkOutTime}
+              roomNumPeople={roomNumPeople}
+              roomMaxPeople={roomMaxPeople}
+              roomName={roomName}
+              roomPrice={roomPrice}
+              roomMainImage={roomMainImage}
+            />
           </div>
           <ButtonGroup>
             <Link to="/bookingdetail">
