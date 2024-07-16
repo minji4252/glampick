@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { SlLock } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
+import { postPasswordCheck } from "../../apis/userapi";
 import { colorSystem } from "../../styles/color";
 import { MainButton } from "./Button";
 
@@ -105,14 +106,11 @@ const ModalContent = styled.div`
   }
 `;
 
-const PasswordCheckModal = ({ isOpen, onClose }) => {
+const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  // 이전 버튼 클릭시 이전 페이지로 돌아감
-  const onClickBtn = () => {
-    navigate(-1);
-  };
 
+  // 모달창 오픈시 스크롤 금지 컨드롤
   useEffect(() => {
     const handleBodyScroll = () => {
       if (isOpen) {
@@ -129,11 +127,25 @@ const PasswordCheckModal = ({ isOpen, onClose }) => {
     };
   }, [isOpen]);
 
-  const handleSubmit = event => {
-    event.preventDefault();
-    // 비밀번호 검증 로직 추가
-    // 비밀번호가 일치할 때만 접근 허용
-    onClose();
+  // 이전 버튼 클릭시 이전 페이지로 돌아감
+  const onClickBtn = () => {
+    navigate(-1);
+  };
+
+  const handlePasswordChange = e => {
+    console.log(e);
+    setPassword(e.target.value);
+  };
+
+  // 비밀번호 확인 함수
+  const handlePasswordCheck = async () => {
+    const response = await postPasswordCheck({ userPw: password });
+    if (response.data === "SU") {
+      console.log("비밀번호 확인 성공");
+      onSuccess();
+    } else {
+      console.log("비밀번호 확인 실패");
+    }
   };
 
   if (!isOpen) return null;
@@ -151,22 +163,26 @@ const PasswordCheckModal = ({ isOpen, onClose }) => {
           개인정보 보호를 위해 <br />
           비밀번호를 다시 한번 확인해주세요.
         </div>
-        <form
-          onSubmit={() => {
-            handleSubmit;
-          }}
-        >
+        <form>
           {/* <label htmlFor="password">비밀번호</label> */}
           <input
             type="password"
             id="password"
             required
             value={password}
-            onChange={e => setPassword(e.target.value)}
             placeholder="비밀번호를 입력해주세요"
+            onChange={() => {
+              handlePasswordChange();
+            }}
           />
           <div className="modal-btn">
-            <MainButton type="submit" label="확인" />
+            <MainButton
+              type="submit"
+              label="확인"
+              onClick={() => {
+                handlePasswordCheck();
+              }}
+            />
           </div>
         </form>
       </ModalContent>

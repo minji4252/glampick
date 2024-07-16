@@ -7,6 +7,10 @@ import DeleteModal from "../../components/common/DeleteModal";
 import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
+import { deleteUser, getUser } from "../../apis/userapi";
+import { getCookie, removeCookie } from "../../utils/cookie";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const WrapStyle = styled.div`
   .inner {
@@ -178,14 +182,65 @@ const WrapStyle = styled.div`
 `;
 
 const UserInfo = () => {
-  // 변경하기 버튼 상태 관리
+  // 상태 관리
   const [showButtons, setShowButtons] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
+  const [userInfo, setUserInfo] = useState({
+    userEmail: "",
+    userName: "",
+    userNickname: "",
+    userPw: "",
+    userPhone: "",
+  });
+  const navigate = useNavigate();
 
+  // 토큰정보 불러오기
   useEffect(() => {
-    setIsModalOpen(true);
+    const fetchAccessToken = () => {
+      try {
+        const token = getCookie("access-Token");
+        if (token) {
+          setAccessToken(token);
+        } else {
+          console.log("엑세스 토큰 없음");
+        }
+      } catch (error) {
+        console.log("엑세스 토큰 가져오는 중 에러", error);
+      }
+    };
+    fetchAccessToken();
   }, []);
+
+  // 유저 정보 불러오기
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        if (!accessToken) return;
+        const response = await axios.get(`/api/user`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(response);
+        setUserInfo({
+          userEmail: response.data.userEmail,
+          userName: response.data.userName,
+          userNickname: response.data.userNickname,
+          userPw: "●●●●●●●",
+          userPhone: response.data.userPhone,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, [accessToken]);
+
+  // useEffect(() => {
+  //   setIsModalOpen(true);
+  // }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -204,12 +259,37 @@ const UserInfo = () => {
     setIsDeleteModalOpen(false);
   };
 
-  // 회원 탈퇴
-  const handleConfirmDelete = () => {
-    // 회원 탈퇴 로직 추가
+  const handlePasswordCheckSuccess = () => {
+    console.log("비밀번호 확인 성공");
+    setIsModalOpen(false);
+    // 추가적인 로직 수행 (예: 사용자 정보 수정 등)
+  };
 
-    console.log("회원 탈퇴 처리");
-    setIsDeleteModalOpen(false); // 탈퇴 처리 후 모달 닫기
+  // 회원탈퇴 함수
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await axios.delete(`/api/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response);
+      if (response.data.code === "SU") {
+        console.log("회원 탈퇴 처리완료", response);
+        // 쿠키에서 엑세스 토큰 삭제
+        removeCookie("access-Token");
+        // 엑세스 토큰 상태 초기화
+        setAccessToken("");
+        // 삭제 완료 후 모달 닫기
+        setIsDeleteModalOpen(false);
+        // 로그인 페이지로 이동
+        navigate("/login");
+      } else {
+        console.log("탈퇴 실패");
+      }
+    } catch (error) {
+      console.error("회원 탈퇴 오류", error);
+    }
   };
 
   return (
@@ -240,11 +320,22 @@ const UserInfo = () => {
             <form className="userInfo-form">
               <div className="form-group">
                 <label htmlFor="email">이메일</label>
-                <input type="email" id="email" disabled />
+                <input
+                  type="email"
+                  id="email"
+                  disabled
+                  value={userInfo.userEmail}
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="name">이름</label>
-                <input type="text" id="name" className="name-input" disabled />
+                <input
+                  type="text"
+                  id="name"
+                  className="name-input"
+                  disabled
+                  value={userInfo.userName}
+                />
               </div>
               <div className="form-group">
                 <label htmlFor="nickname">닉네임</label>
@@ -253,6 +344,7 @@ const UserInfo = () => {
                   type="text"
                   id="nickname"
                   placeholder="닉네임을 입력해주세요"
+                  value={userInfo.userNickname}
                 />
                 {/* <div className="form-button">
                     {showButtons && <MainButton label="변경하기" />}
@@ -265,6 +357,7 @@ const UserInfo = () => {
                   id="password"
                   className="password-input"
                   placeholder="비밀번호를 입력해주세요"
+                  value={userInfo.userPw}
                 />
               </div>
               <div className="form-group">
@@ -282,6 +375,7 @@ const UserInfo = () => {
                   type="text"
                   id="cellphone"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
+                  value={userInfo.userPhone}
                 />
                 {/* <div className="form-button">
                     {showButtons && <MainButton label="변경하기" />}
@@ -319,7 +413,15 @@ const UserInfo = () => {
           </div>
         </div>
       </div>
-      <PasswordCheckModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <PasswordCheckModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          handleCloseModal();
+        }}
+        onSuccess={() => {
+          handlePasswordCheckSuccess();
+        }}
+      />
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
@@ -328,6 +430,7 @@ const UserInfo = () => {
         onConfirm={() => {
           handleConfirmDelete();
         }}
+        accessToken={accessToken} // accessToken 전달
       />
     </WrapStyle>
   );

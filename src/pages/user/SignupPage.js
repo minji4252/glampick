@@ -11,6 +11,7 @@ import { MainButton } from "../../components/common/Button";
 import TermsModal from "../../components/common/TermsModal";
 import useModal from "../../hooks/UseModal";
 import { TermsGroupStyle, WrapStyle } from "../../styles/signupstyle";
+import { useNavigate } from "react-router-dom";
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정
@@ -79,7 +80,7 @@ const SignupPage = () => {
   // 약관보기 모달 관련 상태 및 함수
   const [isTermsModalOpen, setIsModalOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
-
+  const navigate = useNavigate();
   // 약관보기 모달
   const openTermsModal = modalType => {
     setSelectedModal(modalType);
@@ -215,6 +216,10 @@ const SignupPage = () => {
     } else if (result.data.code === "IPH") {
       openModal({
         message: "전화번호 형식이 올바르지 않습니다.",
+      });
+    } else if (result.data.code === "DT") {
+      openModal({
+        message: "중복된 전화번호 입니다.",
       });
     } else {
       openModal({
@@ -388,8 +393,11 @@ const SignupPage = () => {
     console.log(result.data);
     if (result.data.code === "SU") {
       openModal({
-        message: "회원가입이 완료되었습니다! 로그인 후 이용해주세요",
+        message: "회원가입에 성공하였습니다! 로그인 후 이용해주세요",
       });
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000); // 1초 후에 페이지 이동
     } else if (result.data.code === "DN") {
       openModal({
         message: "이미 사용중인 닉네임입니다.",

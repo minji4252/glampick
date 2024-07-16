@@ -120,28 +120,12 @@ const BottomContents = styled.div`
 
 const Review = () => {
   const [showModal, setShowModal] = useState(false);
-  const [reviewImgData, setReviewImgData] = useState(null);
-  const [allReviewImages, setAllReviewImages] = useState([]);
+  const [reviewData, setReviewData] = useState([]);
+  const [reviewImages, setReviewImages] = useState([]);
 
+  // 전체리뷰 이미지 불러오기
   useEffect(() => {
-    // 숙소 리뷰 데이터
-    const getReviewImgData = async () => {
-      try {
-        const glampId = 1;
-        const page = 1;
-        const response = await axios.get(
-          `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
-        );
-        const data = response.data;
-        setReviewImgData(data);
-        console.log("리뷰 데이터:", data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    // 전체 리뷰 이미지 데이터
-    const getAllReviewImages = async () => {
+    const getGlamping = async () => {
       try {
         const glampId = 1;
         const page = 1;
@@ -149,29 +133,39 @@ const Review = () => {
           `/api/glamping?glampId=${glampId}&page=${page}`,
         );
         const data = response.data;
-        setAllReviewImages(data);
-        console.log("전체 이미지 :", data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getGlamping();
+  }, []);
+
+  // 전체 리뷰 불러오기
+  useEffect(() => {
+    const getGlampingReview = async () => {
+      try {
+        const glampId = 1;
+        const page = 1;
+        const response = await axios.get(
+          `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
+        );
+        const data = response.data;
+        console.log(data);
+        setReviewData(data.reviewListItems); // 리뷰 데이터 배열을 state에 저장
+
+        // 리뷰 데이터에서 리뷰 이미지 추출하여 state에 저장
+        const images = data.reviewListItems
+          .map(review => review.reviewImages)
+          .flat();
+        setReviewImages(images);
       } catch (error) {
         console.log(error);
       }
     };
 
-    getReviewImgData();
-    getAllReviewImages();
+    getGlampingReview();
   }, []);
-
-  // 리뷰 이미지 배열
-  const reviewImages = [
-    reviewimg1,
-    reviewimg2,
-    reviewimg3,
-    reviewimg1,
-    reviewimg2,
-    reviewimg3,
-    reviewimg1,
-    reviewimg2,
-    reviewimg3,
-  ];
 
   // 모달창 열고 닫기
   const toggleModal = () => {
@@ -190,13 +184,13 @@ const Review = () => {
             <div className="total-rating">/5</div>
           </div>
           <div className="review-img">
-            {reviewImages.map((img, index) => (
+            {reviewImages.slice(0, 3).map((img, index) => (
               <div
                 key={index}
                 className={`review-img${index + 1}`}
                 style={{ backgroundImage: `url(${img})` }}
               >
-                {index === reviewImages.length - 1 && (
+                {index === 2 && (
                   <div className="more-overlay" onClick={toggleModal}>
                     더보기
                   </div>
@@ -206,11 +200,21 @@ const Review = () => {
           </div>
         </TopContents>
         <BottomContents>
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
-          <ReviewCard />
+          <div className="review-list">
+            {reviewData.map((review, index) => (
+              <ReviewCard
+                key={index}
+                userNickName={review.userNickName}
+                glampName={review.roomNames}
+                roomName={review.roomName}
+                createdAt={review.createdAt}
+                userReviewContent={review.userReviewContent}
+                ownerReviewContent={review.ownerReviewContent}
+                starPoint={review.starPoint}
+                reviewImages={review.reviewImages}
+              />
+            ))}
+          </div>
         </BottomContents>
       </div>
       {showModal && (

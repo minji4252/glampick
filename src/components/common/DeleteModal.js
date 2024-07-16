@@ -3,6 +3,9 @@ import { HiOutlineTrash } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 import { ActionButton, DeleteButton } from "../../components/common/Button";
 import { colorSystem } from "../../styles/color";
+import { deleteUser } from "../../apis/userapi";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DeleteModalStyle = styled.div`
   position: fixed;
@@ -81,8 +84,29 @@ const DeleteModalBtn = styled.div`
   }
 `;
 
-const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
+const DeleteModal = ({ isOpen, onClose, onConfirm, accessToken }) => {
+  const navigate = useNavigate();
   if (!isOpen) return null;
+
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`/api/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response);
+      if (response.data.code === "SU") {
+        console.log("회원 탈퇴 처리완료", response);
+        onConfirm(); // 부모 컴포넌트에서 모달 닫기 처리를 하도록 호출
+        navigate("/");
+      } else {
+        console.log("탈퇴 실패");
+      }
+    } catch (error) {
+      console.error("회원 탈퇴 오류", error);
+    }
+  };
 
   return (
     <DeleteModalStyle>
@@ -99,7 +123,12 @@ const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
         </p>
       </DeleteText>
       <DeleteModalBtn>
-        <DeleteButton label="탈퇴" onClick={onConfirm} />
+        <DeleteButton
+          label="탈퇴"
+          onClick={() => {
+            handleDelete();
+          }}
+        />
         <ActionButton label="취소" onClick={onClose} />
       </DeleteModalBtn>
     </DeleteModalStyle>
