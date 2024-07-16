@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
-import React from "react";
-import NotfoundImg from "../images/notfound-img.gif";
-import glampickLogoMain from "../images/glampick_logo_white.png";
 import { Link } from "react-router-dom";
+import glampickLogoMain from "../images/glampick_logo_white.png";
+import NotfoundImg from "../images/notfound-img.gif";
 
 const NotfoundWrap = styled.div`
   position: fixed;

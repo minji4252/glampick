@@ -1,10 +1,8 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
-import "../styles/common.css";
-import "../styles/reset.css";
+import { useSearchParams } from "react-router-dom";
 import SearchCard from "../components/SearchCard";
 import ListPagination from "../components/common/ListPagination";
-import axios from "axios";
 import SearchPageStyle, {
   ResultContents,
   SearchFilter,
@@ -16,6 +14,8 @@ import SearchPageStyle, {
   SearchResult,
   SearchTop,
 } from "../styles/SearchPageStyle";
+import "../styles/common.css";
+import "../styles/reset.css";
 
 const SearchPage = () => {
   const [searchResults, setSearchResults] = useState({});
@@ -106,7 +106,7 @@ const SearchPage = () => {
           .filter(key => activeFilters[key])
           .map(key => filterMapping[key])
           .join(",");
-        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}`;
+        const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}`;
         console.log(glampingUrl);
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
@@ -191,7 +191,6 @@ const SearchPage = () => {
                     }`}
                     onClick={() => toggleFilter("swim")}
                   />
-
                   <div
                     className={`filter-wifi ${
                       activeFilters.wifi ? "active" : ""

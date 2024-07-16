@@ -1,11 +1,12 @@
-import { colorSystem, size } from "../styles/color";
+import { colorSystem, size } from "../../styles/color";
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
-import FavoriteIcon from "../images/icon/favorite-icon.png";
-import ArticleImage from "../images/main-list-1.png";
-import { MainButton } from "./common/Button";
+import FavoriteIcon from "../../images/icon/favorite-icon.png";
+import ArticleImage from "../../images/main-list-3.png";
+
 import { Link } from "react-router-dom";
+import { MainButton } from "../common/Button";
 
 const FavoriteArticle = styled.article`
   display: flex;
@@ -101,6 +102,10 @@ const ArticleContent = styled.div`
     justify-content: space-between;
     align-items: flex-end;
     font-size: 12px;
+    ${size.mid} {
+      display: block;
+      /* align-self: start; */
+    }
     .glamping-price {
       font-size: 16px;
       font-weight: 600;
@@ -122,6 +127,8 @@ export const FavoriteCard = ({
   glampName,
   glampId,
 }) => {
+  // const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+
   // 가격 단위
   const formattedPrice = price.toLocaleString();
 
@@ -138,7 +145,7 @@ export const FavoriteCard = ({
       </Link>
       <div
         className="favorite-heart"
-        // onClick={() => toggleVisibility(index)}
+        // onClick={() => toggleLike(index)}
       ></div>
       <ArticleContent>
         <div className="article-top">

@@ -1,10 +1,10 @@
 import styled from "@emotion/styled";
-import Categories from "../../components/mypage/Categories";
-import { colorSystem, size } from "../../styles/color";
-import { useEffect, useState } from "react";
-import FavoriteCard from "../../components/FavoriteCard";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import Categories from "../../components/mypage/Categories";
+import FavoriteCard from "../../components/mypage/FavoriteCard";
 import emptyImg from "../../images/coffeeImg.png";
+import { colorSystem, size } from "../../styles/color";
 
 const WrapStyle = styled.div`
   .inner {
