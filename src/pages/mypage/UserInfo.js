@@ -319,7 +319,7 @@ const UserInfo = () => {
           </div>
         </div>
       </div>
-      {/* <PasswordCheckModal isOpen={isModalOpen} onClose={handleCloseModal} /> */}
+      <PasswordCheckModal isOpen={isModalOpen} onClose={handleCloseModal} />
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => {

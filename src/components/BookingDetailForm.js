@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { colorSystem, size } from "../styles/color";
-import ClampingImage from "../images/main-list-1.png";
 import styled from "@emotion/styled";
-import { MainButton } from "./common/Button";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import ClampingImage from "../images/main-list-1.png";
+import { colorSystem } from "../styles/color";
+import { MainButton } from "./common/Button";
 import CreateReviewModal from "./common/CreateReviewModal";
 
 export const FormContents = styled.div`
@@ -98,6 +98,7 @@ export const FormContents = styled.div`
     border: none;
     background-color: none;
     cursor: pointer;
+    display: block;
   }
 
   /* 후기 작성 버튼 */
@@ -129,9 +130,9 @@ export const FormContents = styled.div`
 
 export const BookingDetailForm = ({
   booking,
-  upComing,
+  upcoming,
   isCompleted,
-  completeReservation,
+  isCancelled,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const handleOpenCreateReviewModal = () => {
@@ -141,6 +142,8 @@ export const BookingDetailForm = ({
   const handleCloseCreateReviewModal = () => {
     setIsReviewModalOpen(false);
   };
+
+  if (!booking) return null;
 
   return (
     <FormContents>
@@ -153,25 +156,21 @@ export const BookingDetailForm = ({
         <div className="reserv-info">
           <Link to="/glampingdetail" className="glampingdetail-link">
             <div className="reserv-info-img">
-              {completeReservation && completeReservation.glampImage}
+              <img src={booking.glampImage} alt="Glamping" />
             </div>
             <div className="reserv-info-txt">
-              <h4>{completeReservation && completeReservation.glampName}</h4>
-              <div className="room-type">
-                {completeReservation && completeReservation.roomName}
-              </div>
+              <h4>{booking.glampName}</h4>
+              <div className="room-type">{booking.roomName}</div>
               <div className="date-used">
-                {completeReservation &&
-                  `${completeReservation.checkInDate} ~ ${completeReservation.checkOutDate} | 1박`}
+                {booking.checkInDate} ~ {booking.checkOutDate} | 1박
               </div>
               <div className="check-time">
-                {completeReservation &&
-                  `체크인 ${completeReservation.checkInTime} | 체크아웃 ${completeReservation.checkOutTime}`}
+                체크인 {booking.checkInTime} | 체크아웃 {booking.checkOutTime}
               </div>
             </div>
           </Link>
         </div>
-        {upComing ? (
+        {upcoming ? (
           <div className="cancel-btn">취소</div>
         ) : isCompleted ? (
           <div className="review-btn">

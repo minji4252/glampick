@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import BookingDetailForm from "../../components/BookingDetailForm";
 import Categories from "../../components/mypage/Categories";
 import notBookingImg from "../../images/notbookingImg.png";
+import { IoIosArrowRoundForward } from "react-icons/io";
 import { colorSystem, size } from "../../styles/color";
 import { getCookie } from "../../utils/cookie";
+import { MainButton } from "../../components/common/Button";
+import { Link } from "react-router-dom";
 
 const WrapStyle = styled.div`
   .inner {
@@ -145,21 +148,22 @@ const NotContentStyle = styled.div`
 const BookingDetail = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
   const [accessToken, setAccessToken] = useState("");
-  const [bookingDetails, setBookingDetails] = useState([]);
-  const [completeReservation, setCompleteReservation] = useState(null);
+  const [upcomingBookings, setUpcomingBookings] = useState([]);
+  const [completedBookings, setCompletedBookings] = useState([]);
+  const [cancelledBookings, setCancelledBookings] = useState([]);
 
   // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const accessTokenFromCookie = getCookie("access-Token");
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
+        const token = getCookie("access-Token");
+        if (token) {
+          setAccessToken(token);
         } else {
           console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log("엑세스토큰 가져오는 중 에러", error);
+        console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
     fetchAccessToken();
@@ -174,23 +178,32 @@ const BookingDetail = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        // console.log(response);
-        // console.log(response.data);
-        // console.log(response.data.reservationBeforeResultSetList);
-        // console.log(response.data.reservationCancelResultSetList);
-        // console.log(response.data.reservationCompleteResultSetList);
-        console.log(response.data.reservationCompleteResultSetList[0]);
-        const completeReservation =
-          response.data.reservationCompleteResultSetList[0];
-        setCompleteReservation(completeReservation); // completeReservation 상태 설정
-        console.log(completeReservation);
+        console.log(response);
 
-        // const reservationList =
-        //   response.data.reservationBeforeResultSetList || [];
-        // setBookingDetails(
-        //   Array.isArray(reservationList) ? reservationList : [],
-        // );
-        // console.log(reservationList);
+        const {
+          reservationBeforeResultSetList,
+          reservationCompleteResultSetList,
+          reservationCancelResultSetList,
+        } = response.data;
+
+        // 이용 예정 내역
+        setUpcomingBookings(reservationBeforeResultSetList || []);
+        // 이용 완료 내역
+        setCompletedBookings(reservationCompleteResultSetList || []);
+        // 예약 취소 내역
+        setCancelledBookings(reservationCancelResultSetList || []);
+
+        // const upcomingBookings =
+        //   response.data.reservationBeforeResultSetList[0];
+        // setUpcomingBookings(upcomingBookings);
+
+        // const completeReservation =
+        //   response.data.reservationCompleteResultSetList[1];
+        // setCompleteReservation(completeReservation);
+
+        // const cancelledBookings =
+        //   response.data.reservationCancelResultSetList[2];
+        // setCancelledBookings(cancelledBookings);
       } catch (error) {
         console.log(error);
       }
@@ -237,15 +250,24 @@ const BookingDetail = () => {
         {/* 이용 예정 */}
         {activeTab === "upcoming" && (
           <div className="container">
-            <div className="form-group">
-              <BookingDetailForm upComing={true} />
-            </div>
-            <div className="form-group">
-              <BookingDetailForm upComing={true} />
-            </div>
-            <div className="form-group">
-              <BookingDetailForm upComing={true} />
-            </div>
+            {upcomingBookings.length > 0 ? (
+              upcomingBookings.map((booking, index) => (
+                <div className="form-group" key={index}>
+                  <BookingDetailForm booking={booking} upcoming={true} />
+                </div>
+              ))
+            ) : (
+              <NotContentStyle>
+                <div className="logo-img" />
+                <h4>예약된 글램핑장이 없습니다</h4>
+                <Link to="/">
+                  <div className="room-search-btn">
+                    <MainButton label="숙소 검색하러 가기" />
+                    <IoIosArrowRoundForward />
+                  </div>
+                </Link>
+              </NotContentStyle>
+            )}
           </div>
         )}
 
@@ -253,15 +275,24 @@ const BookingDetail = () => {
         {activeTab === "completed" && (
           <>
             <div className="container">
-              <div className="form-group">
-                <BookingDetailForm isCompleted={true} />
-              </div>
-              <div className="form-group">
-                <BookingDetailForm
-                  completeReservation={completeReservation}
-                  isCompleted={true}
-                />
-              </div>
+              {completedBookings.length > 0 ? (
+                completedBookings.map((booking, index) => (
+                  <div className="form-group" key={index}>
+                    <BookingDetailForm booking={booking} isCompleted={true} />
+                  </div>
+                ))
+              ) : (
+                <NotContentStyle>
+                  <div className="logo-img" />
+                  <h4>예약된 글램핑장이 없습니다</h4>
+                  <Link to="/">
+                    <div className="room-search-btn">
+                      <MainButton label="숙소 검색하러 가기" />
+                      <IoIosArrowRoundForward />
+                    </div>
+                  </Link>
+                </NotContentStyle>
+              )}
             </div>
           </>
         )}
@@ -269,12 +300,24 @@ const BookingDetail = () => {
         {activeTab === "cancelde" && (
           <>
             <div className="container">
-              <div className="form-group">
-                <BookingDetailForm />
-              </div>
-              <div className="form-group">
-                <BookingDetailForm />
-              </div>
+              {cancelledBookings.length > 0 ? (
+                cancelledBookings.map((booking, index) => (
+                  <div className="form-group" key={index}>
+                    <BookingDetailForm booking={booking} isCancelled={true} />
+                  </div>
+                ))
+              ) : (
+                <NotContentStyle>
+                  <div className="logo-img" />
+                  <h4>예약된 글램핑장이 없습니다</h4>
+                  <Link to="/">
+                    <div className="room-search-btn">
+                      <MainButton label="숙소 검색하러 가기" />
+                      <IoIosArrowRoundForward />
+                    </div>
+                  </Link>
+                </NotContentStyle>
+              )}
             </div>
           </>
         )}
