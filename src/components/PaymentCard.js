@@ -49,7 +49,7 @@ const PayRoomImg = styled.div`
   .pay-img {
     border-radius: 10px;
 
-    background: url(${payImg}) no-repeat center;
+    /* background: url(${payImg}) no-repeat center; */
     background-size: cover;
     width: 100%;
     height: 190px;
@@ -79,7 +79,7 @@ const PayRoomContent = styled.div`
   .pay-room-item {
     display: flex;
     gap: 10px;
-    line-height: 1.3rem;
+    line-height: 1.6rem;
 
     span {
       color: ${colorSystem.g300};
@@ -171,31 +171,58 @@ const PriceTotal = styled.div`
   }
 `;
 
-const PaymentCard = () => {
+const formatTime = time => {
+  const [hours, minutes] = time.split(":");
+  return `${hours}:${minutes}`;
+};
+
+const PaymentCard = ({
+  glampName,
+  checkInTime,
+  checkOutTime,
+  roomNumPeople,
+  roomMaxPeople,
+  roomName,
+  roomPrice,
+  roomMainImage,
+}) => {
   return (
     <WrapStyle>
       <div className="pay-left">
         <PayLeft>
           <PayRoomImg>
-            <div className="pay-img" />
+            <div
+              className="pay-img"
+              style={{
+                backgroundImage: `url(${roomMainImage})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+              }}
+            />
           </PayRoomImg>
         </PayLeft>
 
         <PayMiddle>
           <PayRoomInfo>
-            <h3>어쩌구 그린 글램핑</h3>
+            <h3>{glampName}</h3>
             <PayRoomContent>
               <div className="pay-room-item">
                 <span>객실</span>
-                <p>그린 502호</p>
+                <p>{roomName}</p>
               </div>
               <div className="pay-room-item">
                 <span>일정</span>
-                <p>06.26 (수) 15:00 ~ 06.27 (목) 11:00 (1박)</p>
+                <p>
+                  06.26 (수) {formatTime(checkInTime)} ~ 06.27 (목){" "}
+                  {formatTime(checkOutTime)}
+                </p>
               </div>
               <div className="pay-room-item">
                 <span>기준인원</span>
-                <p>2인, 최대 4인</p>
+                <p>
+                  {roomNumPeople}인, 최대 {roomMaxPeople}인
+                </p>
               </div>
             </PayRoomContent>
           </PayRoomInfo>
@@ -208,14 +235,18 @@ const PaymentCard = () => {
             <h3>결제정보</h3>
             <div className="price-item">
               <p>객실 가격</p>
-              <span>85,000원</span>
+              <span>
+                {roomPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+              </span>
             </div>
           </PriceInfo>
           <UnderLine />
           <PriceTotal>
             <div className="price-item">
               <p>총 결제 금액</p>
-              <span>85,000원</span>
+              <span>
+                {roomPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
+              </span>
             </div>
           </PriceTotal>
         </div>
