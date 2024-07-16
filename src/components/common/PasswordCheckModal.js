@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { SlLock } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { colorSystem } from "../../styles/color";
 import { MainButton } from "./Button";
 
 const ModalWrapper = styled.div`
+  // display: ${props => (props.showModal ? "flex" : "none")};
   display: flex;
   position: fixed;
   top: 0;
@@ -111,6 +112,22 @@ const PasswordCheckModal = ({ isOpen, onClose }) => {
   const onClickBtn = () => {
     navigate(-1);
   };
+
+  useEffect(() => {
+    const handleBodyScroll = () => {
+      if (isOpen) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+    };
+    handleBodyScroll();
+
+    return () => {
+      // 모달이 닫힐 때 body의 overflow 스타일을 원래대로 되돌림
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
 
   const handleSubmit = event => {
     event.preventDefault();
