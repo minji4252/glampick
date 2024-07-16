@@ -1,6 +1,11 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import { useEffect, useState } from "react";
+import {
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
 import Pagination from "react-js-pagination";
 import { colorSystem } from "../../styles/color";
 
@@ -16,7 +21,17 @@ const PaginationContainer = styled.div`
     padding: 0;
     margin: 20px 0;
     justify-content: center;
+    align-items: center;
 
+    .active {
+      /* text-decoration: none; */
+      padding: 8px 0;
+      border-radius: 20px;
+      /* display: flex; */
+      justify-content: center;
+      background-color: ${colorSystem.p400};
+      color: white;
+    }
     .page-item {
       margin: 0 5px;
 
@@ -33,7 +48,7 @@ const PaginationContainer = styled.div`
         }
 
         &.active {
-          background-color: ${colorSystem.p500};
+          background-color: ${colorSystem.p400};
           color: white;
         }
       }
@@ -50,19 +65,18 @@ const ListPagination = ({
   totalItems,
   itemsPerPage,
   onPageChange,
+  totalPages,
 }) => {
-  // // 초기 세팅 페이지
-  // const [activePage, setActivePage] = useState(1);
-  // // 한 페이지당 목록 수
-  // const itemsCountPerPage = 5;
-  // // 총 게시물 목록 수
-  // const totalItemsCount = 300;
-
   const handlePageChange = pageNumber => {
-    console.log(`선택된 페이지 ${pageNumber}`);
     onPageChange(pageNumber);
-    // 여기서 데이터를 가져오거나, 다시 렌더링을 처리할 수 있음
+    console.log(`선택된 페이지 ${pageNumber}`);
   };
+  console.log(`페이지네이션 총 페이지 ${totalPages}`);
+
+  // 페이지 이동할 때 젤 위로 가게 하기
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
 
   return (
     <PaginationContainer>
@@ -74,14 +88,25 @@ const ListPagination = ({
         onChange={handlePageChange}
         itemClass="page-item"
         linkClass="page-link"
+        activeLinkClass="active"
         prevPageText={
           <span className="page-link-prev">
-            <MdNavigateBefore className="icon" />
+            <MdKeyboardArrowLeft className="icon" />
           </span>
         }
         nextPageText={
           <span className="page-link-next">
-            <MdNavigateNext className="icon" />
+            <MdKeyboardArrowRight className="icon" />
+          </span>
+        }
+        firstPageText={
+          <span className="page-link-first">
+            <MdKeyboardDoubleArrowLeft className="icon" />
+          </span>
+        }
+        lastPageText={
+          <span className="page-link-last">
+            <MdKeyboardDoubleArrowRight className="icon" />
           </span>
         }
       />

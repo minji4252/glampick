@@ -18,7 +18,11 @@ import "../styles/common.css";
 import "../styles/reset.css";
 
 const SearchPage = () => {
-  const [searchResults, setSearchResults] = useState({});
+  // const [searchResults, setSearchResults] = useState({});
+  const [searchResults, setSearchResults] = useState({
+    totalItems: 0,
+    glampingListItems: [],
+  });
   const [searchData, setSearchData] = useState([]);
   // 필터 아이콘 선택
   const [activeFilters, setActiveFilters] = useState({
@@ -48,13 +52,13 @@ const SearchPage = () => {
 
   // 필터 아이콘 번호로
   const filterMapping = {
-    pet: 1,
+    pet: 4,
     ocean: 2,
     mountain: 3,
-    swim: 4,
-    toilet: 5,
-    wifi: 6,
-    barbecue: 7,
+    swim: 1,
+    toilet: 6,
+    wifi: 7,
+    barbecue: 5,
   };
 
   // 지역명 한글로
@@ -83,6 +87,10 @@ const SearchPage = () => {
     }));
   };
 
+  // 페이지 개수 계산
+  const totalPages = Math.ceil(searchResults.searchCount / postPerPage);
+  console.log("총 몇 페이지?", totalPages);
+
   useEffect(() => {
     // 페이지가 변경될 때마다 URL 매개변수 업데이트
     setSearchParams({
@@ -106,15 +114,14 @@ const SearchPage = () => {
           .filter(key => activeFilters[key])
           .map(key => filterMapping[key])
           .join(",");
-        const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}`;
+        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}`;
         console.log(glampingUrl);
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
-        console.log(glampingResponse.data.glampingListItems);
 
         // 검색 결과
         const glampingArray = glampingResponse.data.glampingListItems || [];
-        const totalItems = glampingResponse.data.totalItems || 0;
+        const totalItems = glampingResponse.data.totalItems || 1;
         setSearchData(glampingArray);
         setSearchResults(glampingResponse.data);
         console.log("글램핑 검색 결과 리스트", glampingArray);
@@ -247,9 +254,10 @@ const SearchPage = () => {
             <SearchInnerBottom>
               <ListPagination
                 currentPage={currentPage}
-                totalItems={searchResults.totalItems || 1}
+                totalItems={searchResults.searchCount || 1}
                 itemsPerPage={postPerPage}
                 onPageChange={setCurrentPage}
+                totalPages={totalPages}
               />
             </SearchInnerBottom>
           </SearchInner>
