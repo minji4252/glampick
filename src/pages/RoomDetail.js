@@ -22,8 +22,8 @@ const RoomDetail = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [isClick, setClick] = useState(false);
   const largeSwiperRef = useRef(null);
-  const smallSwiperRef = useRef(null);
   const [roomData, setRoomData] = useState({});
+  const smallSwiperRef = useRef(null);
   const navigate = useNavigate();
 
   const location = useLocation();
@@ -46,6 +46,10 @@ const RoomDetail = () => {
 
   const selectMenuHandler = index => {
     setCurrentTab(index);
+    if (largeSwiperRef.current && smallSwiperRef.current) {
+      largeSwiperRef.current.slideTo(0);
+      smallSwiperRef.current.slideTo(0);
+    }
   };
 
   const syncSwipers = swiper => {
@@ -100,9 +104,7 @@ const RoomDetail = () => {
                 <SwiperSlide key={index}>
                   <div
                     style={{
-                      // 임시
-                      backgroundImage: `url(pic/glamping/1/room/1/${image})`,
-                      // background: `url(glamping/${glampId}/room/${roomId}/${image}) no-repeat center center`,
+                      backgroundImage: `url(${image})`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                       backgroundSize: "cover",
@@ -132,7 +134,7 @@ const RoomDetail = () => {
                 <SwiperSlide key={index} virtualIndex={index}>
                   <div
                     style={{
-                      backgroundImage: `url(pic/glamping/1/room/1/${image})`,
+                      backgroundImage: `url(${image})`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                       backgroundSize: "cover",

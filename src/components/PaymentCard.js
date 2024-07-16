@@ -171,11 +171,6 @@ const PriceTotal = styled.div`
   }
 `;
 
-const formatTime = time => {
-  const [hours, minutes] = time.split(":");
-  return `${hours}:${minutes}`;
-};
-
 const PaymentCard = ({
   glampName,
   checkInTime,
@@ -186,6 +181,13 @@ const PaymentCard = ({
   roomPrice,
   roomMainImage,
 }) => {
+  const formatTime = time => {
+    const [hours, minutes] = time.split(":");
+    return `${hours}:${minutes}`;
+  };
+
+  const formattedPrice = Number(roomPrice).toLocaleString("ko-KR");
+
   return (
     <WrapStyle>
       <div className="pay-left">
@@ -235,18 +237,14 @@ const PaymentCard = ({
             <h3>결제정보</h3>
             <div className="price-item">
               <p>객실 가격</p>
-              <span>
-                {roomPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
-              </span>
+              <span>{formattedPrice}원</span>
             </div>
           </PriceInfo>
           <UnderLine />
           <PriceTotal>
             <div className="price-item">
               <p>총 결제 금액</p>
-              <span>
-                {roomPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원
-              </span>
+              <span>{formattedPrice}원</span>
             </div>
           </PriceTotal>
         </div>
