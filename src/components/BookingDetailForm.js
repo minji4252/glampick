@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ClampingImage from "../images/main-list-1.png";
 import { colorSystem } from "../styles/color";
@@ -145,6 +145,11 @@ export const BookingDetailForm = ({
 
   if (!booking) return null;
 
+  const [roomMainImage, setRoomMainImage] = useState(null);
+  useEffect(() => {
+    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
+  }, []);
+
   return (
     <FormContents>
       <div className="top-contents">
@@ -155,9 +160,13 @@ export const BookingDetailForm = ({
         <p>숙소</p>
         <div className="reserv-info">
           <Link to="/glampingdetail" className="glampingdetail-link">
-            <div className="reserv-info-img">
-              <img src={booking.glampImage} alt="Glamping" />
-            </div>
+            <div
+              className="reserv-info-img"
+              style={{
+                background: `url(${roomMainImage}) no-repeat center`,
+                backgroundSize: "cover",
+              }}
+            ></div>
             <div className="reserv-info-txt">
               <h4>{booking.glampName}</h4>
               <div className="room-type">{booking.roomName}</div>

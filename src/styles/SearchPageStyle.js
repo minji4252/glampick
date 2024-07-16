@@ -1,19 +1,20 @@
 import styled from "@emotion/styled";
-import { colorSystem, size } from "../styles/color";
-import filterPet from "../images/icon/filter-pet.png";
-import filterPet2 from "../images/icon/filter-pet2.png";
-import filterOcean from "../images/icon/filter-ocean.png";
-import filterOcean2 from "../images/icon/filter-ocean2.png";
+import filterBarbecue from "../images/icon/filter-barbecue.png";
+import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
 import filterMountain from "../images/icon/filter-mountain.png";
 import filterMountain2 from "../images/icon/filter-mountain2.png";
+import filterOcean from "../images/icon/filter-ocean.png";
+import filterOcean2 from "../images/icon/filter-ocean2.png";
+import filterPet from "../images/icon/filter-pet.png";
+import filterPet2 from "../images/icon/filter-pet2.png";
 import filterSwim from "../images/icon/filter-swim.png";
 import filterSwim2 from "../images/icon/filter-swim2.png";
 import filterToilet from "../images/icon/filter-toilet.png";
 import filterToilet2 from "../images/icon/filter-toilet2.png";
 import filterWifi from "../images/icon/filter-wifi.png";
 import filterWifi2 from "../images/icon/filter-wifi2.png";
-import filterBarbecue from "../images/icon/filter-barbecue.png";
-import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
+import SearchImage from "../images/search-pic1.png";
+import { colorSystem, size } from "../styles/color";
 
 export const SearchPageStyle = styled.div`
   position: relative;
@@ -240,6 +241,92 @@ export const SearchInnerBottom = styled.div`
     font-size: 18px;
     display: flex;
     gap: 40px;
+  }
+`;
+
+export const SearchContent = styled.div`
+  display: flex;
+  width: 100%;
+  max-width: 950px;
+  height: 240px;
+  padding: 40px 0;
+  margin: 40px 0;
+  border-top: 1px solid;
+  border-color: ${colorSystem.g200};
+  :last-child {
+    border-bottom: none;
+  }
+  :first-of-type {
+    border-top: none;
+  }
+  .search-image {
+    max-width: 400px;
+    width: 100%;
+    height: 240px;
+    /* background: url(${SearchImage}) no-repeat center; */
+    margin-left: 15px;
+    border-radius: 20px;
+  }
+  .search-detail {
+    width: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 40px 10px 50px;
+
+    .sc-top {
+      .sc-name {
+        font-size: 22px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      .sc-review {
+        display: flex;
+        font-size: 15px;
+        .sc-review-top {
+          display: flex;
+          svg {
+            margin: 0 5px;
+            color: #ffd233;
+          }
+          .sc-score {
+            margin-right: 15px;
+          }
+        }
+        .sc-review-bottom {
+          .sc-count {
+          }
+        }
+        ${size.mid} {
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+    }
+    .sc-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      .sc-price {
+        font-size: 17px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  @media all and (max-width: 950px) {
+    max-width: 950px;
+    width: 100%;
+
+    .search-image {
+      min-width: 240px;
+      background-size: cover;
+      border-radius: 15px;
+    }
+    .search-detail {
+      gap: 30px;
+    }
   }
 `;
 
