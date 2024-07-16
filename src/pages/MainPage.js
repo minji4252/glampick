@@ -1,15 +1,12 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getPetData, getPopularData } from "../apis/main";
+import MainCalendar from "../components/MainCalendar";
+import MainCard from "../components/MainCard";
+import { ActionButton } from "../components/common/Button";
 import glampickLogoMain from "../images/glampick_logo_white.png";
 import LoginUserIcon from "../images/icon/main-login-user.png";
-import { Link, useNavigate } from "react-router-dom";
-import MainCard from "../components/MainCard";
-import "../styles/common.css";
-import "../styles/reset.css";
-import { ActionButton } from "../components/common/Button";
-import MainCalendar from "../components/MainCalendar";
-import axios from "axios";
-import AlertModal from "../components/common/AlertModal";
-import useModal from "../hooks/UseModal";
 import MainPageStyle, {
   GotoTop,
   MainBigTitle,
@@ -22,8 +19,9 @@ import MainPageStyle, {
   MainSec1,
   MainSec2,
 } from "../styles/MainPageStyle";
+import "../styles/common.css";
+import "../styles/reset.css";
 import { removeCookie } from "../utils/cookie";
-import { getPetData, getPopularData } from "../apis/main";
 
 const MainPage = ({ isLogin }) => {
   const today = new Date();
