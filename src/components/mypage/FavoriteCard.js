@@ -69,7 +69,9 @@ export const FavoriteCard = ({
         <div
           className="article-image"
           style={{
-            background: `url(${roomMainImage}) no-repeat center`,
+            backgroundImage: `url(${glampImage})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
             backgroundSize: "cover",
           }}
         >

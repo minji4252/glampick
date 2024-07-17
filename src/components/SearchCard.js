@@ -24,19 +24,14 @@ const SearchCard = ({
     console.log("예약하기");
   };
 
-  // 임시 이미지
-  const [roomMainImage, setRoomMainImage] = useState(null);
-  useEffect(() => {
-    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
-  }, []);
-
   return (
     <SearchContent key={glampId}>
-      {/* <div className="search-image"></div> */}
       <div
         className="search-image"
         style={{
-          background: `url(${glampPic}) no-repeat center`,
+          backgroundImage: `url(${glampPic})`,
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
           backgroundSize: "cover",
         }}
       />
@@ -55,7 +50,6 @@ const SearchCard = ({
         </div>
         <div className="sc-bottom">
           <div className="sc-price">{formattedPrice} 원 ~</div>
-          {/* <Link to="/glampingdetail"> */}
           <Link
             to={`/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
           >

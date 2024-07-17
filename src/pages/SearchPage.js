@@ -46,7 +46,8 @@ const SearchPage = () => {
 
   const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
 
-  const [searchParams, setSearchParams] = useSearchParams(); // URL 쿼리 매개변수 관리
+  // URL 쿼리 매개변수
+  const [searchParams, setSearchParams] = useSearchParams();
   const region1 = searchParams.get("region"); // URL에서 지역 가져옴
   const inDate1 = searchParams.get("inDate"); // 체크인 날짜
   const outDate1 = searchParams.get("outDate"); // 체크아웃 날짜
@@ -126,8 +127,9 @@ const SearchPage = () => {
           .map(key => filterMapping[key])
           .join(",");
         const searchWordParam = searchWord1 ? `&searchWord=${searchWord1}` : "";
-        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
-        console.log(glampingUrl);
+        const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
+        // const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
+
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
 

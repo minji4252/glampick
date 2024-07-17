@@ -81,6 +81,7 @@ const Favorite = () => {
                 key={item.glampId}
                 glampId={item.glampId}
                 glampName={item.glampName}
+                glampImage={item.glampImage}
                 glampLocation={item.glampLocation}
                 starPoint={item.starPoint}
                 reviewCount={item.reviewCount}

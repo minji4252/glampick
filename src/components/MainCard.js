@@ -18,13 +18,8 @@ const MainCard = ({
   const formattedPrice = Number(price).toLocaleString("ko-KR");
   const formattedStarPoint = Number(starPoint).toFixed(1);
 
-  // 임시 이미지
-  const [roomMainImage, setRoomMainImage] = useState(null);
-  useEffect(() => {
-    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
-  }, []);
-
   const regionNames = {
+    all: "전국",
     seoul: "서울/경기",
     gangwon: "강원",
     chungbuk: "충북",
@@ -42,7 +37,9 @@ const MainCard = ({
         <div
           className="article-image"
           style={{
-            background: `url(${roomMainImage}) no-repeat center`,
+            backgroundImage: `url(${glampingImg})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
             backgroundSize: "cover",
           }}
         >
