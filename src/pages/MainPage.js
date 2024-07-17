@@ -206,12 +206,10 @@ const MainPage = ({ isLogin }) => {
                     console.log("선택한 지역:", e.target.value);
                   }}
                 >
-                  <option value="none" disabled>
-                    지역
+                  <option value="all" selected>
+                    전국
                   </option>
-                  <option value="seoul" selected>
-                    서울/경기
-                  </option>
+                  <option value="seoul">서울/경기</option>
                   <option value="gangwon">강원</option>
                   <option value="chungbuk">충북</option>
                   <option value="chungnam">충남</option>

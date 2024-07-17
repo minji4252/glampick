@@ -123,7 +123,7 @@ export const FavoriteCard = (
 ) => {
   return (
     <FavoriteArticle key={glampId}>
-      <Link to="/glampingdetail">
+      <Link to={`/${glampId}`}>
         <div className="article-image">
           {/* <MainCardFile src={glampImage} /> */}
           <div className="article-place">
@@ -138,7 +138,7 @@ export const FavoriteCard = (
       ></div>
       <ArticleContent>
         <div className="article-top">
-          <Link to="/glampingdetail">
+          <Link to={`/${glampId}`}>
             <div className="glamping-name">{glampName}</div>
           </Link>
           <div className="article-detail">
@@ -149,7 +149,7 @@ export const FavoriteCard = (
         </div>
         <div className="article-bottom">
           <div className="glamping-price">{price}원~</div>
-          <Link to="/glampingdetail">
+          <Link to={`/${glampId}`}>
             <MainButton label="예약하기"></MainButton>
           </Link>
         </div>

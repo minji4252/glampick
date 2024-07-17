@@ -38,7 +38,7 @@ const MainCard = ({
 
   return (
     <MainArticle key={glampId}>
-      <Link to="/glampingdetail">
+      <Link to={`/${glampId}`}>
         <div
           className="article-image"
           style={{
@@ -54,7 +54,7 @@ const MainCard = ({
       </Link>
       <ArticleContent>
         <div className="article-top">
-          <Link to="/glampingdetail">
+          <Link to={`/${glampId}`}>
             <div className="glamping-name">{glampingName}</div>
           </Link>
           <div className="article-detail">
@@ -65,7 +65,7 @@ const MainCard = ({
         </div>
         <div className="article-bottom">
           <div className="glamping-price">{formattedPrice} 원~</div>
-          <Link to="/glampingdetail">
+          <Link to={`/${glampId}`}>
             <MainButton label="예약하기" />
           </Link>
         </div>

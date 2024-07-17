@@ -6,6 +6,7 @@ import { ArticleContent, FavoriteArticle } from "../../styles/FavoriteStyle";
 import { MainButton } from "../common/Button";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Loading from "../common/Loading";
 
 export const FavoriteCard = ({
   reviewCount,
@@ -19,6 +20,7 @@ export const FavoriteCard = ({
   accessToken,
 }) => {
   const [isFavorite, setIsFavorite] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // 가격, 리뷰 단위 수정
   const formattedPrice = Number(price).toLocaleString("ko-KR");
@@ -32,6 +34,7 @@ export const FavoriteCard = ({
 
   const handleHeartClick = async () => {
     console.log("삭제?");
+    setLoading(true);
     try {
       const response = await axios.get(`/api/glamping/favorite`, {
         headers: {
@@ -42,12 +45,14 @@ export const FavoriteCard = ({
           action: "remove",
         },
       });
+
       console.log("삭제됨??");
       if (response.data.resultValue === 0) {
         setIsFavorite(false);
         onRemoveFavorite(glampId);
         console.log("삭제됨?????");
       }
+      setLoading(false);
     } catch (error) {
       console.error("관심 목록 삭제 중 에러:", error);
     }
@@ -59,7 +64,8 @@ export const FavoriteCard = ({
 
   return (
     <FavoriteArticle key={glampId}>
-      <Link to="/glampingdetail">
+      {loading && <Loading />}
+      <Link to={`/${glampId}`}>
         <div
           className="article-image"
           style={{
@@ -76,7 +82,7 @@ export const FavoriteCard = ({
       <div className="favorite-heart" onClick={handleHeartClick}></div>
       <ArticleContent>
         <div className="article-top">
-          <Link to="/glampingdetail">
+          <Link to={`/${glampId}`}>
             <div className="glamping-name">{glampName}</div>
           </Link>
           <div className="article-detail">
@@ -87,7 +93,7 @@ export const FavoriteCard = ({
         </div>
         <div className="article-bottom">
           <div className="glamping-price">{formattedPrice}원~</div>
-          <Link to="/glampingdetail">
+          <Link to={`/${glampId}`}>
             <MainButton label="예약하기"></MainButton>
           </Link>
         </div>
