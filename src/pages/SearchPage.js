@@ -92,6 +92,8 @@ const SearchPage = () => {
   };
 
   // 페이지 개수 계산
+  console.log("searchResults22", searchResults);
+
   const totalPages = Math.ceil(searchResults.searchCount / postPerPage);
   console.log("총 몇 페이지?", totalPages);
 

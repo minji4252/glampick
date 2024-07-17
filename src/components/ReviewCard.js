@@ -58,6 +58,7 @@ const UserSection = styled.div`
 
     button {
       height: 25px;
+      display: none;
     }
   }
   .myreview-score {
@@ -67,7 +68,6 @@ const UserSection = styled.div`
   }
 
   .myreview-content {
-    margin-top: 30px;
     font-size: 1rem;
 
     > div {
@@ -103,7 +103,7 @@ const UserSection = styled.div`
 const MyReviewImage = styled.div`
   display: flex;
   gap: 15px;
-  margin-top: 20px;
+  margin-top: 10px;
 
   > div {
     max-width: 180px;
@@ -207,8 +207,6 @@ const ReviewCard = ({
     useModal();
   const [accessToken, setAccessToken] = useState("");
 
-  console.log("dyq", starPoint, reviewImages);
-
   const {
     isModalOpen: isAlertOpen,
     modalMessage: alertMessage,
@@ -271,7 +269,11 @@ const ReviewCard = ({
           );
           console.log(response);
           closeModal();
+          window.location.reload();
           openAlert("삭제가 완료되었습니다.");
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         } catch (error) {
           closeModal();
           openAlert("삭제 중 오류가 발생했습니다.");
@@ -293,10 +295,7 @@ const ReviewCard = ({
               backgroundSize: "cover",
             }}
           />
-          <span>
-            {userNickName}
-            {/* {reviewImages} */}
-          </span>
+          <span>{userNickName}</span>
         </div>
         <div className="myreview-card-right">
           <UserSection>
@@ -307,7 +306,11 @@ const ReviewCard = ({
               </div>
               <DeleteButton label="삭제" onClick={handleDelete} />
             </div>
-            <MyReviewImage>
+            <MyReviewImage
+              style={{
+                marginTop: reviewImages.length > 0 ? "20px" : "10px",
+              }}
+            >
               {reviewImages.map((image, index) => (
                 <div
                   key={index}
@@ -320,7 +323,12 @@ const ReviewCard = ({
                 />
               ))}
             </MyReviewImage>
-            <div className="myreview-content">
+            <div
+              className="myreview-content"
+              style={{
+                marginTop: reviewImages.length > 0 ? "30px" : "0px",
+              }}
+            >
               <div>
                 <span>{glampName}</span>
                 <span>|</span>

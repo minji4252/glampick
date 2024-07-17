@@ -95,6 +95,7 @@ export const MainBigTitle = styled.div`
       font-size: 45px;
       color: #fff;
       letter-spacing: -0.9px;
+      cursor: default;
     }
     ${size.large} {
       flex-direction: column;

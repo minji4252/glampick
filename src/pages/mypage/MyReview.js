@@ -73,8 +73,8 @@ const MyReviewGroup = styled.div`
   max-width: 1060px;
   width: 100%;
 
-  svg {
-    display: block !important;
+  button {
+    display: flex !important;
   }
 `;
 
@@ -111,9 +111,13 @@ const NoReviewsStyle = styled.div`
 const MyReview = () => {
   const [reviews, setReviews] = useState([]);
   const [accessToken, setAccessToken] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalReviews, setTotalReviews] = useState(0);
-  const itemsPerPage = 5; // 페이지 당 리뷰 개수
+
+  const [searchResults, setSearchResults] = useState({
+    totalItems: 0,
+    glampingListItems: [],
+  });
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
 
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -147,10 +151,7 @@ const MyReview = () => {
           },
         );
         setReviews(response.data.reviewListItems);
-        // 전체 리뷰 개수 설정
-        // setTotalReviews(response.data.totalItems);
-        console.log(response.data.reviewListItems);
-        console.log("fff", response.data);
+        setSearchResults(response.data.totalReviewsCount);
       } catch (error) {
         console.log(error);
       }
@@ -159,9 +160,9 @@ const MyReview = () => {
     fetchReviews();
   }, [accessToken, currentPage]);
 
-  const handlePageChange = pageNumber => {
-    setCurrentPage(pageNumber);
-  };
+  // 페이지 개수 계산
+  const totalPages = Math.ceil(searchResults / postPerPage);
+  console.log("총 몇 페이지?", totalPages);
 
   return (
     <WrapStyle>
@@ -207,9 +208,10 @@ const MyReview = () => {
         {reviews?.length > 0 && (
           <ListPagination
             currentPage={currentPage}
-            totalItems={totalReviews}
-            itemsPerPage={itemsPerPage}
-            onPageChange={handlePageChange}
+            totalItems={searchResults || 1}
+            itemsPerPage={postPerPage}
+            onPageChange={setCurrentPage}
+            totalPages={totalPages}
           />
         )}
       </div>
