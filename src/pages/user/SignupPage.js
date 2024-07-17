@@ -472,7 +472,7 @@ const SignupPage = () => {
                         id="auth-code"
                         maxLength="6"
                         pattern="\d{6}"
-                        placeholder="인증코드 6자리를 입력해주세요"
+                        placeholder="인증코드를 입력해주세요"
                         value={authCode}
                         onChange={e => {
                           setAuthCode(e.target.value);
@@ -637,7 +637,7 @@ const SignupPage = () => {
                         id="auth-number"
                         maxLength="6"
                         pattern="\d{6}"
-                        placeholder="인증번호 6자리를 입력해주세요"
+                        placeholder="인증번호를 입력해주세요"
                         value={authNumber}
                         onChange={e => {
                           setAuthNumber(e.target.value);

@@ -146,7 +146,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   };
 
   const handlePasswordChange = e => {
-    console.log(e.target.value); // 입력된 비밀번호 출력
+    // console.log(e.target.value); // 입력된 비밀번호 출력
     setPassword(e.target.value);
     setErrorMessage("");
   };

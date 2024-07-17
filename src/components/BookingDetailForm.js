@@ -6,6 +6,7 @@ import { colorSystem } from "../styles/color";
 import { MainButton } from "./common/Button";
 import CreateReviewModal from "./common/CreateReviewModal";
 import BookingCancelModal from "./common/BookingCancelModal";
+import moment from "moment";
 
 export const FormContents = styled.div`
   width: 100%;
@@ -122,12 +123,34 @@ export const BookingDetailForm = ({
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [roomMainImage, setRoomMainImage] = useState(null);
+
+  useEffect(() => {
+    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
+  }, []);
+
+  // 한국어 locale 설정
+  moment.locale("ko");
+
+  // 예약 생성일 형식 변환 함수
+  const formatCreatedAt = () => {
+    // 현재 시간을 moment 객체로 파싱
+    const createdAtMoment = moment(booking.createdAt);
+
+    // 요일을 한국어로 표시
+    const dayOfWeek = createdAtMoment.format("dddd");
+
+    // 연.월.일(요일) 형식으로 반환
+    return createdAtMoment.format(`YYYY.MM.DD `);
+  };
 
   // 시간을 변환하는 함수
   const formatTime = timeString => {
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
   };
+
+  // 예약날짜 형태 변환
 
   // 예약취소 모달
   const handleOpenBookCancelModdal = () => {
@@ -145,23 +168,26 @@ export const BookingDetailForm = ({
   const handleCloseCreateReviewModal = () => {
     setIsReviewModalOpen(false);
   };
-  if (!booking) return null;
 
-  const [roomMainImage, setRoomMainImage] = useState(null);
-  useEffect(() => {
-    setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
-  }, []);
+  // 예약 취소 성공 시 모달 닫기
+  const handleBookingCancelSuccess = () => {
+    setIsCancelModalOpen(false);
+  };
+
+  if (!booking) return null;
 
   return (
     <FormContents>
       <div className="top-contents">
-        <h2>2024.06.27(목)</h2>
-        <div className="reserv-number">예약번호: </div>
+        <h2>{formatCreatedAt()}</h2>
+        {(upcoming || isCompleted || isCancelled) && (
+          <div className="reserv-number">예약번호: {booking.bookId}</div>
+        )}
       </div>
       <div className="bottom-contents">
         <p>숙소</p>
         <div className="reserv-info">
-          <Link to="/glampingdetail" className="glampingdetail-link">
+          <Link to={`/${glampId}`} className="glampingdetail-link">
             <div
               className="reserv-info-img"
               style={{
@@ -221,6 +247,8 @@ export const BookingDetailForm = ({
         onClose={() => {
           handleCloseBookCancelModdal();
         }}
+        onConfirm={handleBookingCancelSuccess} // 예약 취소 성공 시 모달 닫기
+        reservationId={booking.reservationId}
       />
     </FormContents>
   );

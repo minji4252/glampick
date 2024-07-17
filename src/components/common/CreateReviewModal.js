@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { MainButton } from "./Button";
-import { IoClose } from "react-icons/io5";
-import { FaStar, FaRegStar, FaCamera } from "react-icons/fa";
-import { colorSystem } from "../../styles/color";
 import styled from "@emotion/styled";
-import { getCookie } from "../../utils/cookie";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { FaCamera, FaRegStar, FaStar } from "react-icons/fa";
+import { FiMinusCircle } from "react-icons/fi";
+import { IoClose } from "react-icons/io5";
+import { colorSystem } from "../../styles/color";
+import { getCookie } from "../../utils/cookie";
+import { MainButton } from "./Button";
 
 const ReviewModalStyle = styled.div`
   position: fixed;
@@ -116,6 +117,7 @@ const ReviewModalContent = styled.div`
       }
 
       .upload-label {
+        position: relative;
         display: inline-block;
         padding: 10px 20px;
         width: 90px;
@@ -125,25 +127,32 @@ const ReviewModalContent = styled.div`
         background-color: ${colorSystem.white};
         color: ${colorSystem.g200};
         cursor: pointer;
-        &:hover {
-          color: ${colorSystem.p700};
-        }
       }
 
       .uploaded-images {
-        gap: 10px;
+        display: flex;
         align-items: center;
         justify-content: center;
         img {
-          width: 80px;
-          height: 80px;
-          border-radius: 10px;
+          width: 90px;
+          height: 90px;
+          border-radius: 20px;
           object-fit: cover;
         }
       }
       .camera-img {
         width: 80%;
         height: 80%;
+        &:hover {
+          color: ${colorSystem.p700};
+        }
+      }
+      .delete-image {
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: ${colorSystem.p400};
+        font-size: 0.9rem;
       }
     }
   }
@@ -163,6 +172,10 @@ const CreateReviewModal = ({
   const [reviewText, setReviewText] = useState("");
   const [images, setImages] = useState([]);
   const [accessToken, setAccessToken] = useState("");
+
+  // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
+  const maxImageCount = 3;
+  const [uploadedImageCount, setUploadedImageCount] = useState(images.length);
 
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
@@ -195,7 +208,7 @@ const CreateReviewModal = ({
   }, []);
 
   // 리뷰 작성 글자수 제한
-  const maxReviewLength = 1000;
+  const maxReviewLength = 500;
 
   // 별점
   const handleRating = rate => {
@@ -210,7 +223,21 @@ const CreateReviewModal = ({
   // 이미지 업로드
   const handleImageUpload = e => {
     const files = Array.from(e.target.files);
-    setImages(files);
+    // 이미지가 현재 배열에 있는 이미지 개수를 더해 3장 이하로 제한
+    if (images.length + files.length > maxImageCount) {
+      alert(`이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`);
+      return;
+    }
+    setImages([...images, ...files.slice(0, maxImageCount - images.length)]);
+    setUploadedImageCount(images.length + files.length);
+  };
+
+  // 이미지 삭제
+  const handleImageDelete = index => {
+    const updatedImages = [...images];
+    updatedImages.splice(index, 1);
+    setImages(updatedImages);
+    setUploadedImageCount(updatedImages.length);
   };
 
   // 폼 제출
@@ -283,6 +310,11 @@ const CreateReviewModal = ({
           <div className="image-upload">
             <label htmlFor="imageUpload" className="upload-label">
               <FaCamera className="camera-img" />
+              <div className="image-upload-info">
+                <span>
+                  {uploadedImageCount}/{maxImageCount}
+                </span>
+              </div>
             </label>
             <input
               type="file"
@@ -295,11 +327,16 @@ const CreateReviewModal = ({
             />
             <div className="uploaded-images">
               {images.map((image, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(image)}
-                  alt="uploaded"
-                />
+                <div key={index} className="uploaded-image">
+                  <img src={URL.createObjectURL(image)} alt="uploaded" />
+                  <button
+                    type="button"
+                    className="delete-image"
+                    onClick={() => handleImageDelete(index)}
+                  >
+                    <FiMinusCircle />
+                  </button>
+                </div>
               ))}
             </div>
           </div>

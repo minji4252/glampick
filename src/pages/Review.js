@@ -9,6 +9,7 @@ import reviewimg1 from "../images/review1.png";
 import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { colorSystem, size } from "../styles/color";
+import Loading from "../components/common/Loading";
 
 const WrapStyle = styled.div`
   .inner {
@@ -122,13 +123,16 @@ const Review = () => {
   const [showModal, setShowModal] = useState(false);
   const [reviewData, setReviewData] = useState([]);
   const [reviewImages, setReviewImages] = useState([]);
+  const [roomNames, setRoomNames] = useState([]);
+  const [allReviewImages, setAllReviewImages] = useState([]);
+  const [page, setPage] = useState(1); // 페이지 상태 추가
 
   // 전체리뷰 이미지 불러오기
   useEffect(() => {
     const getGlamping = async () => {
       try {
         const glampId = 1;
-        const page = 1;
+        // const page = 1;
         const response = await axios.get(
           `/api/glamping?glampId=${glampId}&page=${page}`,
         );
@@ -139,14 +143,13 @@ const Review = () => {
       }
     };
     getGlamping();
-  }, []);
+  }, [page]);
 
   // 전체 리뷰 불러오기
   useEffect(() => {
     const getGlampingReview = async () => {
       try {
         const glampId = 1;
-        const page = 1;
         const response = await axios.get(
           `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );
@@ -165,11 +168,15 @@ const Review = () => {
     };
 
     getGlampingReview();
-  }, []);
+  }, [page]);
 
   // 모달창 열고 닫기
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+  // 모달 내 더보기 클릭 핸들러
+  const handleMoreClick = () => {
+    setPage(prevPage => prevPage + 1); // 페이지 증가
   };
 
   return (
@@ -184,13 +191,13 @@ const Review = () => {
             <div className="total-rating">/5</div>
           </div>
           <div className="review-img">
-            {reviewImages.slice(0, 3).map((img, index) => (
+            {reviewImages.slice(0, 8).map((img, index) => (
               <div
                 key={index}
                 className={`review-img${index + 1}`}
                 style={{ backgroundImage: `url(${img})` }}
               >
-                {index === 2 && (
+                {index === reviewImages.slice(0, 8).length - 1 && (
                   <div className="more-overlay" onClick={toggleModal}>
                     더보기
                   </div>
@@ -204,6 +211,7 @@ const Review = () => {
             {reviewData.map((review, index) => (
               <ReviewCard
                 key={index}
+                userProfileImage={review.userProfileImage}
                 userNickName={review.userNickName}
                 glampName={review.roomNames}
                 roomName={review.roomName}
@@ -221,11 +229,14 @@ const Review = () => {
         <ReviewImgModal
           reviewImages={reviewImages}
           onClose={toggleModal}
-          onMoreClick={() => alert("더보기 버튼 클릭")}
+          onMoreClick={() => {
+            handleMoreClick();
+          }}
           // 더보기 버튼 클릭 핸들러 추가되어야 함
         />
       )}
       <ListPagination />
+      {/* <Loading /> */}
     </WrapStyle>
   );
 };
