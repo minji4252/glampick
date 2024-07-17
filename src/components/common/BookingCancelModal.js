@@ -62,7 +62,8 @@ const BookingCancelModal = ({
   comment,
 }) => {
   const [accessToken, setAccessToken] = useState("");
-
+  // 예약 취소 성공 여부 상태 추가
+  const [isSuccess, setIsSuccess] = useState(false);
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
     if (isOpen) {
@@ -115,6 +116,7 @@ const BookingCancelModal = ({
       );
       if (response.data.code === "SU") {
         console.log("예약취소 성공", response);
+        setIsSuccess(true); // 성공 상태 업데이트
         onConfirm();
       } else if (response.data.code === "NB") {
         console.log("존재하지 않는 예약내역입니다.");
@@ -124,6 +126,12 @@ const BookingCancelModal = ({
       console.log("예약취소 실패", error);
     }
   };
+  // 예약 취소 성공 시 모달 닫기
+  useEffect(() => {
+    if (isSuccess) {
+      onClose();
+    }
+  }, [isSuccess, onClose]);
 
   return isOpen ? (
     <ModalOverlay>

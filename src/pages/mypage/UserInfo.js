@@ -186,7 +186,6 @@ const UserInfo = () => {
   const [showButtons, setShowButtons] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [accessToken, setAccessToken] = useState("");
   const [userInfo, setUserInfo] = useState({
     userEmail: "",
     userName: "",
@@ -196,6 +195,11 @@ const UserInfo = () => {
   });
   // 프로필 이미지 상태 추가
   const [profileImage, setProfileImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const [updatedNickname, setUpdatedNickname] = useState("");
+  const [updatedPhone, setUpdatedPhone] = useState("");
+  const [accessToken, setAccessToken] = useState("");
   const navigate = useNavigate();
 
   // 토큰정보 불러오기
@@ -269,16 +273,22 @@ const UserInfo = () => {
     // 추가적인 로직 수행 (예: 사용자 정보 수정 등)
   };
 
-  // 프로필 이미지 변경 시
+  // 프로필 이미지 변경 시 미리보기 실행
   const handleImageChange = e => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result);
+        setProfileImage(file); // 실제 업로드할 이미지 설정
+        setPreviewImage(reader.result); // 미리보기 이미지 설정
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // 유저정보 수정하기 함수
+  const handleSubmit = async e => {
+    e.preventDefault();
   };
 
   // 회원탈퇴 함수
@@ -317,7 +327,15 @@ const UserInfo = () => {
           {/* 프로필 사진 등록 */}
           <div className="userprofile">
             {/* 파일 업로드 버튼 */}
-            <FaUser className="userprofile-img" />
+            {previewImage ? (
+              <img
+                src={previewImage}
+                alt="프로필 이미지 미리보기"
+                className="userprofile-img"
+              />
+            ) : (
+              <FaUser className="userprofile-img" />
+            )}
             {showButtons && (
               <div className="profile-edit">
                 <label htmlFor="profileImage" className="profile-label">
@@ -328,6 +346,7 @@ const UserInfo = () => {
                   id="profileImage"
                   className="profile-input"
                   accept="image/*"
+                  onChange={handleImageChange}
                 />
               </div>
             )}
@@ -410,8 +429,9 @@ const UserInfo = () => {
               <div className="modify-btn">
                 <MainButton
                   label="수정하기"
-                  onClick={() => {
+                  onClick={e => {
                     handleShowButtons();
+                    handleSubmit(e);
                   }}
                 />
               </div>
