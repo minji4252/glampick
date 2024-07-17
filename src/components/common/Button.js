@@ -15,6 +15,9 @@ const ButtonStyle = styled.button`
   border: 1px solid;
   background-color: ${props => props.bg};
   color: ${props => props.color};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     border: 1px solid ${props => props.hoverBorder};

@@ -5,10 +5,16 @@ import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa6";
+import { DeleteButton } from "./common/Button";
+import useModal from "../hooks/UseModal";
+import CheckModal from "./common/CheckModal";
+import AlertModal from "./common/AlertModal";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const MyReviewCard = styled.div`
   display: flex;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
 
   .myreview-card-right {
     max-width: 800px;
@@ -36,66 +42,28 @@ const MyReviewCard = styled.div`
 `;
 const UserSection = styled.div`
   .myreview-title {
+    max-width: 570px;
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
 
-    > span {
+    > div {
+      display: flex;
+      gap: 10px;
+    }
+
+    span {
       letter-spacing: 1.5px;
+    }
+
+    button {
+      height: 25px;
     }
   }
   .myreview-score {
     display: flex;
     gap: 3px;
     color: ${colorSystem.star};
-  }
-
-  .myreview-img {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-
-    > div {
-      max-width: 180px;
-      width: 100%;
-      height: 200px;
-      border-radius: 25px;
-      background-size: cover;
-    }
-    .myreview-img1 {
-      background: url(${reviewimg1}) no-repeat center;
-    }
-    .myreview-img2 {
-      background: url(${reviewimg2}) no-repeat center;
-    }
-    .myreview-img3 {
-      background: url(${reviewimg3}) no-repeat center;
-    }
-
-    @media all and (min-width: 768px) and (max-width: 850px) {
-      .myreview-img2,
-      .myreview-img3 {
-        display: none;
-      }
-
-      .myreview-img1 {
-        width: 100%;
-        max-width: 370px;
-        background-size: cover;
-      }
-    }
-
-    @media all and (max-width: 540px) {
-      .myreview-img2,
-      .myreview-img3 {
-        display: none;
-      }
-
-      .myreview-img1 {
-        width: 100%;
-        max-width: 370px;
-        background-size: cover;
-      }
-    }
   }
 
   .myreview-content {
@@ -131,9 +99,59 @@ const UserSection = styled.div`
     }
   }
 `;
+
+const MyReviewImage = styled.div`
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+
+  > div {
+    max-width: 180px;
+    width: 100%;
+    height: 200px;
+    border-radius: 25px;
+    background-size: cover;
+  }
+  .myreview-img1 {
+    background: url(${reviewimg1}) no-repeat center;
+  }
+  .myreview-img2 {
+    background: url(${reviewimg2}) no-repeat center;
+  }
+  .myreview-img3 {
+    background: url(${reviewimg3}) no-repeat center;
+  }
+
+  @media all and (min-width: 768px) and (max-width: 850px) {
+    .myreview-img2,
+    .myreview-img3 {
+      display: none;
+    }
+
+    .myreview-img1 {
+      width: 100%;
+      max-width: 370px;
+      background-size: cover;
+    }
+  }
+
+  @media all and (max-width: 540px) {
+    .myreview-img2,
+    .myreview-img3 {
+      display: none;
+    }
+
+    .myreview-img1 {
+      width: 100%;
+      max-width: 370px;
+      background-size: cover;
+    }
+  }
+`;
+
 const OwnerSection = styled.div`
   width: 100%;
-  margin-top: 40px;
+  margin-top: 20px;
   background-color: ${colorSystem.beige};
   padding: 25px;
   border-radius: 20px;
@@ -166,7 +184,15 @@ const OwnerSection = styled.div`
   }
 `;
 
+const UnderLine = styled.div`
+  width: 95%;
+  height: 1px;
+  border-bottom: 1px solid ${colorSystem.g200};
+  margin-bottom: 40px;
+`;
+
 const ReviewCard = ({
+  reviewId,
   userNickName,
   glampName,
   roomName,
@@ -175,7 +201,21 @@ const ReviewCard = ({
   ownerReviewContent,
   starPoint,
   reviewImages,
+  userProfileImage,
 }) => {
+  const { isModalOpen, modalMessage, CheckAction, openModal, closeModal } =
+    useModal();
+  const [accessToken, setAccessToken] = useState("");
+
+  console.log("dyq", starPoint, reviewImages);
+
+  const {
+    isModalOpen: isAlertOpen,
+    modalMessage: alertMessage,
+    openModal: openAlert,
+    closeModal: closeAlert,
+  } = useModal();
+
   //2024-00-00 형식으로 변경
   const date = new Date(createdAt);
   const formattedDate = date.toISOString().split("T")[0];
@@ -195,42 +235,133 @@ const ReviewCard = ({
     return stars;
   };
 
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const accessTokenFromCookie = getCookie("access-Token");
+        if (accessTokenFromCookie) {
+          setAccessToken(accessTokenFromCookie);
+        } else {
+          console.log("쿠키에 access-Token 없음");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchAccessToken();
+  }, []);
+
+  const handleDelete = async () => {
+    if (!accessToken) return;
+    axios.defaults.withCredentials = true;
+
+    openModal({
+      message: "정말 삭제하시겠습니까?",
+      onCheck: async () => {
+        try {
+          console.log("릴리", `/api/user/delete?reviewId=${reviewId}`);
+          const response = await axios.delete(
+            `/api/user/delete?reviewId=${reviewId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            },
+          );
+          console.log(response);
+          closeModal();
+          openAlert("삭제가 완료되었습니다.");
+        } catch (error) {
+          closeModal();
+          openAlert("삭제 중 오류가 발생했습니다.");
+        }
+      },
+    });
+  };
+
   return (
-    <MyReviewCard>
-      <div className="myreview-card-left">
-        <div></div>
-        <span>{userNickName}</span>
-      </div>
-      <div className="myreview-card-right">
-        <UserSection>
-          <div className="myreview-title">
-            <div className="myreview-score">{renderStars(starPoint)}</div>
-            <span>{formattedDate}</span>
-          </div>
-          <div className="myreview-img">
-            <div className="myreview-img1"></div>
-            <div className="myreview-img2"></div>
-            <div className="myreview-img3"></div>
-          </div>
-          <div className="myreview-content">
-            <div>
-              <span>{glampName}</span>
-              <span>{roomName}</span>
+    <>
+      <MyReviewCard>
+        <div className="myreview-card-left">
+          <div
+            className="user-profile-img"
+            style={{
+              backgroundImage: `url(${userProfileImage})`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+            }}
+          />
+          <span>
+            {userNickName}
+            {/* {reviewImages} */}
+          </span>
+        </div>
+        <div className="myreview-card-right">
+          <UserSection>
+            <div className="myreview-title">
+              <div>
+                <div className="myreview-score">{renderStars(starPoint)}</div>
+                <span>{formattedDate}</span>
+              </div>
+              <DeleteButton label="삭제" onClick={handleDelete} />
             </div>
-            <p>{userReviewContent}</p>
-          </div>
-        </UserSection>
-        <OwnerSection>
-          <div className="owner-title">
-            <h4>숙소 답변</h4>
-          </div>
-          <div className="owner-content">
-            <p>{ownerReviewContent}</p>
-          </div>
-        </OwnerSection>
-      </div>
-    </MyReviewCard>
+            <MyReviewImage>
+              {reviewImages.map((image, index) => (
+                <div
+                  key={index}
+                  style={{
+                    backgroundImage: `url(${image})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                  }}
+                />
+              ))}
+            </MyReviewImage>
+            <div className="myreview-content">
+              <div>
+                <span>{glampName}</span>
+                <span>|</span>
+                <span>{roomName}</span>
+              </div>
+              <p>{userReviewContent}</p>
+            </div>
+          </UserSection>
+          {ownerReviewContent?.length > 0 && (
+            <OwnerSection>
+              <div className="owner-title">
+                <h4>숙소 답변</h4>
+              </div>
+              <div className="owner-content">
+                <p>{ownerReviewContent}</p>
+              </div>
+            </OwnerSection>
+          )}
+        </div>
+
+        <CheckModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={CheckAction}
+          message={modalMessage}
+        />
+        <AlertModal
+          isOpen={isAlertOpen}
+          onClose={closeAlert}
+          message={alertMessage}
+        />
+      </MyReviewCard>
+      <UnderLine />
+    </>
   );
 };
 
 export default ReviewCard;
+
+// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
+function getCookie(name) {
+  const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
+  return cookieValue ? cookieValue.pop() : "";
+}
