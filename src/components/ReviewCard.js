@@ -10,6 +10,11 @@ const MyReviewCard = styled.div`
   display: flex;
   margin-bottom: 60px;
 
+  .myreview-card-right {
+    max-width: 800px;
+    width: 100%;
+  }
+
   .myreview-card-left {
     display: flex;
     flex-direction: column;
@@ -127,6 +132,7 @@ const UserSection = styled.div`
   }
 `;
 const OwnerSection = styled.div`
+  width: 100%;
   margin-top: 40px;
   background-color: ${colorSystem.beige};
   padding: 25px;
