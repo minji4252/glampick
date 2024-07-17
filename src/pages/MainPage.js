@@ -36,7 +36,7 @@ const MainPage = ({ isLogin }) => {
   const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
-  const [searchQuery, setSearchQuery] = useState(""); // 검색어
+  const [selectedWord, setSelectedWord] = useState(""); // 검색어
   const navigate = useNavigate();
 
   // 로그아웃
@@ -58,6 +58,7 @@ const MainPage = ({ isLogin }) => {
       inDate: formatDate(selectedDate[0]),
       outDate: formatDate(selectedDate[1]),
       people: selectedMember,
+      searchWord: selectedWord,
     });
 
     const url = `/search?${queryParams.toString()}`;
@@ -250,8 +251,8 @@ const MainPage = ({ isLogin }) => {
                     className="input"
                     placeholder="여행지나 숙소 검색"
                     type="text"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
+                    value={selectedWord}
+                    onChange={e => setSelectedWord(e.target.value)}
                   />
                 </div>
               </li>

@@ -11,6 +11,9 @@ const SearchCard = ({
   starPoint,
   reviewCount,
   price,
+  inDate,
+  outDate,
+  people,
 }) => {
   // 가격, 리뷰 단위 수정
   const formattedPrice = Number(price).toLocaleString("ko-KR");
@@ -52,8 +55,11 @@ const SearchCard = ({
         </div>
         <div className="sc-bottom">
           <div className="sc-price">{formattedPrice} 원 ~</div>
-          <Link to="/glampingdetail">
-            <MainButton onClick={handleButtonClick} label="예약하기" />{" "}
+          {/* <Link to="/glampingdetail"> */}
+          <Link
+            to={`/glampingdetail/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
+          >
+            <MainButton onClick={handleButtonClick} label="예약하기" />
           </Link>
         </div>
       </div>
