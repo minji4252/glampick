@@ -184,6 +184,7 @@ const MyReview = () => {
             reviews.map((review, index) => (
               <ReviewCard
                 key={index}
+                reviewId={review.reviewId}
                 userNickName={review.userNickName}
                 glampName={review.glampName}
                 roomName={review.roomName}
@@ -192,6 +193,7 @@ const MyReview = () => {
                 ownerReviewContent={review.ownerReviewContent}
                 starPoint={review.starPoint}
                 reviewImages={review.reviewImages}
+                userProfileImage={review.userProfileImage}
               />
             ))
           ) : (

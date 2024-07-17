@@ -61,15 +61,23 @@ const GlampingDetail = ({ isLogin }) => {
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useState("");
 
-  // const { glampId } = useParams();
+  // 기본값 설정 함수
+  const getDefaultDate = daysToAdd => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysToAdd);
+    return date.toISOString().split("T")[0];
+  };
+
+  // 객실 목록 처음 보여질때는 0, 모두보기 버튼 누르면 1
+  const statusId = 0;
+  const { glampId } = useParams();
   const [searchParams] = useSearchParams();
-  const inDate = searchParams.get("inDate");
-  const outDate = searchParams.get("outDate");
+  // 날짜 값 설정, 값이 없으면 기본값 사용
+  const inDate = searchParams.get("inDate") || getDefaultDate(0);
+  const outDate = searchParams.get("outDate") || getDefaultDate(1);
   const people = searchParams.get("people");
 
-  // 임시데이터(삭제예정)
-  // const glamp_Id = 1;
-  const statusId = 0;
+  console.log("ㅇㅇㅇ", glampId, inDate, outDate, people);
 
   const roomSelectRef = useRef(null);
   const navigate = useNavigate();
@@ -84,8 +92,10 @@ const GlampingDetail = ({ isLogin }) => {
           outDate,
           statusId,
         );
+        console.log("1번", data);
         setGlampingData(data);
         setInitialRoomItems(data.roomItems.slice(0, 5));
+        console.log("2번", `${data.glampImage}`);
         setRoomMainImage(`${data.glampImage}`);
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
         setRoomImages(roomImageUrls);
@@ -251,7 +261,7 @@ const GlampingDetail = ({ isLogin }) => {
   if (!glampingData) return null;
 
   const {
-    glampId,
+    // glampId,
     glampName,
     starPointAvg,
     glampLocation,

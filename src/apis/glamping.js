@@ -13,6 +13,7 @@ export const fetchGlampingData = async (
     const response = await axios.get(
       `api/glamping/info?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
     );
+
     return response.data;
   } catch (error) {
     console.log(error);

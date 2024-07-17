@@ -66,7 +66,7 @@ function App() {
         {/* 검색 결과 */}
         <Route path="/search" element={<SearchPage />} />
         <Route
-          path="/glampingdetail"
+          path="/:glampId"
           element={<GlampingDetail isLogin={isLogin} />}
         ></Route>
         <Route path="/roomdetail" element={<RoomDetail />}></Route>
