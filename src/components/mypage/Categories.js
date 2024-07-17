@@ -2,6 +2,9 @@ import styled from "@emotion/styled";
 import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { colorSystem } from "../../styles/color";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { getCookie } from "../../utils/cookie";
 
 const CategoriesStyle = styled.div`
   position: fixed;
@@ -78,11 +81,58 @@ const categories = [
 ];
 
 const Categories = () => {
+  const [accessToken, setAccessToken] = useState("");
+  const [userInfo, setUserInfo] = useState({
+    userEmail: "",
+    userName: "",
+  });
+
+  // 토큰정보 불러오기
+  useEffect(() => {
+    const fetchAccessToken = () => {
+      try {
+        const token = getCookie("access-Token");
+        if (token) {
+          setAccessToken(token);
+        } else {
+          console.log("엑세스 토큰 없음");
+        }
+      } catch (error) {
+        console.log("엑세스 토큰 가져오는 중 에러", error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
+
+  // 유저 정보 불러오기
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        if (!accessToken) return;
+        const response = await axios.get(`/api/user`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log(response);
+        setUserInfo({
+          userEmail: response.data.userEmail,
+          userName: response.data.userName,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, [accessToken]);
+
+  const userPreEmail = userInfo.userEmail.split("@")[0];
+
   return (
     <CategoriesStyle>
       <div>
-        <h1>홍길동</h1>
-        <h2>@hong96</h2>
+        <h1>{userInfo.userName}</h1>
+        <h2>@{userPreEmail}</h2>
       </div>
 
       <UnderLine />

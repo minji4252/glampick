@@ -4,7 +4,12 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { FaRegCalendar } from "react-icons/fa6";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import AlertModal from "../components/common/AlertModal";
 import { ActionButton, MainButton } from "../components/common/Button";
 import GlampingDetailStyle, {
@@ -56,11 +61,15 @@ const GlampingDetail = ({ isLogin }) => {
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useState("");
 
+  // const { glampId } = useParams();
+  const [searchParams] = useSearchParams();
+  const inDate = searchParams.get("inDate");
+  const outDate = searchParams.get("outDate");
+  const people = searchParams.get("people");
+
   // 임시데이터(삭제예정)
-  const glamp_Id = 1;
+  // const glamp_Id = 1;
   const statusId = 0;
-  const startDate = "2024-07-16";
-  const endDate = "2024-07-29";
 
   const roomSelectRef = useRef(null);
   const navigate = useNavigate();
@@ -70,9 +79,9 @@ const GlampingDetail = ({ isLogin }) => {
     const fetchData = async () => {
       try {
         const data = await fetchGlampingData(
-          glamp_Id,
-          startDate,
-          endDate,
+          glampId,
+          inDate,
+          outDate,
           statusId,
         );
         setGlampingData(data);
@@ -149,7 +158,7 @@ const GlampingDetail = ({ isLogin }) => {
 
     try {
       // 3. 모두보기 클릭시 객실 정보 더 불러오기
-      const data = await fetchMoreRooms(glampId, startDate, endDate, statusId);
+      const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
       setGlampingData(prevData => ({
         ...prevData,
         roomItems: [...prevData.roomItems, ...data.roomItems],
