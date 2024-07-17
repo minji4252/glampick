@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MainButton } from "./Button";
 import { IoClose } from "react-icons/io5";
 import { FaStar, FaRegStar, FaCamera } from "react-icons/fa";
 import { colorSystem } from "../../styles/color";
 import styled from "@emotion/styled";
+import { getCookie } from "../../utils/cookie";
+import axios from "axios";
 
 const ReviewModalStyle = styled.div`
   position: fixed;
@@ -40,12 +42,37 @@ const ReviewModalContent = styled.div`
     }
   }
 
+  // 숙소 정보
   .glamping-info {
     display: flex;
+    margin-bottom: 5px;
+  }
+  .room-info {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: ${colorSystem.g700};
+    margin-right: 7px;
+  }
+  .room-info-content {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: ${colorSystem.g900};
   }
 
+  // 이용 정보
   .use-info {
     display: flex;
+  }
+  .user-info {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: ${colorSystem.g700};
+    margin-right: 7px;
+  }
+  .user-info-content {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: ${colorSystem.g900};
   }
 
   .review-form {
@@ -82,15 +109,14 @@ const ReviewModalContent = styled.div`
 
     .image-upload {
       display: flex;
-      flex-direction: column;
       gap: 10px;
+      align-items: center;
       input {
         display: none;
       }
 
       .upload-label {
         display: inline-block;
-
         padding: 10px 20px;
         width: 90px;
         height: 90px;
@@ -123,28 +149,93 @@ const ReviewModalContent = styled.div`
   }
 `;
 
-const CreateReviewModal = ({ isOpen, onClose }) => {
+const CreateReviewModal = ({
+  isOpen,
+  onClose,
+  reservationId,
+  reviewStarPoint,
+  glampName,
+  roomName,
+  checkInDate,
+  checkOutDate,
+}) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [images, setImages] = useState([]);
+  const [accessToken, setAccessToken] = useState("");
+
+  // 모달창 오픈시 스크롤 금지 컨트롤
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      // 모달이 닫힐 때 body의 overflow 스타일을 원래대로 되돌림
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
+
+  // 토큰 정보 불러오기
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const accessTokenFromCookie = getCookie("access-Token");
+        if (accessTokenFromCookie) {
+          setAccessToken(accessTokenFromCookie);
+        } else {
+          console.log("쿠키에 access-Token 없음");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
+
   // 리뷰 작성 글자수 제한
   const maxReviewLength = 1000;
 
+  // 별점
   const handleRating = rate => {
     setRating(rate);
   };
 
+  // 후기 내용
   const handleReviewTextChange = e => {
     setReviewText(e.target.value);
   };
 
+  // 이미지 업로드
   const handleImageUpload = e => {
     const files = Array.from(e.target.files);
     setImages(files);
   };
 
-  const handleSubmit = () => {
+  // 폼 제출
+  const handleSubmit = async e => {
     // submit logic here
+    e.preventDefault();
+    if (!accessToken) return;
+    try {
+      const response = await axios.post(
+        `/api/user/review`,
+        {
+          reservationId: reservationId,
+          reviewContent: "string",
+          reviewStarPoint: reviewStarPoint,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
     console.log({ rating, reviewText, images });
     onClose();
   };
@@ -160,14 +251,17 @@ const CreateReviewModal = ({ isOpen, onClose }) => {
         <h2>후기 작성하기</h2>
         <div className="glamping-info">
           <div className="room-info">숙소정보</div>
-          <div className="romm-info-content">별별 글램핑(A룸 202호) </div>
+          <div className="room-info-content">
+            {glampName} ({roomName})
+          </div>
         </div>
         <div className="use-info">
-          <div>이용정보</div>
-          <div>2024.06-28-2024.06.29</div>
+          <div className="user-info">이용정보</div>
+          <div className="user-info-content">
+            {checkInDate} ~ {checkOutDate}
+          </div>
         </div>
-
-        <form className="review-form">
+        <form className="review-form" onSubmit={handleSubmit}>
           <div className="rating">
             {[1, 2, 3, 4, 5].map(rate => (
               <span key={rate} onClick={() => handleRating(rate)}>
@@ -209,12 +303,7 @@ const CreateReviewModal = ({ isOpen, onClose }) => {
               ))}
             </div>
           </div>
-          <MainButton
-            label="등록하기"
-            onClick={() => {
-              handleSubmit();
-            }}
-          />
+          <MainButton label="등록하기" onClick={handleSubmit} />
         </form>
       </ReviewModalContent>
     </ReviewModalStyle>

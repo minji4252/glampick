@@ -6,6 +6,7 @@ import { colorSystem } from "../styles/color";
 import { MainButton } from "./common/Button";
 import CreateReviewModal from "./common/CreateReviewModal";
 import BookingCancelModal from "./common/BookingCancelModal";
+
 export const FormContents = styled.div`
   width: 100%;
   height: 278px;
@@ -208,6 +209,12 @@ export const BookingDetailForm = ({
         onClose={() => {
           handleCloseCreateReviewModal();
         }}
+        reservationId={booking.reservationId}
+        reviewStarPoint={5} // 적절한 별점 초기 값 설정
+        glampName={booking.glampName}
+        roomName={booking.roomName}
+        checkInDate={booking.checkInDate}
+        checkOutDate={booking.checkOutDate}
       />
       <BookingCancelModal
         isOpen={isCancelModalOpen}
