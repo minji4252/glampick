@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { postSignIn } from "../../apis/userapi";
 import { MainButton } from "../../components/common/Button";
 import KakaoIcon from "../../images/btn_kakao.svg";
@@ -217,6 +217,7 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // 로그인시 처리할 함수
   const handleLogin = async e => {
@@ -234,10 +235,13 @@ const LoginPage = () => {
       console.log(result);
       // 로그인 성공 시 쿠키에 사용자 정보 저장
       setCookie("access-Token", result.accessToken);
-
       openModal({ message: "로그인 성공하였습니다!" });
       setTimeout(() => {
-        navigate(-1);
+        if (location.state && location.state.fromSignup) {
+          navigate("/");
+        } else {
+          navigate(-1);
+        }
       }, 1000); // 1초 후에 페이지 이동
     } else {
       console.log("로그인 실패");

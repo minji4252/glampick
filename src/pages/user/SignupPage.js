@@ -396,7 +396,7 @@ const SignupPage = () => {
         message: "회원가입에 성공하였습니다! 로그인 후 이용해주세요",
       });
       setTimeout(() => {
-        navigate("/login");
+        navigate("/login", { state: { fromSignup: true } });
       }, 1000); // 1초 후에 페이지 이동
     } else if (result.data.code === "DN") {
       openModal({

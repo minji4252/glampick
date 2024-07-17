@@ -194,6 +194,8 @@ const UserInfo = () => {
     userPw: "",
     userPhone: "",
   });
+  // 프로필 이미지 상태 추가
+  const [profileImage, setProfileImage] = useState(null);
   const navigate = useNavigate();
 
   // 토큰정보 불러오기
@@ -231,6 +233,8 @@ const UserInfo = () => {
           userPw: "●●●●●●●",
           userPhone: response.data.userPhone,
         });
+        // 기본 프로필 이미지 설정 (서버응답에 따라 달라질 수 있음)
+        setProfileImage(response.data.profileImageUrl);
       } catch (error) {
         console.log(error);
       }
@@ -238,9 +242,9 @@ const UserInfo = () => {
     getUser();
   }, [accessToken]);
 
-  // useEffect(() => {
-  //   setIsModalOpen(true);
-  // }, []);
+  useEffect(() => {
+    setIsModalOpen(true);
+  }, []);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -263,6 +267,18 @@ const UserInfo = () => {
     console.log("비밀번호 확인 성공");
     setIsModalOpen(false);
     // 추가적인 로직 수행 (예: 사용자 정보 수정 등)
+  };
+
+  // 프로필 이미지 변경 시
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // 회원탈퇴 함수

@@ -4,8 +4,9 @@ import { FaArrowLeft } from "react-icons/fa6";
 import { SlLock } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 import { postPasswordCheck } from "../../apis/userapi";
-import { colorSystem } from "../../styles/color";
+import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "./Button";
+import axios from "axios";
 
 const ModalWrapper = styled.div`
   // display: ${props => (props.showModal ? "flex" : "none")};
@@ -83,6 +84,16 @@ const ModalContent = styled.div`
   }
   > form {
     width: 100%;
+
+    .error-message {
+      display: block;
+      margin-left: 3px;
+      color: ${colorSystem.error};
+      font-size: 0.8rem;
+      ${size.mid} {
+        font-size: 0.7rem;
+      }
+    }
   }
 
   input {
@@ -108,9 +119,11 @@ const ModalContent = styled.div`
 
 const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   const [password, setPassword] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // 모달창 오픈시 스크롤 금지 컨드롤
+  // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
     const handleBodyScroll = () => {
       if (isOpen) {
@@ -133,18 +146,59 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   };
 
   const handlePasswordChange = e => {
-    console.log(e);
+    console.log(e.target.value); // 입력된 비밀번호 출력
     setPassword(e.target.value);
+    setErrorMessage("");
   };
 
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      try {
+        const accessTokenFromCookie = getCookie("access-Token");
+        if (accessTokenFromCookie) {
+          setAccessToken(accessTokenFromCookie);
+        } else {
+          console.log("쿠키에 access-Token 없음");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchAccessToken();
+  }, []);
+
   // 비밀번호 확인 함수
-  const handlePasswordCheck = async () => {
-    const response = await postPasswordCheck({ userPw: password });
-    if (response.data === "SU") {
-      console.log("비밀번호 확인 성공");
-      onSuccess();
-    } else {
-      console.log("비밀번호 확인 실패");
+  const handlePasswordCheck = async e => {
+    e.preventDefault();
+    if (!accessToken) return;
+    axios.defaults.withCredentials = true;
+
+    try {
+      const response = await axios.post(
+        `/api/user/password-check`,
+        {
+          userPw: password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      console.log(response);
+      if (response.data.code === "SU") {
+        console.log("비밀번호 확인 성공");
+        onSuccess();
+      } else if (response.data.code === "NMP") {
+        setErrorMessage("비밀번호가 일치하지 않습니다.");
+        console.log("비밀번호가 일치하지 않습니다.");
+      } else {
+        console.log("비밀번호 확인 실패");
+      }
+      return response;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -163,7 +217,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
           개인정보 보호를 위해 <br />
           비밀번호를 다시 한번 확인해주세요.
         </div>
-        <form>
+        <form onSubmit={handlePasswordCheck}>
           {/* <label htmlFor="password">비밀번호</label> */}
           <input
             type="password"
@@ -171,18 +225,11 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
             required
             value={password}
             placeholder="비밀번호를 입력해주세요"
-            onChange={() => {
-              handlePasswordChange();
-            }}
+            onChange={handlePasswordChange}
           />
+          <p className="error-message">{errorMessage}</p>
           <div className="modal-btn">
-            <MainButton
-              type="submit"
-              label="확인"
-              onClick={() => {
-                handlePasswordCheck();
-              }}
-            />
+            <MainButton type="submit" label="확인" />
           </div>
         </form>
       </ModalContent>
@@ -191,3 +238,9 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
 };
 
 export default PasswordCheckModal;
+
+// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
+function getCookie(name) {
+  const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
+  return cookieValue ? cookieValue.pop() : "";
+}
