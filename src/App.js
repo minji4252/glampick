@@ -4,6 +4,7 @@ import {
   Routes,
   useLocation,
   useNavigate,
+  useParams,
 } from "react-router-dom";
 import "../src/styles/color";
 import "../src/styles/common.css";
@@ -33,6 +34,15 @@ function App() {
   const [isLogin, setIsLogin] = useState(false);
   const locationNow = useLocation();
   const navigate = useNavigate();
+
+  // 숫자가 아닌 경우 NotfoundPage를 렌더링하는 컴포넌트
+  const GlampingDetailWrapper = ({ isLogin }) => {
+    const { glampId } = useParams();
+    if (!/^\d+$/.test(glampId)) {
+      return <NotfoundPage />;
+    }
+    return <GlampingDetail isLogin={isLogin} />;
+  };
 
   // 페이지 이동할 때마다 로그인 화긴
   useEffect(() => {
@@ -67,8 +77,8 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route
           path="/:glampId"
-          element={<GlampingDetail isLogin={isLogin} />}
-        ></Route>
+          element={<GlampingDetailWrapper isLogin={isLogin} />}
+        />
         <Route path="/roomdetail" element={<RoomDetail />}></Route>
         <Route path="/review" element={<Review />}></Route>
 

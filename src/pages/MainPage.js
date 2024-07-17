@@ -33,7 +33,7 @@ const MainPage = ({ isLogin }) => {
   const [popularData, setPopularData] = useState([]);
   const [petData, setPetData] = useState([]);
   const [mountainData, setMountainData] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState("seoul"); // 선택 지역
+  const [selectedPlace, setSelectedPlace] = useState("all"); // 선택 지역
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
   const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
   const [selectedWord, setSelectedWord] = useState(""); // 검색어
@@ -139,6 +139,7 @@ const MainPage = ({ isLogin }) => {
   // "맨 위로" 버튼
   const MoveToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    console.log("누름?");
   };
 
   return (
@@ -206,9 +207,7 @@ const MainPage = ({ isLogin }) => {
                     console.log("선택한 지역:", e.target.value);
                   }}
                 >
-                  <option value="all" selected>
-                    전국
-                  </option>
+                  <option value="all">전국</option>
                   <option value="seoul">서울/경기</option>
                   <option value="gangwon">강원</option>
                   <option value="chungbuk">충북</option>
@@ -232,7 +231,6 @@ const MainPage = ({ isLogin }) => {
                   type="number"
                   min="2"
                   max="6"
-                  defaultValue={2}
                   id="memberinput"
                   value={selectedMember}
                   onChange={e => {
@@ -280,6 +278,7 @@ const MainPage = ({ isLogin }) => {
                     starPoint={item.starPoint}
                     reviewCount={item.reviewCount}
                     price={item.price}
+                    glampingImg={item.glampingImg}
                   />
                 ))}
               </>
@@ -300,6 +299,7 @@ const MainPage = ({ isLogin }) => {
                     starPoint={item.starPoint}
                     reviewCount={item.reviewCount}
                     price={item.price}
+                    glampingImg={item.glampingImg}
                   />
                 ))}
               </>
@@ -320,6 +320,7 @@ const MainPage = ({ isLogin }) => {
                     starPoint={item.starPoint}
                     reviewCount={item.reviewCount}
                     price={item.price}
+                    glampingImg={item.glampingImg}
                   />
                 ))}
               </>

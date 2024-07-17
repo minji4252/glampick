@@ -114,7 +114,7 @@ const Categories = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(response);
+        // console.log(response);
         setUserInfo({
           userEmail: response.data.userEmail,
           userName: response.data.userName,
