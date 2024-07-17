@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { colorSystem } from "../../styles/color";
 import { getCookie } from "../../utils/cookie";
 import { MainButton } from "./Button";
+import { ModalWrapper } from "./PasswordCheckModal";
 
 const ReviewModalStyle = styled.div`
   position: fixed;
@@ -245,23 +246,33 @@ const CreateReviewModal = ({
     // submit logic here
     e.preventDefault();
     if (!accessToken) return;
+
+    // FormData 객체를 사용하여 multipart/form-data 요청 생성
+    const formData = new FormData();
+
+    // dto 필드를 JSON 문자열로 추가
+    const dto = JSON.stringify({
+      reservationId: reservationId,
+      reviewContent: reviewText,
+      reviewStarPoint: reviewStarPoint,
+    });
+    formData.append("dto", dto);
+
+    // 이미지 파일 추가
+    images.forEach(image => {
+      formData.append("mf", image);
+    });
+
     try {
-      const response = await axios.post(
-        `/api/user/review`,
-        {
-          reservationId: reservationId,
-          reviewContent: "string",
-          reviewStarPoint: reviewStarPoint,
+      const response = await axios.post(`/api/user/review`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      });
       console.log(response);
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
     }
     console.log({ rating, reviewText, images });
     onClose();
@@ -270,80 +281,82 @@ const CreateReviewModal = ({
   if (!isOpen) return null;
 
   return (
-    <ReviewModalStyle>
-      <ReviewModalContent>
-        <button className="close-btn" onClick={onClose}>
-          <IoClose />
-        </button>
-        <h2>후기 작성하기</h2>
-        <div className="glamping-info">
-          <div className="room-info">숙소정보</div>
-          <div className="room-info-content">
-            {glampName} ({roomName})
-          </div>
-        </div>
-        <div className="use-info">
-          <div className="user-info">이용정보</div>
-          <div className="user-info-content">
-            {checkInDate} ~ {checkOutDate}
-          </div>
-        </div>
-        <form className="review-form" onSubmit={handleSubmit}>
-          <div className="rating">
-            {[1, 2, 3, 4, 5].map(rate => (
-              <span key={rate} onClick={() => handleRating(rate)}>
-                {rate <= rating ? <FaStar /> : <FaRegStar />}
-              </span>
-            ))}
-          </div>
-          <textarea
-            value={reviewText}
-            onChange={e => {
-              handleReviewTextChange(e);
-            }}
-            placeholder="숙소에 대한 솔직한 리뷰를 남겨주세요."
-            maxLength={maxReviewLength}
-          />
-          <div className="char-count">
-            {reviewText.length}/{maxReviewLength}
-          </div>
-          <div className="image-upload">
-            <label htmlFor="imageUpload" className="upload-label">
-              <FaCamera className="camera-img" />
-              <div className="image-upload-info">
-                <span>
-                  {uploadedImageCount}/{maxImageCount}
-                </span>
-              </div>
-            </label>
-            <input
-              type="file"
-              id="imageUpload"
-              accept="image/*"
-              multiple
-              onChange={e => {
-                handleImageUpload(e);
-              }}
-            />
-            <div className="uploaded-images">
-              {images.map((image, index) => (
-                <div key={index} className="uploaded-image">
-                  <img src={URL.createObjectURL(image)} alt="uploaded" />
-                  <button
-                    type="button"
-                    className="delete-image"
-                    onClick={() => handleImageDelete(index)}
-                  >
-                    <FiMinusCircle />
-                  </button>
-                </div>
-              ))}
+    <ModalWrapper>
+      <ReviewModalStyle>
+        <ReviewModalContent>
+          <button className="close-btn" onClick={onClose}>
+            <IoClose />
+          </button>
+          <h2>후기 작성하기</h2>
+          <div className="glamping-info">
+            <div className="room-info">숙소정보</div>
+            <div className="room-info-content">
+              {glampName} ({roomName})
             </div>
           </div>
-          <MainButton label="등록하기" onClick={handleSubmit} />
-        </form>
-      </ReviewModalContent>
-    </ReviewModalStyle>
+          <div className="use-info">
+            <div className="user-info">이용정보</div>
+            <div className="user-info-content">
+              {checkInDate} ~ {checkOutDate}
+            </div>
+          </div>
+          <form className="review-form" onSubmit={handleSubmit}>
+            <div className="rating">
+              {[1, 2, 3, 4, 5].map(rate => (
+                <span key={rate} onClick={() => handleRating(rate)}>
+                  {rate <= rating ? <FaStar /> : <FaRegStar />}
+                </span>
+              ))}
+            </div>
+            <textarea
+              value={reviewText}
+              onChange={e => {
+                handleReviewTextChange(e);
+              }}
+              placeholder="숙소에 대한 솔직한 리뷰를 남겨주세요."
+              maxLength={maxReviewLength}
+            />
+            <div className="char-count">
+              {reviewText.length}/{maxReviewLength}
+            </div>
+            <div className="image-upload">
+              <label htmlFor="imageUpload" className="upload-label">
+                <FaCamera className="camera-img" />
+                <div className="image-upload-info">
+                  <span>
+                    {uploadedImageCount}/{maxImageCount}
+                  </span>
+                </div>
+              </label>
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                multiple
+                onChange={e => {
+                  handleImageUpload(e);
+                }}
+              />
+              <div className="uploaded-images">
+                {images.map((image, index) => (
+                  <div key={index} className="uploaded-image">
+                    <img src={URL.createObjectURL(image)} alt="uploaded" />
+                    <button
+                      type="button"
+                      className="delete-image"
+                      onClick={() => handleImageDelete(index)}
+                    >
+                      <FiMinusCircle />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <MainButton label="등록하기" onClick={handleSubmit} />
+          </form>
+        </ReviewModalContent>
+      </ReviewModalStyle>
+    </ModalWrapper>
   );
 };
 

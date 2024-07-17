@@ -305,7 +305,7 @@ const GlampingDetail = ({ isLogin }) => {
               <FaStar />
               <div className="review-score">{formattedStarPoint}</div>
               <div className="review-evaluat">{countReviewUsers}명 평가</div>
-              <Link to="/review">
+              <Link to="/review" state={formattedStarPoint}>
                 <button>리뷰보기</button>
               </Link>
             </ReviewTitle>

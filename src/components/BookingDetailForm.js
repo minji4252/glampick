@@ -7,6 +7,7 @@ import { MainButton } from "./common/Button";
 import CreateReviewModal from "./common/CreateReviewModal";
 import BookingCancelModal from "./common/BookingCancelModal";
 import moment from "moment";
+import "moment/locale/ko";
 
 export const FormContents = styled.div`
   width: 100%;
@@ -120,47 +121,40 @@ export const BookingDetailForm = ({
   upcoming,
   isCompleted,
   isCancelled,
+  glampId,
 }) => {
+  console.log(glampId);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
-
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
   }, []);
-
   // 한국어 locale 설정
   moment.locale("ko");
-
   // 예약 생성일 형식 변환 함수
   const formatCreatedAt = () => {
-    // 현재 시간을 moment 객체로 파싱
+    // 예약 생성일을 moment 객체로 파싱
     const createdAtMoment = moment(booking.createdAt);
-
-    // 요일을 한국어로 표시
-    const dayOfWeek = createdAtMoment.format("dddd");
-
-    // 연.월.일(요일) 형식으로 반환
-    return createdAtMoment.format(`YYYY.MM.DD `);
+    // 날짜
+    const formattedDate = createdAtMoment.format("YYYY.MM.DD");
+    // 요일
+    const dayOfWeek = createdAtMoment.format("(ddd)");
+    return `${formattedDate} ${dayOfWeek}`;
   };
-
   // 시간을 변환하는 함수
   const formatTime = timeString => {
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
   };
-
   // 예약날짜 형태 변환
-
   // 예약취소 모달
   const handleOpenBookCancelModdal = () => {
     setIsCancelModalOpen(true);
   };
-
   const handleCloseBookCancelModdal = () => {
     setIsCancelModalOpen(false);
   };
-
   // 후기작성 모달
   const handleOpenCreateReviewModal = () => {
     setIsReviewModalOpen(true);
@@ -168,18 +162,15 @@ export const BookingDetailForm = ({
   const handleCloseCreateReviewModal = () => {
     setIsReviewModalOpen(false);
   };
-
   // 예약 취소 성공 시 모달 닫기
   const handleBookingCancelSuccess = () => {
     setIsCancelModalOpen(false);
   };
-
   if (!booking) return null;
-
   return (
     <FormContents>
       <div className="top-contents">
-        <h2>{formatCreatedAt()}</h2>
+        <h2>{formatCreatedAt()} </h2>
         {(upcoming || isCompleted || isCancelled) && (
           <div className="reserv-number">예약번호: {booking.bookId}</div>
         )}
@@ -191,7 +182,9 @@ export const BookingDetailForm = ({
             <div
               className="reserv-info-img"
               style={{
-                background: `url(${roomMainImage}) no-repeat center`,
+                backgroundImage: `url(${roomMainImage})`,
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
                 backgroundSize: "cover",
               }}
             ></div>
