@@ -187,6 +187,7 @@ const UserInfo = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [userInfo, setUserInfo] = useState({
+    userProfileImage: "",
     userEmail: "",
     userName: "",
     userNickname: "",
@@ -197,9 +198,10 @@ const UserInfo = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
-  const [updatedNickname, setUpdatedNickname] = useState("");
-  const [updatedPhone, setUpdatedPhone] = useState("");
+  const [updatedNickname, setUpdatedNickname] = useState(userInfo.userNickname);
+  const [updatedPhone, setUpdatedPhone] = useState(userInfo.userPhone);
   const [accessToken, setAccessToken] = useState("");
+
   const navigate = useNavigate();
 
   // 토큰정보 불러오기
@@ -231,6 +233,7 @@ const UserInfo = () => {
         });
         console.log(response);
         setUserInfo({
+          userProfileImage: response.data.userProfileImage,
           userEmail: response.data.userEmail,
           userName: response.data.userName,
           userNickname: response.data.userNickname,
@@ -326,11 +329,10 @@ const UserInfo = () => {
         <div className="container">
           {/* 프로필 사진 등록 */}
           <div className="userprofile">
-            {/* 파일 업로드 버튼 */}
-            {previewImage ? (
+            {previewImage || userInfo.userProfileImage ? (
               <img
-                src={previewImage}
-                alt="프로필 이미지 미리보기"
+                src={previewImage || userInfo.userProfileImage}
+                alt="프로필 이미지"
                 className="userprofile-img"
               />
             ) : (
@@ -347,6 +349,7 @@ const UserInfo = () => {
                   className="profile-input"
                   accept="image/*"
                   onChange={handleImageChange}
+                  value={userInfo.userProfileImage}
                 />
               </div>
             )}
@@ -374,16 +377,15 @@ const UserInfo = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="nickname">닉네임</label>
-
                 <input
                   type="text"
                   id="nickname"
                   placeholder="닉네임을 입력해주세요"
                   value={userInfo.userNickname}
                 />
-                {/* <div className="form-button">
-                    {showButtons && <MainButton label="변경하기" />}
-                  </div> */}
+                <div className="form-button">
+                  {showButtons && <MainButton label="변경하기" />}
+                </div>
               </div>
               <div className="form-group">
                 <label htmlFor="password">비밀번호</label>

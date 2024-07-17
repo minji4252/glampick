@@ -10,6 +10,7 @@ import reviewimg2 from "../images/review2.png";
 import reviewimg3 from "../images/review3.png";
 import { colorSystem, size } from "../styles/color";
 import Loading from "../components/common/Loading";
+import { useLocation } from "react-router";
 
 const WrapStyle = styled.div`
   .inner {
@@ -78,7 +79,7 @@ const TopContents = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 10px;
@@ -126,6 +127,11 @@ const Review = () => {
   const [roomNames, setRoomNames] = useState([]);
   const [allReviewImages, setAllReviewImages] = useState([]);
   const [page, setPage] = useState(1); // 페이지 상태 추가
+  const [reviewImagesLength, setReviewImagesLength] = useState(0); // 리뷰 이미지 개수 상태 추가
+
+  // 평균 평점 불러오기
+  const location = useLocation();
+  // console.log("location", location.state);
 
   // 전체리뷰 이미지 불러오기
   useEffect(() => {
@@ -154,6 +160,7 @@ const Review = () => {
           `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );
         const data = response.data;
+
         console.log(data);
         setReviewData(data.reviewListItems); // 리뷰 데이터 배열을 state에 저장
 
@@ -162,6 +169,7 @@ const Review = () => {
           .map(review => review.reviewImages)
           .flat();
         setReviewImages(images);
+        setReviewImagesLength(images.length); // 리뷰 이미지 개수 저장
       } catch (error) {
         console.log(error);
       }
@@ -176,7 +184,7 @@ const Review = () => {
   };
   // 모달 내 더보기 클릭 핸들러
   const handleMoreClick = () => {
-    setPage(prevPage => prevPage + 1); // 페이지 증가
+    setPage(); // 페이지 증가
   };
 
   return (
@@ -187,7 +195,7 @@ const Review = () => {
           <p>숙소 평점</p>
           <div className="rating-details">
             <FaStar className="star" />
-            <div className="average-rating">4.7</div>
+            <div className="average-rating">{location.state}</div>
             <div className="total-rating">/5</div>
           </div>
           <div className="review-img">
@@ -197,7 +205,7 @@ const Review = () => {
                 className={`review-img${index + 1}`}
                 style={{ backgroundImage: `url(${img})` }}
               >
-                {index === reviewImages.slice(0, 8).length - 1 && (
+                {index === 7 && reviewImagesLength >= 9 && (
                   <div className="more-overlay" onClick={toggleModal}>
                     더보기
                   </div>

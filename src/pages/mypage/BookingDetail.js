@@ -253,7 +253,11 @@ const BookingDetail = () => {
             {upcomingBookings.length > 0 ? (
               upcomingBookings.map((booking, index) => (
                 <div className="form-group" key={index}>
-                  <BookingDetailForm booking={booking} upcoming={true} />
+                  <BookingDetailForm
+                    booking={booking}
+                    upcoming={true}
+                    // glampId={glampId}
+                  />
                 </div>
               ))
             ) : (

@@ -8,7 +8,7 @@ import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "./Button";
 import axios from "axios";
 
-const ModalWrapper = styled.div`
+export const ModalWrapper = styled.div`
   // display: ${props => (props.showModal ? "flex" : "none")};
   display: flex;
   position: fixed;
