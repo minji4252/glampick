@@ -52,7 +52,7 @@
   border-radius: 10px;
   font-size: 16px;
   color: #fff;
-  z-index: 99;
+  /* z-index: 99; */
 }
 
 .header-logout p {

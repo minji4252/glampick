@@ -66,6 +66,7 @@ const SearchPage = () => {
 
   // 지역명 한글로
   const regionNames = {
+    all: "전국",
     seoul: "서울/경기",
     gangwon: "강원",
     chungbuk: "충북",
@@ -267,6 +268,7 @@ const SearchPage = () => {
                 <SearchCard
                   key={item.glampId}
                   glampId={item.glampId}
+                  glampPic={item.glampPic}
                   glampName={item.glampName}
                   region={regionNames[item.region] || ""}
                   starPoint={item.starPoint}

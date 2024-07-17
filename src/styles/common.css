@@ -21,6 +21,7 @@ html {
 body {
   /* background-color: #fefbf8; */
   font-family: "Pretendard Variable" !important;
+  overflow-x: hidden !important;
 }
 
 /* input 태그에만 커서 깜빡임 주기 */

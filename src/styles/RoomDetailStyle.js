@@ -43,7 +43,7 @@ export const ListStyle = styled.div`
     gap: 6px 8px;
     margin-bottom: 20px;
     justify-content: flex-start;
-    overflow-x: auto;
+    /* overflow-x: auto; */
     overscroll-behavior: none;
     flex-wrap: nowrap;
 
