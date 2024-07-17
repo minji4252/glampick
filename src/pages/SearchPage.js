@@ -40,15 +40,18 @@ const SearchPage = () => {
   const [inDate, setInDate] = useState(""); // 체크인
   const [outDate, setOutDate] = useState(""); // 체크아웃
   const [people, setPeople] = useState(""); // 인원
+  const [searchWord, setSearchWord] = useState("");
   const [sort, setSort] = useState(1); // 정렬 (초기값 1 - 추천순)
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const [postPerPage] = useState(5); // 페이지당 보여질 아이템 수
+
+  const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
 
   const [searchParams, setSearchParams] = useSearchParams(); // URL 쿼리 매개변수 관리
   const region1 = searchParams.get("region"); // URL에서 지역 가져옴
-  const inDate1 = searchParams.get("inDate"); // 체크인 날짜 가져옴
-  const outDate1 = searchParams.get("outDate"); // 체크아웃 날짜 가져옴
-  const people1 = searchParams.get("people"); // 인원 가져옴
+  const inDate1 = searchParams.get("inDate"); // 체크인 날짜
+  const outDate1 = searchParams.get("outDate"); // 체크아웃 날짜
+  const people1 = searchParams.get("people"); // 인원
+  const searchWord1 = searchParams.get("searchWord"); // 검색어
 
   // 필터 아이콘 번호로
   const filterMapping = {
@@ -93,7 +96,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     // 페이지가 변경될 때마다 URL 매개변수 업데이트
-    setSearchParams({
+    const params = {
       region: region1,
       inDate: inDate1,
       outDate: outDate1,
@@ -104,8 +107,15 @@ const SearchPage = () => {
         .filter(key => activeFilters[key])
         .map(key => filterMapping[key])
         .join(","),
-    });
-  }, [sort, currentPage, activeFilters]);
+    };
+
+    // 검색어 null 또는 빈문자열 아닌 경우에만 업뎃
+    if (searchWord1) {
+      params.searchWord = searchWord1;
+    }
+
+    setSearchParams(params);
+  }, [sort, currentPage, activeFilters, searchWord1]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,7 +124,8 @@ const SearchPage = () => {
           .filter(key => activeFilters[key])
           .map(key => filterMapping[key])
           .join(",");
-        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}`;
+        const searchWordParam = searchWord1 ? `&searchWord=${searchWord1}` : "";
+        const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
         console.log(glampingUrl);
         const glampingResponse = await axios.get(glampingUrl);
         console.log(glampingResponse.data);
@@ -131,7 +142,16 @@ const SearchPage = () => {
     };
 
     fetchData();
-  }, [region1, inDate1, outDate1, people1, sort, currentPage, activeFilters]);
+  }, [
+    region1,
+    inDate1,
+    outDate1,
+    people1,
+    searchWord1,
+    sort,
+    currentPage,
+    activeFilters,
+  ]);
 
   return (
     <SearchPageStyle>
@@ -166,7 +186,11 @@ const SearchPage = () => {
               </ResultContents>
               <ResultContents>
                 <label htmlFor="input">검색어</label>
-                <input type="text" value={""} readOnly></input>
+                <input
+                  type="text"
+                  value={searchWord1 !== null ? searchWord1 : ""}
+                  onChange={e => setSearchWord(e.target.value)}
+                />
               </ResultContents>
             </SearchResult>
           </SearchTop>
@@ -248,6 +272,9 @@ const SearchPage = () => {
                   starPoint={item.starPoint}
                   reviewCount={item.reviewCount}
                   price={item.price}
+                  inDate={inDate1}
+                  outDate={outDate1}
+                  people={people1}
                 />
               ))}
             </SearchInnerList>
