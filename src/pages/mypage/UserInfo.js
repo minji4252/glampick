@@ -105,6 +105,7 @@ const WrapStyle = styled.div`
   .form-group label {
     display: block;
     font-size: 1.1rem;
+    margin-top: 20px;
     margin-bottom: 7px;
   }
 
@@ -120,7 +121,17 @@ const WrapStyle = styled.div`
     background-color: ${colorSystem.g100};
     padding: 10px;
     font-size: 0.95rem;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
+  }
+
+  .error-message {
+    display: block;
+    color: ${colorSystem.error};
+    font-size: 0.9rem;
+    margin-top: 5px;
+    ${size.mid} {
+      font-size: 0.8rem;
+    }
   }
 
   /* 각 항목 변경하기 버튼 */
@@ -128,6 +139,17 @@ const WrapStyle = styled.div`
     width: 140px;
     height: 40px;
     font-size: 0.9rem;
+  }
+
+  // 인증코드 발송 버튼
+  .auth-code-btn {
+    position: absolute;
+    top: 500px;
+    right: 0px;
+    ${size.mid} {
+      top: 500px;
+      right: 40px;
+    }
   }
 
   /* 수정하기 버튼 */
@@ -182,26 +204,58 @@ const WrapStyle = styled.div`
 `;
 
 const UserInfo = () => {
-  // 상태 관리
-  const [showButtons, setShowButtons] = useState(false);
+  // 비밀번호 확인 입력창 모달
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // 회원탈퇴 모달
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // 프로필사진 미리보기
+  const [previewImage, setPreviewImage] = useState(null);
+  // 프로필 이미지 상태 추가
+  const [profileImage, setProfileImage] = useState(null);
+
+  const [showButtons, setShowButtons] = useState(false);
+  // 수정하기 버튼
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [updatedNickname, setUpdatedNickname] = useState("");
+  const [updatedPhone, setUpdatedPhone] = useState("");
+  const [updatedPassword, setUpdatedPassword] = useState("");
+  const [updatedPasswordCheck, setUpdatedPasswordCheck] = useState("");
+  const [editNickname, setEditNickname] = useState(false);
+  const [editPhone, setEditPhone] = useState(false);
+
+  // 에러 메시지 상태
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const passwordPattern =
+    /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const phonePattern = /^[0-9]{11,13}$/;
+  const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
+
+  // 비밀번호 일치여부 확인
+  const [userPwCheck, setUserPwCheck] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+
+  const [nickNameValid, setNickNameValid] = useState(true);
+
+  // 핸드폰 발송 여부 확인
+  const [isSmsSent, setIsSmsSent] = useState(false);
+  // 핸드폰 인증을 위한 타이머 변수
+  const [phoneTimer, setPhoneTimer] = useState(0);
+  const [phoneTimerId, setPhoneTimerId] = useState(null);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isAuthNumberVerified, setIsAuthNumberVerified] = useState(false);
+
+  const [accessToken, setAccessToken] = useState("");
   const [userInfo, setUserInfo] = useState({
     userProfileImage: "",
     userEmail: "",
     userName: "",
     userNickname: "",
     userPw: "",
+    userPwCheck: "",
     userPhone: "",
   });
-  // 프로필 이미지 상태 추가
-  const [profileImage, setProfileImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
-
-  const [updatedNickname, setUpdatedNickname] = useState(userInfo.userNickname);
-  const [updatedPhone, setUpdatedPhone] = useState(userInfo.userPhone);
-  const [accessToken, setAccessToken] = useState("");
-
   const navigate = useNavigate();
 
   // 토큰정보 불러오기
@@ -237,8 +291,8 @@ const UserInfo = () => {
           userEmail: response.data.userEmail,
           userName: response.data.userName,
           userNickname: response.data.userNickname,
-          userPw: "●●●●●●●",
-          userPhone: response.data.userPhone,
+          userPw: "",
+          userPhone: formatPhone(response.data.userPhone),
         });
         // 기본 프로필 이미지 설정 (서버응답에 따라 달라질 수 있음)
         setProfileImage(response.data.profileImageUrl);
@@ -249,6 +303,7 @@ const UserInfo = () => {
     getUser();
   }, [accessToken]);
 
+  // 비밀번호 입력 확인 모달
   useEffect(() => {
     setIsModalOpen(true);
   }, []);
@@ -257,23 +312,16 @@ const UserInfo = () => {
     setIsModalOpen(false);
   };
 
-  // 수정하기 아이콘
-  const handleShowButtons = () => {
-    setShowButtons(true);
-  };
-
-  const handleOpenDeleteModal = () => {
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
-
+  // 비밀번호 입력 성공 확인 함수
   const handlePasswordCheckSuccess = () => {
     console.log("비밀번호 확인 성공");
     setIsModalOpen(false);
     // 추가적인 로직 수행 (예: 사용자 정보 수정 등)
+  };
+
+  // 프로필사진 수정하기 아이콘
+  const handleShowButtons = () => {
+    setShowButtons(true);
   };
 
   // 프로필 이미지 변경 시 미리보기 실행
@@ -282,16 +330,23 @@ const UserInfo = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(file); // 실제 업로드할 이미지 설정
-        setPreviewImage(reader.result); // 미리보기 이미지 설정
+        // 실제 업로드할 이미지 설정
+        setProfileImage(file);
+        // 미리보기 이미지 설정
+        setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
+      console.log(file);
     }
   };
 
-  // 유저정보 수정하기 함수
-  const handleSubmit = async e => {
-    e.preventDefault();
+  // 회원탈퇴 모달
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
   };
 
   // 회원탈퇴 함수
@@ -321,6 +376,89 @@ const UserInfo = () => {
     }
   };
 
+  // 닉네임 수정 함수
+  const handleNicknameChange = e => {
+    setUserInfo(prevState => ({
+      ...prevState,
+      userNickname: e.target.value,
+    }));
+    setUpdatedNickname(e.target.value);
+  };
+
+  // 비밀번호 수정 함수
+  const handlePasswordChange = e => {
+    setUserInfo(prevState => ({
+      ...prevState,
+      userPw: e.target.value,
+    }));
+    setUpdatedPassword(e.target.value);
+    setPasswordMatch(e.target.value === userPwCheck);
+  };
+
+  // 비밀번호 확인 핸들러
+  const handleConfirmPasswordChange = e => {
+    setUserPwCheck(e.target.value);
+    setPasswordMatch(userInfo.userPw === e.target.value);
+  };
+
+  // 핸드폰번호 수정 함수
+  const handlePhoneChange = e => {
+    setUserInfo(prevState => ({
+      ...prevState,
+      userPhone: e.target.value,
+    }));
+    setUpdatedPhone(e.target.value);
+  };
+
+  // 핸드폰 번호 표시 형식
+  const formatPhone = phoneNumber => {
+    return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+  };
+
+  // 유저 정보 업데이트 함수
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!accessToken) return;
+
+    // FormData 객체를 사용하여 multipart/form-data 요청 생성
+    const formData = new FormData();
+
+    // dto 필드를 JSON 문자열로 추가
+    const dto = JSON.stringify({
+      userNickname: updatedNickname,
+      userPhone: updatedPhone,
+    });
+    formData.append("dto", dto);
+    // console.log(formData.get("dto"));
+
+    // 이미지 파일 추가 (profileImage를 사용)
+    if (profileImage) {
+      formData.append("mf", profileImage);
+    }
+
+    try {
+      const response = await axios.put(`/api/user`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response);
+      // 업데이트 성공 시 상태 업데이트
+      if (response.data.code === "SU") {
+        setUserInfo(prev => ({
+          ...prev,
+          userNickname: updatedNickname,
+          userPhone: updatedPhone,
+        }));
+        //alert("수정이 완료되었습니다!")
+      } else {
+        console.log("업데이트 실패");
+      }
+    } catch (error) {
+      console.error("유저 정보 업데이트 오류", error);
+    }
+  };
+
   return (
     <WrapStyle>
       <Categories />
@@ -338,24 +476,22 @@ const UserInfo = () => {
             ) : (
               <FaUser className="userprofile-img" />
             )}
-            {showButtons && (
-              <div className="profile-edit">
-                <label htmlFor="profileImage" className="profile-label">
-                  <PiPencilSimpleLine className="pencil-icon" />
-                </label>
-                <input
-                  type="file"
-                  id="profileImage"
-                  className="profile-input"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  value={userInfo.userProfileImage}
-                />
-              </div>
-            )}
+            <div className="profile-edit">
+              <label htmlFor="profileImage" className="profile-label">
+                <PiPencilSimpleLine className="pencil-icon" />
+              </label>
+              <input
+                type="file"
+                id="profileImage"
+                className="profile-input"
+                accept="image/*"
+                onChange={handleImageChange}
+                // value={userInfo.userProfileImage}
+              />
+            </div>
           </div>
           <div className="wrap">
-            <form className="userInfo-form">
+            <form className="userInfo-form" onSubmit={handleSubmit}>
               <div className="form-group">
                 <label htmlFor="email">이메일</label>
                 <input
@@ -382,10 +518,17 @@ const UserInfo = () => {
                   id="nickname"
                   placeholder="닉네임을 입력해주세요"
                   value={userInfo.userNickname}
+                  onChange={e => {
+                    handleNicknameChange(e);
+                    setNickNameValid(nickNamePattern.test(e.target.value));
+                  }}
                 />
-                <div className="form-button">
-                  {showButtons && <MainButton label="변경하기" />}
-                </div>
+                {!nickNameValid && (
+                  <p className="error-message">
+                    닉네임이 형식에 맞지 않습니다 (2~10자의 대소문자, 한글,
+                    숫자만 가능)
+                  </p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="password">비밀번호</label>
@@ -395,7 +538,18 @@ const UserInfo = () => {
                   className="password-input"
                   placeholder="비밀번호를 입력해주세요"
                   value={userInfo.userPw}
+                  onChange={e => {
+                    handlePasswordChange(e);
+                    setPasswordValid(passwordPattern.test(e.target.value));
+                    setPasswordMatch(e.target.value === userPwCheck);
+                  }}
                 />
+                {!passwordValid && (
+                  <p className="error-message">
+                    비밀번호는 최소 8자 이상, 대소문자 및 특수문자를 포함해야
+                    합니다.
+                  </p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="confirm-password">비밀번호 확인</label>
@@ -404,7 +558,14 @@ const UserInfo = () => {
                   id="confirm-password"
                   className="confirm-password-input"
                   placeholder="비밀번호를 한번 더 입력해주세요"
+                  value={userPwCheck}
+                  onChange={e => {
+                    handleConfirmPasswordChange(e);
+                  }}
                 />
+                {!passwordMatch && (
+                  <p className="error-message">비밀번호가 일치하지 않습니다.</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="cellphone">휴대폰</label>
@@ -413,27 +574,32 @@ const UserInfo = () => {
                   id="cellphone"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
                   value={userInfo.userPhone}
+                  onChange={handlePhoneChange}
                 />
                 {/* <div className="form-button">
-                    {showButtons && <MainButton label="변경하기" />}
-                  </div> */}
+                  <div className="auth-code-btn">
+                    <MainButton
+                      label="인증번호 발송"
+                      // onClick={e => {
+                      //   handleSmsSubmit(e);
+                      // }}
+                    />
+                  </div>
+                </div> */}
               </div>
-              {/* 휴대폰에 변경하기 버튼을 클릭했을 때 나타나게 해야 함 */}
               {/* <div className="form-group">
                 <label htmlFor="auth-number">인증번호</label>
                 <input
                   type="text"
                   id="auth-number"
-                  required
                   placeholder="인증번호를 입력해주세요"
                 />
               </div> */}
               <div className="modify-btn">
                 <MainButton
                   label="수정하기"
-                  onClick={e => {
+                  onClick={() => {
                     handleShowButtons();
-                    handleSubmit(e);
                   }}
                 />
               </div>
