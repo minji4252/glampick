@@ -258,7 +258,11 @@ const MainPage = ({ isLogin }) => {
         <MainSec2>
           <MainList>
             <MainListTitle>
-              <p>🥇 지금 가장 인기있는</p>
+              <Link
+                to={`/search?region=all&inDate=${selectedDate[0]?.toISOString().slice(0, 10)}&outDate=${selectedDate[1]?.toISOString().slice(0, 10)}&people=${2}`}
+              >
+                <p>🥇 지금 가장 인기있는</p>
+              </Link>
             </MainListTitle>
             <MainListContents>
               <>
@@ -279,7 +283,11 @@ const MainPage = ({ isLogin }) => {
           </MainList>
           <MainList>
             <MainListTitle>
-              <p>🐶 반려동물과 함께할 수 있는</p>
+              <Link
+                to={`/search?region=all&inDate=${selectedDate[0]?.toISOString().slice(0, 10)}&outDate=${selectedDate[1]?.toISOString().slice(0, 10)}&people=${2}&filter=4`}
+              >
+                <p>🐶 반려동물과 함께할 수 있는</p>
+              </Link>
             </MainListTitle>
             <MainListContents>
               <>
@@ -300,7 +308,11 @@ const MainPage = ({ isLogin }) => {
           </MainList>
           <MainList>
             <MainListTitle>
-              <p>🏕️ 산속에서 즐기는</p>
+              <Link
+                to={`/search?region=all&inDate=${selectedDate[0]?.toISOString().slice(0, 10)}&outDate=${selectedDate[1]?.toISOString().slice(0, 10)}&people=${2}&filter=3`}
+              >
+                <p>🏕️ 산속에서 즐기는</p>
+              </Link>
             </MainListTitle>
             <MainListContents>
               <>

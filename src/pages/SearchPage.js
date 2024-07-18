@@ -18,8 +18,13 @@ import SearchPageStyle, {
 import "../styles/common.css";
 import "../styles/reset.css";
 import Loading from "../components/common/Loading";
+import MainCalendar from "../components/MainCalendar";
 
 const SearchPage = () => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
   const [searchResults, setSearchResults] = useState({
     totalItems: 0,
     glampingListItems: [],
@@ -55,6 +60,7 @@ const SearchPage = () => {
   const people1 = searchParams.get("people"); // 인원
   const searchWord1 = searchParams.get("searchWord"); // 검색어
   const [loading, setLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
 
   // 필터 아이콘 번호로
   const filterMapping = {
@@ -158,6 +164,21 @@ const SearchPage = () => {
     activeFilters,
   ]);
 
+  useEffect(() => {
+    if (people1) {
+      setPeople(people1);
+    }
+  }, [people1]);
+
+  const handleDateChange = dates => {
+    setInDate(dates[0].toISOString().slice(0, 10));
+    setOutDate(dates[1].toISOString().slice(0, 10));
+  };
+  const handleDateSelect = date => {
+    setSelectedDate(date);
+    console.log("선택 날짜:", date);
+  };
+
   return (
     <SearchPageStyle>
       {loading && <Loading />}
@@ -167,28 +188,47 @@ const SearchPage = () => {
             <SearchResult>
               <ResultContents>
                 <label htmlFor="place">지역</label>
-                <input
-                  type="text"
-                  value={regionNames[region1] || ""}
-                  onChange={e => setRegion(e.target.value)}
-                />
+                <select
+                  value={region1}
+                  className="search-place"
+                  onChange={e => {
+                    setRegion(e.target.value);
+                    setSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      region: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="" disabled>
+                    지역
+                  </option>
+                  {Object.keys(regionNames).map(regionKey => (
+                    <option key={regionKey} value={regionKey}>
+                      {regionNames[regionKey]}
+                    </option>
+                  ))}
+                </select>
               </ResultContents>
               <ResultContents>
                 <label htmlFor="date">날짜</label>
-                <input
-                  type="text"
-                  value={`${inDate1} - ${outDate1}`}
-                  className="search-date"
-                  onChange={e => setInDate(e.target.value)}
+                <MainCalendar
+                  selectedDate={[new Date(inDate1), new Date(outDate1)]}
+                  onChange={handleDateChange}
+                  setSelectedDate={handleDateSelect}
                 />
               </ResultContents>
               <ResultContents>
                 <label htmlFor="member">인원</label>
-                <input
-                  type="text"
-                  value={`${people1}명`}
-                  onChange={e => setPeople(e.target.value)}
-                />
+                <div className="search-member">
+                  <input
+                    type="number"
+                    min="2"
+                    max="6"
+                    value={people}
+                    onChange={e => setPeople(e.target.value)}
+                  />
+                  <p>명</p>
+                </div>
               </ResultContents>
               <ResultContents>
                 <label htmlFor="input">검색어</label>

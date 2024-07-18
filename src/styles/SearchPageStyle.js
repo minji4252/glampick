@@ -40,9 +40,10 @@ export const SearchTop = styled.div`
   background: #eaeff6;
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding-top: 20px;
+  align-items: baseline;
   @media all and (max-width: 950px) {
-    height: 120px;
+    height: 150px;
   }
 `;
 
@@ -75,18 +76,58 @@ export const ResultContents = styled.div`
       border-left: 1px solid ${colorSystem.g600};
     }
   }
-
   input {
-    width: 80px;
-    height: 25px;
+    /* width: 80px;
+    height: 25px; */
     border: none;
     font-size: 16px;
     background: rgba(255, 255, 255, 0);
     color: ${colorSystem.g800};
     margin-left: 10px;
   }
+  select {
+    width: 110px;
+    height: 50px;
+    border-radius: 30px;
+    border: none;
+    font-family: "Pretendard Variable";
+    background: rgba(255, 255, 255, 0);
+    font-size: 16px;
+    color: ${colorSystem.primary};
+    text-align: center;
+    outline: none;
+    option {
+      background-color: ${colorSystem.g150};
+      border-radius: 10px;
+      color: ${colorSystem.g800};
+    }
+  }
+
   .search-date {
     width: 240px;
+  }
+
+  .search-member {
+    display: flex;
+    width: 110px;
+    input {
+      width: 50px;
+      margin-left: 20px;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50px;
+      border: none;
+      font-size: 16px;
+      color: ${colorSystem.primary};
+      background: rgba(255, 255, 255, 0);
+      outline: none;
+    }
+    > p {
+      font-size: 16px;
+      color: ${colorSystem.primary};
+      cursor: default;
+    }
   }
 `;
 

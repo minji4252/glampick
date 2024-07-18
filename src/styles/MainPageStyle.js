@@ -162,8 +162,6 @@ export const MainSearchContent = styled.ul`
     width: 110px;
     height: 50px;
 
-    /* border-right: 1px solid ${colorSystem.white}; */
-
     > select {
       width: 110px;
       height: 50px;
