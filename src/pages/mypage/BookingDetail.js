@@ -101,7 +101,7 @@ const WrapStyle = styled.div`
 `;
 
 const NotContentStyle = styled.div`
-  width: 70%;
+  width: 150%;
   background-color: ${colorSystem.background};
   border-radius: 20px;
   display: flex;
@@ -109,7 +109,7 @@ const NotContentStyle = styled.div`
   align-items: center;
   gap: 10px;
   font-weight: 600;
-  margin-top: 65px;
+  /* margin-top: 65px; */
   margin-bottom: 250px;
   letter-spacing: 2px;
   .logo-img {
@@ -119,6 +119,12 @@ const NotContentStyle = styled.div`
     height: 100px;
     margin-top: 100px;
   }
+
+  a {
+    max-width: 180px;
+    width: 100%;
+  }
+
   h4 {
     font-size: 1.1rem;
     margin-top: 10px;
@@ -128,9 +134,10 @@ const NotContentStyle = styled.div`
     margin-bottom: 60px;
     position: relative;
     button {
-      width: 180px;
+      width: 100%;
       height: 40px;
       text-align: left;
+      -webkit-justify-content: left;
     }
     svg {
       width: 38px;
@@ -192,18 +199,6 @@ const BookingDetail = () => {
         setCompletedBookings(reservationCompleteResultSetList || []);
         // 예약 취소 내역
         setCancelledBookings(reservationCancelResultSetList || []);
-
-        // const upcomingBookings =
-        //   response.data.reservationBeforeResultSetList[0];
-        // setUpcomingBookings(upcomingBookings);
-
-        // const completeReservation =
-        //   response.data.reservationCompleteResultSetList[1];
-        // setCompleteReservation(completeReservation);
-
-        // const cancelledBookings =
-        //   response.data.reservationCancelResultSetList[2];
-        // setCancelledBookings(cancelledBookings);
       } catch (error) {
         console.log(error);
       }
@@ -256,7 +251,7 @@ const BookingDetail = () => {
                   <BookingDetailForm
                     booking={booking}
                     upcoming={true}
-                    // glampId={glampId}
+                    glampId={booking.glampId}
                   />
                 </div>
               ))
@@ -282,7 +277,11 @@ const BookingDetail = () => {
               {completedBookings.length > 0 ? (
                 completedBookings.map((booking, index) => (
                   <div className="form-group" key={index}>
-                    <BookingDetailForm booking={booking} isCompleted={true} />
+                    <BookingDetailForm
+                      booking={booking}
+                      isCompleted={true}
+                      glampId={booking.glampId}
+                    />
                   </div>
                 ))
               ) : (
@@ -307,7 +306,11 @@ const BookingDetail = () => {
               {cancelledBookings.length > 0 ? (
                 cancelledBookings.map((booking, index) => (
                   <div className="form-group" key={index}>
-                    <BookingDetailForm booking={booking} isCancelled={true} />
+                    <BookingDetailForm
+                      booking={booking}
+                      isCancelled={true}
+                      glampId={booking.glampId}
+                    />
                   </div>
                 ))
               ) : (

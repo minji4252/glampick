@@ -126,8 +126,10 @@ const Review = () => {
   const [reviewImages, setReviewImages] = useState([]);
   const [roomNames, setRoomNames] = useState([]);
   const [allReviewImages, setAllReviewImages] = useState([]);
-  const [page, setPage] = useState(1); // 페이지 상태 추가
   const [reviewImagesLength, setReviewImagesLength] = useState(0); // 리뷰 이미지 개수 상태 추가
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수
+  const [page, setPage] = useState(1); // 페이지 상태 추가
 
   // 평균 평점 불러오기
   const location = useLocation();
@@ -140,7 +142,7 @@ const Review = () => {
         const glampId = 1;
         // const page = 1;
         const response = await axios.get(
-          `/api/glamping?glampId=${glampId}&page=${page}`,
+          `/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
         const data = response.data;
         console.log(data);
@@ -149,7 +151,7 @@ const Review = () => {
       }
     };
     getGlamping();
-  }, [page]);
+  }, [currentPage]);
 
   // 전체 리뷰 불러오기
   useEffect(() => {
@@ -177,6 +179,13 @@ const Review = () => {
 
     getGlampingReview();
   }, [page]);
+
+  const handlePageChange = pageNumber => {
+    setPage(pageNumber);
+  };
+
+  const totalItems = reviewData.length;
+  const itemsPerPage = 5;
 
   // 모달창 열고 닫기
   const toggleModal = () => {
@@ -221,7 +230,7 @@ const Review = () => {
                 key={index}
                 userProfileImage={review.userProfileImage}
                 userNickName={review.userNickName}
-                glampName={review.roomNames}
+                glampName={review.glampName}
                 roomName={review.roomName}
                 createdAt={review.createdAt}
                 userReviewContent={review.userReviewContent}
@@ -243,8 +252,13 @@ const Review = () => {
           // 더보기 버튼 클릭 핸들러 추가되어야 함
         />
       )}
-      <ListPagination />
-      {/* <Loading /> */}
+      <ListPagination
+        currentPage={currentPage}
+        totalItems={reviewData.length}
+        itemsPerPage={5}
+        onPageChange={handlePageChange}
+        totalPages={totalPages}
+      />
     </WrapStyle>
   );
 };

@@ -178,7 +178,7 @@ export const BookingDetailForm = ({
       <div className="bottom-contents">
         <p>숙소</p>
         <div className="reserv-info">
-          <Link to={`/${glampId}`} className="glampingdetail-link">
+          <Link to={` /places/${glampId}`} className="glampingdetail-link">
             <div
               className="reserv-info-img"
               style={{

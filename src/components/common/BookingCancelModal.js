@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { colorSystem } from "../../styles/color";
 import { ActionButton, DeleteButton } from "./Button";
 import { getCookie } from "../../utils/cookie";
+import { ModalLine } from "../../styles/modalstyle";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -15,43 +16,58 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 20px;
+  z-index: 99999;
 `;
 
 const ModalContent = styled.div`
   background: white;
-  padding: 20px;
-  width: 350px;
+  padding-top: 15px;
+  width: 250px;
   max-width: 100%;
+  top: 50%;
+  left: 50%;
   text-align: center;
   border-radius: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid ${colorSystem.p100};
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  padding: 20px;
-`;
-
-const ModalHeader = styled.h2`
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-  color: ${colorSystem.g900};
+  padding-top: 15px;
+ 
+  > h2{
+  font-size: 0.9rem;
+  color: ${colorSystem.g800};
+}
 `;
 
 const ModalBody = styled.div`
   display: flex;
   justify-content: center;
   > p {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    font-size: 1rem;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    font-size: 0.8rem;
     font-weight: 400;
-    color: ${colorSystem.g900};
+    color: ${colorSystem.g800};
   }
 `;
 
 const ModalFooter = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 15px;
   justify-content: center;
+  margin-bottom: 15px;
+
+  .cancel{
+    > button{
+    height: 2em;
+  }
+  }
+
+  .confirm{
+    > button{
+    height: 2em;
+  }
+  }
 `;
 
 const BookingCancelModal = ({
@@ -136,25 +152,28 @@ const BookingCancelModal = ({
   return isOpen ? (
     <ModalOverlay>
       <ModalContent>
-        <ModalHeader>예약 취소</ModalHeader>
+        <h2>예약 취소</h2>
+        <ModalLine/>
         <ModalBody>
           <p>정말 예약을 취소하시겠습니까?</p>
         </ModalBody>
         <ModalFooter>
+          <div className="cancel">
           <ActionButton
             label="취소"
-            className="cancel"
             onClick={() => {
               onClose();
             }}
           ></ActionButton>
+          </div>
+          <div className="confirm">
           <DeleteButton
             label="확인"
-            className="confirm"
             onClick={handleConfirm}
           >
             확인
           </DeleteButton>
+          </div>
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>
