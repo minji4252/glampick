@@ -117,11 +117,11 @@ const PaymentDone = () => {
   const checkInTime = location.state.checkInTime;
   const checkOutTime = location.state.checkOutTime;
   const people = location.state.people;
-  // const roomNumPeople = location.state.roomNumPeople;
-  // const roomMaxPeople = location.state.roomMaxPeople;
   const roomName = location.state.roomName;
   const roomPrice = location.state.roomPrice;
   const roomMainImage = location.state.roomMainImage;
+  const roomId = location.state.roomId;
+  const glampId = location.state.glampId;
 
   return (
     <WrapStyle>
@@ -148,11 +148,11 @@ const PaymentDone = () => {
               checkInTime={checkInTime}
               checkOutTime={checkOutTime}
               people={people}
-              // roomNumPeople={roomNumPeople}
-              // roomMaxPeople={roomMaxPeople}
               roomName={roomName}
               roomPrice={roomPrice}
               roomMainImage={roomMainImage}
+              roomId={roomId}
+              glampId={glampId}
             />
           </div>
           <ButtonGroup>
