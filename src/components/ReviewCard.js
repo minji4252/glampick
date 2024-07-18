@@ -336,7 +336,7 @@ const ReviewCard = ({
                 marginTop: reviewImages.length > 0 ? "30px" : "0px",
               }}
             >
-              <Link to={`/${glampId}`}>
+              <Link to={`/places/${glampId}`}>
                 <div className="myreview-glamp-name">
                   <span>{glampName}</span>
                   <span>|</span>
