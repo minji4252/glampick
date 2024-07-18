@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 import { GoHeart, GoHeartFill } from "react-icons/go";
@@ -286,6 +285,7 @@ const GlampingDetail = ({ isLogin }) => {
             <div
               className="main-img"
               style={{
+                // eslint-disable-next-line no-undef
                 backgroundImage: `url(${process.env.PUBLIC_URL}/${roomMainImage})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -374,6 +374,7 @@ const GlampingDetail = ({ isLogin }) => {
                     <div
                       className="roomcard-img"
                       style={{
+                        // eslint-disable-next-line no-undef
                         backgroundImage: `url(${process.env.PUBLIC_URL}/${roomImages[index]})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",

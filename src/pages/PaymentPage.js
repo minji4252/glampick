@@ -215,6 +215,7 @@ const PaymentPage = () => {
         {
           glampId: glampId,
           roomId: roomId,
+          personnel: people,
           inputName: userName,
           checkInDate: inDate,
           checkOutDate: outDate,
@@ -308,6 +309,8 @@ const PaymentPage = () => {
               roomName={roomName}
               roomPrice={roomPrice}
               roomMainImage={roomMainImage}
+              roomId={roomId}
+              glampId={glampId}
             />
           </div>
         </InfoStyle>
