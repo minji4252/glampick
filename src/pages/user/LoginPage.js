@@ -75,6 +75,7 @@ const WrapStyle = styled.div`
     width: 100%;
     height: 50px;
     font-size: 1rem;
+    border-radius: 10px;
 
     background-color: ${colorSystem.g100};
     border: none;
@@ -86,6 +87,7 @@ const WrapStyle = styled.div`
 
   .login-form input[type="email"] {
     margin-bottom: 20px;
+    border-radius: 10px;
   }
 
   .login-form input::placeholder {
@@ -249,7 +251,6 @@ const LoginPage = () => {
     }
     // navigate("/");
   };
-  
 
   return (
     <WrapStyle>
