@@ -36,7 +36,7 @@ export const SearchInner = styled.div`
 export const SearchTop = styled.div`
   width: 100%;
   height: 90px;
-  margin-top: 80px;
+  margin-top: 20px;
   background: #eaeff6;
   display: flex;
   justify-content: center;
@@ -291,8 +291,8 @@ export const SearchContent = styled.div`
     border-top: none;
   }
   .search-image {
-    max-width: 400px;
-    width: 100%;
+    width: 400px;
+    /* width: 100%; */
     height: 240px;
     margin-left: 15px;
     border-radius: 20px;
@@ -351,6 +351,7 @@ export const SearchContent = styled.div`
 
     .search-image {
       min-width: 240px;
+      width: 100%;
       background-size: cover;
       border-radius: 15px;
     }

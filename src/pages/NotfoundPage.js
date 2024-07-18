@@ -1,7 +1,8 @@
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
-import glampickLogoMain from "../images/glampick_logo_white.png";
-import NotfoundImg from "../images/notfound-img.gif";
+import NotfoundLogo from "../images/notfound-logo.png";
+import NotfoundMent from "../images/notfound-ment.png";
+import NotfoundImg from "../images/notfound-onlyimg.gif";
 
 const NotfoundWrap = styled.div`
   position: fixed;
@@ -14,12 +15,15 @@ const NotfoundWrap = styled.div`
   background-size: cover;
 `;
 
+const NotfounedMent = styled.div`
+  width: 351px;
+  height: 90px;
+  background: url(${NotfoundMent});
+`;
 const NavMain = styled.div`
-  width: 87px;
-  height: 87px;
-  left: 50px;
-  top: 20px;
-  background: url(${glampickLogoMain}) no-repeat center;
+  width: 280px;
+  height: 140px;
+  background: url(${NotfoundLogo}) no-repeat center;
   background-size: cover;
   position: absolute;
   cursor: pointer;
@@ -27,6 +31,7 @@ const NavMain = styled.div`
 const NotfoundPage = () => {
   return (
     <NotfoundWrap>
+      <NotfounedMent />
       <Link to="/">
         <NavMain />
       </Link>
