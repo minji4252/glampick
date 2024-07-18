@@ -8,7 +8,7 @@ import { getCookie } from "../../utils/cookie";
 
 const CategoriesStyle = styled.div`
   position: fixed;
-  top: 280px;
+  top: 220px;
   left: 90px;
   max-width: 270px;
   width: 100%;

@@ -10,42 +10,46 @@
 <br>
 <br>
 <br>
-<div style="padding: .6em 0em .01em .7em; margin: 2em 0; font-weight: bold; color: #355179; background: #F5F7FA; border-left: solid 10px #45699c;">
-<p style="font-size: 24px;">2차 프로젝트 기간</p>
-</div>
+
+> <h2>2차 프로젝트 기간</h2>
+
 <p style="font-size: 18px;"> 2024.06.21 ~ 2024.07.23 </p>
 <br>
 
-<div style="padding: .6em 0em .01em .7em; margin: 2em 0; font-weight: bold; color: #355179; background: #F5F7FA; border-left: solid 10px #45699c;">
-<p style="font-size: 24px;">프로젝트 관련 링크</p>
-</div>
+> <h2>프로젝트 관련 링크</h2>
+
 <div>
-    <a href="https://www.figma.com/design/K6EFAkf02fxCtULowqFS5o/Layout?node-id=164-329&t=o7Jby7RWwhW8lphA-1" target="_blank" style="display: inline-block; margin: 0 10px;">
-        <img src="src/images/icon/logos_figma.png" />
+    <a href="https://www.figma.com/design/K6EFAkf02fxCtULowqFS5o/Layout?node-id=164-329&t=o7Jby7RWwhW8lphA-1" target="_blank" >
+        <img src="src/images/icon/logos_figma.png" /> FIGMA
     </a>
-    <a href="https://lively-gladiolus-389.notion.site/4f83507008e448abbdbfd4194fcb5391" target="_blank" style="display: inline-block; margin: 0 10px;">
-        <img src="src/images/icon/logos_notion.png" />
+</div>
+<br>
+<div>
+    <a href="https://lively-gladiolus-389.notion.site/4f83507008e448abbdbfd4194fcb5391" target="_blank">
+        <img src="src/images/icon/logos_notion.png" /> NOTION
     </a>
+
 </div>
 
 <br>
 <br>
-<div style="padding: .6em 0em .01em .7em; margin: 2em 0; font-weight: bold; color: #355179; background: #F5F7FA; border-left: solid 10px #45699c;">
-<p style="font-size: 24px;">팀원</p>
-</div>
-<h4>FE</h4> 
+
+> <h2>팀원</h2>
+
+<h4>FE</h4>
+
 조수현 조원영 김민지
 <br>
+
 <h4>BE</h4>
+
 김수찬 김민지 배강국 이진현
 <br>
 <br>
 
-<div style="padding: .6em 0em .01em .7em; margin: 2em 0; font-weight: bold; color: #355179; background: #F5F7FA; border-left: solid 10px #45699c;">
-<p style="font-size: 24px;">Front-End 역할 및 주요 기능</p>
-</div>
+> <h2>Front-End 역할 및 주요 기능</h2>
 
-<h3>조수현 (팀장)</h3>
+<h4>조수현 (팀장)</h4>
 
 1. 메인
 2. 검색 결과
@@ -53,7 +57,7 @@
 4. 404
 5. Git 관리
 
-<h3>조원영</h3>
+<h4>조원영</h4>
 
 1. 로그인 및 회원가입
 2. 글램핑장 후기
@@ -61,7 +65,7 @@
 4. 유저 정보
 5. FE 노션 관리
 
-<h3>김민지</h3>
+<h4>김민지</h4>
 
 1. 글램핑장 상세
 2. 객실 상세

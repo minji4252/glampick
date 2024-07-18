@@ -6,6 +6,7 @@ import Categories from "../../components/mypage/Categories";
 import emptyImg from "../../images/emptyImg.png";
 import { colorSystem, size } from "../../styles/color";
 import ListPagination from "../../components/common/ListPagination";
+import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   .inner {
@@ -118,16 +119,19 @@ const MyReview = () => {
   });
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
         const accessTokenFromCookie = getCookie("access-Token");
+        setLoading(true);
         if (accessTokenFromCookie) {
           setAccessToken(accessTokenFromCookie);
         } else {
           console.log("쿠키에 access-Token 없음");
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -166,6 +170,7 @@ const MyReview = () => {
 
   return (
     <WrapStyle>
+      {loading && <Loading />}
       <Categories />
       <div className="inner">
         <h3>나의 후기 ({Number(searchResults)}개)</h3>

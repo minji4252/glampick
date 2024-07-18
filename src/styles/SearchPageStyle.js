@@ -13,7 +13,6 @@ import filterToilet from "../images/icon/filter-toilet.png";
 import filterToilet2 from "../images/icon/filter-toilet2.png";
 import filterWifi from "../images/icon/filter-wifi.png";
 import filterWifi2 from "../images/icon/filter-wifi2.png";
-import SearchImage from "../images/search-pic1.png";
 import emptyImg from "../images/emptyImg.png";
 import { colorSystem, size } from "../styles/color";
 
@@ -245,6 +244,37 @@ export const SearchInnerBottom = styled.div`
   }
 `;
 
+export const NoResultStyle = styled.div`
+  width: 70%;
+  background-color: ${colorSystem.background};
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  margin: 50px 70px;
+  letter-spacing: 2px;
+
+  .no-result-img {
+    background: url(${emptyImg}) no-repeat center;
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    margin-top: 100px;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 20px;
+  }
+
+  p {
+    margin-bottom: 100px;
+  }
+`;
+
+// Search 페이지의 카드
 export const SearchContent = styled.div`
   display: flex;
   width: 100%;
@@ -264,7 +294,6 @@ export const SearchContent = styled.div`
     max-width: 400px;
     width: 100%;
     height: 240px;
-    /* background: url(${SearchImage}) no-repeat center; */
     margin-left: 15px;
     border-radius: 20px;
   }
@@ -328,36 +357,6 @@ export const SearchContent = styled.div`
     .search-detail {
       gap: 30px;
     }
-  }
-`;
-
-export const NoResultStyle = styled.div`
-  width: 70%;
-  background-color: ${colorSystem.background};
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  margin: 50px 70px;
-  letter-spacing: 2px;
-
-  .no-result-img {
-    background: url(${emptyImg}) no-repeat center;
-    background-size: cover;
-    width: 50px;
-    height: 50px;
-    margin-top: 100px;
-  }
-
-  h4 {
-    font-size: 1.1rem;
-    margin-top: 20px;
-  }
-
-  p {
-    margin-bottom: 100px;
   }
 `;
 
