@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import FavoriteIcon from "../images/icon/favorite-icon.png";
 import ArticleImage from "../images/main-list-3.png";
 
+// 관심 글램핑장 목록
+
 export const FavoriteStyle = styled.div`
   .inner {
     flex-direction: column;
@@ -38,7 +40,7 @@ export const FavoriteContents = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 40px;
+  gap: 60px;
   padding: 0 60px;
   .favorite-content {
     position: relative;
@@ -72,10 +74,16 @@ export const EmptyStyle = styled.div`
   }
 `;
 
+// 관심 글램핑장 카드 컴포넌트
+
 export const FavoriteArticle = styled.article`
   display: flex;
   flex-direction: column;
   position: relative;
+  :hover {
+    transform: translateY(-5px);
+    transition: 0.5s;
+  }
   .article-image {
     position: relative;
     width: 290px;

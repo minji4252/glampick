@@ -182,7 +182,7 @@ export const BookingDetailForm = ({
             <div
               className="reserv-info-img"
               style={{
-                backgroundImage: `url(${roomMainImage})`,
+                backgroundImage: `url(${booking.glampImage})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",

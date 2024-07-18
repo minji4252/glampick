@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// 지금 가장 인기있는 TOP3
+// 인기
 export const getPopularData = async () => {
   try {
     const response = await axios.get("/api/main");
@@ -14,7 +14,7 @@ export const getPopularData = async () => {
   }
 };
 
-// 반려동물과 함께할 수 있는 TOP 3
+// 반려동물
 export const getPetData = async () => {
   try {
     const response = await axios.get("/api/main");
@@ -22,6 +22,17 @@ export const getPetData = async () => {
     // console.log("반려동물 top3");
     // console.log(petArray);
     //   setPetData(petArray);
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+// 산속
+export const getMountainData = async () => {
+  try {
+    const response = await axios.get("/api/main");
+    return response.data.mountainView;
   } catch (error) {
     console.error(error);
     return [];
