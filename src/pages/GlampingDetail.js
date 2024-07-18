@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 import { GoHeart, GoHeartFill } from "react-icons/go";
@@ -75,10 +76,7 @@ const GlampingDetail = ({ isLogin }) => {
   // 날짜 값 설정, 값이 없으면 기본값 사용
   const inDate = searchParams.get("inDate") || getDefaultDate(0);
   const outDate = searchParams.get("outDate") || getDefaultDate(1);
-  const people = searchParams.get("people");
-
-  console.log("ㅇㅇㅇ", glampId, inDate, outDate, people);
-
+  const people = searchParams.get("people") || 2;
   const roomSelectRef = useRef(null);
   const navigate = useNavigate();
 
@@ -92,10 +90,8 @@ const GlampingDetail = ({ isLogin }) => {
           outDate,
           statusId,
         );
-        console.log("1번", data);
         setGlampingData(data);
         setInitialRoomItems(data.roomItems.slice(0, 5));
-        console.log("2번", `${data.glampImage}`);
         setRoomMainImage(`${data.glampImage}`);
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
         setRoomImages(roomImageUrls);
@@ -201,18 +197,21 @@ const GlampingDetail = ({ isLogin }) => {
       setModalType("check");
       setShowLoginModal(true);
     } else {
-      navigate("/payment", {
-        state: {
-          glampName: glampingData.glampName,
-          checkInTime: room.checkInTime,
-          checkOutTime: room.checkOutTime,
-          roomNumPeople: room.roomNumPeople,
-          roomMaxPeople: room.roomMaxPeople,
-          roomName: room.roomName,
-          roomPrice: room.roomPrice,
-          roomMainImage: roomMainImage,
+      navigate(
+        `/payment/${glampId}?roomId=${room.roomId}&inDate=${inDate}&outDate=${outDate}&people=${people}`,
+        {
+          state: {
+            glampName: glampingData.glampName,
+            checkInTime: room.checkInTime,
+            checkOutTime: room.checkOutTime,
+            roomNumPeople: room.roomNumPeople,
+            roomMaxPeople: room.roomMaxPeople,
+            roomName: room.roomName,
+            roomPrice: room.roomPrice,
+            roomMainImage: roomMainImage,
+          },
         },
-      });
+      );
     }
   };
 
@@ -251,7 +250,7 @@ const GlampingDetail = ({ isLogin }) => {
         return "option-mountain";
       case "오션뷰":
         return "option-ocean";
-      case "개별화장실":
+      case "개별 화장실":
         return "option-toilet";
       default:
         return "";
@@ -287,7 +286,7 @@ const GlampingDetail = ({ isLogin }) => {
             <div
               className="main-img"
               style={{
-                backgroundImage: `url(${roomMainImage})`,
+                backgroundImage: `url(${process.env.PUBLIC_URL}/${roomMainImage})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
@@ -323,13 +322,13 @@ const GlampingDetail = ({ isLogin }) => {
                   {reviewItems.map((item, index) => (
                     <SwiperSlide key={index}>
                       <p>{item.content}</p>
-                      <h5>{item.userName}</h5>
+                      <h5>{item.userNickName}</h5>
                     </SwiperSlide>
                   ))}
                 </div>
               </Swiper>
               <SwiperEndStyle />
-              <Link to="/review">
+              <Link to="/review" state={formattedStarPoint}>
                 <div className="review-all">
                   <button>
                     전체보기
@@ -369,14 +368,13 @@ const GlampingDetail = ({ isLogin }) => {
               <RoomCard key={index}>
                 <RoomCardLeft>
                   <Link
-                    to={`/roomdetail`}
+                    to={`/roomdetail/${glampId}`}
                     state={{ glampName: glampingData.glampName }}
                   >
-                    {/* <Link to={`/roomdetail/${room.roomId}`}> */}
                     <div
                       className="roomcard-img"
                       style={{
-                        backgroundImage: `url(${roomImages[index]})`,
+                        backgroundImage: `url(${process.env.PUBLIC_URL}/${roomImages[index]})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
@@ -477,7 +475,7 @@ const GlampingDetail = ({ isLogin }) => {
           <RoomLocation>
             <UnderLine />
             <h3>위치</h3>
-            <p></p>
+            {/* <p></p> */}
             <div className="location-info">
               <span>{glampLocation}</span>
             </div>

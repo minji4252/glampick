@@ -112,10 +112,13 @@ const PaymentDone = () => {
 
   const location = useLocation();
   const glampName = location.state.glampName;
+  const inDate = location.state.inDate;
+  const outDate = location.state.outDate;
   const checkInTime = location.state.checkInTime;
   const checkOutTime = location.state.checkOutTime;
-  const roomNumPeople = location.state.roomNumPeople;
-  const roomMaxPeople = location.state.roomMaxPeople;
+  const people = location.state.people;
+  // const roomNumPeople = location.state.roomNumPeople;
+  // const roomMaxPeople = location.state.roomMaxPeople;
   const roomName = location.state.roomName;
   const roomPrice = location.state.roomPrice;
   const roomMainImage = location.state.roomMainImage;
@@ -140,10 +143,13 @@ const PaymentDone = () => {
             <h2>예약 완료된 글램핑</h2>
             <PaymentCard
               glampName={glampName}
+              inDate={inDate}
+              outDate={outDate}
               checkInTime={checkInTime}
               checkOutTime={checkOutTime}
-              roomNumPeople={roomNumPeople}
-              roomMaxPeople={roomMaxPeople}
+              people={people}
+              // roomNumPeople={roomNumPeople}
+              // roomMaxPeople={roomMaxPeople}
               roomName={roomName}
               roomPrice={roomPrice}
               roomMainImage={roomMainImage}

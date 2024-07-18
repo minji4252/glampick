@@ -76,14 +76,15 @@ function App() {
         {/* 검색 결과 */}
         <Route path="/search" element={<SearchPage />} />
         <Route
-          path="/:glampId"
+          path="/places/:glampId"
           element={<GlampingDetailWrapper isLogin={isLogin} />}
         />
-        <Route path="/roomdetail" element={<RoomDetail />}></Route>
+        <Route path="/roomdetail/:glampId" element={<RoomDetail />}></Route>
         <Route path="/review" element={<Review />}></Route>
 
         {/* 결제 페이지 */}
-        <Route path="/payment" element={<PaymentPage />}></Route>
+        <Route path="/payment/:glampId" element={<PaymentPage />} />
+        {/* <Route path="/payment" element={<PaymentPage />}></Route> */}
         <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
 
         {/* 유저 페이지 */}

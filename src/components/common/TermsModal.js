@@ -24,6 +24,7 @@ export const ModalContent = styled.div`
   height: 70%;
   max-height: 70%;
   overflow-y: auto;
+  white-space: pre-line;
   /* 내용이 길 경우 스크롤 */
 `;
 

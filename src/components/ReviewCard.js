@@ -11,6 +11,7 @@ import CheckModal from "./common/CheckModal";
 import AlertModal from "./common/AlertModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const MyReviewCard = styled.div`
   display: flex;
@@ -28,7 +29,6 @@ const MyReviewCard = styled.div`
     margin-right: 50px;
 
     div {
-      background-color: pink;
       border-radius: 100%;
       width: 65px;
       height: 65px;
@@ -70,10 +70,17 @@ const UserSection = styled.div`
   .myreview-content {
     font-size: 1rem;
 
-    > div {
+    .myreview-glamp-name {
+      cursor: pointer;
+      padding: 5px;
+      width: fit-content;
       display: flex;
       align-items: center;
       gap: 10px;
+
+      &:hover {
+        color: ${colorSystem.p300};
+      }
     }
 
     span {
@@ -195,6 +202,7 @@ const ReviewCard = ({
   reviewId,
   userNickName,
   glampName,
+  glampId,
   roomName,
   createdAt,
   userReviewContent,
@@ -258,7 +266,6 @@ const ReviewCard = ({
       message: "정말 삭제하시겠습니까?",
       onCheck: async () => {
         try {
-          console.log("릴리", `/api/user/delete?reviewId=${reviewId}`);
           const response = await axios.delete(
             `/api/user/delete?reviewId=${reviewId}`,
             {
@@ -270,7 +277,7 @@ const ReviewCard = ({
           console.log(response);
           closeModal();
           window.location.reload();
-          openAlert("삭제가 완료되었습니다.");
+          // openAlert("삭제가 완료되었습니다.");
           setTimeout(() => {
             window.location.reload();
           }, 2000);
@@ -329,11 +336,13 @@ const ReviewCard = ({
                 marginTop: reviewImages.length > 0 ? "30px" : "0px",
               }}
             >
-              <div>
-                <span>{glampName}</span>
-                <span>|</span>
-                <span>{roomName}</span>
-              </div>
+              <Link to={`/${glampId}`}>
+                <div className="myreview-glamp-name">
+                  <span>{glampName}</span>
+                  <span>|</span>
+                  <span>{roomName}</span>
+                </div>
+              </Link>
               <p>{userReviewContent}</p>
             </div>
           </UserSection>

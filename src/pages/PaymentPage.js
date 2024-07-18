@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import PaymentCard from "../components/PaymentCard";
 import AlertModal from "../components/common/AlertModal";
 import { MainButton } from "../components/common/Button";
@@ -20,6 +25,9 @@ import {
   WrapStyle,
 } from "../styles/PaymentPageStyle";
 import $ from "jquery";
+import axios from "axios";
+import { getCookie, setCookie } from "../utils/cookie";
+import TermsModal from "../components/common/TermsModal";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
@@ -27,6 +35,101 @@ const PaymentPage = () => {
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const [nameValid, setNameValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [searchParams] = useSearchParams();
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [savePaymentMethod, setSavePaymentMethod] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+
+  const TERMS_TEXT = `[ 이용규칙 ]
+
+최대 인원 초과 시 입실이 불가합니다.
+
+정원 기준 요금 외 인원 추가 요금을 포함하여 조식, 침구, 침대 등의 추가 요금은 예약 시 옵션으로 선택하여 선결제하실 수 있습니다. 선결제 하지 않거나 예약 시 옵션에 포함되지 않은 추가 비용이 있을 시 이는 현장결제 대상입니다.
+
+제공 이미지는 배정된 객실과 다를 수 있습니다.
+
+제공 정보는 숙소의 사정에 따라 변경될 수 있습니다.
+
+미성년자는 보호자 동반 시 투숙이 가능합니다.
+
+반려동물은 숙소 규정에 따라 출입이 제한되오니 숙소별 상세정보를 꼭 확인해 주세요. 
+
+[ 취소 / 환불규정 ]
+
+글램픽에서 판매되는 글램핑장은 예약/결제 후 1시간 이내에는 무료취소 가능합니다. (단, 체크인 시간 경과 시 취소불가)
+
+숙소 사정에 의해 취소 발생 시 100% 환불이 가능합니다.
+
+예약 상품 별 숙소 정보에 기재된 취소, 환불 규정을 반드시 확인 후 이용해주시기 바랍니다.
+
+취소, 변경 불가 상품은 규정과 상관없이 취소, 변경이 불가합니다.
+`;
+
+  //결제 시 사용할 변수
+  //글램핑 아이디
+  const { glampId } = useParams();
+  // 객실 아이디
+  const roomId = searchParams.get("roomId");
+  // 입실날짜
+  const inDate = searchParams.get("inDate") || getDefaultDate(0);
+  // 퇴실날짜
+  const outDate = searchParams.get("outDate") || getDefaultDate(1);
+  // 인원
+  const people = searchParams.get("people") || 2;
+
+  //유저정보
+  const [accessToken, setAccessToken] = useState("");
+  const [userInfo, setUserInfo] = useState({
+    userPhone: "",
+  });
+
+  // 기본값 설정 함수
+  const getDefaultDate = daysToAdd => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysToAdd);
+    return date.toISOString().split("T")[0];
+  };
+
+  // 토큰정보 불러오기
+  useEffect(() => {
+    const fetchAccessToken = () => {
+      try {
+        const token = getCookie("access-Token");
+        if (token) {
+          setAccessToken(token);
+        } else {
+          console.log("엑세스 토큰 없음");
+        }
+      } catch (error) {
+        console.log("엑세스 토큰 가져오는 중 에러", error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
+
+  // 유저 정보 불러오기
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        if (!accessToken) return;
+        const response = await axios.get(`/api/user`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setUserInfo({
+          userPhone: response.data.userPhone,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUser();
+  }, [accessToken]);
+
+  const formatPhone = phoneNumber => {
+    return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
+  };
 
   const namePattern = /^[가-힣]{1,10}$/;
 
@@ -41,21 +144,11 @@ const PaymentPage = () => {
 
   const location = useLocation();
   const glampName = location.state.glampName;
-  console.log("glampName", glampName);
   const checkInTime = location.state.checkInTime;
-  console.log("checkInTime", checkInTime);
   const checkOutTime = location.state.checkOutTime;
-  console.log("checkOutTime", checkOutTime);
-  const roomNumPeople = location.state.roomNumPeople;
-  console.log("roomNumPeople", roomNumPeople);
-  const roomMaxPeople = location.state.roomMaxPeople;
-  console.log("roomMaxPeople", roomMaxPeople);
   const roomName = location.state.roomName;
-  console.log("roomName", roomName);
   const roomPrice = location.state.roomPrice;
-  console.log("roomPrice", roomPrice);
   const roomMainImage = location.state.roomMainImage;
-  console.log("roomMainImage", roomMainImage);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -67,6 +160,13 @@ const PaymentPage = () => {
       return;
     }
 
+    if (!namePattern.test(userName)) {
+      openModal({
+        message: "이름은 1~10자 사이 한글만 가능합니다",
+      });
+      return;
+    }
+
     if (!selectedPayment) {
       openModal({
         message: "결제수단을 선택해주세요",
@@ -74,12 +174,25 @@ const PaymentPage = () => {
       return;
     }
 
-    // 이름 유효성 검사 체크
-    if (!namePattern.test(userName)) {
-      setErrorMessage("이름은 1~10자 사이 한글만 가능합니다.");
+    if (!agreeToTerms) {
+      openModal({
+        message: "이용약관 동의가 필요합니다",
+      });
       return;
     }
 
+    // 이름 유효성 검사 체크
+    if (!namePattern.test(userName)) {
+      setErrorMessage("이름은 1~10자 사이 한글만 가능합니다");
+      return;
+    }
+
+    if (savePaymentMethod) {
+      setCookie("selectedPaymentMethod", selectedPayment, {
+        path: "/",
+        expires: 30,
+      });
+    }
     // const Payment = (effect, deps) => {
     //   useEffect(() => {
     //     const jquery = document.createElement("script");
@@ -96,52 +209,76 @@ const PaymentPage = () => {
     //   return;
     // };
 
-    // 카카오페이
-    var IMP = window.IMP;
-    IMP.init("imp10657444");
-    IMP.request_pay(
-      {
-        pg: "kakaopay.TC0ONETIME",
-        pay_method: "card",
-        merchant_uid: "merchant_" + new Date().getTime(), //주문번호
-        name: "GOOTTFLEX", //상품명
-        amount: $(".amountValue").val(), //가격
-        buyer_email: $(".sessionuserID").val(), //구매자 이메일
-        buyer_name: "buyer_name", //구매자 이름
-        buyer_tel: "hp", //전화번호
-        buyer_addr: "addr", //주소
-        buyer_postcode: "123-456", //우편번호
-      },
-      function (data) {
-        if (data.success) {
-          var msg = "결제 완료";
-          msg += "고유ID : " + data.imp_uid; //아임포트 uid는 실제 결제 시 결제 고유번호를 서버와 비교해서 결제처리하는데 필요없긴함.
-          msg += "// 상점 거래ID : " + data.merchant_uid;
-          msg += "// 결제 금액 : " + data.paid_amount;
-          msg += "// 카드 승인번호 : " + data.apply_num;
+    try {
+      await axios.post(
+        "/api/book",
+        {
+          glampId: glampId,
+          roomId: roomId,
+          inputName: userName,
+          checkInDate: inDate,
+          checkOutDate: outDate,
+          pg: selectedPayment,
+          payAmount: roomPrice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      // console.log("bookingResponse.data", bookingResponse.data);
+    } catch (error) {
+      console.log(error);
+    }
 
-          $.ajax({
-            type: "post",
-            url: "/paySuccess",
-            data: { ID: data.buyer_email, amount: data.paid_amount },
-          });
-        } else {
-          alert("결제실패");
-          // var msg = "결제 실패";
-          // msg += "에러 내용" + rsp.error_msg;
-        }
-        alert(msg);
-        document.location.href = "/paymentcompleted";
-      },
-    );
+    // 카카오페이
+    // var IMP = window.IMP;
+    // IMP.init("imp10657444");
+    // IMP.request_pay(
+    //   {
+    //     pg: "kakaopay.TC0ONETIME",
+    //     pay_method: "card",
+    //     merchant_uid: "merchant_" + new Date().getTime(), //주문번호
+    //     name: "GOOTTFLEX", //상품명
+    //     amount: $(".amountValue").val(), //가격
+    //     buyer_email: $(".sessionuserID").val(), //구매자 이메일
+    //     buyer_name: "buyer_name", //구매자 이름
+    //     buyer_tel: "hp", //전화번호
+    //     buyer_addr: "addr", //주소
+    //     buyer_postcode: "123-456", //우편번호
+    //   },
+    //   function (data) {
+    //     if (data.success) {
+    //       var msg = "결제 완료";
+    //       msg += "고유ID : " + data.imp_uid; //아임포트 uid는 실제 결제 시 결제 고유번호를 서버와 비교해서 결제처리하는데 필요없긴함.
+    //       msg += "// 상점 거래ID : " + data.merchant_uid;
+    //       msg += "// 결제 금액 : " + data.paid_amount;
+    //       msg += "// 카드 승인번호 : " + data.apply_num;
+
+    //       $.ajax({
+    //         type: "post",
+    //         url: "/paySuccess",
+    //         data: { ID: data.buyer_email, amount: data.paid_amount },
+    //       });
+    //     } else {
+    //       alert("결제실패");
+    //       // var msg = "결제 실패";
+    //       // msg += "에러 내용" + rsp.error_msg;
+    //     }
+    //     alert(msg);
+    //     // document.location.href = "/paymentcompleted";
+    //   },
+    // );
 
     navigate("/paymentcompleted", {
       state: {
         glampName,
+        inDate,
+        outDate,
         checkInTime,
         checkOutTime,
-        roomNumPeople,
-        roomMaxPeople,
+        people,
         roomName,
         roomPrice,
         roomMainImage,
@@ -163,10 +300,11 @@ const PaymentPage = () => {
             <h2>픽한 글램핑</h2>
             <PaymentCard
               glampName={glampName}
+              inDate={inDate}
+              outDate={outDate}
               checkInTime={checkInTime}
               checkOutTime={checkOutTime}
-              roomNumPeople={roomNumPeople}
-              roomMaxPeople={roomMaxPeople}
+              people={people}
               roomName={roomName}
               roomPrice={roomPrice}
               roomMainImage={roomMainImage}
@@ -200,10 +338,12 @@ const PaymentPage = () => {
               <ReservationInput>
                 <label htmlFor="cellphone">휴대폰 번호</label>
                 <input
-                  type="text"
+                  className="cellphone"
+                  type="tel"
                   id="cellphone"
                   autoComplete="off"
-                  placeholder="010-1234-5678"
+                  value={formatPhone(userInfo.userPhone)}
+                  readOnly
                 />
                 <p>
                   입력하신 휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다
@@ -231,7 +371,12 @@ const PaymentPage = () => {
             </PaymentTypeList>
             <div className="next-check">
               <label htmlFor="check1" className="check-label">
-                <input type="checkbox" id="check1" />
+                <input
+                  type="checkbox"
+                  id="check1"
+                  checked={savePaymentMethod}
+                  onChange={e => setSavePaymentMethod(e.target.checked)}
+                />
                 <span className="checkbox-icon"></span>
                 <p>이 결제 수단을 다음에도 사용</p>
               </label>
@@ -241,9 +386,27 @@ const PaymentPage = () => {
           <PayButton>
             <div className="agree-box">
               <label htmlFor="check2" className="check-label">
-                <input type="checkbox" id="check2" />
+                <input
+                  type="checkbox"
+                  id="check2"
+                  checked={agreeToTerms}
+                  onChange={e => setAgreeToTerms(e.target.checked)}
+                />
                 <span className="checkbox-icon"></span>
-                <span>약관 전체동의</span>
+                <span>이용약관 동의</span>
+                <p
+                  onClick={() => {
+                    setIsTermsModalOpen(true);
+                  }}
+                >
+                  약관보기 &gt;
+                </p>
+                <TermsModal
+                  isOpen={isTermsModalOpen}
+                  onClose={() => setIsTermsModalOpen(false)}
+                  title="숙소 이용규칙 및 취소/환불규정 동의"
+                  content={TERMS_TEXT}
+                />
               </label>
             </div>
             <MainButton
