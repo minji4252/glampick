@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useState, useRef, useEffect } from "react";
 import { MdOutlineArrowBackIos } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,7 +17,7 @@ import {
   SmallSwiper,
 } from "../styles/RoomDetailStyle";
 import { fetchRoomImages } from "../apis/glamping";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 const RoomDetail = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -28,12 +29,11 @@ const RoomDetail = () => {
 
   const location = useLocation();
   const glampName = location.state.glampName;
+  const { glampId } = useParams();
 
   useEffect(() => {
     const getRoomImages = async () => {
       try {
-        // 임시
-        const glampId = 1;
         const data = await fetchRoomImages(glampId);
         setRoomData(data.moreRoomImages);
       } catch (error) {
@@ -104,7 +104,7 @@ const RoomDetail = () => {
                 <SwiperSlide key={index}>
                   <div
                     style={{
-                      backgroundImage: `url(${image})`,
+                      backgroundImage: `url(${process.env.PUBLIC_URL}/${image})`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                       backgroundSize: "cover",
@@ -134,7 +134,7 @@ const RoomDetail = () => {
                 <SwiperSlide key={index} virtualIndex={index}>
                   <div
                     style={{
-                      backgroundImage: `url(${image})`,
+                      backgroundImage: `url(${process.env.PUBLIC_URL}/${image})`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                       backgroundSize: "cover",

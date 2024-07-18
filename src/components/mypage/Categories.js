@@ -20,7 +20,7 @@ const CategoriesStyle = styled.div`
   h1 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
   }
 
   h2 {
@@ -84,7 +84,7 @@ const Categories = () => {
   const [accessToken, setAccessToken] = useState("");
   const [userInfo, setUserInfo] = useState({
     userEmail: "",
-    userName: "",
+    userNickname: "",
   });
 
   // 토큰정보 불러오기
@@ -117,7 +117,7 @@ const Categories = () => {
         // console.log(response);
         setUserInfo({
           userEmail: response.data.userEmail,
-          userName: response.data.userName,
+          userNickname: response.data.userNickname,
         });
       } catch (error) {
         console.log(error);
@@ -131,7 +131,7 @@ const Categories = () => {
   return (
     <CategoriesStyle>
       <div>
-        <h1>{userInfo.userName}</h1>
+        <h1>{userInfo.userNickname}</h1>
         <h2>@{userPreEmail}</h2>
       </div>
 

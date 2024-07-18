@@ -140,6 +140,11 @@ export const ReservationInput = styled.div`
     color: ${colorSystem.error};
     font-size: 0.8rem;
   }
+
+  .cellphone {
+    cursor: default;
+    caret-color: transparent !important;
+  }
 `;
 
 export const UnderLine = styled.div`
@@ -196,6 +201,7 @@ export const PayButton = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 50px;
 
   .agree-box {
     max-width: 290px;
@@ -206,13 +212,28 @@ export const PayButton = styled.div`
     background-color: ${colorSystem.g150};
     padding: 10px;
     border-radius: 8px;
+    position: relative;
 
     span {
       font-weight: 700;
+      cursor: pointer;
+    }
+
+    p {
+      position: absolute;
+      right: 0;
+      margin-right: 15px;
+      font-size: 0.8rem;
+      color: ${colorSystem.g600};
+
+      &:hover {
+        color: ${colorSystem.black};
+        cursor: pointer;
+      }
     }
   }
 
-  button {
+  > button {
     margin-top: 20px;
     margin-bottom: 100px;
     max-width: 290px;

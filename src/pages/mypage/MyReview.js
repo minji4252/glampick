@@ -150,6 +150,7 @@ const MyReview = () => {
             },
           },
         );
+        console.log(response.data.reviewListItems);
         setReviews(response.data.reviewListItems);
         setSearchResults(response.data.totalReviewsCount);
       } catch (error) {
@@ -162,13 +163,12 @@ const MyReview = () => {
 
   // 페이지 개수 계산
   const totalPages = Math.ceil(searchResults / postPerPage);
-  console.log("총 몇 페이지?", totalPages);
 
   return (
     <WrapStyle>
       <Categories />
       <div className="inner">
-        <h3>나의 후기 ({reviews?.length}개)</h3>
+        <h3>나의 후기 ({Number(searchResults)}개)</h3>
 
         {reviews?.length > 0 && (
           <MyReviewInfo>
@@ -188,6 +188,7 @@ const MyReview = () => {
                 reviewId={review.reviewId}
                 userNickName={review.userNickName}
                 glampName={review.glampName}
+                glampId={review.glampId}
                 roomName={review.roomName}
                 createdAt={review.createdAt}
                 userReviewContent={review.userReviewContent}

@@ -22,13 +22,14 @@ const NavMain = styled.div`
   background: url(${glampickLogoMain}) no-repeat center;
   background-size: cover;
   position: absolute;
+  cursor: pointer;
 `;
 const NotfoundPage = () => {
   return (
     <NotfoundWrap>
-      <NavMain>
-        <Link to="/" />
-      </NavMain>
+      <Link to="/">
+        <NavMain />
+      </Link>
     </NotfoundWrap>
   );
 };

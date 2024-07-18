@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../styles/color";
 import payImg from "../images/payImg.png";
@@ -48,9 +49,6 @@ const PayRoomImg = styled.div`
   width: 100%;
   .pay-img {
     border-radius: 10px;
-
-    /* background: url(${payImg}) no-repeat center; */
-    background-size: cover;
     width: 100%;
     height: 190px;
   }
@@ -64,6 +62,7 @@ const PayMiddle = styled.div`
     padding: 0 0 25px 25px;
   }
 `;
+
 const PayRoomInfo = styled.div`
   h3 {
     margin-top: 20px;
@@ -73,6 +72,7 @@ const PayRoomInfo = styled.div`
     }
   }
 `;
+
 const PayRoomContent = styled.div`
   margin-top: 65px;
 
@@ -85,6 +85,11 @@ const PayRoomContent = styled.div`
       color: ${colorSystem.g300};
       font-weight: 500;
       width: 50px;
+    }
+
+    h4 {
+      font-weight: 500;
+      letter-spacing: 0.3px;
     }
 
     p {
@@ -142,6 +147,7 @@ const VerticalLine = styled.div`
     margin: 0;
   }
 `;
+
 const PriceInfo = styled.div`
   p {
     color: ${colorSystem.g400};
@@ -151,14 +157,17 @@ const PriceInfo = styled.div`
     font-weight: 600;
   }
 `;
+
 const UnderLine = styled.div`
   border-bottom: 1px solid ${colorSystem.g200};
   margin-top: 45px;
+
   ${size.mid95} {
     max-width: 200px;
     margin-top: 20px;
   }
 `;
+
 const PriceTotal = styled.div`
   p {
     font-weight: 600;
@@ -173,10 +182,13 @@ const PriceTotal = styled.div`
 
 const PaymentCard = ({
   glampName,
+  inDate,
+  outDate,
   checkInTime,
   checkOutTime,
-  roomNumPeople,
-  roomMaxPeople,
+  people,
+  // roomNumPeople,
+  // roomMaxPeople,
   roomName,
   roomPrice,
   roomMainImage,
@@ -184,6 +196,15 @@ const PaymentCard = ({
   const formatTime = time => {
     const [hours, minutes] = time.split(":");
     return `${hours}:${minutes}`;
+  };
+
+  const formatDate = date => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    const [year, month, day] = date.split("-");
+    const parsedDate = new Date(year, month - 1, day);
+    const dayOfWeek = days[parsedDate.getDay()];
+
+    return `${month}.${day} (${dayOfWeek})`;
   };
 
   const formattedPrice = Number(roomPrice).toLocaleString("ko-KR");
@@ -196,7 +217,7 @@ const PaymentCard = ({
             <div
               className="pay-img"
               style={{
-                backgroundImage: `url(${roomMainImage})`,
+                backgroundImage: `url(${process.env.PUBLIC_URL}/${roomMainImage})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
@@ -215,16 +236,14 @@ const PaymentCard = ({
               </div>
               <div className="pay-room-item">
                 <span>일정</span>
-                <p>
-                  06.26 (수) {formatTime(checkInTime)} ~ 06.27 (목){" "}
-                  {formatTime(checkOutTime)}
-                </p>
+                <h4>
+                  {formatDate(inDate)} {formatTime(checkInTime)} ~{" "}
+                  {formatDate(outDate)} {formatTime(checkOutTime)}
+                </h4>
               </div>
               <div className="pay-room-item">
-                <span>기준인원</span>
-                <p>
-                  {roomNumPeople}인, 최대 {roomMaxPeople}인
-                </p>
+                <span>인원</span>
+                <p>{people}인</p>
               </div>
             </PayRoomContent>
           </PayRoomInfo>

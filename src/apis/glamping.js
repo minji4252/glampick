@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import axios from "axios";
 
 // *** GlampingDetail.js 함수 ****
@@ -11,7 +12,7 @@ export const fetchGlampingData = async (
 ) => {
   try {
     const response = await axios.get(
-      `api/glamping/info?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
+      `${process.env.PUBLIC_URL}/api/glamping/info?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
     );
 
     return response.data;
@@ -24,11 +25,14 @@ export const fetchGlampingData = async (
 // 2. 관심 글램핑장 하트 버튼
 export const toggleLikeGlamping = async (glampId, accessToken) => {
   try {
-    const res = await axios.get(`/api/glamping/favorite?glampId=${glampId}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+    const res = await axios.get(
+      `${process.env.PUBLIC_URL}/api/glamping/favorite?glampId=${glampId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+    );
     return res.data.resultValue;
   } catch (error) {
     console.error("Error toggling like status:", error);
@@ -40,7 +44,7 @@ export const toggleLikeGlamping = async (glampId, accessToken) => {
 export const fetchMoreRooms = async (glampId, startDate, endDate, statusId) => {
   try {
     const response = await axios.get(
-      `api/glamping/info/moreRooms?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
+      `${process.env.PUBLIC_URL}/api/glamping/info/moreRooms?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
     );
     return response.data;
   } catch (error) {
