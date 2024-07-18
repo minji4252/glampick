@@ -40,6 +40,12 @@ const PaymentPage = () => {
   const [savePaymentMethod, setSavePaymentMethod] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
+  const [reservationInfo, setReservationInfo] = useState({
+    roomPrice: 0,
+    extraChargePrice: 0,
+    payAmount: 0,
+  });
+
   const TERMS_TEXT = `[ 이용규칙 ]
 
 최대 인원 초과 시 입실이 불가합니다.
@@ -127,6 +133,32 @@ const PaymentPage = () => {
     getUser();
   }, [accessToken]);
 
+  useEffect(() => {
+    const fetchReservationInfo = async () => {
+      // eslint-disable-next-line no-undef
+      const apiUrl = `${process.env.PUBLIC_URL}/api/book/reservation?roomId=${roomId}&personnel=${people}&glampId=${glampId}`;
+      try {
+        const response = await axios.get(apiUrl);
+        console.log("response11", response);
+        setReservationInfo(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchReservationInfo();
+  }, [glampId, roomId]);
+
+  const formatRoomPrice = Number(reservationInfo.roomPrice).toLocaleString(
+    "ko-KR",
+  );
+  const formatExtraPrice = Number(
+    reservationInfo.extraChargePrice,
+  ).toLocaleString("ko-KR");
+  const formatPayAmount = Number(reservationInfo.payAmount).toLocaleString(
+    "ko-KR",
+  );
+
   const formatPhone = phoneNumber => {
     return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
   };
@@ -188,9 +220,12 @@ const PaymentPage = () => {
     }
 
     if (savePaymentMethod) {
+      const expires = new Date();
+      expires.setDate(expires.getDate() + 30); // 현재 날짜에서 30일 후로 설정
+
       setCookie("selectedPaymentMethod", selectedPayment, {
         path: "/",
-        expires: 30,
+        expires: expires.toUTCString(), // Date 객체를 문자열로 변환하여 설정
       });
     }
     // const Payment = (effect, deps) => {
@@ -283,8 +318,9 @@ const PaymentPage = () => {
         roomName,
         roomPrice,
         roomMainImage,
-        roomId,
-        glampId,
+        formatRoomPrice,
+        formatExtraPrice,
+        formatPayAmount,
       },
     });
   };
@@ -311,8 +347,9 @@ const PaymentPage = () => {
               roomName={roomName}
               roomPrice={roomPrice}
               roomMainImage={roomMainImage}
-              roomId={roomId}
-              glampId={glampId}
+              formatRoomPrice={formatRoomPrice}
+              formatExtraPrice={formatExtraPrice}
+              formatPayAmount={formatPayAmount}
             />
           </div>
         </InfoStyle>
@@ -374,7 +411,7 @@ const PaymentPage = () => {
                 <img alt="tosspay" src={tosspay} />
               </div>
             </PaymentTypeList>
-            <div className="next-check">
+            {/* <div className="next-check">
               <label htmlFor="check1" className="check-label">
                 <input
                   type="checkbox"
@@ -385,7 +422,7 @@ const PaymentPage = () => {
                 <span className="checkbox-icon"></span>
                 <p>이 결제 수단을 다음에도 사용</p>
               </label>
-            </div>
+            </div> */}
           </PaymentMethod>
 
           <PayButton>
@@ -415,7 +452,7 @@ const PaymentPage = () => {
               </label>
             </div>
             <MainButton
-              label={`${Number(roomPrice).toLocaleString("ko-KR")}원 결제하기`}
+              label={`${formatPayAmount}원 결제하기`}
               onClick={e => {
                 handleSubmit(e);
               }}

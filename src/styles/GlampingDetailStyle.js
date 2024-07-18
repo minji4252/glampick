@@ -27,20 +27,15 @@ export const GlampingDetailStyle = styled.div`
     font-weight: 700;
   }
 
-  h4:before {
-    content: "·";
-    font-size: 27px;
-    vertical-align: middle;
-    margin-right: 5px;
-  }
-
   h4 {
     font-size: 0.95rem;
     line-height: 1.6rem;
     display: flex;
     align-items: center;
-    margin-left: 10px;
+    margin-left: 15px;
     font-weight: 300;
+    margin-top: 15px;
+    white-space: pre-line;
   }
 
   button {
@@ -530,10 +525,10 @@ export const InfoGroup = styled.div`
       font-weight: 500;
     }
 
-    > div {
+    /* > div {
       margin-top: 15px;
       line-height: 1.3rem;
-    }
+    } */
   }
 `;
 
