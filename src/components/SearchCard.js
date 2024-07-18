@@ -25,15 +25,19 @@ const SearchCard = ({
 
   return (
     <SearchContent key={glampId}>
-      <div
-        className="search-image"
-        style={{
-          backgroundImage: `url(${glampPic})`,
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundSize: "cover",
-        }}
-      />
+      <Link
+        to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
+      >
+        <div
+          className="search-image"
+          style={{
+            backgroundImage: `url(${glampPic})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+          }}
+        />
+      </Link>
       <div className="search-detail">
         <div className="sc-top">
           <div className="sc-name">{glampName}</div>
