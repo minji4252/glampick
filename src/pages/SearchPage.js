@@ -25,6 +25,7 @@ const SearchPage = () => {
     glampingListItems: [],
   });
   const [searchData, setSearchData] = useState([]);
+  // 필터 아이콘 선택
   const [activeFilters, setActiveFilters] = useState({
     pet: false,
     ocean: false,
@@ -35,6 +36,7 @@ const SearchPage = () => {
     barbecue: false,
   });
 
+  // 검색 결과
   const [region, setRegion] = useState(""); // 지역
   const [inDate, setInDate] = useState(""); // 체크인
   const [outDate, setOutDate] = useState(""); // 체크아웃
@@ -45,6 +47,7 @@ const SearchPage = () => {
 
   const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
 
+  // URL 쿼리 매개변수
   const [searchParams, setSearchParams] = useSearchParams();
   const region1 = searchParams.get("region"); // URL에서 지역 가져옴
   const inDate1 = searchParams.get("inDate"); // 체크인 날짜
@@ -53,6 +56,7 @@ const SearchPage = () => {
   const searchWord1 = searchParams.get("searchWord"); // 검색어
   const [loading, setLoading] = useState(false);
 
+  // 필터 아이콘 번호로
   const filterMapping = {
     pet: 4,
     ocean: 2,
@@ -63,6 +67,7 @@ const SearchPage = () => {
     barbecue: 5,
   };
 
+  // 지역명 한글로
   const regionNames = {
     all: "전국",
     seoul: "서울/경기",
@@ -76,10 +81,12 @@ const SearchPage = () => {
     jeju: "제주",
   };
 
+  // 정렬 select값 정수로
   const handleSortChange = e => {
     setSort(parseInt(e.target.value));
   };
 
+  // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
     setActiveFilters(prevState => ({
       ...prevState,
@@ -93,6 +100,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     const params = {
+      // 페이지가 변경될 때마다 URL 매개변수 업데이트
       region: region1,
       inDate: inDate1,
       outDate: outDate1,
@@ -105,6 +113,7 @@ const SearchPage = () => {
         .join(","),
     };
 
+    // 검색어 null 또는 빈문자열 아닌 경우에만 업뎃
     if (searchWord1) {
       params.searchWord = searchWord1;
     }

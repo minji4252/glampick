@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { SearchContent } from "../styles/SearchPageStyle";

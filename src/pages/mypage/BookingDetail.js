@@ -9,6 +9,7 @@ import { colorSystem, size } from "../../styles/color";
 import { getCookie } from "../../utils/cookie";
 import { MainButton } from "../../components/common/Button";
 import { Link } from "react-router-dom";
+import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   .inner {
@@ -158,12 +159,14 @@ const BookingDetail = () => {
   const [upcomingBookings, setUpcomingBookings] = useState([]);
   const [completedBookings, setCompletedBookings] = useState([]);
   const [cancelledBookings, setCancelledBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
         const token = getCookie("access-Token");
+        setLoading(true);
         if (token) {
           setAccessToken(token);
         } else {
@@ -185,6 +188,7 @@ const BookingDetail = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
+        setLoading(false);
         console.log(response);
 
         const {
@@ -203,6 +207,7 @@ const BookingDetail = () => {
         console.log(error);
       }
     };
+
     getUserBook();
   }, [accessToken]);
 
@@ -212,6 +217,7 @@ const BookingDetail = () => {
 
   return (
     <WrapStyle>
+      {loading && <Loading />}
       <Categories />
       <div className="inner">
         <h3>예약 내역</h3>
