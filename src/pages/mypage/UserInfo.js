@@ -7,7 +7,12 @@ import DeleteModal from "../../components/common/DeleteModal";
 import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 import Categories from "../../components/mypage/Categories";
 import { colorSystem, size } from "../../styles/color";
-import { deleteUser, getUser } from "../../apis/userapi";
+import {
+  deleteUser,
+  getUser,
+  postCheckSms,
+  postSendSms,
+} from "../../apis/userapi";
 import { getCookie, removeCookie } from "../../utils/cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -108,11 +113,20 @@ const WrapStyle = styled.div`
     display: block;
     font-size: 1.1rem;
     margin-top: 30px;
-    margin-bottom: 7px;
+    margin-bottom: 10px;
   }
 
   .form-group {
     width: 100%;
+  }
+
+  /* 변경 불가한 input 컬러 다르게 적용 */
+  #email {
+    background-color: ${colorSystem.g100};
+  }
+
+  #name {
+    background-color: ${colorSystem.g100};
   }
 
   .form-group input,
@@ -120,7 +134,9 @@ const WrapStyle = styled.div`
     width: 100%;
     height: 40px;
     border: none;
-    background-color: ${colorSystem.g100};
+    background-color: ${colorSystem.white};
+    border: 1px solid ${colorSystem.g100};
+    /* box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1); */
     padding: 10px;
     font-size: 0.95rem;
     border-radius: 10px;
@@ -140,22 +156,39 @@ const WrapStyle = styled.div`
 
   /* 각 항목 변경하기 버튼 */
   .form-button > button {
-    width: 140px;
+    width: 10px;
     height: 40px;
     font-size: 0.9rem;
-  }
-
-  // 인증코드 발송 버튼
-  .auth-code-btn {
-    position: absolute;
-    top: 500px;
-    right: 0px;
+    border-radius: 10px;
     ${size.mid} {
-      top: 500px;
-      right: 40px;
+      font-size: 0.8rem;
     }
   }
 
+  /* 휴대폰 input, 인증번호 발송 버튼 그룹 */
+  .input-group {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+  }
+
+  // 휴대폰 input
+  #cellphone {
+    width: 75%;
+  }
+
+  #auth-number {
+    width: 75%;
+  }
+
+  .auth-number-btn {
+    > button {
+      padding: 8px 10px;
+      ${size.mid} {
+        font-size: 0.8rem;
+      }
+    }
+  }
   /* 수정하기 버튼 */
   .modify-btn {
     width: 100%;
@@ -222,6 +255,10 @@ const UserInfo = () => {
   const passwordPattern =
     /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const phonePattern = /^[0-9]{11,13}$/;
+  const authNumberPattern = /^[0-9]{6}$/;
+
+  // 인증번호
+  const [authNumber, setAuthNumber] = useState("");
 
   // 유저정보 업데이트 상태 관리
   const [updatedNickname, setUpdatedNickname] = useState("");
@@ -239,6 +276,7 @@ const UserInfo = () => {
   const [nickNameValid, setNickNameValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   const [phoneValid, setPhoneValid] = useState(true);
+  const [authNumberValid, setAuthNumberValid] = useState(true);
 
   // 핸드폰 인증코드 발송 여부 확인
   const [isSmsSent, setIsSmsSent] = useState(false);
@@ -459,6 +497,83 @@ const UserInfo = () => {
       console.error("유저 정보 업데이트 오류", error);
     }
   };
+  // 핸드폰 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    if (phoneTimer > 0 && !phoneTimerId) {
+      const id = setInterval(() => {
+        setPhoneTimer(prevPhoneTimer => prevPhoneTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setPhoneTimerId(id);
+    } else if (phoneTimer === 0 && phoneTimerId) {
+      clearInterval(phoneTimerId);
+      setPhoneTimerId(null);
+    }
+    return () => {
+      if (phoneTimerId) {
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
+    };
+  }, [phoneTimer, phoneTimerId]);
+
+  // 핸드폰 인증시 처리할 함수
+  const handleSmsSubmit = async e => {
+    e.preventDefault();
+    const result = await postSendSms({ userPhone: userInfo.userPhone });
+    console.log(result.data);
+    if (result.data.code === "SU") {
+      openModal({
+        message: "인증코드가 발송되었습니다. 문자메세지를 확인해주세요",
+      });
+      // Sms 발송 성공
+      setIsSmsSent(true);
+      setPhoneTimer(299);
+    } else if (result.data.code === "IPH") {
+      openModal({
+        message: "전화번호 형식이 올바르지 않습니다.",
+      });
+    } else if (result.data.code === "DT") {
+      openModal({
+        message: "중복된 전화번호 입니다.",
+      });
+    } else {
+      openModal({
+        message: "발송 실패하였습니다. 다시 시도해주세요",
+      });
+    }
+  };
+  // 핸드폰 인증코드 처리할 함수
+  const handleAuthNumberSubmit = async e => {
+    e.preventDefault();
+
+    const result = await postCheckSms({
+      userPhone: userInfo.userPhone,
+      authNumber,
+    });
+    console.log(result);
+    if (result.data.code === "SU") {
+      setIsPhoneVerified(true);
+      setIsAuthNumberVerified(true);
+      openModal({
+        message: "인증이 완료되었습니다.",
+      });
+      setIsSmsSent(false);
+      setPhoneTimer(0);
+      if (phoneTimerId) {
+        // 타이머 중지
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
+    } else if (result.data.code === "IC") {
+      openModal({
+        message: "인증코드가 올바르지 않습니다.",
+      });
+    } else {
+      openModal({
+        message: "인증에 실패하였습니다. 다시 시도해주세요",
+      });
+    }
+  };
 
   return (
     <WrapStyle>
@@ -569,40 +684,66 @@ const UserInfo = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="cellphone">휴대폰</label>
-                <input
-                  type="text"
-                  id="cellphone"
-                  placeholder="휴대폰번호를 정확히 입력해주세요"
-                  value={userInfo.userPhone}
-                  onChange={e => {
-                    handlePhoneChange(e);
-                    setPhoneValid(phonePattern.test(e.target.value));
-                  }}
-                />
-                {/* <div className="form-button">
-                  <div className="auth-code-btn">
-                    <MainButton
-                      label="인증번호 발송"
-                      // onClick={e => {
-                      //   handleSmsSubmit(e);
-                      // }}
-                    />
+                <div className="input-group">
+                  <input
+                    type="text"
+                    id="cellphone"
+                    className="phone-input"
+                    placeholder="휴대폰번호를 정확히 입력해주세요"
+                    value={userInfo.userPhone}
+                    onChange={e => {
+                      handlePhoneChange(e);
+                      setPhoneValid(phonePattern.test(e.target.value));
+                    }}
+                  />
+                  <div className="form-button">
+                    <div className="auth-number-btn">
+                      <MainButton
+                        label="인증번호 발송"
+                        onClick={e => {
+                          handleSmsSubmit(e);
+                        }}
+                      />
+                    </div>
                   </div>
-                </div> */}
+                </div>
                 {!phoneValid && (
                   <p className="error-message">
                     핸드폰 번호를 바르게 기재해주세요 (11~13자의 숫자만 가능)
                   </p>
                 )}
               </div>
-              {/* <div className="form-group">
-                <label htmlFor="auth-number">인증번호</label>
-                <input
-                  type="text"
-                  id="auth-number"
-                  placeholder="인증번호를 입력해주세요"
-                />
-              </div> */}
+              {isSmsSent && (
+                <div className="form-group">
+                  <label htmlFor="auth-number">인증번호</label>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      id="auth-number"
+                      maxLength="6"
+                      pattern="\d{6}"
+                      placeholder="인증번호를 입력해주세요"
+                      value={authNumber}
+                      onChange={e => {
+                        setAuthNumber(e.target.value);
+                        setAuthNumberValid(
+                          authNumberPattern.test(e.target.value),
+                        );
+                      }}
+                    />
+                    <div className="form-button">
+                      <div className="auth-number-btn">
+                        <MainButton
+                          label="확인"
+                          onClick={e => {
+                            handleAuthNumberSubmit(e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="modify-btn">
                 <MainButton
                   label="수정하기"

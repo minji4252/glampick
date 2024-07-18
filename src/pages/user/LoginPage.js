@@ -234,7 +234,7 @@ const LoginPage = () => {
     const result = await postSignIn({ userEmail, userPw });
     // console.log(result.code);
     if (result.code === "SU") {
-      console.log(result);
+      // console.log(result);
       // 로그인 성공 시 쿠키에 사용자 정보 저장
       setCookie("access-Token", result.accessToken);
       openModal({ message: "로그인 성공하였습니다!" });
@@ -246,7 +246,7 @@ const LoginPage = () => {
         }
       }, 1000); // 1초 후에 페이지 이동
     } else {
-      console.log("로그인 실패");
+      // console.log("로그인 실패");
       setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
     }
     // navigate("/");
