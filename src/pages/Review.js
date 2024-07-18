@@ -124,12 +124,14 @@ const Review = () => {
   const [showModal, setShowModal] = useState(false);
   const [reviewData, setReviewData] = useState([]);
   const [reviewImages, setReviewImages] = useState([]);
-  const [roomNames, setRoomNames] = useState([]);
-  const [allReviewImages, setAllReviewImages] = useState([]);
-  const [reviewImagesLength, setReviewImagesLength] = useState(0); // 리뷰 이미지 개수 상태 추가
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const [totalPages, setTotalPages] = useState(1); // 총 페이지 수
-  const [page, setPage] = useState(1); // 페이지 상태 추가
+  // 리뷰 이미지 개수 상태 추가
+  const [reviewImagesLength, setReviewImagesLength] = useState(0);
+  // 현재 페이지
+  const [currentPage, setCurrentPage] = useState(1);
+  // 총 페이지 수
+  const [totalPages, setTotalPages] = useState(1);
+  // 페이지 상태 추가
+  const [page, setPage] = useState(1);
 
   // 평균 평점 불러오기
   const location = useLocation();
@@ -145,6 +147,7 @@ const Review = () => {
           `/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
         const data = response.data;
+
         console.log(data);
       } catch (error) {
         console.log(error);
@@ -161,17 +164,21 @@ const Review = () => {
         const response = await axios.get(
           `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );
+        console.log(glampId);
         const data = response.data;
+        setReviewImagesLength(data.totalImagesCount); // 총 리뷰 이미지 개수
 
         console.log(data);
         setReviewData(data.reviewListItems); // 리뷰 데이터 배열을 state에 저장
+        setTotalPages(Math.ceil(data.totalReviewCount / 5)); // 총 페이지 수 설정
 
         // 리뷰 데이터에서 리뷰 이미지 추출하여 state에 저장
         const images = data.reviewListItems
           .map(review => review.reviewImages)
           .flat();
         setReviewImages(images);
-        setReviewImagesLength(images.length); // 리뷰 이미지 개수 저장
+        // 총 페이지 수 설정
+        setTotalPages(Math.ceil(data.totalReviewCount / 5));
       } catch (error) {
         console.log(error);
       }
@@ -183,9 +190,6 @@ const Review = () => {
   const handlePageChange = pageNumber => {
     setPage(pageNumber);
   };
-
-  const totalItems = reviewData.length;
-  const itemsPerPage = 5;
 
   // 모달창 열고 닫기
   const toggleModal = () => {
@@ -254,7 +258,7 @@ const Review = () => {
       )}
       <ListPagination
         currentPage={currentPage}
-        totalItems={reviewData.length}
+        totalItems={reviewImagesLength}
         itemsPerPage={5}
         onPageChange={handlePageChange}
         totalPages={totalPages}
