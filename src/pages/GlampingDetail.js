@@ -224,16 +224,16 @@ const GlampingDetail = ({ isLogin }) => {
     return `${hours}:${minutes}`;
   };
 
-  const changeOfLine = text => {
-    return text
-      .split("\r\n")
-      .map(line => {
-        return line.trim().length > 0
-          ? `<span style="font-size: 23px;">·</span> ${line.replace(/^- /, "").trim()}`
-          : "";
-      })
-      .join("<br>");
-  };
+  // const changeOfLine = text => {
+  //   return text
+  //     .split("\r\n")
+  //     .map(line => {
+  //       return line.trim().length > 0
+  //         ? `<span style="font-size: 23px;">·</span> ${line.replace(/^- /, "").trim()}`
+  //         : "";
+  //     })
+  //     .join("<br>");
+  // };
 
   const getServiceClassName = service => {
     switch (service) {
@@ -430,7 +430,7 @@ const GlampingDetail = ({ isLogin }) => {
             ))
           )}
 
-          {roomItems.length >= 5 && (
+          {roomItems.length >= 5 && !allRoomsSoldOut && (
             <div className="view-all">
               {isExpanded ? (
                 <ActionButton label="접기" onClick={handleCollapseView} />
@@ -457,21 +457,11 @@ const GlampingDetail = ({ isLogin }) => {
             <InfoGroup>
               <div className="info-item">
                 <span>기본정보</span>
-                <div
-                  dangerouslySetInnerHTML={{ __html: changeOfLine(infoBasic) }}
-                />
-              </div>
-              <div className="info-item">
-                <span>주차장정보</span>
-                <div>
-                  <h4>{traffic}</h4>
-                </div>
+                <h4>{infoBasic}</h4>
               </div>
               <div className="info-item">
                 <span>유의사항</span>
-                <div>
-                  <h4>{infoNotice}</h4>
-                </div>
+                <h4>{infoNotice}</h4>
               </div>
             </InfoGroup>
           </RoomInfomation>
@@ -481,6 +471,9 @@ const GlampingDetail = ({ isLogin }) => {
             {/* <p></p> */}
             <div className="location-info">
               <span>{glampLocation}</span>
+              <div>
+                <h4>{traffic}</h4>
+              </div>
             </div>
             <UnderLine />
           </RoomLocation>

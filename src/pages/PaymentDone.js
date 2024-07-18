@@ -120,8 +120,9 @@ const PaymentDone = () => {
   const roomName = location.state.roomName;
   const roomPrice = location.state.roomPrice;
   const roomMainImage = location.state.roomMainImage;
-  const roomId = location.state.roomId;
-  const glampId = location.state.glampId;
+  const formatRoomPrice = location.state.formatRoomPrice;
+  const formatExtraPrice = location.state.formatExtraPrice;
+  const formatPayAmount = location.state.formatPayAmount;
 
   return (
     <WrapStyle>
@@ -151,8 +152,9 @@ const PaymentDone = () => {
               roomName={roomName}
               roomPrice={roomPrice}
               roomMainImage={roomMainImage}
-              roomId={roomId}
-              glampId={glampId}
+              formatRoomPrice={formatRoomPrice}
+              formatExtraPrice={formatExtraPrice}
+              formatPayAmount={formatPayAmount}
             />
           </div>
           <ButtonGroup>
