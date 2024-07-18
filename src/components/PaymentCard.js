@@ -25,7 +25,6 @@ const PaymentCard = ({
   checkOutTime,
   people,
   roomName,
-  // roomPrice,
   roomMainImage,
   roomId,
   glampId,

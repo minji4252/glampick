@@ -154,8 +154,10 @@ const MyReview = () => {
             },
           },
         );
-        console.log(response.data.reviewListItems);
-        setReviews(response.data.reviewListItems);
+        const sortedReviews = response.data.reviewListItems.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        );
+        setReviews(sortedReviews);
         setSearchResults(response.data.totalReviewsCount);
       } catch (error) {
         console.log(error);

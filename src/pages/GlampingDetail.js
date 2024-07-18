@@ -265,7 +265,7 @@ const GlampingDetail = ({ isLogin }) => {
     glampLocation,
     glampIntro,
     infoBasic,
-    infoParking,
+    traffic,
     infoNotice,
     countReviewUsers,
     reviewItems,
@@ -277,6 +277,8 @@ const GlampingDetail = ({ isLogin }) => {
 
   const allRoomsSoldOut = roomItems.every(room => !room.reservationAvailable);
 
+  console.log("allRoomsSoldOut", allRoomsSoldOut);
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -286,7 +288,7 @@ const GlampingDetail = ({ isLogin }) => {
               className="main-img"
               style={{
                 // eslint-disable-next-line no-undef
-                backgroundImage: `url(${process.env.PUBLIC_URL}/${roomMainImage})`,
+                backgroundImage: `url(${process.env.PUBLIC_URL}${roomMainImage})`,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
                 backgroundSize: "cover",
@@ -462,7 +464,7 @@ const GlampingDetail = ({ isLogin }) => {
               <div className="info-item">
                 <span>주차장정보</span>
                 <div>
-                  <h4>{infoParking}</h4>
+                  <h4>{traffic}</h4>
                 </div>
               </div>
               <div className="info-item">

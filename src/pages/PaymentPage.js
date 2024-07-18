@@ -283,6 +283,8 @@ const PaymentPage = () => {
         roomName,
         roomPrice,
         roomMainImage,
+        roomId,
+        glampId,
       },
     });
   };
