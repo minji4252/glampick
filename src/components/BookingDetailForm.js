@@ -123,7 +123,6 @@ export const BookingDetailForm = ({
   isCancelled,
   glampId,
 }) => {
-  console.log(glampId);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);

@@ -11,6 +11,8 @@ import { deleteUser, getUser } from "../../apis/userapi";
 import { getCookie, removeCookie } from "../../utils/cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import AlertModal from "../../components/common/AlertModal";
+import useModal from "../../hooks/UseModal";
 
 const WrapStyle = styled.div`
   .inner {
@@ -62,8 +64,8 @@ const WrapStyle = styled.div`
   /* 프로필 사진 수정 */
   .profile-edit {
     position: absolute;
-    bottom: -10px;
-    right: -8px;
+    bottom: -3px;
+    right: 0px;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -80,9 +82,9 @@ const WrapStyle = styled.div`
 
   /* 프로필 수정 아이콘 */
   .pencil-icon {
-    color: ${colorSystem.p500};
-    width: 35px;
-    height: 35px;
+    color: ${colorSystem.g500};
+    width: 28px;
+    height: 28px;
   }
 
   .wrap {
@@ -105,7 +107,7 @@ const WrapStyle = styled.div`
   .form-group label {
     display: block;
     font-size: 1.1rem;
-    margin-top: 20px;
+    margin-top: 30px;
     margin-bottom: 7px;
   }
 
@@ -121,14 +123,16 @@ const WrapStyle = styled.div`
     background-color: ${colorSystem.g100};
     padding: 10px;
     font-size: 0.95rem;
+    border-radius: 10px;
     /* margin-bottom: 30px; */
   }
 
   .error-message {
     display: block;
     color: ${colorSystem.error};
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-top: 5px;
+    margin-left: 5px;
     ${size.mid} {
       font-size: 0.8rem;
     }
@@ -158,7 +162,7 @@ const WrapStyle = styled.div`
     > button {
       width: 100%;
       height: 50px;
-      margin-top: 20px;
+      margin-top: 40px;
       margin-bottom: 10px;
       font-size: 1.2rem;
       ${size.mid} {
@@ -180,9 +184,9 @@ const WrapStyle = styled.div`
 
   .delete-btn {
     position: absolute;
-    right: 0;
-    font-size: 1.1rem;
-    color: ${colorSystem.g700};
+    right: 10px;
+    font-size: 1rem;
+    color: ${colorSystem.g600};
     background: none;
     border: none;
     cursor: pointer;
@@ -213,32 +217,30 @@ const UserInfo = () => {
   // 프로필 이미지 상태 추가
   const [profileImage, setProfileImage] = useState(null);
 
-  const [showButtons, setShowButtons] = useState(false);
-  // 수정하기 버튼
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [updatedNickname, setUpdatedNickname] = useState("");
-  const [updatedPhone, setUpdatedPhone] = useState("");
-  const [updatedPassword, setUpdatedPassword] = useState("");
-  const [updatedPasswordCheck, setUpdatedPasswordCheck] = useState("");
-  const [editNickname, setEditNickname] = useState(false);
-  const [editPhone, setEditPhone] = useState(false);
-
-  // 에러 메시지 상태
-  const [errorMessage, setErrorMessage] = useState("");
-
+  // 닉네임, 비밀번호, 핸드폰 유효성 검사
+  const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
   const passwordPattern =
     /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   const phonePattern = /^[0-9]{11,13}$/;
-  const nickNamePattern = /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]{2,10}$/;
+
+  // 유저정보 업데이트 상태 관리
+  const [updatedNickname, setUpdatedNickname] = useState("");
+  const [updatedPassword, setUpdatedPassword] = useState("");
+  const [updatedPhone, setUpdatedPhone] = useState("");
+
+  // 에러 메시지 상태
+  const [errorMessage, setErrorMessage] = useState("");
+  // Alert 모달 관련 상태와 함수
+  const { openModal, closeModal, isAlertModalOpen, modalMessage } = useModal();
 
   // 비밀번호 일치여부 확인
   const [userPwCheck, setUserPwCheck] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [passwordValid, setPasswordValid] = useState(true);
-
   const [nickNameValid, setNickNameValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [phoneValid, setPhoneValid] = useState(true);
 
-  // 핸드폰 발송 여부 확인
+  // 핸드폰 인증코드 발송 여부 확인
   const [isSmsSent, setIsSmsSent] = useState(false);
   // 핸드폰 인증을 위한 타이머 변수
   const [phoneTimer, setPhoneTimer] = useState(0);
@@ -246,7 +248,9 @@ const UserInfo = () => {
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isAuthNumberVerified, setIsAuthNumberVerified] = useState(false);
 
+  // 인증토큰
   const [accessToken, setAccessToken] = useState("");
+  // 유저정보
   const [userInfo, setUserInfo] = useState({
     userProfileImage: "",
     userEmail: "",
@@ -314,14 +318,9 @@ const UserInfo = () => {
 
   // 비밀번호 입력 성공 확인 함수
   const handlePasswordCheckSuccess = () => {
-    console.log("비밀번호 확인 성공");
+    // console.log("비밀번호 확인 성공");
     setIsModalOpen(false);
     // 추가적인 로직 수행 (예: 사용자 정보 수정 등)
-  };
-
-  // 프로필사진 수정하기 아이콘
-  const handleShowButtons = () => {
-    setShowButtons(true);
   };
 
   // 프로필 이미지 변경 시 미리보기 실행
@@ -426,6 +425,7 @@ const UserInfo = () => {
     // dto 필드를 JSON 문자열로 추가
     const dto = JSON.stringify({
       userNickname: updatedNickname,
+      userPw: updatedPassword,
       userPhone: updatedPhone,
     });
     formData.append("dto", dto);
@@ -448,9 +448,10 @@ const UserInfo = () => {
         setUserInfo(prev => ({
           ...prev,
           userNickname: updatedNickname,
+          userPW: updatedPassword,
           userPhone: updatedPhone,
         }));
-        //alert("수정이 완료되었습니다!")
+        openModal("수정이 완료되었습니다!");
       } else {
         console.log("업데이트 실패");
       }
@@ -486,7 +487,6 @@ const UserInfo = () => {
                 className="profile-input"
                 accept="image/*"
                 onChange={handleImageChange}
-                // value={userInfo.userProfileImage}
               />
             </div>
           </div>
@@ -574,7 +574,10 @@ const UserInfo = () => {
                   id="cellphone"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
                   value={userInfo.userPhone}
-                  onChange={handlePhoneChange}
+                  onChange={e => {
+                    handlePhoneChange(e);
+                    setPhoneValid(phonePattern.test(e.target.value));
+                  }}
                 />
                 {/* <div className="form-button">
                   <div className="auth-code-btn">
@@ -586,6 +589,11 @@ const UserInfo = () => {
                     />
                   </div>
                 </div> */}
+                {!phoneValid && (
+                  <p className="error-message">
+                    핸드폰 번호를 바르게 기재해주세요 (11~13자의 숫자만 가능)
+                  </p>
+                )}
               </div>
               {/* <div className="form-group">
                 <label htmlFor="auth-number">인증번호</label>
@@ -598,12 +606,17 @@ const UserInfo = () => {
               <div className="modify-btn">
                 <MainButton
                   label="수정하기"
-                  onClick={() => {
-                    handleShowButtons();
-                  }}
+                  // onClick={() => {
+                  //   handleShowButtons();
+                  // }}
                 />
               </div>
             </form>
+            <AlertModal
+              isOpen={isAlertModalOpen}
+              onClose={closeModal}
+              message={modalMessage}
+            />
             <div className="delete-user">
               <button
                 className="delete-btn"

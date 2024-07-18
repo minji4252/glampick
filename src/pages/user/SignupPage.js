@@ -12,6 +12,7 @@ import TermsModal from "../../components/common/TermsModal";
 import useModal from "../../hooks/UseModal";
 import { TermsGroupStyle, WrapStyle } from "../../styles/signupstyle";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/common/Loading";
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정
@@ -80,6 +81,7 @@ const SignupPage = () => {
   // 약관보기 모달 관련 상태 및 함수
   const [isTermsModalOpen, setIsModalOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   // 약관보기 모달
   const openTermsModal = modalType => {
@@ -132,9 +134,11 @@ const SignupPage = () => {
   // 메일 인증시 처리할 함수
   const handlEmailSubmit = async e => {
     e.preventDefault();
+
     const result = await postMailSend({ userEmail });
     // console.log(result.data);
     console.log(result.data.code);
+
     if (result.data.code === "SU") {
       openModal({
         message: "인증코드가 발송되었습니다. 메일을 확인해주세요",
@@ -415,6 +419,7 @@ const SignupPage = () => {
 
   return (
     <WrapStyle>
+      {/* {loading && <Loading />} */}
       <main>
         <div className="inner">
           <div className="container">

@@ -186,9 +186,9 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
           },
         },
       );
-      console.log(response);
+      // console.log(response);
       if (response.data.code === "SU") {
-        console.log("비밀번호 확인 성공");
+        // console.log("비밀번호 확인 성공");
         onSuccess();
       } else if (response.data.code === "NMP") {
         setErrorMessage("비밀번호가 일치하지 않습니다.");

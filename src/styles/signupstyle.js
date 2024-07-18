@@ -96,6 +96,7 @@ export const WrapStyle = styled.div`
     padding: 10px;
     margin-bottom: 10px;
     font-size: 0.9rem;
+    border-radius: 10px;
     ${size.mid} {
       width: calc(100% - 140px - 10px);
       font-size: 0.8rem;
