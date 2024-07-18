@@ -78,7 +78,6 @@ const SignupPage = () => {
   });
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
-  // 약관보기 모달 관련 상태 및 함수
   const [isTermsModalOpen, setIsModalOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
   const [loading, setLoading] = useState(false);
