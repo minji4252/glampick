@@ -51,7 +51,7 @@ const SearchCard = ({
         <div className="sc-bottom">
           <div className="sc-price">{formattedPrice} 원 ~</div>
           <Link
-            to={`/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
+            to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
           >
             <MainButton onClick={handleButtonClick} label="예약하기" />
           </Link>
