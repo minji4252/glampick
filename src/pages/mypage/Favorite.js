@@ -7,15 +7,18 @@ import {
   FavoriteContents,
   FavoriteStyle,
 } from "../../styles/FavoriteStyle";
+import Loading from "../../components/common/Loading";
 
 const Favorite = () => {
   const [favorites, setFavorites] = useState([]);
   const [accessToken, setAccessToken] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
         const accessTokenFromCookie = getCookie("access-Token");
+        setLoading(true);
         if (accessTokenFromCookie) {
           setAccessToken(accessTokenFromCookie);
 
@@ -31,6 +34,7 @@ const Favorite = () => {
         } else {
           console.log("쿠키에 access-Token 없음");
         }
+        setLoading(false);
       } catch (error) {
         console.error("관심 목록 가져오기 오류:", error);
       }
@@ -71,6 +75,7 @@ const Favorite = () => {
 
   return (
     <FavoriteStyle>
+      {loading && <Loading />}
       <Categories />
       <div className="inner">
         <h3>관심 목록</h3>

@@ -223,12 +223,11 @@ export const MainSearchContent = styled.ul`
       color: ${colorSystem.white};
       background: rgba(255, 255, 255, 0);
       outline: none;
-      /* position: absolute; */
     }
     > p {
-      /* position: relative; */
       font-size: 20px;
       color: ${colorSystem.white};
+      cursor: default;
     }
     ${size.large} {
       padding: 0;
@@ -341,7 +340,6 @@ export const GotoTop = styled.div`
 `;
 
 // 메인 카드 컴포넌트
-
 export const MainArticle = styled.article`
   display: flex;
   flex-direction: column;
@@ -355,8 +353,7 @@ export const MainArticle = styled.article`
     height: 190px;
     border-radius: 32px;
     box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-    /* background: url(${props => props.bgImage}) no-repeat center;
-    background-size: cover; */
+
     .article-place {
       position: absolute;
       bottom: 0;
@@ -408,6 +405,7 @@ export const ArticleContent = styled.div`
   }
   .article-detail {
     display: flex;
+    cursor: default;
     svg {
       margin: 0 5px;
       color: #ffd233;
@@ -432,6 +430,7 @@ export const ArticleContent = styled.div`
       font-size: 16px;
       font-weight: 600;
       padding-bottom: 5px;
+      cursor: default;
     }
     ${size.mid} {
       margin-top: 20px;

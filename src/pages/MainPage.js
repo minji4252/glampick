@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getPetData, getPopularData } from "../apis/main";
+import { getMountainData, getPetData, getPopularData } from "../apis/main";
 import MainCalendar from "../components/MainCalendar";
 import MainCard from "../components/MainCard";
 import { ActionButton } from "../components/common/Button";
@@ -45,6 +45,7 @@ const MainPage = ({ isLogin }) => {
     navigate("/");
   };
 
+  // 검색 결과
   const handleSearch = () => {
     const formatDate = date => {
       const year = date.getFullYear();
@@ -85,18 +86,11 @@ const MainPage = ({ isLogin }) => {
 
   // 산속에서 즐기는 TOP 3
   useEffect(() => {
-    const getMountainData = async () => {
-      try {
-        const response = await axios.get("/api/main");
-        const mountainArray = response.data.mountainView;
-        // console.log("마운틴뷰 top3");
-        // console.log(mountainArray);
-        setMountainData(mountainArray);
-      } catch (error) {
-        console.error(error);
-      }
+    const fetchMountainData = async () => {
+      const mountainArray = await getMountainData();
+      setMountainData(mountainArray);
     };
-    getMountainData();
+    fetchMountainData();
   }, []);
 
   const handleDateSelect = date => {
@@ -139,7 +133,6 @@ const MainPage = ({ isLogin }) => {
   // "맨 위로" 버튼
   const MoveToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    console.log("누름?");
   };
 
   return (
@@ -226,7 +219,7 @@ const MainPage = ({ isLogin }) => {
                 />
               </li>
               <li className="m-sc-member">
-                <div className="m-sc-member-icon"></div>
+                <div className="m-sc-member-icon" />
                 <input
                   type="number"
                   min="2"
@@ -242,7 +235,7 @@ const MainPage = ({ isLogin }) => {
               </li>
               <li className="m-sc-input">
                 <div className="m-sc-input-field">
-                  <div className="search-icon"></div>
+                  <div className="search-icon" />
                   <input
                     className="input"
                     placeholder="여행지나 숙소 검색"

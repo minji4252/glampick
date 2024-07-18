@@ -63,7 +63,7 @@ const MainCard = ({
         <div className="article-bottom">
           <div className="glamping-price">{formattedPrice} 원~</div>
           <Link to={`/${glampId}`}>
-            <MainButton label="예약하기" />
+            <MainButton label="자세히보기" />
           </Link>
         </div>
       </ArticleContent>

@@ -13,18 +13,18 @@ import SearchPageStyle, {
   SearchMenu,
   SearchResult,
   SearchTop,
+  NoResultStyle,
 } from "../styles/SearchPageStyle";
 import "../styles/common.css";
 import "../styles/reset.css";
+import Loading from "../components/common/Loading";
 
 const SearchPage = () => {
-  // const [searchResults, setSearchResults] = useState({});
   const [searchResults, setSearchResults] = useState({
     totalItems: 0,
     glampingListItems: [],
   });
   const [searchData, setSearchData] = useState([]);
-  // 필터 아이콘 선택
   const [activeFilters, setActiveFilters] = useState({
     pet: false,
     ocean: false,
@@ -35,7 +35,6 @@ const SearchPage = () => {
     barbecue: false,
   });
 
-  // 검색 결과
   const [region, setRegion] = useState(""); // 지역
   const [inDate, setInDate] = useState(""); // 체크인
   const [outDate, setOutDate] = useState(""); // 체크아웃
@@ -46,15 +45,14 @@ const SearchPage = () => {
 
   const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
 
-  // URL 쿼리 매개변수
   const [searchParams, setSearchParams] = useSearchParams();
   const region1 = searchParams.get("region"); // URL에서 지역 가져옴
   const inDate1 = searchParams.get("inDate"); // 체크인 날짜
   const outDate1 = searchParams.get("outDate"); // 체크아웃 날짜
   const people1 = searchParams.get("people"); // 인원
   const searchWord1 = searchParams.get("searchWord"); // 검색어
+  const [loading, setLoading] = useState(false);
 
-  // 필터 아이콘 번호로
   const filterMapping = {
     pet: 4,
     ocean: 2,
@@ -65,7 +63,6 @@ const SearchPage = () => {
     barbecue: 5,
   };
 
-  // 지역명 한글로
   const regionNames = {
     all: "전국",
     seoul: "서울/경기",
@@ -79,12 +76,10 @@ const SearchPage = () => {
     jeju: "제주",
   };
 
-  // 정렬 select값 정수로
   const handleSortChange = e => {
     setSort(parseInt(e.target.value));
   };
 
-  // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
     setActiveFilters(prevState => ({
       ...prevState,
@@ -93,13 +88,10 @@ const SearchPage = () => {
   };
 
   // 페이지 개수 계산
-  console.log("searchResults22", searchResults);
-
   const totalPages = Math.ceil(searchResults.searchCount / postPerPage);
   console.log("총 몇 페이지?", totalPages);
 
   useEffect(() => {
-    // 페이지가 변경될 때마다 URL 매개변수 업데이트
     const params = {
       region: region1,
       inDate: inDate1,
@@ -113,7 +105,6 @@ const SearchPage = () => {
         .join(","),
     };
 
-    // 검색어 null 또는 빈문자열 아닌 경우에만 업뎃
     if (searchWord1) {
       params.searchWord = searchWord1;
     }
@@ -128,19 +119,19 @@ const SearchPage = () => {
           .filter(key => activeFilters[key])
           .map(key => filterMapping[key])
           .join(",");
+        setLoading(true);
         const searchWordParam = searchWord1 ? `&searchWord=${searchWord1}` : "";
         const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
         // const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
 
         const glampingResponse = await axios.get(glampingUrl);
-        console.log(glampingResponse.data);
+        console.log("검색 결과: ", glampingResponse.data);
 
-        // 검색 결과
         const glampingArray = glampingResponse.data.glampingListItems || [];
         const totalItems = glampingResponse.data.totalItems || 1;
         setSearchData(glampingArray);
         setSearchResults(glampingResponse.data);
-        console.log("글램핑 검색 결과 리스트", glampingArray);
+        setLoading(false);
       } catch (error) {
         console.error("데이터 가져오기 오류:", error);
       }
@@ -160,6 +151,7 @@ const SearchPage = () => {
 
   return (
     <SearchPageStyle>
+      {loading && <Loading />}
       <main>
         <div className="search-wrap">
           <SearchTop>
@@ -268,37 +260,42 @@ const SearchPage = () => {
               </SearchMenu>
             </SearchInnerTop>
             <SearchInnerList>
-              {searchData.map(item => (
-                <SearchCard
-                  key={item.glampId}
-                  glampId={item.glampId}
-                  glampPic={item.glampPic}
-                  glampName={item.glampName}
-                  region={regionNames[item.region] || ""}
-                  starPoint={item.starPoint}
-                  reviewCount={item.reviewCount}
-                  price={item.price}
-                  inDate={inDate1}
-                  outDate={outDate1}
-                  people={people1}
-                />
-              ))}
+              {searchResults.code === "RN" ? (
+                <NoResultStyle>
+                  <div className="no-result-img" />
+                  <h4>검색 결과가 없습니다</h4>
+                  <p>{searchWord1} 에 대한 철자나 띄어쓰기를 확인해 보세요</p>
+                </NoResultStyle>
+              ) : (
+                searchData.map(item => (
+                  <SearchCard
+                    key={item.glampId}
+                    glampId={item.glampId}
+                    glampPic={item.glampPic}
+                    glampName={item.glampName}
+                    region={regionNames[item.region] || ""}
+                    starPoint={item.starPoint}
+                    reviewCount={item.reviewCount}
+                    price={item.price}
+                    inDate={inDate1}
+                    outDate={outDate1}
+                    people={people1}
+                  />
+                ))
+              )}
             </SearchInnerList>
-            <SearchInnerBottom>
-              <ListPagination
-                currentPage={currentPage}
-                totalItems={searchResults.searchCount || 1}
-                itemsPerPage={postPerPage}
-                onPageChange={setCurrentPage}
-                totalPages={totalPages}
-              />
-            </SearchInnerBottom>
+            {searchResults.code !== "RN" && (
+              <SearchInnerBottom>
+                <ListPagination
+                  currentPage={currentPage}
+                  totalItems={searchResults.searchCount || 1}
+                  itemsPerPage={postPerPage}
+                  onPageChange={setCurrentPage}
+                  totalPages={totalPages}
+                />
+              </SearchInnerBottom>
+            )}
           </SearchInner>
-          {/* 임시 */}
-          {/* <p>지역: {region1}</p>
-          <p>체크인: {inDate1}</p>
-          <p>체크아웃: {outDate1}</p>
-          <p>인원: {people1}</p> */}
         </div>
       </main>
     </SearchPageStyle>
