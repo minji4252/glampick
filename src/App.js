@@ -80,7 +80,7 @@ function App() {
           element={<GlampingDetailWrapper isLogin={isLogin} />}
         />
         <Route path="/roomdetail/:glampId" element={<RoomDetail />}></Route>
-        <Route path="/review" element={<Review />}></Route>
+        <Route path="/review/:glampId" element={<Review />}></Route>
 
         {/* 결제 페이지 */}
         <Route path="/payment/:glampId" element={<PaymentPage />} />
