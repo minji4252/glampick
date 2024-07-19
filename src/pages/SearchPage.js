@@ -19,6 +19,7 @@ import "../styles/common.css";
 import "../styles/reset.css";
 import Loading from "../components/common/Loading";
 import MainCalendar from "../components/MainCalendar";
+import SearchCalendar from "../components/SearchCalendar";
 
 const SearchPage = () => {
   const today = new Date();
@@ -63,26 +64,41 @@ const SearchPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
 
-  const selectFirst = async () => {
-    try {
-      let glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}`;
-      // 필터 있을 때 (추천 리스트에서 클릭)
-      if (filter1) {
-        glampingUrl += `&filter=${filter1}`;
-      }
-      console.log(glampingUrl);
-      const glampingResponse = await axios.get(glampingUrl);
-      console.log("selectFirst 검색 결과: ", glampingResponse.data);
-      const totalItems = glampingResponse.data.totalItems || 1;
-      setSearchData(glampingResponse.data.glampingListItems);
-      setSearchResults(glampingResponse.data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
-    selectFirst();
+    // 추천리스트에서 filter있는 항목 선택시 url에 뜨게 + 필터 액티브 효과 활성화
+    if (filter1) {
+      const filters = filter1.split(",").map(Number);
+      const newActiveFilters = Object.keys(activeFilters).reduce((acc, key) => {
+        acc[key] = filters.includes(filterMapping[key]);
+        return acc;
+      }, {});
+      setActiveFilters(newActiveFilters);
+    }
+  }, [filter1]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        let glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}`;
+        if (filter1) {
+          glampingUrl += `&filter=${filter1}`;
+        }
+        if (searchWord1) {
+          glampingUrl += `&searchWord=${searchWord1}`;
+        }
+        const glampingResponse = await axios.get(glampingUrl);
+        const totalItems = glampingResponse.data.totalItems || 1;
+        setSearchData(glampingResponse.data.glampingListItems);
+        setSearchResults(glampingResponse.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [
     region1,
     inDate1,
@@ -91,7 +107,7 @@ const SearchPage = () => {
     searchWord1,
     sort,
     currentPage,
-    activeFilters,
+    filter1,
   ]);
 
   // 필터 아이콘 번호로
@@ -126,14 +142,22 @@ const SearchPage = () => {
 
   // 필터 아이콘 토글 (중복 선택 가능)
   const toggleFilter = filter => {
-    setActiveFilters(prevState => ({
-      ...prevState,
-      [filter]: !prevState[filter],
-    }));
+    setActiveFilters(prevState => {
+      const newFilters = { ...prevState, [filter]: !prevState[filter] };
+      const filterParams = Object.keys(newFilters)
+        .filter(key => newFilters[key])
+        .map(key => filterMapping[key])
+        .join(",");
+      setSearchParams({
+        ...Object.fromEntries(searchParams.entries()),
+        filter: filterParams || "",
+      });
+      return newFilters;
+    });
   };
 
   // 페이지 개수 계산
-  const totalPages = Math.ceil(searchResults.searchCount / postPerPage);
+  const totalPages = Math.ceil(searchResults.totalItems / postPerPage);
   console.log("총 몇 페이지?", totalPages);
 
   useEffect(() => {
@@ -145,10 +169,12 @@ const SearchPage = () => {
       people: people1,
       sortType: sort,
       page: currentPage,
-      filter: Object.keys(activeFilters)
-        .filter(key => activeFilters[key])
-        .map(key => filterMapping[key])
-        .join(","),
+      filter:
+        Object.keys(activeFilters)
+          .filter(key => activeFilters[key])
+          .map(key => filterMapping[key])
+          .join(",") || "",
+      searchWord: searchWord1 || "",
     };
 
     // 검색어 null 또는 빈문자열 아닌 경우에만 업뎃
@@ -156,58 +182,37 @@ const SearchPage = () => {
       params.searchWord = searchWord1;
     }
 
-    setSearchParams(params);
+    // setSearchParams(params);
   }, [sort, currentPage, activeFilters, searchWord1, inDate1, outDate1]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const filterParams = Object.keys(activeFilters)
-  //         .filter(key => activeFilters[key])
-  //         .map(key => filterMapping[key])
-  //         .join(",");
-  //       setLoading(true);
-  //       const searchWordParam = searchWord1 ? `&searchWord=${searchWord1}` : "";
-  //       const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
-
-  //       const glampingResponse = await axios.get(glampingUrl);
-  //       console.log("검색 결과: ", glampingResponse.data);
-
-  //       const glampingArray = glampingResponse.data.glampingListItems || [];
-  //       const totalItems = glampingResponse.data.totalItems || 1;
-  //       setSearchData(glampingArray);
-  //       setSearchResults(glampingResponse.data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       console.error("데이터 가져오기 오류:", error);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [
-  //   region1,
-  //   inDate1,
-  //   outDate1,
-  //   people1,
-  //   searchWord1,
-  //   sort,
-  //   currentPage,
-  //   activeFilters,
-  // ]);
 
   useEffect(() => {
     if (people1) {
       setPeople(people1);
     }
-  }, [people1]);
-
+    if (inDate1 && outDate1) {
+      setSelectedDate([new Date(inDate1), new Date(outDate1)]);
+    }
+  }, [people1, inDate1, outDate1]);
   const handleDateChange = dates => {
-    setInDate(dates[0].toISOString().slice(0, 10));
-    setOutDate(dates[1].toISOString().slice(0, 10));
+    setSelectedDate(dates);
   };
-  const handleDateSelect = date => {
-    setSelectedDate(date);
-    console.log("선택 날짜:", date);
+
+  const handleApplyDate = () => {
+    // 선택된 날짜에 하루를 추가
+    const inDateStr = new Date(selectedDate[0].getTime() + 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+    const outDateStr = new Date(selectedDate[1].getTime() + 24 * 60 * 60 * 1000)
+      .toISOString()
+      .slice(0, 10);
+
+    setInDate(inDateStr);
+    setOutDate(outDateStr);
+    setSearchParams({
+      ...Object.fromEntries(searchParams.entries()),
+      inDate: inDateStr,
+      outDate: outDateStr,
+    });
   };
 
   return (
@@ -242,10 +247,13 @@ const SearchPage = () => {
               </ResultContents>
               <ResultContents>
                 <label htmlFor="date">날짜</label>
-                <MainCalendar
+                <SearchCalendar
                   selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}
                 />
+                <button onClick={handleApplyDate} className="date-select">
+                  선택
+                </button>
               </ResultContents>
               <ResultContents>
                 <label htmlFor="member">인원</label>
@@ -270,9 +278,15 @@ const SearchPage = () => {
                 <label htmlFor="input">검색어</label>
                 <input
                   type="text"
-                  value={searchWord1 !== null ? searchWord1 : ""}
+                  value={searchWord1} // 검색어 업데이트
                   className="search-input"
-                  onChange={e => setSearchWord(e.target.value)}
+                  onChange={e => {
+                    setSearchWord(e.target.value);
+                    setSearchParams({
+                      ...Object.fromEntries(searchParams.entries()),
+                      searchWord: e.target.value || "", // 빈 문자열로 처리
+                    });
+                  }}
                 />
               </ResultContents>
             </SearchResult>

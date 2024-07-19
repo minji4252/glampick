@@ -31,6 +31,9 @@ export const SearchInner = styled.div`
   @media all and (max-width: 950px) {
     padding: 50px 0 200px 0;
   }
+  @media all and (max-width: 493px) {
+    padding-top: 20px;
+  }
 `;
 
 export const SearchTop = styled.div`
@@ -142,6 +145,16 @@ export const ResultContents = styled.div`
       font-size: 18px;
     }
   }
+  .date-select {
+    width: 40px;
+    height: 25px;
+    font-size: 14px;
+    color: ${colorSystem.white};
+    background-color: ${colorSystem.primary};
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+  }
 `;
 
 export const SearchInnerTop = styled.div`
@@ -154,6 +167,12 @@ export const SearchInnerTop = styled.div`
     max-width: 1080px;
     height: 200px;
   }
+  @media all and (max-width: 394px) {
+    height: 300px;
+  }
+  @media all and (max-width: 302px) {
+    height: 350px;
+  }
 `;
 
 // 상단 필터 항목
@@ -162,6 +181,12 @@ export const SearchFilter = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media all and (max-width: 394px) {
+    height: 200px;
+  }
+  @media all and (max-width: 302px) {
+    height: 300px;
+  }
 
   .search-filter {
     display: flex;
@@ -216,7 +241,6 @@ export const SearchFilter = styled.div`
       width: 65px;
       background-image: url(${filterToilet2});
     }
-
     .filter-toilet.active {
       width: 65px;
       background-image: url(${filterToilet});
@@ -240,6 +264,9 @@ export const SearchFilter = styled.div`
     }
     @media all and (max-width: 493px) {
       padding: 0 0 50px 0;
+    }
+    @media all and (max-width: 394px) {
+      height: 250px;
     }
   }
 `;
