@@ -26,9 +26,23 @@ const Footer = () => {
         </div>
         <div className="footer-bottom">
           <ul className="footer-bottom-list">
-            <li>이용약관</li>
             <li>
-              <p>개인정보처리방침</p>
+              <a
+                href="https://lively-gladiolus-389.notion.site/f3d1bc647a744ffb9299d3bd979b15b9"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                이용약관
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://lively-gladiolus-389.notion.site/8c8f5d4bb39e4d1498f7f7ee4df5c766"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                개인정보처리방침
+              </a>
             </li>
             <li>소비자 분쟁해결 기준</li>
             <li>콘텐츠산업진흥법에 의한 표시</li>

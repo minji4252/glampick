@@ -46,7 +46,9 @@ const MainPage = ({ isLogin }) => {
   };
 
   // 검색 결과
-  const handleSearch = () => {
+  const handleSearch = e => {
+    e.preventDefault();
+
     const formatDate = date => {
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -63,7 +65,8 @@ const MainPage = ({ isLogin }) => {
     });
 
     const url = `/search?${queryParams.toString()}`;
-    window.location.href = url; // 페이지 이동
+    // window.location.href = url; // 페이지 이동
+    navigate(url);
   };
 
   // 지금 가장 인기있는 TOP3
@@ -96,6 +99,11 @@ const MainPage = ({ isLogin }) => {
   const handleDateSelect = date => {
     setSelectedDate(date);
     console.log("선택 날짜:", date);
+  };
+
+  const handleKeyDown = e => {
+    // 키보드 입력 막기
+    e.preventDefault();
   };
 
   // 헤더 숨김, 표시
@@ -216,6 +224,7 @@ const MainPage = ({ isLogin }) => {
                 <MainCalendar
                   selectedDate={selectedDate}
                   setSelectedDate={handleDateSelect}
+                  onKeyDown={handleKeyDown}
                 />
               </li>
               <li className="m-sc-member">
@@ -230,6 +239,7 @@ const MainPage = ({ isLogin }) => {
                     setSelectedMember(e.target.value);
                     console.log("선택 인원:", e.target.value);
                   }}
+                  onKeyDown={handleKeyDown}
                 />
                 <p>명</p>
               </li>
@@ -249,7 +259,7 @@ const MainPage = ({ isLogin }) => {
                 <Link
                   to={`/search?region=${selectedPlace}&inDate=${selectedDate[0]?.toISOString().slice(0, 10)}&outDate=${selectedDate[1]?.toISOString().slice(0, 10)}&people=${selectedMember}`}
                 >
-                  <ActionButton label="검색" onClick={handleSearch} />
+                  <ActionButton label="검색" onClick={e => handleSearch(e)} />
                 </Link>
               </li>
             </MainSearchContent>

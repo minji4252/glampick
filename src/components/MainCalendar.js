@@ -6,40 +6,23 @@ import "../styles/datepicker.css";
 
 const MainCalendar = ({ selectedDate, setSelectedDate }) => {
   const [dateRange, setDateRange] = useState([null, null]);
-  const [inDate, outDate] = dateRange;
 
   useEffect(() => {
-    setDateRange(selectedDate);
+    if (selectedDate && selectedDate[0] && selectedDate[1]) {
+      setDateRange(selectedDate);
+    }
   }, [selectedDate]);
 
-  // yyyy-MM-dd 형식으루
-  const formatDate = date => {
-    return date
-      ? `${date.getFullYear()}-${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`
-      : "";
-  };
-
-  // inDate outDate 콘솔
   const handleChange = update => {
     setDateRange(update);
     setSelectedDate(update);
-
-    if (update[0] && update[1]) {
-      console.log("inDate(시작):", formatDate(update[0]));
-      console.log("outDate(끝):", formatDate(update[1]));
-    } else {
-      console.log("inDate(시작):", formatDate(update[0]));
-      console.log("outDate(끝):", formatDate(update[1]));
-    }
   };
 
   return (
     <DatePicker
       selectsRange={true}
-      startDate={inDate}
-      endDate={outDate}
+      startDate={dateRange[0]}
+      endDate={dateRange[1]}
       onChange={handleChange}
       isClearable={true}
       locale={ko}
