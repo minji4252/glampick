@@ -114,13 +114,13 @@ const Favorite = () => {
             </EmptyStyle>
           </FavoriteContents>
         )}
+        <ListPagination
+          currentPage={currentPage}
+          totalItems={favorites.length}
+          itemsPerPage={postPerPage}
+          onPageChange={handlePageChange}
+        />
       </div>
-      <ListPagination
-        currentPage={currentPage}
-        totalItems={favorites.length}
-        itemsPerPage={postPerPage}
-        onPageChange={handlePageChange}
-      />
     </FavoriteStyle>
   );
 };
