@@ -8,11 +8,14 @@ import {
   FavoriteStyle,
 } from "../../styles/FavoriteStyle";
 import Loading from "../../components/common/Loading";
+import ListPagination from "../../components/common/ListPagination";
 
 const Favorite = () => {
   const [favorites, setFavorites] = useState([]);
   const [accessToken, setAccessToken] = useState("");
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const [postPerPage] = useState(9); // 페이지네이션 페이지당 보여질 목록 수
 
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -73,15 +76,22 @@ const Favorite = () => {
     return cookieValue ? cookieValue.pop() : "";
   }
 
+  // 현재 페이지에 해당하는 항목들 가져오기
+  const indexOfLastPost = currentPage * postPerPage;
+  const indexOfFirstPost = indexOfLastPost - postPerPage;
+  const currentFavorites = favorites.slice(indexOfFirstPost, indexOfLastPost);
+
+  const handlePageChange = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <FavoriteStyle>
       {loading && <Loading />}
       <Categories />
       <div className="inner">
         <h3>관심 목록</h3>
-        {favorites.length > 0 ? (
+        {currentFavorites.length > 0 ? (
           <FavoriteContents>
-            {favorites.map(item => (
+            {currentFavorites.map(item => (
               <FavoriteCard
                 key={item.glampId}
                 glampId={item.glampId}
@@ -105,6 +115,12 @@ const Favorite = () => {
           </FavoriteContents>
         )}
       </div>
+      <ListPagination
+        currentPage={currentPage}
+        totalItems={favorites.length}
+        itemsPerPage={postPerPage}
+        onPageChange={handlePageChange}
+      />
     </FavoriteStyle>
   );
 };

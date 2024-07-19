@@ -216,7 +216,7 @@ const BookingDetail = () => {
 
     getUserBook();
   }, [accessToken]);
-  
+
   const handleTabClick = tab => {
     setActiveTab(tab);
     setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
@@ -224,11 +224,11 @@ const BookingDetail = () => {
 
   const getBookingsByTab = () => {
     switch (activeTab) {
-      case 'upcoming':
+      case "upcoming":
         return upcomingBookings;
-      case 'completed':
+      case "completed":
         return completedBookings;
-      case 'cancelled':
+      case "cancelled":
         return cancelledBookings;
       default:
         return [];
@@ -238,7 +238,7 @@ const BookingDetail = () => {
   // 현재 보여줄 예약 목록
   const bookingsToShow = getBookingsByTab().slice(
     (currentPage - 1) * postPerPage,
-    currentPage * postPerPage
+    currentPage * postPerPage,
   );
 
   // 페이지네이션을 위해 총 페이지 계산
@@ -310,8 +310,8 @@ const BookingDetail = () => {
         {activeTab === "completed" && (
           <>
             <div className="container">
-            {bookingsToShow.length > 0 ? (
-              bookingsToShow.map((booking, index) => (
+              {bookingsToShow.length > 0 ? (
+                bookingsToShow.map((booking, index) => (
                   <div className="form-group" key={index}>
                     <BookingDetailForm
                       booking={booking}
@@ -339,8 +339,8 @@ const BookingDetail = () => {
         {activeTab === "cancelde" && (
           <>
             <div className="container">
-            {bookingsToShow.length > 0 ? (
-              bookingsToShow.map((booking, index) => (
+              {bookingsToShow.length > 0 ? (
+                bookingsToShow.map((booking, index) => (
                   <div className="form-group" key={index}>
                     <BookingDetailForm
                       booking={booking}
@@ -365,11 +365,11 @@ const BookingDetail = () => {
           </>
         )}
         <ListPagination
-            currentPage={currentPage}
-            totalItems={totalItems}
-            itemsPerPage={postPerPage}
-            onPageChange={setCurrentPage}
-          />
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={postPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </WrapStyle>
   );
