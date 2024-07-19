@@ -59,8 +59,40 @@ const SearchPage = () => {
   const outDate1 = searchParams.get("outDate"); // 체크아웃 날짜
   const people1 = searchParams.get("people"); // 인원
   const searchWord1 = searchParams.get("searchWord"); // 검색어
+  const filter1 = searchParams.get("filter"); // 필터
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
+
+  const selectFirst = async () => {
+    try {
+      let glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}`;
+      // 필터 있을 때 (추천 리스트에서 클릭)
+      if (filter1) {
+        glampingUrl += `&filter=${filter1}`;
+      }
+      console.log(glampingUrl);
+      const glampingResponse = await axios.get(glampingUrl);
+      console.log("selectFirst 검색 결과: ", glampingResponse.data);
+      const totalItems = glampingResponse.data.totalItems || 1;
+      setSearchData(glampingResponse.data.glampingListItems);
+      setSearchResults(glampingResponse.data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    selectFirst();
+  }, [
+    region1,
+    inDate1,
+    outDate1,
+    people1,
+    searchWord1,
+    sort,
+    currentPage,
+    activeFilters,
+  ]);
 
   // 필터 아이콘 번호로
   const filterMapping = {
@@ -125,44 +157,43 @@ const SearchPage = () => {
     }
 
     setSearchParams(params);
-  }, [sort, currentPage, activeFilters, searchWord1]);
+  }, [sort, currentPage, activeFilters, searchWord1, inDate1, outDate1]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const filterParams = Object.keys(activeFilters)
-          .filter(key => activeFilters[key])
-          .map(key => filterMapping[key])
-          .join(",");
-        setLoading(true);
-        const searchWordParam = searchWord1 ? `&searchWord=${searchWord1}` : "";
-        const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
-        // const glampingUrl = `http://112.222.157.156:5124/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const filterParams = Object.keys(activeFilters)
+  //         .filter(key => activeFilters[key])
+  //         .map(key => filterMapping[key])
+  //         .join(",");
+  //       setLoading(true);
+  //       const searchWordParam = searchWord1 ? `&searchWord=${searchWord1}` : "";
+  //       const glampingUrl = `/api/glamping/search?region=${region1}&inDate=${inDate1}&outDate=${outDate1}&people=${people1}&sortType=${sort}&page=${currentPage}&filter=${filterParams}${searchWordParam}`;
 
-        const glampingResponse = await axios.get(glampingUrl);
-        console.log("검색 결과: ", glampingResponse.data);
+  //       const glampingResponse = await axios.get(glampingUrl);
+  //       console.log("검색 결과: ", glampingResponse.data);
 
-        const glampingArray = glampingResponse.data.glampingListItems || [];
-        const totalItems = glampingResponse.data.totalItems || 1;
-        setSearchData(glampingArray);
-        setSearchResults(glampingResponse.data);
-        setLoading(false);
-      } catch (error) {
-        console.error("데이터 가져오기 오류:", error);
-      }
-    };
+  //       const glampingArray = glampingResponse.data.glampingListItems || [];
+  //       const totalItems = glampingResponse.data.totalItems || 1;
+  //       setSearchData(glampingArray);
+  //       setSearchResults(glampingResponse.data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       console.error("데이터 가져오기 오류:", error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [
-    region1,
-    inDate1,
-    outDate1,
-    people1,
-    searchWord1,
-    sort,
-    currentPage,
-    activeFilters,
-  ]);
+  //   fetchData();
+  // }, [
+  //   region1,
+  //   inDate1,
+  //   outDate1,
+  //   people1,
+  //   searchWord1,
+  //   sort,
+  //   currentPage,
+  //   activeFilters,
+  // ]);
 
   useEffect(() => {
     if (people1) {
@@ -212,9 +243,8 @@ const SearchPage = () => {
               <ResultContents>
                 <label htmlFor="date">날짜</label>
                 <MainCalendar
-                  selectedDate={[new Date(inDate1), new Date(outDate1)]}
-                  onChange={handleDateChange}
-                  setSelectedDate={handleDateSelect}
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
                 />
               </ResultContents>
               <ResultContents>
@@ -225,7 +255,13 @@ const SearchPage = () => {
                     min="2"
                     max="6"
                     value={people}
-                    onChange={e => setPeople(e.target.value)}
+                    onChange={e => {
+                      setPeople(e.target.value);
+                      setSearchParams({
+                        ...Object.fromEntries(searchParams.entries()),
+                        people: e.target.value,
+                      });
+                    }}
                   />
                   <p>명</p>
                 </div>
@@ -235,6 +271,7 @@ const SearchPage = () => {
                 <input
                   type="text"
                   value={searchWord1 !== null ? searchWord1 : ""}
+                  className="search-input"
                   onChange={e => setSearchWord(e.target.value)}
                 />
               </ResultContents>

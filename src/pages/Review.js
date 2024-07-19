@@ -2,11 +2,15 @@ import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { useLocation, useParams } from "react-router";
 import ReviewCard from "../components/ReviewCard";
 import ListPagination from "../components/common/ListPagination";
 import ReviewImgModal from "../components/common/ReviewImgModal"; // ReviewImgModal 임포트
+import reviewimg1 from "../images/review1.png";
+import reviewimg2 from "../images/review2.png";
+import reviewimg3 from "../images/review3.png";
 import { colorSystem, size } from "../styles/color";
+import Loading from "../components/common/Loading";
+import { useLocation } from "react-router";
 
 const WrapStyle = styled.div`
   .inner {
@@ -146,16 +150,22 @@ const Review = () => {
 
   // 평균 평점 불러오기
   const location = useLocation();
+  const aaa = location;
+  console.log(aaa);
+
   // console.log("location", location.state);
+
 
   // glampId 불러오기
   const { glampId } = useParams();
   console.log("glampId", glampId);
 
+
   // 리뷰 전체 이미지 불러오기
   useEffect(() => {
     const getGlamping = async () => {
       try {
+
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
@@ -172,6 +182,7 @@ const Review = () => {
   useEffect(() => {
     const getGlampingReview = async () => {
       try {
+
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );

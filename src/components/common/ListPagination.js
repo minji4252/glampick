@@ -24,18 +24,14 @@ const PaginationContainer = styled.div`
     align-items: center;
 
     .active {
-      /* text-decoration: none; */
       padding: 8px 0;
       border-radius: 20px;
-      /* display: flex; */
       justify-content: center;
       background-color: ${colorSystem.p400};
       color: white;
     }
     .page-item {
       margin: 0 5px;
-
-      /* 텍스트 */
       .page-link {
         text-decoration: none;
         color: #333;
@@ -52,7 +48,6 @@ const PaginationContainer = styled.div`
           color: white;
         }
       }
-      /* 이전, 다음 페이지 */
       .page-link-prev,
       .page-link-next {
       }
@@ -71,6 +66,7 @@ const ListPagination = ({
     onPageChange(pageNumber);
     console.log(`선택된 페이지 ${pageNumber}`);
   };
+  // 페이지네이션 완료 후 지웁니다
   console.log(`페이지네이션 총 페이지 ${totalPages}`);
 
   // 페이지 이동할 때 젤 위로 가게 하기
@@ -81,7 +77,6 @@ const ListPagination = ({
   return (
     <PaginationContainer>
       <Pagination
-        // 현재 페이지
         activePage={currentPage}
         // 한 페이지당 보여줄 아이템 갯수
         itemsCountPerPage={itemsPerPage}
@@ -93,25 +88,21 @@ const ListPagination = ({
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="active"
-        // 이전 페이지를 나타낼 아이콘
         prevPageText={
           <span className="page-link-prev">
             <MdKeyboardArrowLeft className="icon" />
           </span>
         }
-        // 다음을 나타낼 아이콘
         nextPageText={
           <span className="page-link-next">
             <MdKeyboardArrowRight className="icon" />
           </span>
         }
-        // 첫번째 페이지를 나타낼 아이콘
         firstPageText={
           <span className="page-link-first">
             <MdKeyboardDoubleArrowLeft className="icon" />
           </span>
         }
-        // 마지막 페이지를 나타낼 아이콘
         lastPageText={
           <span className="page-link-last">
             <MdKeyboardDoubleArrowRight className="icon" />

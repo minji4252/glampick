@@ -127,7 +127,7 @@ const GlampingDetail = ({ isLogin }) => {
         setIsLiked(JSON.parse(likedStatus));
       }
     } else {
-      setIsLiked(false); // 로그인하지 않은 경우 빈 상태로 설정
+      setIsLiked(false);
     }
   }, [isLogin]);
 
@@ -323,7 +323,7 @@ const GlampingDetail = ({ isLogin }) => {
                 <div>
                   {reviewItems.map((item, index) => (
                     <SwiperSlide key={index}>
-                      <p>{item.content}</p>
+                      <h2>{item.content}</h2>
                       <h5>{item.userNickName}</h5>
                     </SwiperSlide>
                   ))}
@@ -362,6 +362,9 @@ const GlampingDetail = ({ isLogin }) => {
           {allRoomsSoldOut ? (
             <RoomSoldOutCard>
               <FaRegCalendar />
+              <span>
+                {inDate} - {outDate}
+              </span>
               <h5>선택한 날짜의 객실은 매진되었어요</h5>
               <p>검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
             </RoomSoldOutCard>

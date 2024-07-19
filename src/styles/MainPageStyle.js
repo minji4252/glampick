@@ -276,7 +276,7 @@ export const MainSearchContent = styled.ul`
     border-radius: 500px;
     background: ${colorSystem.white};
     border: none;
-    color: ${colorSystem.primary};
+    color: ${colorSystem.g800};
     text-align: center;
     font-size: 20px;
     font-style: normal;
