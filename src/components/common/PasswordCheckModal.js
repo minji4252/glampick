@@ -174,7 +174,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
     if (!accessToken) return;
 
     axios.defaults.withCredentials = true;
-    // console.log("비밀번호입력확인",handlePasswordCheck)
+    console.log("비밀번호입력확인", handlePasswordCheck);
 
     try {
       const response = await axios.post(
