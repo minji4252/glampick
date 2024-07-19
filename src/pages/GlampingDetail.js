@@ -159,20 +159,20 @@ const GlampingDetail = ({ isLogin }) => {
   };
 
   const handleMoreView = async () => {
-    const statusId = 1;
-    try {
-      // 3. 모두보기 클릭시 객실 정보 더 불러오기
-      const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
-      setGlampingData(prevData => ({
-        ...prevData,
-        roomItems: [...prevData.roomItems, ...data.roomItems],
-      }));
-      setIsExpanded(true);
-      const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
-      setRoomImages(prevImages => [...prevImages, ...roomImageUrls]);
-    } catch (error) {
-      console.log(error);
-    }
+    // const statusId = 1;
+    // try {
+    //   // 3. 모두보기 클릭시 객실 정보 더 불러오기
+    //   const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
+    //   setGlampingData(prevData => ({
+    //     ...prevData,
+    //     roomItems: [...prevData.roomItems, ...data.roomItems],
+    //   }));
+    //   setIsExpanded(true);
+    //   const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
+    //   setRoomImages(prevImages => [...prevImages, ...roomImageUrls]);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const handleCollapseView = () => {
