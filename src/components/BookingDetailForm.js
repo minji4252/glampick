@@ -126,9 +126,12 @@ export const BookingDetailForm = ({
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
+  const [reviewWritten, setReviewWritten] = useState(false); 
+
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
-  }, []);
+    setReviewWritten(booking.reviewWritten);
+  }, [booking]);
   // 한국어 locale 설정
   moment.locale("ko");
   // 예약 생성일 형식 변환 함수
@@ -209,7 +212,7 @@ export const BookingDetailForm = ({
           >
             취소
           </div>
-        ) : isCompleted ? (
+        ) : isCompleted && !reviewWritten ? (
           <div className="review-btn">
             <MainButton
               label="후기작성"

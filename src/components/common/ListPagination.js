@@ -81,29 +81,37 @@ const ListPagination = ({
   return (
     <PaginationContainer>
       <Pagination
+        // 현재 페이지
         activePage={currentPage}
+        // 한 페이지당 보여줄 아이템 갯수
         itemsCountPerPage={itemsPerPage}
+        // 총 아이템 갯수
         totalItemsCount={totalItems}
+        // paginator의 페이지 범위
         pageRangeDisplayed={5}
         onChange={handlePageChange}
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="active"
+        // 이전 페이지를 나타낼 아이콘
         prevPageText={
           <span className="page-link-prev">
             <MdKeyboardArrowLeft className="icon" />
           </span>
         }
+        // 다음을 나타낼 아이콘
         nextPageText={
           <span className="page-link-next">
             <MdKeyboardArrowRight className="icon" />
           </span>
         }
+        // 첫번째 페이지를 나타낼 아이콘
         firstPageText={
           <span className="page-link-first">
             <MdKeyboardDoubleArrowLeft className="icon" />
           </span>
         }
+        // 마지막 페이지를 나타낼 아이콘
         lastPageText={
           <span className="page-link-last">
             <MdKeyboardDoubleArrowRight className="icon" />
