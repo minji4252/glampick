@@ -155,6 +155,7 @@ const Review = () => {
   const [page, setPage] = useState(1);
 
   const location = useLocation();
+
   // 별점
   const starPoint = location.state.starPoint;
   // 글램핑 이름
@@ -167,6 +168,7 @@ const Review = () => {
   // console.log("glampId", glampId);
 
   // 상단 리뷰 이미지 전체 불러오기
+
   useEffect(() => {
     const getGlamping = async () => {
       try {

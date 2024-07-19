@@ -15,7 +15,7 @@ const Favorite = () => {
   const [accessToken, setAccessToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const [postPerPage] = useState(9); // 페이지네이션 페이지당 보여질 목록 수
+  const [postPerPage] = useState(6); // 페이지네이션 페이지당 보여질 목록 수
 
   useEffect(() => {
     const fetchAccessToken = async () => {

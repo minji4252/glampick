@@ -127,7 +127,7 @@ const GlampingDetail = ({ isLogin }) => {
         setIsLiked(JSON.parse(likedStatus));
       }
     } else {
-      setIsLiked(false);
+      setIsLiked(false); // 로그인하지 않은 경우 빈 상태로 설정
     }
   }, [isLogin]);
 
@@ -160,7 +160,6 @@ const GlampingDetail = ({ isLogin }) => {
 
   const handleMoreView = async () => {
     const statusId = 1;
-
     try {
       // 3. 모두보기 클릭시 객실 정보 더 불러오기
       const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
@@ -203,10 +202,7 @@ const GlampingDetail = ({ isLogin }) => {
             glampName: glampingData.glampName,
             checkInTime: room.checkInTime,
             checkOutTime: room.checkOutTime,
-            roomNumPeople: room.roomNumPeople,
-            roomMaxPeople: room.roomMaxPeople,
             roomName: room.roomName,
-            roomPrice: room.roomPrice,
             roomMainImage: roomMainImage,
           },
         },
@@ -279,6 +275,16 @@ const GlampingDetail = ({ isLogin }) => {
 
   console.log("allRoomsSoldOut", allRoomsSoldOut);
 
+  const LinkToReview = () => {
+    navigate(`/review/${glampId}`, {
+      state: {
+        starPoint: formattedStarPoint,
+        glampName: glampName,
+        countReview: countReviewUsers,
+      },
+    });
+  };
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -305,10 +311,10 @@ const GlampingDetail = ({ isLogin }) => {
             <ReviewTitle>
               <FaStar />
               <div className="review-score">{formattedStarPoint}</div>
-              <div className="review-evaluat"> {countReviewUsers}명 평가</div>
-              <Link to={`/review/${glampId}`} state={formattedStarPoint}>
-                <button>리뷰보기</button>
-              </Link>
+              <div className="review-evaluat">{countReviewUsers}명 평가</div>
+              {/* <Link to="/review" state={formattedStarPoint}> */}
+              <button onClick={() => LinkToReview()}>리뷰보기</button>
+              {/* </Link> */}
             </ReviewTitle>
             <ReviewSwiper>
               <Swiper
@@ -330,7 +336,7 @@ const GlampingDetail = ({ isLogin }) => {
                 </div>
               </Swiper>
               <SwiperEndStyle />
-              <Link to={`/review/${glampId}`} state={formattedStarPoint}>
+              <Link to="/review" state={formattedStarPoint}>
                 <div className="review-all">
                   <button>
                     전체보기
@@ -362,9 +368,6 @@ const GlampingDetail = ({ isLogin }) => {
           {allRoomsSoldOut ? (
             <RoomSoldOutCard>
               <FaRegCalendar />
-              <span>
-                {inDate} - {outDate}
-              </span>
               <h5>선택한 날짜의 객실은 매진되었어요</h5>
               <p>검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
             </RoomSoldOutCard>
@@ -380,7 +383,7 @@ const GlampingDetail = ({ isLogin }) => {
                       className="roomcard-img"
                       style={{
                         // eslint-disable-next-line no-undef
-                        backgroundImage: `url(${process.env.PUBLIC_URL}/${roomImages[index]})`,
+                        backgroundImage: `url(${process.env.PUBLIC_URL}${roomImages[index]})`,
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
