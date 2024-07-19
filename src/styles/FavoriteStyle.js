@@ -22,7 +22,7 @@ export const FavoriteStyle = styled.div`
 
   @media all and (max-width: 1910px) {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     .inner {
       margin-left: 82px;
     }
