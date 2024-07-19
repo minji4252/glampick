@@ -30,7 +30,8 @@ const CategoriesStyle = styled.div`
 
   @media all and (max-width: 1910px) {
     position: relative;
-    top: 170px;
+    /* top: 170px; */
+    top: 70px;
     left: 90px;
   }
 `;

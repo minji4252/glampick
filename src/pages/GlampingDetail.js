@@ -430,7 +430,7 @@ const GlampingDetail = ({ isLogin }) => {
             ))
           )}
 
-          {roomItems.length >= 5 && !allRoomsSoldOut && (
+          {roomItems.length >= 5 && (
             <div className="view-all">
               {isExpanded ? (
                 <ActionButton label="접기" onClick={handleCollapseView} />
@@ -457,7 +457,7 @@ const GlampingDetail = ({ isLogin }) => {
             <InfoGroup>
               <div className="info-item">
                 <span>기본정보</span>
-                <h4>{infoBasic}</h4>
+                <h4> {infoBasic}</h4>
               </div>
               <div className="info-item">
                 <span>유의사항</span>

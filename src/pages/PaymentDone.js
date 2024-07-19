@@ -39,10 +39,10 @@ const CompletedStyle = styled.div`
       cursor: pointer;
     }
 
-    svg {
+    /* svg {
       width: 30px;
       height: 23px;
-    }
+    } */
   }
 
   .payment-end-txt {
@@ -85,7 +85,7 @@ const ButtonGroup = styled.div`
   justify-content: center;
   gap: 21%;
   margin-top: 130px;
-  margin-bottom: 100px;
+  margin-bottom: 250px;
 
   a {
     width: 100%;
@@ -129,9 +129,7 @@ const PaymentDone = () => {
       <div className="inner">
         <CompletedStyle>
           <div className="payment-end-title">
-            <button onClick={onClickBtn}>
-              <FaArrowLeft />
-            </button>
+            <button onClick={onClickBtn}>{/* <FaArrowLeft /> */}</button>
             <h1>결제 완료</h1>
           </div>
           <div className="payment-end-txt">
