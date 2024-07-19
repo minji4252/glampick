@@ -22,7 +22,7 @@ const WrapStyle = styled.div`
 
   h3 {
     width: 100%;
-    margin-top: 160px;
+    margin-top: 50px;
     margin-left: 120px;
     font-size: 1.2rem;
     font-weight: 700;
@@ -320,8 +320,8 @@ const UserInfo = () => {
     userPwCheck: "",
     userPhone: "",
   });
-  
-const [loading, setLoading] = useState(false);
+
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // 토큰정보 불러오기
@@ -591,7 +591,7 @@ const [loading, setLoading] = useState(false);
       });
       return;
     }
-    
+
     if (updatedPhone && !isPhoneVerified) {
       openModal({
         message: "휴대폰 인증이 완료되지 않았습니다",
@@ -631,7 +631,9 @@ const [loading, setLoading] = useState(false);
           userPW: updatedPassword,
           userPhone: updatedPhone,
         }));
-        openModal({message:"수정이 완료되었습니다!"});
+        openModal({ message: "수정이 완료되었습니다!" });
+        // 페이지 새로고침
+        // window.location.reload();
       } else {
         console.log("업데이트 실패");
       }
