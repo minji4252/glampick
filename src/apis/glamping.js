@@ -4,15 +4,10 @@ import axios from "axios";
 // *** GlampingDetail.js 함수 ****
 
 // 1. 글램핑디테일페이지 정보 불러오기
-export const fetchGlampingData = async (
-  glampId,
-  startDate,
-  endDate,
-  statusId,
-) => {
+export const fetchGlampingData = async (glampId, startDate, endDate) => {
   try {
     const response = await axios.get(
-      `${process.env.PUBLIC_URL}/api/glamping/info?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
+      `${process.env.PUBLIC_URL}/api/glamping/info?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}`,
     );
 
     return response.data;
@@ -36,19 +31,6 @@ export const toggleLikeGlamping = async (glampId, accessToken) => {
     return res.data.resultValue;
   } catch (error) {
     console.error("Error toggling like status:", error);
-    throw error;
-  }
-};
-
-// 3. 모두보기 클릭시 객실 정보 더 불러오기
-export const fetchMoreRooms = async (glampId, startDate, endDate, statusId) => {
-  try {
-    const response = await axios.get(
-      `${process.env.PUBLIC_URL}/api/glamping/info/moreRooms?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}&status=${statusId}`,
-    );
-    return response.data;
-  } catch (error) {
-    console.log(error);
     throw error;
   }
 };

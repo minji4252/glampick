@@ -369,7 +369,7 @@ export const RoomSoldOutCard = styled.div`
 `;
 
 export const RoomCard = styled.div`
-  width: 90%;
+  width: 100%;
   display: flex;
   gap: 20px;
   background-color: ${colorSystem.background};
