@@ -41,6 +41,17 @@ export const GlampingDetailStyle = styled.div`
   button {
     cursor: pointer;
   }
+
+  span,
+  p,
+  h4,
+  h3 {
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-use-select: none;
+    user-select: none;
+  }
 `;
 
 // 룸 옵션
@@ -146,7 +157,7 @@ export const ReviewSwiper = styled.div`
     padding: 20px;
     border-radius: 12px;
     line-height: 1.3rem;
-    > p {
+    > h2 {
       width: 100%;
       text-align: left;
       color: ${colorSystem.g700};
@@ -324,7 +335,7 @@ export const RoomSelectTitle = styled.div`
 
 export const RoomSoldOutCard = styled.div`
   background-color: ${colorSystem.background};
-  width: 70%;
+  width: 100%;
   padding: 60px 20px;
   margin-top: 20px;
   border-radius: 16px;
@@ -340,6 +351,12 @@ export const RoomSoldOutCard = styled.div`
     margin-bottom: 10px;
   }
 
+  span {
+    font-size: 1.2rem;
+    color: ${colorSystem.g700};
+    font-weight: 700;
+  }
+
   h5 {
     font-size: 1.3rem;
     color: ${colorSystem.g600};
@@ -347,7 +364,7 @@ export const RoomSoldOutCard = styled.div`
   }
 
   p {
-    color: ${colorSystem.g500};
+    color: ${colorSystem.g600};
   }
 `;
 
