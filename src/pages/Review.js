@@ -22,57 +22,66 @@ const WrapStyle = styled.div`
 
   h3 {
     width: 100%;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: ${colorSystem.g900};
-    text-align: center;
-    padding: 10px;
-    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: ${colorSystem.g800};
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-bottom: 5px;
   }
 `;
 
 const TopContents = styled.div`
   width: 100%;
   margin-bottom: 50px;
-  border-bottom: 1.5px solid ${colorSystem.g500};
+  border-bottom: 1.5px solid ${colorSystem.g200};
+
   ${size.mid} {
     height: 500px;
     /* 임시로 지정 */
   }
 
-  > p {
-    width: 100%;
-    font-size: 1.1rem;
-    margin: 0px 0px 7px 15px;
-    color: ${colorSystem.g900};
-    font-weight: 500;
-  }
-
-  .rating-details {
-    font-size: 1.2rem;
-    color: ${colorSystem.g900};
+  .rating {
     display: flex;
     align-items: center;
-    position: relative;
-    margin: 0px 0px 7px 15px;
-  }
+    margin-bottom: 10px;
+    > p {
+      font-size: 1.1rem;
+      color: ${colorSystem.g800};
+      font-weight: 500;
+    }
 
-  .star {
-    margin-right: 2px;
-    color: ${colorSystem.star};
-  }
+    .rating-details {
+      font-size: 1.2rem;
+      color: ${colorSystem.g800};
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin-left: 8px;
 
-  .average-rating {
-    font-size: 1.2rem;
-    color: ${colorSystem.g900};
-  }
+      .star {
+        font-size: 1.5rem;
+        margin-right: 2px;
+        color: ${colorSystem.star};
+      }
 
-  .total-rating {
-    position: absolute;
-    top: 2px;
-    left: 50px;
-    font-size: 1rem;
-    color: ${colorSystem.g900};
+      .average-rating {
+        font-size: 1.3rem;
+        font-weight: 500;
+        margin-top: 3px;
+        margin-left: 2px;
+        color: ${colorSystem.g800};
+      }
+
+      .total-rating {
+        position: absolute;
+        top: 4px;
+        left: 60px;
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: ${colorSystem.g900};
+      }
+    }
   }
 
   .review-img {
@@ -91,7 +100,7 @@ const TopContents = styled.div`
     border-radius: 5px;
     background-size: cover;
     background-position: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     position: relative;
   }
 
@@ -111,6 +120,12 @@ const TopContents = styled.div`
     cursor: pointer;
     transition: opacity 0.3s ease; /* 투명도 전환 효과 */
     opacity: 1;
+  }
+
+  .review-count {
+    margin-bottom: 5px;
+    color: ${colorSystem.g800};
+    font-size: 0.9rem;
   }
 `;
 
@@ -140,16 +155,21 @@ const Review = () => {
 
   // console.log("location", location.state);
 
-  // 전체리뷰 이미지 불러오기
+
+  // glampId 불러오기
+  const { glampId } = useParams();
+  console.log("glampId", glampId);
+
+
+  // 리뷰 전체 이미지 불러오기
   useEffect(() => {
     const getGlamping = async () => {
       try {
-        const glampId = 1;
+
         const response = await axios.get(
-          `/api/glamping?glampId=${glampId}&page=${currentPage}`,
+          `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
         const data = response.data;
-
         console.log(data);
       } catch (error) {
         console.log(error);
@@ -162,11 +182,11 @@ const Review = () => {
   useEffect(() => {
     const getGlampingReview = async () => {
       try {
-        const glampId = 1;
+
         const response = await axios.get(
-          `/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
+          `${process.env.PUBLIC_URL}/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );
-        console.log(glampId);
+        // console.log(glampId);
         const data = response.data;
         setReviewImagesLength(data.totalImagesCount); // 총 리뷰 이미지 개수
 
@@ -205,20 +225,24 @@ const Review = () => {
   return (
     <WrapStyle>
       <div className="inner">
-        <h3>글램핑장 후기</h3>
+        <h3>숙소 후기</h3>
         <TopContents>
-          <p>숙소 평점</p>
-          <div className="rating-details">
-            <FaStar className="star" />
-            <div className="average-rating">{location.state}</div>
-            <div className="total-rating">/5</div>
+          <div className="rating">
+            {/* <p>숙소 평점</p> */}
+            <div className="rating-details">
+              <FaStar className="star" />
+              <div className="average-rating">{location.state}</div>
+              <div className="total-rating">/5</div>
+            </div>
           </div>
           <div className="review-img">
             {reviewImages.slice(0, 8).map((img, index) => (
               <div
                 key={index}
                 className={`review-img${index + 1}`}
-                style={{ backgroundImage: `url(${img})` }}
+                style={{
+                  backgroundImage: `url(${process.env.PUBLIC_URL}${img})`,
+                }}
               >
                 {index === 7 && reviewImagesLength >= 9 && (
                   <div className="more-overlay" onClick={toggleModal}>
@@ -228,6 +252,7 @@ const Review = () => {
               </div>
             ))}
           </div>
+          <div className="review-count">총 00개</div>
         </TopContents>
         <BottomContents>
           <div className="review-list">
