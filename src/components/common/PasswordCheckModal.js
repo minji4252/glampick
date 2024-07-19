@@ -174,7 +174,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
     if (!accessToken) return;
 
     axios.defaults.withCredentials = true;
-    console.log("비밀번호입력확인",handlePasswordCheck)
+    // console.log("비밀번호입력확인",handlePasswordCheck)
 
     try {
       const response = await axios.post(
@@ -192,7 +192,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
       if (response.data.code === "SU") {
         // console.log("비밀번호 확인 성공");
         onSuccess();
-      } else if(response.data.code === "NMP") {
+      } else if (response.data.code === "NMP") {
         setErrorMessage("비밀번호가 일치하지 않습니다.");
       } else {
         console.log("비밀번호 확인 실패");
