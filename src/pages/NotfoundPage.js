@@ -31,10 +31,12 @@ const NavMain = styled.div`
 const NotfoundPage = () => {
   return (
     <NotfoundWrap>
-      <NotfounedMent />
-      <Link to="/">
-        <NavMain />
-      </Link>
+      <div className="not-found-inner">
+        <NotfounedMent />
+        <Link to="/">
+          <NavMain />
+        </Link>
+      </div>
     </NotfoundWrap>
   );
 };
