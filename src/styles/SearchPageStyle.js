@@ -129,6 +129,19 @@ export const ResultContents = styled.div`
       cursor: default;
     }
   }
+  .search-input {
+    width: 150px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    color: ${colorSystem.primary};
+    padding-left: 10px;
+    ::placeholder {
+      font-size: 18px;
+    }
+  }
 `;
 
 export const SearchInnerTop = styled.div`
