@@ -10,6 +10,7 @@ import { getCookie } from "../../utils/cookie";
 import { MainButton } from "../../components/common/Button";
 import { Link } from "react-router-dom";
 import Loading from "../../components/common/Loading";
+import ListPagination from "../../components/common/ListPagination";
 
 const WrapStyle = styled.div`
   .inner {
@@ -159,6 +160,12 @@ const BookingDetail = () => {
   const [completedBookings, setCompletedBookings] = useState([]);
   const [cancelledBookings, setCancelledBookings] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+  const [postPerPage] = useState(6); // 페이지네이션 페이지당 보여질 목록 수
+  const [searchResults, setSearchResults] = useState({
+    totalItems: 0,
+    glampingListItems: [],
+  });
 
   // 토큰정보 불러오기
   useEffect(() => {
@@ -209,10 +216,34 @@ const BookingDetail = () => {
 
     getUserBook();
   }, [accessToken]);
-
+  
   const handleTabClick = tab => {
     setActiveTab(tab);
+    setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
   };
+
+  const getBookingsByTab = () => {
+    switch (activeTab) {
+      case 'upcoming':
+        return upcomingBookings;
+      case 'completed':
+        return completedBookings;
+      case 'cancelled':
+        return cancelledBookings;
+      default:
+        return [];
+    }
+  };
+
+  // 현재 보여줄 예약 목록
+  const bookingsToShow = getBookingsByTab().slice(
+    (currentPage - 1) * postPerPage,
+    currentPage * postPerPage
+  );
+
+  // 페이지네이션을 위해 총 페이지 계산
+  const totalItems = getBookingsByTab().length;
+  const totalPages = Math.ceil(totalItems / postPerPage);
 
   return (
     <WrapStyle>
@@ -250,8 +281,8 @@ const BookingDetail = () => {
         {/* 이용 예정 */}
         {activeTab === "upcoming" && (
           <div className="container">
-            {upcomingBookings.length > 0 ? (
-              upcomingBookings.map((booking, index) => (
+            {bookingsToShow.length > 0 ? (
+              bookingsToShow.map((booking, index) => (
                 <div className="form-group" key={index}>
                   <BookingDetailForm
                     booking={booking}
@@ -279,8 +310,8 @@ const BookingDetail = () => {
         {activeTab === "completed" && (
           <>
             <div className="container">
-              {completedBookings.length > 0 ? (
-                completedBookings.map((booking, index) => (
+            {bookingsToShow.length > 0 ? (
+              bookingsToShow.map((booking, index) => (
                   <div className="form-group" key={index}>
                     <BookingDetailForm
                       booking={booking}
@@ -308,8 +339,8 @@ const BookingDetail = () => {
         {activeTab === "cancelde" && (
           <>
             <div className="container">
-              {cancelledBookings.length > 0 ? (
-                cancelledBookings.map((booking, index) => (
+            {bookingsToShow.length > 0 ? (
+              bookingsToShow.map((booking, index) => (
                   <div className="form-group" key={index}>
                     <BookingDetailForm
                       booking={booking}
@@ -333,6 +364,12 @@ const BookingDetail = () => {
             </div>
           </>
         )}
+        <ListPagination
+            currentPage={currentPage}
+            totalItems={totalItems}
+            itemsPerPage={postPerPage}
+            onPageChange={setCurrentPage}
+          />
       </div>
     </WrapStyle>
   );

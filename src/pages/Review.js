@@ -142,7 +142,6 @@ const Review = () => {
     const getGlamping = async () => {
       try {
         const glampId = 1;
-        // const page = 1;
         const response = await axios.get(
           `/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
@@ -203,7 +202,7 @@ const Review = () => {
   return (
     <WrapStyle>
       <div className="inner">
-        <h3>숙소 후기</h3>
+        <h3>글램핑장 후기</h3>
         <TopContents>
           <p>숙소 평점</p>
           <div className="rating-details">

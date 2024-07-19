@@ -1,23 +1,19 @@
 import styled from "@emotion/styled";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa6";
 import { PiPencilSimpleLine } from "react-icons/pi";
+import { useNavigate } from "react-router-dom";
+import { postCheckSms, postSendSms } from "../../apis/userapi";
+import AlertModal from "../../components/common/AlertModal";
 import { MainButton } from "../../components/common/Button";
 import DeleteModal from "../../components/common/DeleteModal";
 import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 import Categories from "../../components/mypage/Categories";
-import { colorSystem, size } from "../../styles/color";
-import {
-  deleteUser,
-  getUser,
-  postCheckSms,
-  postSendSms,
-} from "../../apis/userapi";
-import { getCookie, removeCookie } from "../../utils/cookie";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import AlertModal from "../../components/common/AlertModal";
 import useModal from "../../hooks/UseModal";
+import { colorSystem, size } from "../../styles/color";
+import { getCookie, removeCookie } from "../../utils/cookie";
+import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   .inner {
@@ -181,21 +177,50 @@ const WrapStyle = styled.div`
     width: 75%;
   }
 
-  .auth-number-btn {
+  .auth-number-btn > button,
+  .form-button {
+    max-width: 110px;
+    width: 100%;
+    font-size: 0.8rem;
     > button {
+      width: 100%;
       padding: 8px 10px;
       ${size.mid} {
         font-size: 0.8rem;
       }
     }
   }
+
+  .timer-wrap {
+    width: 100%;
+    .timer {
+      margin-top: 5px;
+      margin-left: 5px;
+      color: ${colorSystem.error};
+      font-size: 0.8rem;
+      ${size.mid} {
+        font-size: 0.7rem;
+      }
+    }
+
+    .time-over {
+      margin-top: 5px;
+      margin-left: 5px;
+      color: ${colorSystem.error};
+      font-size: 0.8rem;
+      ${size.mid} {
+        font-size: 0.7rem;
+      }
+    }
+  }
+
   /* 수정하기 버튼 */
   .modify-btn {
     width: 100%;
     > button {
       width: 100%;
       height: 50px;
-      margin-top: 40px;
+      margin-top: 30px;
       margin-bottom: 10px;
       font-size: 1.2rem;
       ${size.mid} {
@@ -242,7 +267,7 @@ const WrapStyle = styled.div`
 
 const UserInfo = () => {
   // 비밀번호 확인 입력창 모달
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   // 회원탈퇴 모달
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // 프로필사진 미리보기
@@ -265,12 +290,9 @@ const UserInfo = () => {
   const [updatedPassword, setUpdatedPassword] = useState("");
   const [updatedPhone, setUpdatedPhone] = useState("");
 
-  // 에러 메시지 상태
-  const [errorMessage, setErrorMessage] = useState("");
   // Alert 모달 관련 상태와 함수
-  const { openModal, closeModal, isAlertModalOpen, modalMessage } = useModal();
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
-  // 비밀번호 일치여부 확인
   const [userPwCheck, setUserPwCheck] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [nickNameValid, setNickNameValid] = useState(true);
@@ -298,6 +320,8 @@ const UserInfo = () => {
     userPwCheck: "",
     userPhone: "",
   });
+  
+const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // 토큰정보 불러오기
@@ -347,18 +371,17 @@ const UserInfo = () => {
 
   // 비밀번호 입력 확인 모달
   useEffect(() => {
-    setIsModalOpen(true);
+    setIsPasswordModalOpen(true);
   }, []);
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+    setIsPasswordModalOpen(false);
   };
 
   // 비밀번호 입력 성공 확인 함수
   const handlePasswordCheckSuccess = () => {
     // console.log("비밀번호 확인 성공");
-    setIsModalOpen(false);
-    // 추가적인 로직 수행 (예: 사용자 정보 수정 등)
+    setIsPasswordModalOpen(false);
   };
 
   // 프로필 이미지 변경 시 미리보기 실행
@@ -420,6 +443,7 @@ const UserInfo = () => {
       userNickname: e.target.value,
     }));
     setUpdatedNickname(e.target.value);
+    setNickNameValid(nickNamePattern.test(e.target.value));
   };
 
   // 비밀번호 수정 함수
@@ -430,6 +454,7 @@ const UserInfo = () => {
     }));
     setUpdatedPassword(e.target.value);
     setPasswordMatch(e.target.value === userPwCheck);
+    setPasswordValid(passwordPattern.test(e.target.value));
   };
 
   // 비밀번호 확인 핸들러
@@ -445,6 +470,7 @@ const UserInfo = () => {
       userPhone: e.target.value,
     }));
     setUpdatedPhone(e.target.value);
+    setPhoneValid(phonePattern.test(e.target.value));
   };
 
   // 핸드폰 번호 표시 형식
@@ -452,51 +478,13 @@ const UserInfo = () => {
     return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
   };
 
-  // 유저 정보 업데이트 함수
-  const handleSubmit = async e => {
-    e.preventDefault();
-    if (!accessToken) return;
-
-    // FormData 객체를 사용하여 multipart/form-data 요청 생성
-    const formData = new FormData();
-
-    // dto 필드를 JSON 문자열로 추가
-    const dto = JSON.stringify({
-      userNickname: updatedNickname,
-      userPw: updatedPassword,
-      userPhone: updatedPhone,
-    });
-    formData.append("dto", dto);
-    // console.log(formData.get("dto"));
-
-    // 이미지 파일 추가 (profileImage를 사용)
-    if (profileImage) {
-      formData.append("mf", profileImage);
-    }
-
-    try {
-      const response = await axios.put(`/api/user`, formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      console.log(response);
-      // 업데이트 성공 시 상태 업데이트
-      if (response.data.code === "SU") {
-        setUserInfo(prev => ({
-          ...prev,
-          userNickname: updatedNickname,
-          userPW: updatedPassword,
-          userPhone: updatedPhone,
-        }));
-        openModal("수정이 완료되었습니다!");
-      } else {
-        console.log("업데이트 실패");
-      }
-    } catch (error) {
-      console.error("유저 정보 업데이트 오류", error);
-    }
+  // 핸드폰 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatPhoneTimer = () => {
+    const minutes = Math.floor(phoneTimer / 60);
+    const seconds = phoneTimer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
+
   // 핸드폰 인증 타이머 초기화 및 정리
   useEffect(() => {
     if (phoneTimer > 0 && !phoneTimerId) {
@@ -519,6 +507,7 @@ const UserInfo = () => {
   // 핸드폰 인증시 처리할 함수
   const handleSmsSubmit = async e => {
     e.preventDefault();
+    setLoading(true);
     const result = await postSendSms({ userPhone: userInfo.userPhone });
     console.log(result.data);
     if (result.data.code === "SU") {
@@ -541,7 +530,9 @@ const UserInfo = () => {
         message: "발송 실패하였습니다. 다시 시도해주세요",
       });
     }
+    setLoading(false);
   };
+
   // 핸드폰 인증코드 처리할 함수
   const handleAuthNumberSubmit = async e => {
     e.preventDefault();
@@ -575,9 +566,84 @@ const UserInfo = () => {
     }
   };
 
+  // 유저 정보 업데이트 함수
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!accessToken) return;
+
+    if (!nickNameValid) {
+      openModal({
+        message: "닉네임이 형식에 맞지 않습니다",
+      });
+      return;
+    }
+
+    if (!passwordValid) {
+      openModal({
+        message: "비밀번호가 형식에 맞지 않습니다",
+      });
+      return;
+    }
+
+    if (updatedPassword && updatedPassword !== userPwCheck) {
+      openModal({
+        message: "비밀번호가 일치하지 않습니다.",
+      });
+      return;
+    }
+    
+    if (updatedPhone && !isPhoneVerified) {
+      openModal({
+        message: "휴대폰 인증이 완료되지 않았습니다",
+      });
+      return;
+    }
+
+    // FormData 객체를 사용하여 multipart/form-data 요청 생성
+    const formData = new FormData();
+
+    // dto 필드를 JSON 문자열로 추가
+    const dto = JSON.stringify({
+      userNickname: updatedNickname,
+      userPw: updatedPassword,
+      userPhone: updatedPhone,
+    });
+    formData.append("dto", dto);
+    // console.log(formData.get("dto"));
+
+    // 이미지 파일 추가 (profileImage를 사용)
+    if (profileImage) {
+      formData.append("mf", profileImage);
+    }
+
+    try {
+      const response = await axios.put(`/api/user`, formData, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response);
+      // 업데이트 성공 시 상태 업데이트
+      if (response.data.code === "SU") {
+        setUserInfo(prev => ({
+          ...prev,
+          userNickname: updatedNickname,
+          userPW: updatedPassword,
+          userPhone: updatedPhone,
+        }));
+        openModal({message:"수정이 완료되었습니다!"});
+      } else {
+        console.log("업데이트 실패");
+      }
+    } catch (error) {
+      console.error("유저 정보 업데이트 오류", error);
+    }
+  };
+
   return (
     <WrapStyle>
       <Categories />
+      {loading && <Loading />}
       <div className="inner">
         <h3>내 정보 관리</h3>
         <div className="container">
@@ -606,7 +672,12 @@ const UserInfo = () => {
             </div>
           </div>
           <div className="wrap">
-            <form className="userInfo-form" onSubmit={handleSubmit}>
+            <form
+              className="userInfo-form"
+              onSubmit={e => {
+                handleSubmit(e);
+              }}
+            >
               <div className="form-group">
                 <label htmlFor="email">이메일</label>
                 <input
@@ -640,7 +711,7 @@ const UserInfo = () => {
                 />
                 {!nickNameValid && (
                   <p className="error-message">
-                    닉네임이 형식에 맞지 않습니다 (2~10자의 대소문자, 한글,
+                    닉네임이 형식에 맞지 않습니다 (3~10자의 대소문자, 한글,
                     숫자만 가능)
                   </p>
                 )}
@@ -744,17 +815,25 @@ const UserInfo = () => {
                   </div>
                 </div>
               )}
+              {/* 타이머 */}
+              {isSmsSent && phoneTimer > 0 && (
+                <div className="timer-wrap">
+                  <p className="timer">남은 시간: {formatPhoneTimer()}</p>
+                </div>
+              )}
+              {isSmsSent && phoneTimer === 0 && (
+                <div>
+                  <p className="time-over">
+                    인증 시간이 만료되었습니다. 다시 발송해주세요.
+                  </p>
+                </div>
+              )}
               <div className="modify-btn">
-                <MainButton
-                  label="수정하기"
-                  // onClick={() => {
-                  //   handleShowButtons();
-                  // }}
-                />
+                <MainButton label="수정하기" />
               </div>
             </form>
             <AlertModal
-              isOpen={isAlertModalOpen}
+              isOpen={isModalOpen}
               onClose={closeModal}
               message={modalMessage}
             />
@@ -772,7 +851,7 @@ const UserInfo = () => {
         </div>
       </div>
       <PasswordCheckModal
-        isOpen={isModalOpen}
+        isOpen={isPasswordModalOpen}
         onClose={() => {
           handleCloseModal();
         }}

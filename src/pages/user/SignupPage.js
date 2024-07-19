@@ -133,7 +133,7 @@ const SignupPage = () => {
   // 메일 인증시 처리할 함수
   const handlEmailSubmit = async e => {
     e.preventDefault();
-
+setLoading(true)
     const result = await postMailSend({ userEmail });
     // console.log(result.data);
     console.log(result.data.code);
@@ -162,6 +162,7 @@ const SignupPage = () => {
         message: "메일 발송에 실패하였습니다. 다시 시도해주세요.",
       });
     }
+    setLoading(false)
   };
 
   // 인증코드 확인 시 처리할 함수
@@ -207,6 +208,7 @@ const SignupPage = () => {
   // 핸드폰 인증시 처리할 함수
   const handleSmsSubmit = async e => {
     e.preventDefault();
+    setLoading(true)
     const result = await postSendSms({ userPhone });
     console.log(result.data);
     if (result.data.code === "SU") {
@@ -229,6 +231,7 @@ const SignupPage = () => {
         message: "발송 실패하였습니다. 다시 시도해주세요",
       });
     }
+    setLoading(false)
   };
 
   // 핸드폰 인증코드 처리할 함수
@@ -418,7 +421,7 @@ const SignupPage = () => {
 
   return (
     <WrapStyle>
-      {/* {loading && <Loading />} */}
+      {loading && <Loading />}
       <main>
         <div className="inner">
           <div className="container">
@@ -597,7 +600,7 @@ const SignupPage = () => {
                     </div>
                     {!nickNameValid && (
                       <p className="error-message">
-                        닉네임이 형식에 맞지 않습니다 (2~10자의 대소문자, 한글,
+                        닉네임이 형식에 맞지 않습니다 (3~10자의 대소문자, 한글,
                         숫자만 가능)
                       </p>
                     )}
