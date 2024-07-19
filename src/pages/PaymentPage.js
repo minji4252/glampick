@@ -28,6 +28,7 @@ import $ from "jquery";
 import axios from "axios";
 import { getCookie, setCookie } from "../utils/cookie";
 import TermsModal from "../components/common/TermsModal";
+import { kakaopayMethod } from "../apis/payment";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
@@ -37,7 +38,7 @@ const PaymentPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchParams] = useSearchParams();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [savePaymentMethod, setSavePaymentMethod] = useState(false);
+  // const [savePaymentMethod, setSavePaymentMethod] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const [reservationInfo, setReservationInfo] = useState({
@@ -182,6 +183,81 @@ const PaymentPage = () => {
   const roomPrice = location.state.roomPrice;
   const roomMainImage = location.state.roomMainImage;
 
+  const kakaopayMethod = (amount, buyerName) => {
+    var IMP = window.IMP;
+    IMP.init("imp10657444");
+    IMP.request_pay(
+      {
+        pg: "kakaopay.TC0ONETIME",
+        pay_method: "card",
+        merchant_uid: "GPK_" + new Date().getTime(),
+        name: glampName + " 결제",
+        amount: amount,
+        buyer_name: buyerName,
+      },
+      async function (data) {
+        let completed = false;
+        let msg;
+        if (data.success) {
+          msg = "결제 완료";
+          msg += "// 결제 수단 : Kakao";
+          msg += "// 상점 거래ID : " + data.merchant_uid;
+          msg += "// 결제 금액 : " + data.paid_amount;
+          msg += "// 구매자 이름 : " + data.buyer_name;
+          console.log("msg", msg);
+          completed = true;
+          try {
+            await axios.post(
+              "/api/book",
+              {
+                glampId: glampId,
+                roomId: roomId,
+                personnel: people,
+                inputName: userName,
+                checkInDate: inDate,
+                checkOutDate: outDate,
+                pg: selectedPayment,
+                payAmount: roomPrice,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${accessToken}`,
+                },
+              },
+            );
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log("error");
+        }
+
+        if (completed) {
+          navigate("/paymentcompleted", {
+            state: {
+              glampName,
+              inDate,
+              outDate,
+              checkInTime,
+              checkOutTime,
+              people,
+              roomName,
+              roomPrice,
+              roomMainImage,
+              formatRoomPrice,
+              formatExtraPrice,
+              formatPayAmount,
+            },
+          });
+        } else {
+          openModal({
+            message: "결제에 실패하였습니다. 다시 시도해 주세요.",
+          });
+        }
+      },
+    );
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -219,110 +295,7 @@ const PaymentPage = () => {
       return;
     }
 
-    if (savePaymentMethod) {
-      const expires = new Date();
-      expires.setDate(expires.getDate() + 30); // 현재 날짜에서 30일 후로 설정
-
-      setCookie("selectedPaymentMethod", selectedPayment, {
-        path: "/",
-        expires: expires.toUTCString(), // Date 객체를 문자열로 변환하여 설정
-      });
-    }
-    // const Payment = (effect, deps) => {
-    //   useEffect(() => {
-    //     const jquery = document.createElement("script");
-    //     jquery.src = "https://cdn.iamport.kr/v1/iamport.js";
-    //     const iamport = document.createElement("script");
-    //     iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.1.5.js";
-    //     document.head.appendChild(jquery);
-    //     document.head.appendChild(iamport);
-    //     return () => {
-    //       document.head.removeChild(jquery);
-    //       document.head.removeChild(iamport);
-    //     };
-    //   }, []);
-    //   return;
-    // };
-
-    try {
-      await axios.post(
-        "/api/book",
-        {
-          glampId: glampId,
-          roomId: roomId,
-          personnel: people,
-          inputName: userName,
-          checkInDate: inDate,
-          checkOutDate: outDate,
-          pg: selectedPayment,
-          payAmount: roomPrice,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-      // console.log("bookingResponse.data", bookingResponse.data);
-    } catch (error) {
-      console.log(error);
-    }
-
-    // 카카오페이
-    // var IMP = window.IMP;
-    // IMP.init("imp10657444");
-    // IMP.request_pay(
-    //   {
-    //     pg: "kakaopay.TC0ONETIME",
-    //     pay_method: "card",
-    //     merchant_uid: "merchant_" + new Date().getTime(), //주문번호
-    //     name: "GOOTTFLEX", //상품명
-    //     amount: $(".amountValue").val(), //가격
-    //     buyer_email: $(".sessionuserID").val(), //구매자 이메일
-    //     buyer_name: "buyer_name", //구매자 이름
-    //     buyer_tel: "hp", //전화번호
-    //     buyer_addr: "addr", //주소
-    //     buyer_postcode: "123-456", //우편번호
-    //   },
-    //   function (data) {
-    //     if (data.success) {
-    //       var msg = "결제 완료";
-    //       msg += "고유ID : " + data.imp_uid; //아임포트 uid는 실제 결제 시 결제 고유번호를 서버와 비교해서 결제처리하는데 필요없긴함.
-    //       msg += "// 상점 거래ID : " + data.merchant_uid;
-    //       msg += "// 결제 금액 : " + data.paid_amount;
-    //       msg += "// 카드 승인번호 : " + data.apply_num;
-
-    //       $.ajax({
-    //         type: "post",
-    //         url: "/paySuccess",
-    //         data: { ID: data.buyer_email, amount: data.paid_amount },
-    //       });
-    //     } else {
-    //       alert("결제실패");
-    //       // var msg = "결제 실패";
-    //       // msg += "에러 내용" + rsp.error_msg;
-    //     }
-    //     alert(msg);
-    //     // document.location.href = "/paymentcompleted";
-    //   },
-    // );
-
-    navigate("/paymentcompleted", {
-      state: {
-        glampName,
-        inDate,
-        outDate,
-        checkInTime,
-        checkOutTime,
-        people,
-        roomName,
-        roomPrice,
-        roomMainImage,
-        formatRoomPrice,
-        formatExtraPrice,
-        formatPayAmount,
-      },
-    });
+    kakaopayMethod(reservationInfo.payAmount, userName);
   };
 
   return (
