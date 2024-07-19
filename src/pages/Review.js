@@ -135,6 +135,9 @@ const Review = () => {
 
   // 평균 평점 불러오기
   const location = useLocation();
+  const aaa = location;
+  console.log(aaa);
+
   // console.log("location", location.state);
 
   // 전체리뷰 이미지 불러오기
