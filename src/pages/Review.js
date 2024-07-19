@@ -155,17 +155,14 @@ const Review = () => {
 
   // console.log("location", location.state);
 
-
   // glampId 불러오기
   const { glampId } = useParams();
   console.log("glampId", glampId);
-
 
   // 리뷰 전체 이미지 불러오기
   useEffect(() => {
     const getGlamping = async () => {
       try {
-
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
@@ -182,7 +179,6 @@ const Review = () => {
   useEffect(() => {
     const getGlampingReview = async () => {
       try {
-
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );
