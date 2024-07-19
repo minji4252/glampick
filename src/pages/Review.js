@@ -123,19 +123,22 @@ const TopContents = styled.div`
     margin-left: 5px;
     margin-bottom: 8px;
     color: ${colorSystem.g800};
+    font-weight: 500;
     font-size: 0.9rem;
   }
 `;
 
 const BottomContents = styled.div`
   width: 100%;
-  height: 2100px;
+  /* height: 2100px; */
   /* 임시로 지정 */
 
   .glamp-name {
-    margin-bottom: 17px;
-    color: ${colorSystem.g800};
-    /* font-size: 1rem; */
+    margin-left: 5px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    color: ${colorSystem.p500};
+    font-size: 1rem;
     font-weight: 600;
   }
 `;
@@ -160,15 +163,13 @@ const Review = () => {
   const starPoint = location.state.starPoint;
   // 글램핑 이름
   const glampName = location.state.glampName;
-  // 리뷰 수
+  // 총 리뷰 수
   const countReview = location.state.countReview;
 
   // glampId 불러오기
   const { glampId } = useParams();
-  // console.log("glampId", glampId);
 
-  // 상단 리뷰 이미지 전체 불러오기
-
+  // 리뷰 이미지 더보기 모달에서 불러올 사진
   useEffect(() => {
     const getGlamping = async () => {
       try {
@@ -195,36 +196,33 @@ const Review = () => {
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
         );
-        console.log(response);
         const data = response.data;
         console.log("전체리뷰 데이터:", data);
-        setReviewImagesLength(data.totalImagesCount); // 총 리뷰 이미지 개수
-        setReviewData(data.reviewListItems); // 리뷰 데이터 배열을 state에 저장
-        setAllReviewImages(data.allReviewImage); // allReviewImage 상태 업데이트
-        console.log("총 리뷰이미지 수:", allReviewImages);
 
+        setReviewData(data.reviewListItems); // 리뷰 데이터 배열을 state에 저장
+        setAllReviewImages(data.allReviewImage); // TopContents에 보여줄 이미지들
         const images = data.reviewListItems.flatMap(
           review => review.reviewImages,
         );
         setReviewImages(images);
 
         // 총 페이지 수 계산
-        const totalPages = Math.ceil(data.totalImagesCount / 5); // 페이지 당 5개 아이템으로 가정
+        const totalPages = Math.ceil(countReview / 5); // 페이지 당 5개 아이템으로 가정
         setTotalPages(totalPages); // 총 페이지 수 업데이트
-        console.log(totalPages);
+        // console.log(totalPages);
       } catch (error) {
         console.log(error);
       }
     };
 
     getGlampingReview();
-  }, [page, glampId]);
+  }, [page, glampId, countReview]);
 
   const handlePageChange = pageNumber => {
     setPage(pageNumber);
   };
 
-  // 모달창 열고 닫기
+  // 리뷰 이미지 보기 모달
   const toggleModal = () => {
     setShowModal(!showModal);
   };
@@ -246,7 +244,7 @@ const Review = () => {
               <div className="total-rating">/5</div>
             </div>
           </div>
-          {/* 상당 리뷰사진 개수 9개 */}
+          {/* 상단 리뷰사진 개수 9개 */}
           <div className="review-img">
             {allReviewImages.slice(0, 9).map((img, index) => (
               <div
@@ -266,7 +264,7 @@ const Review = () => {
             ))}
             {console.log("allReviewImages.length:", allReviewImages.length)}
           </div>
-          <div className="review-count">총 {countReview}개</div>
+          <div className="review-count">총 리뷰 {countReview}개</div>
         </TopContents>
         <BottomContents>
           <div className="review-list">
@@ -293,14 +291,14 @@ const Review = () => {
           reviewImages={allReviewImages}
           onClose={toggleModal}
           onMoreClick={() => {
-            handleMoreClick();
+            handleMoreClick;
           }}
           // 더보기 버튼 클릭 핸들러 추가되어야 함
         />
       )}
       <ListPagination
         currentPage={page}
-        totalItems={reviewImagesLength}
+        totalItems={countReview}
         itemsPerPage={5}
         onPageChange={handlePageChange}
         totalPages={totalPages}
