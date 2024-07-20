@@ -1,402 +1,481 @@
-// import React, { useState, useRef, useEffect } from "react";
-// import styled from "@emotion/styled";
-// import { colorSystem } from "../styles/color";
-// import { MdOutlineArrowBackIos } from "react-icons/md";
-// import { Virtual, Navigation, Pagination } from "swiper/modules";
+// import { useState, useEffect, useRef } from "react";
+// import { FaStar } from "react-icons/fa";
+// import { IoIosArrowForward } from "react-icons/io";
+// import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
+// import { FaRegCalendar } from "react-icons/fa6";
+// import {
+//   Link,
+//   useNavigate,
+//   useParams,
+//   useSearchParams,
+// } from "react-router-dom";
+// import AlertModal from "../components/common/AlertModal";
+// import { ActionButton, MainButton } from "../components/common/Button";
+// import GlampingDetailStyle, {
+//   InfoGroup,
+//   OptionItems,
+//   ReviewSwiper,
+//   ReviewTitle,
+//   RoomCard,
+//   RoomCardBooking,
+//   RoomCardLeft,
+//   RoomCardRight,
+//   RoomInfo,
+//   RoomInfomation,
+//   RoomIntro,
+//   RoomLocation,
+//   RoomOption,
+//   RoomPic,
+//   RoomProperty,
+//   RoomReview,
+//   RoomSelect,
+//   RoomSelectTitle,
+//   RoomSoldOutCard,
+//   RoomTitle,
+//   SwiperEndStyle,
+//   UnderLine,
+// } from "../styles/GlampingDetailStyle";
 // import { Swiper, SwiperSlide } from "swiper/react";
 // import "swiper/css";
 // import "swiper/css/pagination";
-// import "swiper/css/navigation";
-// import "../styles/detailswiper.css";
+// import { Pagination } from "swiper/modules";
+// import { animateScroll as scroll } from "react-scroll";
+// import {
+//   fetchGlampingData,
+//   toggleLikeGlamping,
+//   fetchMoreRooms,
+// } from "../apis/glamping";
+// import CheckModal from "../components/common/CheckModal";
 // import axios from "axios";
-// import { IoIosArrowDown } from "react-icons/io";
+// import emptyheart from "../images/icon/heart-empty.png";
+// import fillheart from "../images/icon/heart-fill.png";
 
-// const RoomDetail = () => {
-//   const [currentTab, setCurrentTab] = useState(0);
-//   const [isClick, setClick] = useState(false);
-//   const [roomData, setRoomData] = useState({});
-//   const largeSwiperRef = useRef(null);
-//   const smallSwiperRef = useRef(null);
+// const GlampingDetail = ({ isLogin }) => {
+//   const [glampingData, setGlampingData] = useState(null);
+//   const [isLiked, setIsLiked] = useState(false);
+//   const [roomMainImage, setRoomMainImage] = useState(null);
+//   const [roomImages, setRoomImages] = useState([]);
+//   const [isExpanded, setIsExpanded] = useState(false);
+//   const [initialRoomItems, setInitialRoomItems] = useState([]);
+//   const [showLoginModal, setShowLoginModal] = useState(false);
+//   const [modalMessage, setModalMessage] = useState("");
+//   const [modalType, setModalType] = useState("");
+//   const [accessToken, setAccessToken] = useState("");
 
-//   const fetchRoomImages = async () => {
-//     try {
-//       const response = await axios.get(
-//         "/api/glamping/info/moreRoomImages?glampId=1",
-//       );
-//       if (response.data.code === "SU") {
-//         return response.data.moreRoomImages;
-//       } else {
-//         throw new Error("API 응답 오류");
-//       }
-//     } catch (error) {
-//       console.error("API 호출 오류:", error);
-//       return {};
-//     }
+//   // 기본값 설정 함수
+//   const getDefaultDate = daysToAdd => {
+//     const date = new Date();
+//     date.setDate(date.getDate() + daysToAdd);
+//     return date.toISOString().split("T")[0];
 //   };
 
+//   const { glampId } = useParams();
+//   const [searchParams] = useSearchParams();
+
+//   // 날짜 값 설정, 값이 없으면 기본값 사용
+//   const inDate = searchParams.get("inDate") || getDefaultDate(0);
+//   const outDate = searchParams.get("outDate") || getDefaultDate(1);
+//   const people = searchParams.get("people") || 2;
+//   const roomSelectRef = useRef(null);
+//   const navigate = useNavigate();
+
+//   // 1. 글램핑디테일페이지 정보 불러오기
 //   useEffect(() => {
-//     // 컴포넌트가 마운트될 때 API 호출
-//     const loadRoomImages = async () => {
-//       const data = await fetchRoomImages();
-//       setRoomData(data);
-//       if (Object.keys(data).length > 0) {
-//         setCurrentTab(0);
-//         setSlides(data[Object.keys(data)[0]]);
+//     const fetchData = async () => {
+//       try {
+//         const data = await fetchGlampingData(glampId, inDate, outDate);
+//         setGlampingData(data);
+//         setInitialRoomItems(data.roomItems.slice(0, 5));
+//         setRoomMainImage(`${data.glampImage}`);
+//         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
+//         setRoomImages(roomImageUrls);
+//         setIsLiked(data.isFav === 1);
+//         console.log("isFav의 현재 값은? : ", data.isFav === 1);
+//       } catch (error) {
+//         console.log(error);
 //       }
 //     };
 
-//     loadRoomImages();
+//     fetchData();
+//   }, [glampId, inDate, outDate]);
+
+//   // 로그인 여부 관련
+//   useEffect(() => {
+//     const fetchAccessToken = async () => {
+//       try {
+//         const accessTokenFromCookie = getCookie("access-Token");
+//         if (accessTokenFromCookie) {
+//           setAccessToken(accessTokenFromCookie);
+//         } else {
+//           console.log("쿠키에 access-Token 없음");
+//         }
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     };
+
+//     fetchAccessToken();
 //   }, []);
 
-//   const setSlides = images => {
-//     return images.map((image, index) => (
-//       <div
-//         key={index}
-//         style={{
-//           background: `url(${roomMainImage}) no-repeat center`,
-//           backgroundSize: "cover",
-//           width: "100%",
-//           height: "100%",
-//         }}
-//       />
-//     ));
-//   };
-
-//   const selectMenuHandler = index => {
-//     const roomNames = Object.keys(roomData);
-//     const selectedRoom = roomNames[index];
-//     setCurrentTab(index);
-//     setSlides(roomData[selectedRoom]);
-//   };
-
-//   const syncSwipers = swiper => {
-//     if (swiper === largeSwiperRef.current && smallSwiperRef.current) {
-//       smallSwiperRef.current.slideTo(swiper.activeIndex);
-//     } else if (swiper === smallSwiperRef.current && largeSwiperRef.current) {
-//       largeSwiperRef.current.slideTo(swiper.activeIndex);
+//   // 2. 관심목록 추가 취소 기능
+//   const toggleLike = async () => {
+//     if (!accessToken) {
+//       setModalMessage(
+//         `로그인이 필요한 서비스입니다. \n 로그인 페이지로 이동하시겠습니까?`,
+//       );
+//       setModalType("check");
+//       setShowLoginModal(true);
+//       return;
 //     }
-//   };
 
-//   const WrapStyle = styled.div`
-//     .inner {
-//       flex-direction: column;
-//     }
-//     margin-bottom: 50px;
-//   `;
-
-//   const TitleStyle = styled.div`
-//     height: 60px;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     position: relative;
-//     width: 100%;
-//     svg {
-//       position: absolute;
-//       left: 0;
-//       font-size: 1.2rem;
-//       color: ${colorSystem.g900};
-//       cursor: pointer;
-//     }
-//     h1 {
-//       font-size: 1.2rem;
-//       font-weight: 700;
-//       color: ${colorSystem.g800};
-//     }
-//   `;
-
-//   const ListStyle = styled.div`
-//     margin-top: 10px;
-//     width: 100%;
-//     display: flex;
-
-//     ul {
-//       display: flex;
-//       width: 100%;
-//       gap: 6px 8px;
-//       margin-bottom: 20px;
-//       justify-content: flex-start;
-//       overflow-x: auto;
-//       overscroll-behavior: none;
-//       flex-wrap: nowrap;
-
-//       ::-webkit-scrollbar {
-//         display: none;
+//     try {
+//       const resultValue = await toggleLikeGlamping(glampId, accessToken);
+//       if (resultValue === 0) {
+//         setIsLiked(true);
+//         setModalMessage("관심 글램핑장 목록에 추가되었습니다");
+//         setModalType("alert");
+//       } else if (resultValue === 1) {
+//         setIsLiked(false);
+//         setModalMessage("관심 글램핑장 목록에서 삭제되었습니다");
+//         setModalType("alert");
 //       }
-//       -ms-overflow-style: none;
-//       scrollbar-width: none;
+//     } catch (error) {
+//       console.log(error);
 //     }
+//   };
 
-//     li {
-//       border: 1px solid ${colorSystem.g200};
-//       font-weight: 600;
-//       color: ${colorSystem.g900};
-//       font-size: 0.9rem;
-//       list-style: none;
-//       padding: 8px 20px;
-//       border-radius: 100px;
-//       cursor: pointer;
-//       flex: 0 0 auto;
-//       max-width: 210px;
-//       text-overflow: ellipsis;
-//       white-space: nowrap;
-//       overflow: hidden;
-//     }
+//   // const handleMoreView = async () => {
+//   // try {
+//   //   // 3. 모두보기 클릭시 객실 정보 더 불러오기
+//   //   const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
+//   //   setGlampingData(prevData => ({
+//   //     ...prevData,
+//   //     roomItems: [...prevData.roomItems, ...data.roomItems],
+//   //   }));
+//   //   setIsExpanded(true);
+//   //   const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
+//   //   setRoomImages(prevImages => [...prevImages, ...roomImageUrls]);
+//   // } catch (error) {
+//   //   console.log(error);
+//   // }
+//   // };
 
-//     .focused {
-//       background-color: ${colorSystem.primary};
-//       color: ${colorSystem.white};
-//     }
-//   `;
+//   // const handleCollapseView = () => {
+//   //   setGlampingData(prevData => ({
+//   //     ...prevData,
+//   //     roomItems: initialRoomItems,
+//   //   }));
+//   //   setIsExpanded(false);
+//   //   scroll.scrollTo(roomSelectRef.current.offsetTop, {
+//   //     duration: 500,
+//   //     smooth: true,
+//   //   });
+//   // };
 
-//   const ListButton = styled.div`
-//     max-height: 32px;
-//     min-height: 32px;
-//     min-width: 32px;
-//     max-width: 32px;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     position: relative;
-//     z-index: 1;
-//     cursor: pointer;
-//     background-color: ${colorSystem.white};
-//     border-radius: 999px;
-//     border-width: 2px;
-//     border: 1px solid ${colorSystem.g200};
-
-//     &::before {
-//       width: 20px;
-//       min-height: 32px;
-//       content: "";
-//       position: absolute;
-//       left: -21px;
-//       background: linear-gradient(
-//         90deg,
-//         rgba(255, 255, 255, 0) 0.43%,
-//         rgb(255, 255, 255) 100%
+//   const handleReservationClick = room => {
+//     if (!isLogin) {
+//       setModalMessage(
+//         `로그인이 필요한 서비스입니다. \n 로그인 페이지로 이동하시겠습니까?`,
+//       );
+//       setModalType("check");
+//       setShowLoginModal(true);
+//     } else {
+//       navigate(
+//         `/payment/${glampId}?roomId=${room.roomId}&inDate=${inDate}&outDate=${outDate}&people=${people}`,
+//         {
+//           state: {
+//             glampName: glampingData.glampName,
+//             checkInTime: room.checkInTime,
+//             checkOutTime: room.checkOutTime,
+//             roomName: room.roomName,
+//             roomMainImage: roomMainImage,
+//           },
+//         },
 //       );
 //     }
+//   };
 
-//     svg {
-//       font-size: 1.2rem;
-//       color: ${colorSystem.p500};
-//       padding-top: 2px;
-//     }
+//   const handleLoginConfirm = () => {
+//     navigate("/login");
+//     setShowLoginModal(false);
+//   };
 
-//     .moreview {
-//       transform: rotate(0deg);
-//       transition: transform 0.3s ease-in-out;
-//     }
+//   const formatTime = time => {
+//     const [hours, minutes] = time.split(":");
+//     return `${hours}:${minutes}`;
+//   };
 
-//     .moreclick {
-//       transform: rotate(180deg);
-//       transition: transform 0.3s ease-in-out;
+//   const getTheme = theme => {
+//     switch (theme) {
+//       case "바베큐":
+//         return "option-barbecue";
+//       case "와이파이":
+//         return "option-wifi";
+//       case "수영장":
+//         return "option-swim";
+//       case "반려동물 동반":
+//         return "option-pet";
+//       case "마운틴뷰":
+//         return "option-mountain";
+//       case "오션뷰":
+//         return "option-ocean";
+//       case "개별 화장실":
+//         return "option-toilet";
+//       default:
+//         return "";
 //     }
-//   `;
+//   };
 
-//   const LargeSwiper = styled.div`
-//     width: 100%;
-//     max-height: 550px;
-//     height: 100%;
+//   if (!glampingData) return null;
 
-//     .swiper {
-//       max-height: 550px;
-//       width: 100%;
-//       height: 100%;
-//     }
+//   const {
+//     glampName,
+//     starPointAvg,
+//     glampLocation,
+//     glampIntro,
+//     infoBasic,
+//     traffic,
+//     infoNotice,
+//     countReviewUsers,
+//     reviewItems,
+//     roomItems,
+//     // isFav,
+//   } = glampingData;
 
-//     .swiper-slide img {
-//       width: 70%;
-//     }
+//   //별점 단위
+//   const formattedStarPoint = Number(starPointAvg).toFixed(1);
 
-//     .swiper-slide-prev {
-//       width: 100%;
-//       height: 100%;
-//       background-color: ${colorSystem.background};
-//     }
-//     .swiper-slide-active {
-//       width: 100%;
-//       height: 100%;
-//       background-color: ${colorSystem.background};
-//     }
+//   // const isAllSoldOut = roomItems.every(room => !room.reservationAvailable);
 
-//     .swiper-slide-next {
-//       width: 100%;
-//       height: 100%;
-//       background-color: ${colorSystem.background};
-//     }
+//   // console.log("isAllSoldOut", isAllSoldOut);
 
-//     .swiper-wrapper {
-//       position: relative;
-//       overflow: visible;
-//     }
-
-//     .swiper-button-prev {
-//       position: absolute;
-//       left: 6%;
-//     }
-
-//     .swiper-button-next {
-//       position: absolute;
-//       right: 6%;
-//     }
-
-//     .swiper-button-next::after,
-//     .swiper-button-prev::after {
-//       color: ${colorSystem.p300};
-//       font-size: 30px;
-//       font-weight: 800;
-//     }
-//   `;
-
-//   const SmallSwiper = styled.div`
-//     height: 180px;
-//     margin-bottom: 20px;
-//     .swiper {
-//       width: 100%;
-//       height: 100%;
-//       max-width: 320px;
-//     }
-
-//     .swiper-wrapper {
-//       display: flex;
-//       align-items: center;
-//     }
-
-//     .swiper-slide img {
-//       max-width: 85px;
-//     }
-
-//     .swiper-slide-prev img {
-//       border-radius: 12px;
-//       width: 60px;
-//       height: 60px;
-//     }
-
-//     .swiper-slide-active img {
-//       border-radius: 12px;
-//       width: 85px;
-//       height: 85px;
-//       border: 4px solid ${colorSystem.p500};
-//     }
-
-//     .swiper-slide-next img {
-//       border-radius: 12px;
-//       width: 60px;
-//       height: 60px;
-//     }
-
-//     .swiper-button-next::after,
-//     .swiper-button-prev::after {
-//       color: ${colorSystem.p300};
-//       font-size: 20px;
-//       font-weight: 800;
-//       display: none;
-//     }
-
-//     .swiper-button-prev {
-//       width: 60px;
-//       height: 60px;
-//       left: 0;
-//       top: 82px;
-//       border-radius: 12px;
-//     }
-
-//     .swiper-button-next {
-//       width: 60px;
-//       height: 60px;
-//       right: 0;
-//       top: 82px;
-//       border-radius: 12px;
-//     }
-
-//     .swiper-pagination {
-//       color: ${colorSystem.primary};
-//       font-weight: 600;
-//     }
-//   `;
+//   const LinkToReview = () => {
+//     navigate(`/review/${glampId}`, {
+//       state: {
+//         starPoint: formattedStarPoint,
+//         glampName: glampName,
+//         countReview: countReviewUsers,
+//       },
+//     });
+//   };
 
 //   return (
-//     <WrapStyle>
+//     <GlampingDetailStyle>
 //       <div className="inner">
-//         <TitleStyle>
-//           <MdOutlineArrowBackIos />
-//           <h1>뉴욕스카이</h1>
-//         </TitleStyle>
-//         <ListStyle>
-//           <ul style={{ flexWrap: isClick ? "wrap" : "nowrap" }}>
-//             {Object.keys(roomData).map((roomName, index) => (
-//               <li
-//                 key={index}
-//                 className={currentTab === index ? "submenu focused" : "submenu"}
-//                 onClick={() => selectMenuHandler(index)}
+//         <RoomProperty>
+//           <RoomPic>
+//             <div
+//               className="main-img"
+//               style={{
+//                 // eslint-disable-next-line no-undef
+//                 backgroundImage: `url(${process.env.PUBLIC_URL}${roomMainImage})`,
+//                 backgroundRepeat: "no-repeat",
+//                 backgroundPosition: "center",
+//                 backgroundSize: "cover",
+//               }}
+//             />
+//           </RoomPic>
+//           <RoomTitle>
+//             <span>{glampName}</span>
+//             <button onClick={toggleLike}>
+//               {isLiked ? (
+//                 <div style={{ backgroundImage: `url(${fillheart})` }} />
+//               ) : (
+//                 <div
+//                   style={{
+//                     backgroundImage: `url(${emptyheart})`,
+//                   }}
+//                 />
+//               )}
+//             </button>
+//           </RoomTitle>
+//           <RoomReview>
+//             <ReviewTitle>
+//               <FaStar />
+//               <div className="review-score">{formattedStarPoint}</div>
+//               <div className="review-evaluat">{countReviewUsers}명 평가</div>
+//               <button onClick={() => LinkToReview()}>리뷰보기</button>
+//             </ReviewTitle>
+//             <ReviewSwiper>
+//               <Swiper
+//                 slidesPerView={3}
+//                 spaceBetween={20}
+//                 pagination={{
+//                   clickable: true,
+//                 }}
+//                 modules={[Pagination]}
+//                 className="mySwiper"
 //               >
-//                 {roomName}
-//               </li>
-//             ))}
-//           </ul>
-//           <ListButton
-//             onClick={() => {
-//               setClick(e => !e);
-//             }}
-//           >
-//             <span className={isClick ? "moreview moreclick" : "moreview"}>
-//               <IoIosArrowDown />
-//             </span>
-//           </ListButton>
-//         </ListStyle>
-//         <LargeSwiper>
-//           <Swiper
-//             navigation={true}
-//             modules={[Navigation]}
-//             className="mySwiper"
-//             onSwiper={swiper => (largeSwiperRef.current = swiper)}
-//             onSlideChange={swiper => syncSwipers(swiper)}
-//           >
-//             {roomData[Object.keys(roomData)[currentTab]] &&
-//               roomData[Object.keys(roomData)[currentTab]].map(
-//                 (image, index) => (
-//                   <SwiperSlide key={index}>
-//                     <img
-//                       src={`/path/to/images/${image}`}
-//                       alt={`Room ${index + 1}`}
-//                     />
-//                   </SwiperSlide>
-//                 ),
-//               )}
-//           </Swiper>
-//         </LargeSwiper>
-//         <SmallSwiper>
-//           <Swiper
-//             modules={[Virtual, Navigation, Pagination]}
-//             slidesPerView={3}
-//             centeredSlides={true}
-//             spaceBetween={70}
-//             pagination={{
-//               type: "fraction",
-//             }}
-//             navigation={true}
-//             virtual
-//             onSwiper={swiper => (smallSwiperRef.current = swiper)}
-//             onSlideChange={swiper => syncSwipers(swiper)}
-//           >
-//             {roomData[Object.keys(roomData)[currentTab]] &&
-//               roomData[Object.keys(roomData)[currentTab]].map(
-//                 (image, index) => (
-//                   <SwiperSlide key={index} virtualIndex={index}>
-//                     <img
-//                       src={`/path/to/images/${image}`}
-//                       alt={`Room ${index + 1}`}
-//                     />
-//                   </SwiperSlide>
-//                 ),
-//               )}
-//           </Swiper>
-//         </SmallSwiper>
+//                 <div>
+//                   {reviewItems.map((item, index) => (
+//                     <SwiperSlide key={index}>
+//                       <h2>{item.content}</h2>
+//                       <h5>{item.userNickName}</h5>
+//                     </SwiperSlide>
+//                   ))}
+//                 </div>
+//               </Swiper>
+//               <SwiperEndStyle />
+//               <div className="review-all">
+//                 <button onClick={() => LinkToReview()}>
+//                   전체보기
+//                   <IoIosArrowForward />
+//                 </button>
+//               </div>
+//             </ReviewSwiper>
+//           </RoomReview>
+//           <RoomOption>
+//             <UnderLine />
+//             <h3 className="option-title">테마</h3>
+//             <OptionItems>
+//               <div className="option-item">
+//                 {glampingData.roomService.map((service, index) => (
+//                   <div key={index} className={getTheme(service)} />
+//                 ))}
+//               </div>
+//             </OptionItems>
+//           </RoomOption>
+//         </RoomProperty>
+
+//         <RoomSelect ref={roomSelectRef}>
+//           <UnderLine />
+//           <RoomSelectTitle>
+//             <h3>객실선택</h3>
+//           </RoomSelectTitle>
+
+//           {/* {isAllSoldOut ? (
+//             <RoomSoldOutCard>
+//               <FaRegCalendar />
+//               <h5>선택한 날짜의 객실은 매진되었어요</h5>
+//               <p>검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
+//             </RoomSoldOutCard>
+//           ) : ( */}
+//           {roomItems.map((room, index) => (
+//             <RoomCard key={index}>
+//               <RoomCardLeft>
+//                 <Link
+//                   to={`/roomdetail/${glampId}`}
+//                   state={{ glampName: glampingData.glampName }}
+//                 >
+//                   <div
+//                     className="roomcard-img"
+//                     style={{
+//                       // eslint-disable-next-line no-undef
+//                       backgroundImage: `url(${process.env.PUBLIC_URL}${roomImages[index]})`,
+//                       backgroundRepeat: "no-repeat",
+//                       backgroundPosition: "center",
+//                       backgroundSize: "cover",
+//                     }}
+//                   >
+//                     <span>사진 더보기</span>
+//                   </div>
+//                 </Link>
+//               </RoomCardLeft>
+//               <RoomCardRight>
+//                 <span>{room.roomName}</span>
+//                 <RoomCardBooking>
+//                   <p>입실 {formatTime(room.checkInTime)}</p>
+//                   <p>퇴실 {formatTime(room.checkOutTime)}</p>
+
+//                   {room.reservationAvailable ? (
+//                     <>
+//                       <MainButton
+//                         label="객실 예약"
+//                         onClick={() => handleReservationClick(room)}
+//                       />
+//                       <span>
+//                         {Number(room.roomPrice).toLocaleString("ko-KR")}원
+//                       </span>
+//                     </>
+//                   ) : (
+//                     <div className="sold-out-style">
+//                       <ActionButton label="예약 마감" />
+//                       <span>
+//                         {Number(room.roomPrice).toLocaleString("ko-KR")}원
+//                       </span>
+//                     </div>
+//                   )}
+//                 </RoomCardBooking>
+//                 <div className="roomcard-txt">
+//                   <div className="txt-top">
+//                     <span>객실정보</span>
+//                     <p>
+//                       기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}인
+//                       (유료)
+//                     </p>
+//                   </div>
+//                   <div>
+//                     <span>추가정보</span>
+//                     <p>{room.roomServices.join(", ")}</p>
+//                   </div>
+//                 </div>
+//               </RoomCardRight>
+//             </RoomCard>
+//           ))}
+//           {/* )} */}
+//         </RoomSelect>
+
+//         <RoomInfo>
+//           <RoomIntro>
+//             <UnderLine />
+//             <h3>숙소 소개</h3>
+//             <RiDoubleQuotesL />
+//             <p>{glampIntro}</p>
+//             <div>
+//               <RiDoubleQuotesR />
+//             </div>
+//           </RoomIntro>
+//           <RoomInfomation>
+//             <UnderLine />
+//             <h3>숙소 이용정보</h3>
+//             <InfoGroup>
+//               <div className="info-item">
+//                 <span>기본정보</span>
+//                 <h4> {infoBasic}</h4>
+//               </div>
+//               <div className="info-item">
+//                 <span>유의사항</span>
+//                 <h4>{infoNotice}</h4>
+//               </div>
+//             </InfoGroup>
+//           </RoomInfomation>
+//           <RoomLocation>
+//             <UnderLine />
+//             <h3>위치</h3>
+//             {/* <p></p> */}
+//             <div className="location-info">
+//               <span>{glampLocation}</span>
+//               <div>
+//                 <h4>{traffic}</h4>
+//               </div>
+//             </div>
+//             <UnderLine />
+//           </RoomLocation>
+//         </RoomInfo>
 //       </div>
-//     </WrapStyle>
+//       {showLoginModal && modalType === "check" && (
+//         <CheckModal
+//           isOpen={true}
+//           onClose={() => setShowLoginModal(false)}
+//           onConfirm={handleLoginConfirm}
+//           message={modalMessage}
+//         />
+//       )}
+//       {modalType === "alert" && (
+//         <AlertModal
+//           isOpen={true}
+//           onClose={() => setModalType("")}
+//           message={modalMessage}
+//         />
+//       )}
+//     </GlampingDetailStyle>
 //   );
 // };
 
-// export default RoomDetail;
+// export default GlampingDetail;
+
+// // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
+// function getCookie(name) {
+//   const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
+//   return cookieValue ? cookieValue.pop() : "";
+// }
