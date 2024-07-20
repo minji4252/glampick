@@ -19,63 +19,88 @@ const WrapStyle = styled.div`
     align-items: center;
     justify-content: center;
   }
-
-  h3 {
-    width: 100%;
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: ${colorSystem.g800};
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-bottom: 5px;
-  }
 `;
 
 const TopContents = styled.div`
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
   border-bottom: 1.5px solid ${colorSystem.g200};
 
-  .rating {
+  .glamp-info {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
-    > p {
+    margin-top: 5px;
+    margin-left: 2px;
+    margin-bottom: 7px;
+    .glamp-name {
+      color: ${colorSystem.g900};
       font-size: 1.1rem;
-      color: ${colorSystem.g800};
-      font-weight: 500;
+      font-weight: 600;
+      margin-right: 5px;
     }
-
-    .rating-details {
-      font-size: 1.2rem;
-      color: ${colorSystem.g800};
+    // 별점
+    .rating {
       display: flex;
       align-items: center;
-      position: relative;
 
-      .star {
-        font-size: 1.5rem;
-        margin-right: 2px;
-        color: ${colorSystem.star};
-      }
-
-      .average-rating {
-        font-size: 1.3rem;
-        font-weight: 500;
-        margin-top: 3px;
-        margin-left: 2px;
+      .rating-details {
+        font-size: 1.2rem;
         color: ${colorSystem.g800};
-      }
+        display: flex;
+        align-items: center;
+        position: relative;
 
-      .total-rating {
-        position: absolute;
-        top: 5px;
-        left: 60px;
-        font-size: 1.1rem;
-        font-weight: 400;
-        color: ${colorSystem.g900};
+        .star {
+          font-size: 1.2rem;
+          margin-right: 2px;
+          color: ${colorSystem.star};
+        }
+
+        .average-rating {
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: ${colorSystem.g800};
+        }
+
+        .total-rating {
+          position: absolute;
+          top: 1px;
+          left: 51px;
+          font-size: 1.1rem;
+          font-weight: 400;
+          color: ${colorSystem.g900};
+        }
       }
     }
+  }
+
+  // 총 리뷰 수
+  .review-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .review-count {
+      margin-left: 5px;
+      color: ${colorSystem.g700};
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    // 필터
+    /* .filter {
+      margin-right: 5px;
+      color: ${colorSystem.g800};
+      font-weight: 400;
+      font-size: 0.9rem;
+    } */
+  }
+
+  // 사진 보기
+  .only-images {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1273e4;
+    margin-left: 2px;
+    margin-bottom: 8px;
   }
 
   .review-img {
@@ -86,7 +111,7 @@ const TopContents = styled.div`
     /* justify-content: center; */
     flex-wrap: wrap;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
 
   .review-img div {
@@ -116,25 +141,6 @@ const TopContents = styled.div`
     opacity: 1;
   }
 
-  // 총 리뷰 수, 필터
-  .review-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    .review-count {
-      margin-left: 5px;
-      color: ${colorSystem.g800};
-      font-weight: 500;
-      font-size: 1rem;
-    }
-    .filter {
-      margin-right: 5px;
-      color: ${colorSystem.g800};
-      font-weight: 400;
-      font-size: 0.9rem;
-    }
-  }
-
   @media all and (max-width: 419px) {
     .review-img div {
       width: 110px;
@@ -145,16 +151,15 @@ const TopContents = styled.div`
 
 const BottomContents = styled.div`
   width: 100%;
-  /* height: 2100px; */
-  /* 임시로 지정 */
 
-  .glamp-name {
-    margin-left: 5px;
-    margin-top: 8px;
-    margin-bottom: 20px;
-    color: ${colorSystem.p500};
+  // 숙소 후기
+  .glamp-review {
     font-size: 1rem;
-    font-weight: 600;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    // color: ${colorSystem.p800};
+    color: #1273e4;
   }
 `;
 
@@ -240,16 +245,19 @@ const Review = () => {
   return (
     <WrapStyle>
       <div className="inner">
-        <h3>숙소 후기</h3>
         <TopContents>
-          <div className="rating">
-            {/* <p>숙소 평점</p> */}
-            <div className="rating-details">
-              <FaStar className="star" />
-              <div className="average-rating">{starPoint}</div>
-              <div className="total-rating">/5</div>
+          <div className="glamp-info">
+            <div className="glamp-name">{glampName}</div>
+            <div className="rating">
+              {/* <p>숙소 평점</p> */}
+              <div className="rating-details">
+                <FaStar className="star" />
+                <div className="average-rating">{starPoint}</div>
+                <div className="total-rating">/5</div>
+              </div>
             </div>
           </div>
+          <div className="only-images">사진보기</div>
           {/* 상단 리뷰사진 개수 9개 */}
           <div className="review-img">
             {allReviewImages.slice(0, 9).map((img, index) => (
@@ -283,7 +291,7 @@ const Review = () => {
         </TopContents>
         <BottomContents>
           <div className="review-list">
-            <div className="glamp-name">{glampName}</div>
+            <div className="glamp-review">숙소후기</div>
             {reviewData.length === 0 ? (
               <NotContentStyle>
                 <div className="logo-img" />
