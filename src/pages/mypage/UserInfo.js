@@ -1,19 +1,19 @@
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { FaCamera } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
-import { PiPencilSimpleLine } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { postCheckSms, postSendSms } from "../../apis/userapi";
 import AlertModal from "../../components/common/AlertModal";
 import { MainButton } from "../../components/common/Button";
 import DeleteModal from "../../components/common/DeleteModal";
+import Loading from "../../components/common/Loading";
 import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 import Categories from "../../components/mypage/Categories";
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
 import { getCookie, removeCookie } from "../../utils/cookie";
-import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   .inner {
@@ -60,17 +60,15 @@ const WrapStyle = styled.div`
     height: 100%;
     border-radius: 50%;
     color: ${colorSystem.p500};
-    &:hover {
-      transform: translateY(-5px);
-      transition: 0.5s;
-    }
   }
 
-  /* 프로필 사진 수정 */
+  /* 프로필 사진 수정  */
   .profile-edit {
+    width: 40px;
+    height: 40px;
     position: absolute;
     bottom: -3px;
-    right: 0px;
+    left: 140px;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -79,6 +77,10 @@ const WrapStyle = styled.div`
 
   .profile-label {
     cursor: pointer;
+    width: 100%;
+    height: 100%;
+    background-color: ${colorSystem.g100};
+    border-radius: 50%;
   }
 
   .profile-input {
@@ -86,10 +88,13 @@ const WrapStyle = styled.div`
   }
 
   /* 프로필 수정 아이콘 */
-  .pencil-icon {
-    color: ${colorSystem.g500};
-    width: 28px;
-    height: 28px;
+  .camera-icon {
+    color: ${colorSystem.g900};
+    width: 23px;
+    height: 23px;
+    position: absolute;
+    top: 8px;
+    left: 9px;
   }
 
   .wrap {
@@ -136,7 +141,6 @@ const WrapStyle = styled.div`
     border: none;
     background-color: ${colorSystem.white};
     border: 1px solid ${colorSystem.g100};
-    /* box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1); */
     padding: 10px;
     font-size: 0.95rem;
     border-radius: 10px;
@@ -336,10 +340,10 @@ const UserInfo = () => {
         if (token) {
           setAccessToken(token);
         } else {
-          console.log("엑세스 토큰 없음");
+          // console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
+        // console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
     fetchAccessToken();
@@ -355,7 +359,7 @@ const UserInfo = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(response);
+        // console.log(response);
         setUserInfo({
           userProfileImage: response.data.userProfileImage,
           userEmail: response.data.userEmail,
@@ -367,7 +371,7 @@ const UserInfo = () => {
         // 기본 프로필 이미지 설정 (서버응답에 따라 달라질 수 있음)
         setProfileImage(response.data.profileImageUrl);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     };
     getUser();
@@ -421,9 +425,9 @@ const UserInfo = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response);
+      // console.log(response);
       if (response.data.code === "SU") {
-        console.log("회원 탈퇴 처리완료", response);
+        // console.log("회원 탈퇴 처리완료", response);
         // 쿠키에서 엑세스 토큰 삭제
         removeCookie("access-Token");
         // 엑세스 토큰 상태 초기화
@@ -433,10 +437,10 @@ const UserInfo = () => {
         // 로그인 페이지로 이동
         navigate("/login");
       } else {
-        console.log("탈퇴 실패");
+        // console.log("탈퇴 실패");
       }
     } catch (error) {
-      console.error("회원 탈퇴 오류", error);
+      // console.error("회원 탈퇴 오류", error);
     }
   };
 
@@ -513,10 +517,10 @@ const UserInfo = () => {
     e.preventDefault();
     setLoading(true);
     const result = await postSendSms({ userPhone: userInfo.userPhone });
-    console.log(result.data);
+    // console.log(result.data);
     if (result.data.code === "SU") {
       openModal({
-        message: "인증코드가 발송되었습니다. 문자메세지를 확인해주세요",
+        message: "인증코드가 발송되었습니다. \n 문자메세지를 확인해주세요",
       });
       // Sms 발송 성공
       setIsSmsSent(true);
@@ -531,7 +535,7 @@ const UserInfo = () => {
       });
     } else {
       openModal({
-        message: "발송 실패하였습니다. 다시 시도해주세요",
+        message: "발송 실패하였습니다. \n 다시 시도해주세요",
       });
     }
     setLoading(false);
@@ -545,7 +549,7 @@ const UserInfo = () => {
       userPhone: userInfo.userPhone,
       authNumber,
     });
-    console.log(result);
+    // console.log(result);
     if (result.data.code === "SU") {
       setIsPhoneVerified(true);
       setIsAuthNumberVerified(true);
@@ -565,7 +569,7 @@ const UserInfo = () => {
       });
     } else {
       openModal({
-        message: "인증에 실패하였습니다. 다시 시도해주세요",
+        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
       });
     }
   };
@@ -626,7 +630,7 @@ const UserInfo = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response);
+      // console.log(response);
       // 업데이트 성공 시 상태 업데이트
       if (response.data.code === "SU") {
         setUserInfo(prev => ({
@@ -638,13 +642,14 @@ const UserInfo = () => {
         openModal({ message: "수정이 완료되었습니다!" });
         // 페이지 새로고침
         // window.location.reload();
-
-        // 닉네임 중복 확인 처리해야 함
       } else {
-        console.log("업데이트 실패");
+        // console.log("업데이트 실패");
       }
     } catch (error) {
       console.error("유저 정보 업데이트 오류", error);
+      if (error.response.data.code === "DN") {
+        openModal({ message: "이미 사용중인 닉네임입니다." });
+      }
     }
   };
 
@@ -667,9 +672,9 @@ const UserInfo = () => {
               <FaUser className="userprofile-img" />
             )}
             <div className="profile-edit">
-              {/* <label htmlFor="profileImage" className="profile-label">
-                <PiPencilSimpleLine className="pencil-icon" />
-              </label> */}
+              <label htmlFor="profileImage" className="profile-label">
+                <FaCamera className="camera-icon" />
+              </label>
               <input
                 type="file"
                 id="profileImage"

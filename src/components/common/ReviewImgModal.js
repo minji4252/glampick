@@ -90,11 +90,11 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
-        console.log("리뷰전체사진", response.data);
+        // console.log("리뷰전체사진", response.data);
         const allReviewImage = response.data.moreReviewImage;
         setReviewImages(prevImages => [...prevImages, ...allReviewImage]);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     getGlamping();

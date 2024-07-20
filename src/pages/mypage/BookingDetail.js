@@ -101,7 +101,7 @@ const WrapStyle = styled.div`
   }
 `;
 
-const NotContentStyle = styled.div`
+export const NotContentStyle = styled.div`
   width: 150%;
   background-color: ${colorSystem.background};
   border-radius: 20px;
@@ -176,10 +176,10 @@ const BookingDetail = () => {
         if (token) {
           setAccessToken(token);
         } else {
-          console.log("엑세스 토큰 없음");
+          // console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
+        // console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
     fetchAccessToken();
@@ -195,7 +195,7 @@ const BookingDetail = () => {
           },
         });
         setLoading(false);
-        console.log(response);
+        // console.log(response);
 
         const {
           reservationBeforeResultSetList,
@@ -210,7 +210,7 @@ const BookingDetail = () => {
         // 예약 취소 내역
         setCancelledBookings(reservationCancelResultSetList || []);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 
