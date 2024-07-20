@@ -83,8 +83,8 @@ const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-// 이용약관 내용
-const TERMS = `제1조 (목적)
+  // 이용약관 내용
+  const TERMS = `제1조 (목적)
 이 약관은 (주)글램픽 (이하 “글램픽”)이 운영하는 [글램핑 예약 서비스] (이하 “서비스”)의 이용과 관련하여 회사와 이용자 간의 권리와 의무를 규정함을 목적으로 합니다.
 
 제2조 (정의)
@@ -137,7 +137,7 @@ const TERMS = `제1조 (목적)
 본 약관은 [시행 일자]부터 시행됩니다.
 회사는 이용자에게 필요한 공지 및 정보를 이메일 또는 서비스 내 공지 사항을 통해 제공합니다.`;
 
-const PRIVACY_TERMS = `제1조 (목적)
+  const PRIVACY_TERMS = `제1조 (목적)
 이 개인정보 처리방침은 (주)글램픽 (이하 “글램픽”)이 운영하는 [글램핑장 예약] (이하 “서비스”)에서 이용자의 개인정보를 어떻게 수집, 이용, 보관, 보호하는지에 대해 설명합니다.
 
 제2조 (개인정보의 수집 및 이용 목적)
@@ -183,7 +183,7 @@ const PRIVACY_TERMS = `제1조 (목적)
 이메일: mj17428@glampick.com
 주소: 대구광역시 중구 중앙대로 394 제일빌딩 5F`;
 
-const MARKETING_TERMS = `제1조 (목적)
+  const MARKETING_TERMS = `제1조 (목적)
 이 약관은 (주)글램픽 (이하 “글램픽”)이 진행하는 이벤트 및 마케팅 활동에 대한 수신 및 활용에 관한 사항을 규정합니다.
 
 제2조 (이벤트 및 마케팅 정보의 수신)
@@ -269,14 +269,14 @@ const MARKETING_TERMS = `제1조 (목적)
   // 메일 인증시 처리할 함수
   const handlEmailSubmit = async e => {
     e.preventDefault();
-setLoading(true)
+    setLoading(true);
     const result = await postMailSend({ userEmail });
     // console.log(result.data);
-    console.log(result.data.code);
+    // console.log(result.data.code);
 
     if (result.data.code === "SU") {
       openModal({
-        message: "인증코드가 발송되었습니다. 메일을 확인해주세요",
+        message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
       });
       // 메일발송 성공
       setIsEmailSent(true);
@@ -295,17 +295,17 @@ setLoading(true)
       });
     } else {
       openModal({
-        message: "메일 발송에 실패하였습니다. 다시 시도해주세요.",
+        message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
       });
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   // 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async e => {
     e.preventDefault();
     const result = await postAuthCode({ userEmail, authCode });
-    console.log(result.data);
+    // console.log(result.data);
     if (result.data.code === "SU") {
       setIsEmailVerified(true);
       setIsAuthCodeVerified(true);
@@ -329,7 +329,7 @@ setLoading(true)
       });
     } else {
       openModal({
-        message: "인증에 실패하였습니다. 다시 시도해주세요",
+        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
       });
     }
   };
@@ -344,12 +344,12 @@ setLoading(true)
   // 핸드폰 인증시 처리할 함수
   const handleSmsSubmit = async e => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     const result = await postSendSms({ userPhone });
-    console.log(result.data);
+    // console.log(result.data);
     if (result.data.code === "SU") {
       openModal({
-        message: "인증코드가 발송되었습니다. 문자메세지를 확인해주세요",
+        message: "인증코드가 발송되었습니다. \n 문자메세지를 확인해주세요",
       });
       // Sms 발송 성공
       setIsSmsSent(true);
@@ -367,7 +367,7 @@ setLoading(true)
         message: "발송 실패하였습니다. 다시 시도해주세요",
       });
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   // 핸드폰 인증코드 처리할 함수
@@ -375,7 +375,7 @@ setLoading(true)
     e.preventDefault();
 
     const result = await postCheckSms({ userPhone, authNumber });
-    console.log(result);
+    // console.log(result);
     if (result.data.code === "SU") {
       setIsPhoneVerified(true);
       setIsAuthNumberVerified(true);
@@ -395,7 +395,7 @@ setLoading(true)
       });
     } else {
       openModal({
-        message: "인증에 실패하였습니다. 다시 시도해주세요",
+        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
       });
     }
   };
@@ -532,10 +532,10 @@ setLoading(true)
       userNickName,
     });
 
-    console.log(result.data);
+    // console.log(result.data);
     if (result.data.code === "SU") {
       openModal({
-        message: "회원가입에 성공하였습니다! 로그인 후 이용해주세요",
+        message: "회원가입에 성공하였습니다! \n 로그인 후 이용해주세요",
       });
       setTimeout(() => {
         navigate("/login", { state: { fromSignup: true } });

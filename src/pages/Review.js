@@ -7,6 +7,10 @@ import ReviewCard from "../components/ReviewCard";
 import ListPagination from "../components/common/ListPagination";
 import ReviewImgModal from "../components/common/ReviewImgModal"; // ReviewImgModal 임포트
 import { colorSystem, size } from "../styles/color";
+import { MainButton } from "../components/common/Button";
+import { IoIosArrowRoundForward } from "react-icons/io";
+import { Link } from "react-router-dom";
+import { NotContentStyle } from "./mypage/BookingDetail";
 
 const WrapStyle = styled.div`
   .inner {
@@ -194,10 +198,9 @@ const Review = () => {
         const totalPages = Math.ceil(countReview / 5);
         setTotalPages(totalPages);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
-
     getGlampingReview();
   }, [page, glampId, countReview]);
 
@@ -225,9 +228,9 @@ const Review = () => {
     setPage(pageNumber);
   };
 
-  const handleFilterChange = e => {
-    setFilter(e.target.value);
-  };
+  // const handleFilterChange = e => {
+  //   setFilter(e.target.value);
+  // };
 
   // 리뷰 이미지만 보기 모달
   const toggleModal = () => {
@@ -281,20 +284,33 @@ const Review = () => {
         <BottomContents>
           <div className="review-list">
             <div className="glamp-name">{glampName}</div>
-            {reviewData.map((review, index) => (
-              <ReviewCard
-                key={index}
-                userProfileImage={review.userProfileImage}
-                userNickName={review.userNickName}
-                roomName={review.roomName}
-                createdAt={review.createdAt}
-                userReviewContent={review.userReviewContent}
-                ownerReviewContent={review.ownerReviewContent}
-                starPoint={review.starPoint}
-                reviewImages={review.reviewImages}
-                glampId={review.glampId}
-              />
-            ))}
+            {reviewData.length === 0 ? (
+              <NotContentStyle>
+                <div className="logo-img" />
+                <h4>등록된 후기가 없습니다</h4>
+                <Link to={`/places/${glampId}`}>
+                  <div className="room-search-btn">
+                    <MainButton label="이전페이지로 돌아가기" />
+                    <IoIosArrowRoundForward />
+                  </div>
+                </Link>
+              </NotContentStyle>
+            ) : (
+              reviewData.map((review, index) => (
+                <ReviewCard
+                  key={index}
+                  userProfileImage={review.userProfileImage}
+                  userNickName={review.userNickName}
+                  roomName={review.roomName}
+                  createdAt={review.createdAt}
+                  userReviewContent={review.userReviewContent}
+                  ownerReviewContent={review.ownerReviewContent}
+                  starPoint={review.starPoint}
+                  reviewImages={review.reviewImages}
+                  glampId={glampId}
+                />
+              ))
+            )}
           </div>
         </BottomContents>
       </div>
