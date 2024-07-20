@@ -49,6 +49,7 @@ import CheckModal from "../components/common/CheckModal";
 import axios from "axios";
 import emptyheart from "../images/icon/heart-empty.png";
 import fillheart from "../images/icon/heart-fill.png";
+import { getCookie } from "../utils/cookie";
 
 const GlampingDetail = ({ isLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
@@ -71,6 +72,7 @@ const GlampingDetail = ({ isLogin }) => {
 
   const { glampId } = useParams();
   const [searchParams] = useSearchParams();
+
   // 날짜 값 설정, 값이 없으면 기본값 사용
   const inDate = searchParams.get("inDate") || getDefaultDate(0);
   const outDate = searchParams.get("outDate") || getDefaultDate(1);
@@ -82,9 +84,13 @@ const GlampingDetail = ({ isLogin }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchGlampingData(glampId, inDate, outDate);
+        const data = await fetchGlampingData(
+          glampId,
+          inDate,
+          outDate,
+          accessToken,
+        );
         setGlampingData(data);
-        setInitialRoomItems(data.roomItems.slice(0, 5));
         setRoomMainImage(`${data.glampImage}`);
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
         setRoomImages(roomImageUrls);
@@ -96,7 +102,7 @@ const GlampingDetail = ({ isLogin }) => {
     };
 
     fetchData();
-  }, [glampId, inDate, outDate]);
+  }, [glampId, inDate, outDate, accessToken]);
 
   // 로그인 여부 관련
   useEffect(() => {
@@ -116,17 +122,7 @@ const GlampingDetail = ({ isLogin }) => {
     fetchAccessToken();
   }, []);
 
-  // useEffect(() => {
-  //   if (isLogin) {
-  //     const likedStatus = localStorage.getItem("likedStatus");
-  //     if (likedStatus) {
-  //       setIsLiked(JSON.parse(likedStatus));
-  //     }
-  //   } else {
-  //     setIsLiked(false);
-  //   }
-  // }, [isLogin]);
-
+  // 2. 관심목록 추가 취소 기능
   const toggleLike = async () => {
     if (!accessToken) {
       setModalMessage(
@@ -141,46 +137,16 @@ const GlampingDetail = ({ isLogin }) => {
       const resultValue = await toggleLikeGlamping(glampId, accessToken);
       if (resultValue === 0) {
         setIsLiked(true);
-        // localStorage.setItem("likedStatus", true);
         setModalMessage("관심 글램핑장 목록에 추가되었습니다");
         setModalType("alert");
       } else if (resultValue === 1) {
         setIsLiked(false);
-        // localStorage.setItem("likedStatus", false);
         setModalMessage("관심 글램핑장 목록에서 삭제되었습니다");
         setModalType("alert");
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const handleMoreView = async () => {
-    // try {
-    //   // 3. 모두보기 클릭시 객실 정보 더 불러오기
-    //   const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
-    //   setGlampingData(prevData => ({
-    //     ...prevData,
-    //     roomItems: [...prevData.roomItems, ...data.roomItems],
-    //   }));
-    //   setIsExpanded(true);
-    //   const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
-    //   setRoomImages(prevImages => [...prevImages, ...roomImageUrls]);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
-
-  const handleCollapseView = () => {
-    setGlampingData(prevData => ({
-      ...prevData,
-      roomItems: initialRoomItems,
-    }));
-    setIsExpanded(false);
-    scroll.scrollTo(roomSelectRef.current.offsetTop, {
-      duration: 500,
-      smooth: true,
-    });
   };
 
   const handleReservationClick = room => {
@@ -250,25 +216,11 @@ const GlampingDetail = ({ isLogin }) => {
     countReviewUsers,
     reviewItems,
     roomItems,
-    isFav,
+    // isFav,
   } = glampingData;
-
-  // useEffect(() => {
-  //   if (isFav === 0) {
-  //     setIsLiked(false);
-  //   } else if (isFav === 1) {
-  //     setIsLiked(true);
-  //   } else {
-  //     console.log("error");
-  //   }
-  // }, [isFav]);
 
   //별점 단위
   const formattedStarPoint = Number(starPointAvg).toFixed(1);
-
-  const isAllSoldOut = roomItems.every(room => !room.reservationAvailable);
-
-  console.log("isAllSoldOut", isAllSoldOut);
 
   const LinkToReview = () => {
     navigate(`/review/${glampId}`, {
@@ -364,86 +316,68 @@ const GlampingDetail = ({ isLogin }) => {
             <h3>객실선택</h3>
           </RoomSelectTitle>
 
-          {isAllSoldOut ? (
-            <RoomSoldOutCard>
-              <FaRegCalendar />
-              <h5>선택한 날짜의 객실은 매진되었어요</h5>
-              <p>검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
-            </RoomSoldOutCard>
-          ) : (
-            roomItems.map((room, index) => (
-              <RoomCard key={index}>
-                <RoomCardLeft>
-                  <Link
-                    to={`/roomdetail/${glampId}`}
-                    state={{ glampName: glampingData.glampName }}
+          {roomItems.map((room, index) => (
+            <RoomCard key={index}>
+              <RoomCardLeft>
+                <Link
+                  to={`/roomdetail/${glampId}`}
+                  state={{ glampName: glampingData.glampName }}
+                >
+                  <div
+                    className="roomcard-img"
+                    style={{
+                      // eslint-disable-next-line no-undef
+                      backgroundImage: `url(${process.env.PUBLIC_URL}${roomImages[index]})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "cover",
+                    }}
                   >
-                    <div
-                      className="roomcard-img"
-                      style={{
-                        // eslint-disable-next-line no-undef
-                        backgroundImage: `url(${process.env.PUBLIC_URL}${roomImages[index]})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                      }}
-                    >
-                      <span>사진 더보기</span>
-                    </div>
-                  </Link>
-                </RoomCardLeft>
-                <RoomCardRight>
-                  <span>{room.roomName}</span>
-                  <RoomCardBooking>
-                    <p>입실 {formatTime(room.checkInTime)}</p>
-                    <p>퇴실 {formatTime(room.checkOutTime)}</p>
-
-                    {room.reservationAvailable ? (
-                      <>
-                        <MainButton
-                          label="객실 예약"
-                          onClick={() => handleReservationClick(room)}
-                        />
-                        <span>
-                          {Number(room.roomPrice).toLocaleString("ko-KR")}원
-                        </span>
-                      </>
-                    ) : (
-                      <div className="sold-out-style">
-                        <ActionButton label="예약 마감" />
-                        <span>
-                          {Number(room.roomPrice).toLocaleString("ko-KR")}원
-                        </span>
-                      </div>
-                    )}
-                  </RoomCardBooking>
-                  <div className="roomcard-txt">
-                    <div className="txt-top">
-                      <span>객실정보</span>
-                      <p>
-                        기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}
-                        인 (유료)
-                      </p>
-                    </div>
-                    <div>
-                      <span>추가정보</span>
-                      <p>{room.roomServices.join(", ")}</p>
-                    </div>
+                    <span>사진 더보기</span>
                   </div>
-                </RoomCardRight>
-              </RoomCard>
-            ))
-          )}
+                </Link>
+              </RoomCardLeft>
+              <RoomCardRight>
+                <span>{room.roomName}</span>
+                <RoomCardBooking>
+                  <p>입실 {formatTime(room.checkInTime)}</p>
+                  <p>퇴실 {formatTime(room.checkOutTime)}</p>
 
-          {roomItems.length >= 5 && (
-            <div className="view-all">
-              {isExpanded ? (
-                <ActionButton label="접기" onClick={handleCollapseView} />
-              ) : (
-                <ActionButton label="모두 보기" onClick={handleMoreView} />
-              )}
-            </div>
-          )}
+                  {room.reservationAvailable ? (
+                    <>
+                      <MainButton
+                        label="객실 예약"
+                        onClick={() => handleReservationClick(room)}
+                      />
+                      <span>
+                        {Number(room.roomPrice).toLocaleString("ko-KR")}원
+                      </span>
+                    </>
+                  ) : (
+                    <div className="sold-out-style">
+                      <ActionButton label="예약 마감" />
+                      <span>
+                        {Number(room.roomPrice).toLocaleString("ko-KR")}원
+                      </span>
+                    </div>
+                  )}
+                </RoomCardBooking>
+                <div className="roomcard-txt">
+                  <div className="txt-top">
+                    <span>객실정보</span>
+                    <p>
+                      기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}인
+                      (유료)
+                    </p>
+                  </div>
+                  <div>
+                    <span>추가정보</span>
+                    <p>{room.roomServices.join(", ")}</p>
+                  </div>
+                </div>
+              </RoomCardRight>
+            </RoomCard>
+          ))}
         </RoomSelect>
 
         <RoomInfo>
@@ -504,9 +438,3 @@ const GlampingDetail = ({ isLogin }) => {
 };
 
 export default GlampingDetail;
-
-// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-function getCookie(name) {
-  const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
-  return cookieValue ? cookieValue.pop() : "";
-}

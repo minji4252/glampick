@@ -4,10 +4,19 @@ import axios from "axios";
 // *** GlampingDetail.js 함수 ****
 
 // 1. 글램핑디테일페이지 정보 불러오기
-export const fetchGlampingData = async (glampId, startDate, endDate) => {
+export const fetchGlampingData = async (
+  glampId,
+  startDate,
+  endDate,
+  accessToken,
+) => {
   try {
+    const headers = accessToken
+      ? { Authorization: `Bearer ${accessToken}` }
+      : {};
     const response = await axios.get(
       `${process.env.PUBLIC_URL}/api/glamping/info?glampId=${glampId}&inDate=${startDate}&outDate=${endDate}`,
+      { headers },
     );
 
     return response.data;
