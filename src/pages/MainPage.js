@@ -98,7 +98,7 @@ const MainPage = ({ isLogin }) => {
 
   const handleDateSelect = date => {
     setSelectedDate(date);
-    console.log("선택 날짜:", date);
+    // console.log("선택 날짜:", date);
   };
 
   const handleKeyDown = e => {
@@ -205,7 +205,7 @@ const MainPage = ({ isLogin }) => {
                   value={selectedPlace}
                   onChange={e => {
                     setSelectedPlace(e.target.value);
-                    console.log("선택한 지역:", e.target.value);
+                    // console.log("선택한 지역:", e.target.value);
                   }}
                 >
                   <option value="all">전국</option>
@@ -237,7 +237,7 @@ const MainPage = ({ isLogin }) => {
                   value={selectedMember}
                   onChange={e => {
                     setSelectedMember(e.target.value);
-                    console.log("선택 인원:", e.target.value);
+                    // console.log("선택 인원:", e.target.value);
                   }}
                   onKeyDown={handleKeyDown}
                 />

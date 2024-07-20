@@ -18,12 +18,12 @@ const SearchDate = styled.div`
   .react-datepicker {
     border-radius: 20px;
   }
-  .react-datepicker__day:nth-child(1),
-  .react-datepicker__day-name:nth-child(1) {
+  .react-datepicker__day:nth-of-type(1),
+  .react-datepicker__day-name:nth-of-type(1) {
     color: #ff5858;
   }
-  .react-datepicker__day:nth-child(7),
-  .react-datepicker__day-name:nth-child(7) {
+  .react-datepicker__day:nth-of-type(7),
+  .react-datepicker__day-name:nth-of-type(7) {
     color: blue;
   }
   .react-datepicker__header {
