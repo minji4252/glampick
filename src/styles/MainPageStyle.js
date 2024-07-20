@@ -387,8 +387,14 @@ export const ArticleContent = styled.div`
   }
   .article-top {
     display: flex;
-    flex-direction: grid;
-    align-items: flex-end;
+    flex-direction: column;
+
+    .article-detail {
+      justify-content: flex-end;
+    }
+    .review-count {
+      justify-content: flex-end;
+    }
 
     ${size.mid} {
       flex-direction: column;
@@ -404,6 +410,7 @@ export const ArticleContent = styled.div`
   .article-detail {
     display: flex;
     cursor: default;
+
     svg {
       margin: 0 5px;
       color: #ffd233;
@@ -413,11 +420,12 @@ export const ArticleContent = styled.div`
       font-size: 14px;
       font-weight: 600;
     }
-    .review-count {
-      font-size: 14px;
-    }
   }
-
+  .review-count {
+    font-size: 14px;
+    display: flex;
+    justify-self: flex-end;
+  }
   .article-bottom {
     display: flex;
     margin-top: 5px;
