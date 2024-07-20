@@ -125,17 +125,13 @@ export const FavoriteCard = (
     <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">
         <div className="article-image">
-          {/* <MainCardFile src={glampImage} /> */}
           <div className="article-place">
             <MdPlace />
             {glampLocation}
           </div>
         </div>
       </Link>
-      <div
-        className="favorite-heart"
-        // onClick={() => toggleVisibility(index)}
-      ></div>
+      <div className="favorite-heart"></div>
       <ArticleContent>
         <div className="article-top">
           <Link to="/glampingdetail">
