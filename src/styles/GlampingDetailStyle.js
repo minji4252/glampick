@@ -7,7 +7,6 @@ import optionPet from "../images/icon/filter-pet.png";
 import optionSwim from "../images/icon/filter-swim.png";
 import optionToilet from "../images/icon/filter-toilet.png";
 import optionWifi from "../images/icon/filter-wifi.png";
-import Image from "../images/pic.jpg";
 import Room from "../images/roomin.png";
 
 export const UnderLine = styled.div`
@@ -63,8 +62,6 @@ export const RoomProperty = styled.div`
 export const RoomPic = styled.div`
   .main-img {
     position: relative;
-    /* background: url(${Image}) no-repeat center; */
-    /* background-size: cover; */
     width: 100%;
     height: 400px;
   }
@@ -79,16 +76,20 @@ export const RoomTitle = styled.div`
   align-items: center;
   justify-content: space-between;
 
-  svg {
-    color: ${colorSystem.error};
-    font-size: 3rem;
-    margin-right: 90px;
-  }
-
   button {
+    margin-right: 90px;
     background-color: transparent;
     border: 0px;
-    width: fit-content;
+    width: 50px;
+    height: 50px;
+  }
+
+  div {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
   }
 `;
 
@@ -104,6 +105,14 @@ export const ReviewTitle = styled.div`
   gap: 5px;
   font-size: 0.95rem;
   font-weight: 700;
+
+  > div {
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-use-select: none;
+    user-select: none;
+  }
 
   > svg {
     color: ${colorSystem.star};
@@ -122,13 +131,16 @@ export const ReviewTitle = styled.div`
 
   button {
     margin-top: 4px;
-
     font-weight: 600;
     color: #1273e4;
     background-color: transparent;
     border: 0px;
-    font-family: "Pretendard Variable";
     font-size: 1rem;
+
+    &:hover {
+      color: #0e5ab3;
+      font-weight: 700;
+    }
   }
 `;
 

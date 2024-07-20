@@ -76,8 +76,9 @@ const NavMain = styled.div`
   border-radius: 20px;
 
   &:hover {
-    background-color: rgba(193, 123, 6, 0.8);
-    transition: all 0.7s;
+    /* background-color: rgba(193, 123, 6, 0.8); */
+    background-color: #283b45;
+    transition: all 0.5s;
   }
 `;
 const NotfoundPage = () => {
