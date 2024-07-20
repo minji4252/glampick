@@ -1,24 +1,38 @@
 import { IoClose } from "react-icons/io5";
-import { ModalBtn, ModalLine, ModalStyle } from "../../styles/modalstyle";
+import {
+  ModalBtn,
+  ModalLine,
+  ModalStyle,
+  ModalTop,
+} from "../../styles/modalstyle";
 import { ActionButton, MainButton } from "./Button";
 
 const CheckModal = ({ isOpen, onClose, onConfirm, message }) => {
   if (!isOpen) return null;
 
+  //모달 줄바꿈
+  const formattedMessage = message.split("\n").map((line, index) => (
+    <span key={index}>
+      {line}
+      <br />
+    </span>
+  ));
+
   return (
-    <>
-      <ModalStyle>
+    <ModalStyle>
+      <ModalTop>
+        <h1>알림</h1>
         <button className="close-btn" type="button" onClick={onClose}>
           <IoClose />
         </button>
         <ModalLine />
-        <p>{message}</p>
-        <ModalBtn>
-          <MainButton label="예" onClick={onConfirm} />
-          <ActionButton label="아니오" onClick={onClose} />
-        </ModalBtn>
-      </ModalStyle>
-    </>
+      </ModalTop>
+      <p>{formattedMessage}</p>
+      <ModalBtn>
+        <MainButton label="예" onClick={onConfirm} />
+        <ActionButton label="아니오" onClick={onClose} />
+      </ModalBtn>
+    </ModalStyle>
   );
 };
 

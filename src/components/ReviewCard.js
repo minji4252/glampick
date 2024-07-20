@@ -1,8 +1,8 @@
 import { colorSystem } from "../styles/color";
 import styled from "@emotion/styled";
-import reviewimg1 from "../images/review1.png";
-import reviewimg2 from "../images/review2.png";
-import reviewimg3 from "../images/review3.png";
+// import reviewimg1 from "../images/review1.png";
+// import reviewimg2 from "../images/review2.png";
+// import reviewimg3 from "../images/review3.png";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa6";
 import { DeleteButton } from "./common/Button";
@@ -13,16 +13,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const MyReviewCard = styled.div`
+const ReviewCardStyle = styled.div`
   display: flex;
   margin-bottom: 40px;
 
-  .myreview-card-right {
+  .review-card-right {
     max-width: 800px;
     width: 100%;
   }
 
-  .myreview-card-left {
+  .review-card-left {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,9 +39,14 @@ const MyReviewCard = styled.div`
       font-weight: 600;
     }
   }
+
+  //일반 리뷰에서는 숙소이름 가리기
+  h5 {
+    display: none;
+  }
 `;
 const UserSection = styled.div`
-  .myreview-title {
+  .review-title {
     max-width: 570px;
     display: flex;
     justify-content: space-between;
@@ -56,21 +61,22 @@ const UserSection = styled.div`
       letter-spacing: 1.5px;
     }
 
+    //일반 리뷰에서는 삭제 버튼 가리기
     button {
       height: 25px;
       display: none;
     }
   }
-  .myreview-score {
+  .review-score {
     display: flex;
     gap: 3px;
     color: ${colorSystem.star};
   }
 
-  .myreview-content {
+  .review-content {
     font-size: 1rem;
 
-    .myreview-glamp-name {
+    .review-glamp-name {
       cursor: pointer;
       padding: 5px;
       width: fit-content;
@@ -107,7 +113,7 @@ const UserSection = styled.div`
   }
 `;
 
-const MyReviewImage = styled.div`
+const ReviewImage = styled.div`
   display: flex;
   gap: 15px;
   margin-top: 10px;
@@ -119,23 +125,14 @@ const MyReviewImage = styled.div`
     border-radius: 25px;
     background-size: cover;
   }
-  .myreview-img1 {
-    background: url(${reviewimg1}) no-repeat center;
-  }
-  .myreview-img2 {
-    background: url(${reviewimg2}) no-repeat center;
-  }
-  .myreview-img3 {
-    background: url(${reviewimg3}) no-repeat center;
-  }
 
   @media all and (min-width: 768px) and (max-width: 850px) {
-    .myreview-img2,
-    .myreview-img3 {
+    .review-card-img2,
+    .review-card-img3 {
       display: none;
     }
 
-    .myreview-img1 {
+    .review-card-img1 {
       width: 100%;
       max-width: 370px;
       background-size: cover;
@@ -143,12 +140,12 @@ const MyReviewImage = styled.div`
   }
 
   @media all and (max-width: 540px) {
-    .myreview-img2,
-    .myreview-img3 {
+    .review-card-img2,
+    .review-card-img3 {
       display: none;
     }
 
-    .myreview-img1 {
+    .review-card-img1 {
       width: 100%;
       max-width: 370px;
       background-size: cover;
@@ -291,8 +288,8 @@ const ReviewCard = ({
 
   return (
     <>
-      <MyReviewCard>
-        <div className="myreview-card-left">
+      <ReviewCardStyle>
+        <div className="review-card-left">
           <div
             className="user-profile-img"
             style={{
@@ -304,22 +301,23 @@ const ReviewCard = ({
           />
           <span>{userNickName}</span>
         </div>
-        <div className="myreview-card-right">
+        <div className="review-card-right">
           <UserSection>
-            <div className="myreview-title">
+            <div className="review-title">
               <div>
-                <div className="myreview-score">{renderStars(starPoint)}</div>
+                <div className="review-score">{renderStars(starPoint)}</div>
                 <span>{formattedDate}</span>
               </div>
               <DeleteButton label="삭제" onClick={handleDelete} />
             </div>
-            <MyReviewImage
+            <ReviewImage
               style={{
                 marginTop: reviewImages.length > 0 ? "20px" : "10px",
               }}
             >
               {reviewImages.map((image, index) => (
                 <div
+                  className={`review-card-img${index + 1}`}
                   key={index}
                   style={{
                     backgroundImage: `url(${image})`,
@@ -329,17 +327,17 @@ const ReviewCard = ({
                   }}
                 />
               ))}
-            </MyReviewImage>
+            </ReviewImage>
             <div
-              className="myreview-content"
+              className="review-content"
               style={{
                 marginTop: reviewImages.length > 0 ? "30px" : "0px",
               }}
             >
               <Link to={`/places/${glampId}`}>
-                <div className="myreview-glamp-name">
-                  <span>{glampName}</span>
-                  <span>|</span>
+                <div className="review-glamp-name">
+                  <h5>{glampName}</h5>
+                  <h5>|</h5>
                   <span>{roomName}</span>
                 </div>
               </Link>
@@ -369,7 +367,7 @@ const ReviewCard = ({
           onClose={closeAlert}
           message={alertMessage}
         />
-      </MyReviewCard>
+      </ReviewCardStyle>
       <UnderLine />
     </>
   );

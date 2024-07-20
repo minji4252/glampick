@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { FaStar } from "react-icons/fa";
-import { GoHeart, GoHeartFill } from "react-icons/go";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { FaRegCalendar } from "react-icons/fa6";
@@ -48,6 +47,8 @@ import {
 } from "../apis/glamping";
 import CheckModal from "../components/common/CheckModal";
 import axios from "axios";
+import emptyheart from "../images/icon/heart-empty.png";
+import fillheart from "../images/icon/heart-fill.png";
 
 const GlampingDetail = ({ isLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
@@ -68,8 +69,6 @@ const GlampingDetail = ({ isLogin }) => {
     return date.toISOString().split("T")[0];
   };
 
-  // 객실 목록 처음 보여질때는 0, 모두보기 버튼 누르면 1
-  const statusId = 0;
   const { glampId } = useParams();
   const [searchParams] = useSearchParams();
   // 날짜 값 설정, 값이 없으면 기본값 사용
@@ -79,29 +78,27 @@ const GlampingDetail = ({ isLogin }) => {
   const roomSelectRef = useRef(null);
   const navigate = useNavigate();
 
+  // 1. 글램핑디테일페이지 정보 불러오기
   useEffect(() => {
-    // 1. 글램핑디테일페이지 정보 불러오기
     const fetchData = async () => {
       try {
-        const data = await fetchGlampingData(
-          glampId,
-          inDate,
-          outDate,
-          statusId,
-        );
+        const data = await fetchGlampingData(glampId, inDate, outDate);
         setGlampingData(data);
         setInitialRoomItems(data.roomItems.slice(0, 5));
         setRoomMainImage(`${data.glampImage}`);
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
         setRoomImages(roomImageUrls);
+        setIsLiked(data.isFav === 1);
+        console.log("isFav의 현재 값은? : ", data.isFav === 1);
       } catch (error) {
         console.log(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [glampId, inDate, outDate]);
 
+  // 로그인 여부 관련
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
@@ -119,37 +116,37 @@ const GlampingDetail = ({ isLogin }) => {
     fetchAccessToken();
   }, []);
 
-  // 로컬 스토리지에서 관심목록 상태 초기화
-  useEffect(() => {
-    if (isLogin) {
-      const likedStatus = localStorage.getItem("likedStatus");
-      if (likedStatus) {
-        setIsLiked(JSON.parse(likedStatus));
-      }
-    } else {
-      setIsLiked(false); // 로그인하지 않은 경우 빈 상태로 설정
-    }
-  }, [isLogin]);
+  // useEffect(() => {
+  //   if (isLogin) {
+  //     const likedStatus = localStorage.getItem("likedStatus");
+  //     if (likedStatus) {
+  //       setIsLiked(JSON.parse(likedStatus));
+  //     }
+  //   } else {
+  //     setIsLiked(false);
+  //   }
+  // }, [isLogin]);
 
   const toggleLike = async () => {
     if (!accessToken) {
       setModalMessage(
-        `로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?`,
+        `로그인이 필요한 서비스입니다. \n 로그인 페이지로 이동하시겠습니까?`,
       );
       setModalType("check");
       setShowLoginModal(true);
       return;
     }
+
     try {
       const resultValue = await toggleLikeGlamping(glampId, accessToken);
       if (resultValue === 0) {
         setIsLiked(true);
-        localStorage.setItem("likedStatus", true);
+        // localStorage.setItem("likedStatus", true);
         setModalMessage("관심 글램핑장 목록에 추가되었습니다");
         setModalType("alert");
       } else if (resultValue === 1) {
         setIsLiked(false);
-        localStorage.setItem("likedStatus", false);
+        // localStorage.setItem("likedStatus", false);
         setModalMessage("관심 글램핑장 목록에서 삭제되었습니다");
         setModalType("alert");
       }
@@ -159,7 +156,6 @@ const GlampingDetail = ({ isLogin }) => {
   };
 
   const handleMoreView = async () => {
-    // const statusId = 1;
     // try {
     //   // 3. 모두보기 클릭시 객실 정보 더 불러오기
     //   const data = await fetchMoreRooms(glampId, inDate, outDate, statusId);
@@ -190,7 +186,7 @@ const GlampingDetail = ({ isLogin }) => {
   const handleReservationClick = room => {
     if (!isLogin) {
       setModalMessage(
-        `로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?`,
+        `로그인이 필요한 서비스입니다. \n 로그인 페이지로 이동하시겠습니까?`,
       );
       setModalType("check");
       setShowLoginModal(true);
@@ -220,19 +216,8 @@ const GlampingDetail = ({ isLogin }) => {
     return `${hours}:${minutes}`;
   };
 
-  // const changeOfLine = text => {
-  //   return text
-  //     .split("\r\n")
-  //     .map(line => {
-  //       return line.trim().length > 0
-  //         ? `<span style="font-size: 23px;">·</span> ${line.replace(/^- /, "").trim()}`
-  //         : "";
-  //     })
-  //     .join("<br>");
-  // };
-
-  const getServiceClassName = service => {
-    switch (service) {
+  const getTheme = theme => {
+    switch (theme) {
       case "바베큐":
         return "option-barbecue";
       case "와이파이":
@@ -255,7 +240,6 @@ const GlampingDetail = ({ isLogin }) => {
   if (!glampingData) return null;
 
   const {
-    // glampId,
     glampName,
     starPointAvg,
     glampLocation,
@@ -266,14 +250,25 @@ const GlampingDetail = ({ isLogin }) => {
     countReviewUsers,
     reviewItems,
     roomItems,
+    isFav,
   } = glampingData;
+
+  // useEffect(() => {
+  //   if (isFav === 0) {
+  //     setIsLiked(false);
+  //   } else if (isFav === 1) {
+  //     setIsLiked(true);
+  //   } else {
+  //     console.log("error");
+  //   }
+  // }, [isFav]);
 
   //별점 단위
   const formattedStarPoint = Number(starPointAvg).toFixed(1);
 
-  const allRoomsSoldOut = roomItems.every(room => !room.reservationAvailable);
+  const isAllSoldOut = roomItems.every(room => !room.reservationAvailable);
 
-  console.log("allRoomsSoldOut", allRoomsSoldOut);
+  console.log("isAllSoldOut", isAllSoldOut);
 
   const LinkToReview = () => {
     navigate(`/review/${glampId}`, {
@@ -304,7 +299,15 @@ const GlampingDetail = ({ isLogin }) => {
           <RoomTitle>
             <span>{glampName}</span>
             <button onClick={toggleLike}>
-              {isLiked ? <GoHeartFill /> : <GoHeart />}
+              {isLiked ? (
+                <div style={{ backgroundImage: `url(${fillheart})` }} />
+              ) : (
+                <div
+                  style={{
+                    backgroundImage: `url(${emptyheart})`,
+                  }}
+                />
+              )}
             </button>
           </RoomTitle>
           <RoomReview>
@@ -312,9 +315,7 @@ const GlampingDetail = ({ isLogin }) => {
               <FaStar />
               <div className="review-score">{formattedStarPoint}</div>
               <div className="review-evaluat">{countReviewUsers}명 평가</div>
-              {/* <Link to="/review" state={formattedStarPoint}> */}
               <button onClick={() => LinkToReview()}>리뷰보기</button>
-              {/* </Link> */}
             </ReviewTitle>
             <ReviewSwiper>
               <Swiper
@@ -336,14 +337,12 @@ const GlampingDetail = ({ isLogin }) => {
                 </div>
               </Swiper>
               <SwiperEndStyle />
-              <Link to="/review" state={formattedStarPoint}>
-                <div className="review-all">
-                  <button>
-                    전체보기
-                    <IoIosArrowForward />
-                  </button>
-                </div>
-              </Link>
+              <div className="review-all">
+                <button onClick={() => LinkToReview()}>
+                  전체보기
+                  <IoIosArrowForward />
+                </button>
+              </div>
             </ReviewSwiper>
           </RoomReview>
           <RoomOption>
@@ -352,7 +351,7 @@ const GlampingDetail = ({ isLogin }) => {
             <OptionItems>
               <div className="option-item">
                 {glampingData.roomService.map((service, index) => (
-                  <div key={index} className={getServiceClassName(service)} />
+                  <div key={index} className={getTheme(service)} />
                 ))}
               </div>
             </OptionItems>
@@ -365,7 +364,7 @@ const GlampingDetail = ({ isLogin }) => {
             <h3>객실선택</h3>
           </RoomSelectTitle>
 
-          {allRoomsSoldOut ? (
+          {isAllSoldOut ? (
             <RoomSoldOutCard>
               <FaRegCalendar />
               <h5>선택한 날짜의 객실은 매진되었어요</h5>

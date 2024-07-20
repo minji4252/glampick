@@ -104,7 +104,7 @@ const RoomDetail = () => {
                   <div
                     style={{
                       // eslint-disable-next-line no-undef
-                      backgroundImage: `url(${process.env.PUBLIC_URL}/${image})`,
+                      backgroundImage: `url(${process.env.PUBLIC_URL}${image})`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                       backgroundSize: "cover",
@@ -135,7 +135,7 @@ const RoomDetail = () => {
                   <div
                     style={{
                       // eslint-disable-next-line no-undef
-                      backgroundImage: `url(${process.env.PUBLIC_URL}/${image})`,
+                      backgroundImage: `url(${process.env.PUBLIC_URL}${image})`,
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                       backgroundSize: "cover",

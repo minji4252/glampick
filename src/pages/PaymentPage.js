@@ -140,7 +140,7 @@ const PaymentPage = () => {
       const apiUrl = `${process.env.PUBLIC_URL}/api/book/reservation?roomId=${roomId}&personnel=${people}&glampId=${glampId}`;
       try {
         const response = await axios.get(apiUrl);
-        console.log("response11", response);
+        console.log("response : ", response);
         setReservationInfo(response.data);
       } catch (error) {
         console.log(error);
@@ -191,7 +191,7 @@ const PaymentPage = () => {
         pg: "kakaopay.TC0ONETIME",
         pay_method: "card",
         merchant_uid: "GPK_" + new Date().getTime(),
-        name: glampName + " 결제",
+        name: glampName,
         amount: amount,
         buyer_name: buyerName,
       },
