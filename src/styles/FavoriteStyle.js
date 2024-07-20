@@ -78,6 +78,7 @@ export const EmptyStyle = styled.div`
 // 관심 글램핑장 카드 컴포넌트
 
 export const FavoriteArticle = styled.article`
+  width: 290px;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -128,6 +129,7 @@ export const FavoriteArticle = styled.article`
   ${size.mid} {
     display: flex;
     flex-direction: row;
+    width: 760px;
   }
 `;
 
@@ -139,8 +141,7 @@ export const ArticleContent = styled.div`
   }
   .article-top {
     display: flex;
-    flex-direction: grid;
-    align-items: flex-end;
+    flex-direction: column;
 
     ${size.mid} {
       flex-direction: column;
@@ -155,6 +156,7 @@ export const ArticleContent = styled.div`
   }
   .article-detail {
     display: flex;
+    justify-content: flex-end;
     svg {
       margin: 0 5px;
       color: #ffd233;
@@ -164,11 +166,12 @@ export const ArticleContent = styled.div`
       font-size: 14px;
       font-weight: 600;
     }
-    .review-count {
-      font-size: 14px;
-    }
   }
-
+  .review-count {
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-end;
+  }
   .article-bottom {
     display: flex;
     margin-top: 5px;
