@@ -60,6 +60,10 @@ const WrapStyle = styled.div`
     height: 100%;
     border-radius: 50%;
     color: ${colorSystem.p500};
+    &:hover {
+      transform: translateY(-5px);
+      transition: 0.5s;
+    }
   }
 
   /* 프로필 사진 수정 */
@@ -634,6 +638,8 @@ const UserInfo = () => {
         openModal({ message: "수정이 완료되었습니다!" });
         // 페이지 새로고침
         // window.location.reload();
+
+        // 닉네임 중복 확인 처리해야 함
       } else {
         console.log("업데이트 실패");
       }
@@ -661,9 +667,9 @@ const UserInfo = () => {
               <FaUser className="userprofile-img" />
             )}
             <div className="profile-edit">
-              <label htmlFor="profileImage" className="profile-label">
+              {/* <label htmlFor="profileImage" className="profile-label">
                 <PiPencilSimpleLine className="pencil-icon" />
-              </label>
+              </label> */}
               <input
                 type="file"
                 id="profileImage"

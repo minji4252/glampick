@@ -174,7 +174,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
     if (!accessToken) return;
 
     axios.defaults.withCredentials = true;
-    console.log("비밀번호입력확인", handlePasswordCheck);
+    //console.log("비밀번호입력확인", handlePasswordCheck);
 
     try {
       const response = await axios.post(
@@ -199,7 +199,10 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
       }
       return response;
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
+      if (error.response.data.code === "NMP") {
+        setErrorMessage("비밀번호가 일치하지 않습니다.");
+      }
     }
   };
 
