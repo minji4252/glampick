@@ -67,7 +67,7 @@ const ListPagination = ({
     console.log(`선택된 페이지 ${pageNumber}`);
   };
   // 페이지네이션 완료 후 지웁니다
-  console.log(`페이지네이션 총 페이지 ${totalPages}`);
+  // console.log(`페이지네이션 총 페이지 ${totalPages}`);
 
   // 페이지 이동할 때 젤 위로 가게 하기
   useEffect(() => {

@@ -18,11 +18,11 @@ const WrapStyle = styled.div`
 
   h3 {
     width: 100%;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 500;
     color: ${colorSystem.g800};
     margin-top: 10px;
-    margin-left: 15px;
+    margin-left: 10px;
     margin-bottom: 5px;
   }
 `;
@@ -31,11 +31,6 @@ const TopContents = styled.div`
   width: 100%;
   margin-bottom: 10px;
   border-bottom: 1.5px solid ${colorSystem.g200};
-
-  ${size.mid} {
-    height: 500px;
-    /* 임시로 지정 */
-  }
 
   .rating {
     display: flex;
@@ -53,7 +48,6 @@ const TopContents = styled.div`
       display: flex;
       align-items: center;
       position: relative;
-      margin-left: 8px;
 
       .star {
         font-size: 1.5rem;
@@ -71,7 +65,7 @@ const TopContents = styled.div`
 
       .total-rating {
         position: absolute;
-        top: 4px;
+        top: 5px;
         left: 60px;
         font-size: 1.1rem;
         font-weight: 400;
@@ -118,13 +112,30 @@ const TopContents = styled.div`
     opacity: 1;
   }
 
-  // 총 리뷰 수
-  .review-count {
-    margin-left: 5px;
+  // 총 리뷰 수, 필터
+  .review-info {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 8px;
-    color: ${colorSystem.g800};
-    font-weight: 500;
-    font-size: 0.9rem;
+    .review-count {
+      margin-left: 5px;
+      color: ${colorSystem.g800};
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    .filter {
+      margin-right: 5px;
+      color: ${colorSystem.g800};
+      font-weight: 400;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media all and (max-width: 419px) {
+    .review-img div {
+      width: 110px;
+      height: 110px;
+    }
   }
 `;
 
@@ -146,70 +157,42 @@ const BottomContents = styled.div`
 const Review = () => {
   const [showModal, setShowModal] = useState(false);
   const [reviewData, setReviewData] = useState([]);
-  const [reviewImages, setReviewImages] = useState([]);
+  // const [reviewImages, setReviewImages] = useState([]);
   const [allReviewImages, setAllReviewImages] = useState([]);
-  // 총 리뷰 이미지 개수
-  const [reviewImagesLength, setReviewImagesLength] = useState(0);
-  // 현재 페이지
-  const [currentPage, setCurrentPage] = useState(1);
   // 총 페이지 수
   const [totalPages, setTotalPages] = useState(1);
   // 페이지 상태 추가
   const [page, setPage] = useState(1);
+  const [filter, setFilter] = useState("latest"); // 필터 상태 추가
 
   const location = useLocation();
-
   // 별점
   const starPoint = location.state.starPoint;
   // 글램핑 이름
   const glampName = location.state.glampName;
   // 총 리뷰 수
   const countReview = location.state.countReview;
-
   // glampId 불러오기
   const { glampId } = useParams();
-
-  // 리뷰 이미지 더보기 모달에서 불러올 사진
-  useEffect(() => {
-    const getGlamping = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
-        );
-        console.log("리뷰전체사진", response.data);
-        const allReviewImage = response.data.moreReviewImage;
-        // console.log("리뷰 사진 데이터:", data);
-        // setReviewImages(allReviewImage); // 리뷰 이미지 상태 업데이트
-        // setReviewImagesLength(allReviewImage.length); // 리뷰 이미지 개수 상태 업데이트
-        // setAllReviewImages(prevImages => [...prevImages, ...allReviewImage]);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getGlamping();
-  }, [currentPage, glampId]);
 
   // 전체 리뷰 불러오기
   useEffect(() => {
     const getGlampingReview = async () => {
       try {
         const response = await axios.get(
-          `${process.env.PUBLIC_URL}/api/glamping/{glamp_id}/review?glampId=${glampId}&page=${page}`,
+          `${process.env.PUBLIC_URL}/api/glamping/${glampId}/review`,
+          {
+            params: {
+              glampId,
+              page,
+            },
+          },
         );
         const data = response.data;
-        console.log("전체리뷰 데이터:", data);
-
-        setReviewData(data.reviewListItems); // 리뷰 데이터 배열을 state에 저장
-        setAllReviewImages(data.allReviewImage); // TopContents에 보여줄 이미지들
-        const images = data.reviewListItems.flatMap(
-          review => review.reviewImages,
-        );
-        setReviewImages(images);
-
-        // 총 페이지 수 계산
-        const totalPages = Math.ceil(countReview / 5); // 페이지 당 5개 아이템으로 가정
-        setTotalPages(totalPages); // 총 페이지 수 업데이트
-        // console.log(totalPages);
+        setReviewData(data.reviewListItems);
+        setAllReviewImages(data.allReviewImage);
+        const totalPages = Math.ceil(countReview / 5);
+        setTotalPages(totalPages);
       } catch (error) {
         console.log(error);
       }
@@ -218,19 +201,39 @@ const Review = () => {
     getGlampingReview();
   }, [page, glampId, countReview]);
 
+  // 필터 적용
+  //  useEffect(() => {
+  //   // 리뷰 데이터 정렬하는 함수
+  //   const sortReviews = () => {
+  //     let sortedReviews = [...initialReviewData]; // 초기 리뷰 데이터를 기준으로 정렬
+  //     if (filter === 'highest') {
+  //       sortedReviews.sort((a, b) => b.starPoint - a.starPoint);
+  //     } else if (filter === 'lowest') {
+  //       sortedReviews.sort((a, b) => a.starPoint - b.starPoint);
+  //     } else if (filter === 'latest') {
+  //       sortedReviews.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  //     }
+  //     setReviewData(sortedReviews);
+  //   };
+
+  //   if (initialReviewData.length > 0) {
+  //     sortReviews();
+  //   }
+  // }, [filter, initialReviewData]); // filter와 initialReviewData가 변경될 때만 실행
+
   const handlePageChange = pageNumber => {
     setPage(pageNumber);
   };
 
-  // 리뷰 이미지 보기 모달
+  const handleFilterChange = e => {
+    setFilter(e.target.value);
+  };
+
+  // 리뷰 이미지만 보기 모달
   const toggleModal = () => {
     setShowModal(!showModal);
   };
 
-  // 리뷰사진 더보기 버튼
-  const handleMoreClick = () => {
-    setCurrentPage(prevPage => prevPage + 1); // 모달창 페이지 증가
-  };
   return (
     <WrapStyle>
       <div className="inner">
@@ -252,19 +255,28 @@ const Review = () => {
                 className={`review-img${index + 1}`}
                 style={{
                   backgroundImage: `url(${process.env.PUBLIC_URL}${img})`,
+                  position: "relative",
                 }}
               >
-                {/* 리뷰사진 9개이상인 경우 더보기 버튼 처리 */}
-                {index === 8 && allReviewImages.length > 9 && (
+                {/* 9번째 이미지에 더보기 버튼 오버레이 추가 */}
+                {index === 8 && (
                   <div className="more-overlay" onClick={toggleModal}>
                     더보기
                   </div>
                 )}
               </div>
             ))}
-            {console.log("allReviewImages.length:", allReviewImages.length)}
           </div>
-          <div className="review-count">총 리뷰 {countReview}개</div>
+          <div className="review-info">
+            <div className="review-count">총 리뷰 {countReview}개</div>
+            {/* <div className="filter">
+              <select id="filter" value={filter} onChange={handleFilterChange}>
+                <option value="latest">최신등록순</option>
+                <option value="highest">별점 높은순</option>
+                <option value="lowest">별점 낮은순</option>
+              </select>
+            </div> */}
+          </div>
         </TopContents>
         <BottomContents>
           <div className="review-list">
@@ -274,28 +286,19 @@ const Review = () => {
                 key={index}
                 userProfileImage={review.userProfileImage}
                 userNickName={review.userNickName}
-                glampName={review.glampName}
                 roomName={review.roomName}
                 createdAt={review.createdAt}
                 userReviewContent={review.userReviewContent}
                 ownerReviewContent={review.ownerReviewContent}
                 starPoint={review.starPoint}
                 reviewImages={review.reviewImages}
+                glampId={review.glampId}
               />
             ))}
           </div>
         </BottomContents>
       </div>
-      {showModal && (
-        <ReviewImgModal
-          reviewImages={allReviewImages}
-          onClose={toggleModal}
-          onMoreClick={() => {
-            handleMoreClick;
-          }}
-          // 더보기 버튼 클릭 핸들러 추가되어야 함
-        />
-      )}
+      {showModal && <ReviewImgModal glampId={glampId} onClose={toggleModal} />}
       <ListPagination
         currentPage={page}
         totalItems={countReview}

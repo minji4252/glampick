@@ -213,8 +213,8 @@ const LoginPage = () => {
   // const [userPw, setUserPw] = useState("Asdf@1234");
 
   // 임시 로그인 계정 (정보 담아둠)
-  const [userEmail, setUserEmail] = useState("mybirth811@gmail.com");
-  const [userPw, setUserPw] = useState("Tngus811!");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPw, setUserPw] = useState("");
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();

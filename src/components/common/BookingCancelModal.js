@@ -80,6 +80,7 @@ const BookingCancelModal = ({
   const [accessToken, setAccessToken] = useState("");
   // 예약 취소 성공 여부 상태 추가
   const [isSuccess, setIsSuccess] = useState(false);
+  
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
     if (isOpen) {
