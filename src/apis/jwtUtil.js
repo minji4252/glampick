@@ -12,14 +12,10 @@ const beforeReq = config => {
 
   if (!accessToken) {
     console.log("쿠키정보가 없습니다.!!!!!!");
-    console.log("호출 중인 axios를 중단");
-    console.log("axios 중단하면서 원하는 메시지를 작성해 줌");
     return Promise.reject({
       response: { data: { error: "Login하셔서 인증받으세요." } },
     });
   }
-
-  console.log("accessToken을 axios의 headers에 추가");
   config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 };

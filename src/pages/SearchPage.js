@@ -18,7 +18,6 @@ import SearchPageStyle, {
 import "../styles/common.css";
 import "../styles/reset.css";
 import Loading from "../components/common/Loading";
-import MainCalendar from "../components/MainCalendar";
 import SearchCalendar from "../components/SearchCalendar";
 
 const SearchPage = () => {
@@ -158,7 +157,6 @@ const SearchPage = () => {
 
   // 페이지 개수 계산
   const totalPages = Math.ceil(searchResults.totalItems / postPerPage);
-  console.log("총 몇 페이지?", totalPages);
 
   useEffect(() => {
     const params = {
