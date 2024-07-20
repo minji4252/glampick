@@ -62,6 +62,7 @@ const GlampingDetail = ({ isLogin }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useState("");
+  const [visibleRoomsCount, setVisibleRoomsCount] = useState(5); // 객실 초기 표시 개수
 
   // 기본값 설정 함수
   const getDefaultDate = daysToAdd => {
@@ -232,6 +233,26 @@ const GlampingDetail = ({ isLogin }) => {
     });
   };
 
+  // 더보기
+  const showMoreRooms = () => {
+    setVisibleRoomsCount(prevCount => prevCount + 5);
+  };
+
+  // 접기
+  const showLessRooms = () => {
+    setVisibleRoomsCount(5);
+    const scrollPosition =
+      roomSelectRef.current.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: scrollPosition,
+      behavior: "smooth",
+    });
+  };
+
+  // 모든 객실 품절
+  const isAllSoldOut = roomItems.every(room => !room.reservationAvailable);
+  console.log("isAllSoldOut", isAllSoldOut);
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -316,68 +337,93 @@ const GlampingDetail = ({ isLogin }) => {
             <h3>객실선택</h3>
           </RoomSelectTitle>
 
-          {roomItems.map((room, index) => (
-            <RoomCard key={index}>
-              <RoomCardLeft>
-                <Link
-                  to={`/roomdetail/${glampId}`}
-                  state={{ glampName: glampingData.glampName }}
-                >
-                  <div
-                    className="roomcard-img"
-                    style={{
-                      // eslint-disable-next-line no-undef
-                      backgroundImage: `url(${process.env.PUBLIC_URL}${roomImages[index]})`,
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "center",
-                      backgroundSize: "cover",
-                    }}
+          {isAllSoldOut ? (
+            <RoomSoldOutCard>
+              <FaRegCalendar />
+              <span>
+                {inDate} - {outDate}
+              </span>
+              <h5>선택한 날짜의 객실은 매진되었어요</h5>
+              <p>검색창에서 날짜나 인원을 다시 설정해 보세요.</p>
+            </RoomSoldOutCard>
+          ) : (
+            roomItems.slice(0, visibleRoomsCount).map((room, index) => (
+              <RoomCard key={index}>
+                <RoomCardLeft>
+                  <Link
+                    to={`/roomdetail/${glampId}`}
+                    state={{ glampName: glampingData.glampName }}
                   >
-                    <span>사진 더보기</span>
-                  </div>
-                </Link>
-              </RoomCardLeft>
-              <RoomCardRight>
-                <span>{room.roomName}</span>
-                <RoomCardBooking>
-                  <p>입실 {formatTime(room.checkInTime)}</p>
-                  <p>퇴실 {formatTime(room.checkOutTime)}</p>
-
-                  {room.reservationAvailable ? (
-                    <>
-                      <MainButton
-                        label="객실 예약"
-                        onClick={() => handleReservationClick(room)}
-                      />
-                      <span>
-                        {Number(room.roomPrice).toLocaleString("ko-KR")}원
-                      </span>
-                    </>
-                  ) : (
-                    <div className="sold-out-style">
-                      <ActionButton label="예약 마감" />
-                      <span>
-                        {Number(room.roomPrice).toLocaleString("ko-KR")}원
-                      </span>
+                    <div
+                      className="roomcard-img"
+                      style={{
+                        // eslint-disable-next-line no-undef
+                        backgroundImage: `url(${process.env.PUBLIC_URL}${roomImages[index]})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                      }}
+                    >
+                      <span>사진 더보기</span>
                     </div>
-                  )}
-                </RoomCardBooking>
-                <div className="roomcard-txt">
-                  <div className="txt-top">
-                    <span>객실정보</span>
-                    <p>
-                      기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}인
-                      (유료)
-                    </p>
+                  </Link>
+                </RoomCardLeft>
+                <RoomCardRight>
+                  <span>{room.roomName}</span>
+                  <RoomCardBooking>
+                    <p>입실 {formatTime(room.checkInTime)}</p>
+                    <p>퇴실 {formatTime(room.checkOutTime)}</p>
+
+                    {room.reservationAvailable ? (
+                      <>
+                        <MainButton
+                          label="객실 예약"
+                          onClick={() => handleReservationClick(room)}
+                        />
+                        <span>
+                          {Number(room.roomPrice).toLocaleString("ko-KR")}원
+                        </span>
+                      </>
+                    ) : (
+                      <div className="sold-out-style">
+                        <ActionButton label="예약 마감" />
+                        <span>
+                          {Number(room.roomPrice).toLocaleString("ko-KR")}원
+                        </span>
+                      </div>
+                    )}
+                  </RoomCardBooking>
+                  <div className="roomcard-txt">
+                    <div className="txt-top">
+                      <span>객실정보</span>
+                      <p>
+                        기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}
+                        인 (유료)
+                      </p>
+                    </div>
+                    <div>
+                      <span>추가정보</span>
+                      <p>{room.roomServices.join(", ")}</p>
+                    </div>
                   </div>
-                  <div>
-                    <span>추가정보</span>
-                    <p>{room.roomServices.join(", ")}</p>
-                  </div>
+                </RoomCardRight>
+              </RoomCard>
+            ))
+          )}
+
+          <div className="view-all">
+            {visibleRoomsCount < roomItems.length ? (
+              <div className="show-more">
+                <ActionButton label="더보기" onClick={showMoreRooms} />
+              </div>
+            ) : (
+              roomItems.length > 5 && (
+                <div className="show-less">
+                  <ActionButton label="접기" onClick={showLessRooms} />
                 </div>
-              </RoomCardRight>
-            </RoomCard>
-          ))}
+              )
+            )}
+          </div>
         </RoomSelect>
 
         <RoomInfo>
