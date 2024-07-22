@@ -105,8 +105,6 @@ const GlampingDetail = ({ isLogin }) => {
   // 지도 초기화
   useEffect(() => {
     if (glampingData && mapElement.current) {
-      const { naver } = window;
-
       naver.maps.Service.geocode(
         {
           address: glampingData.glampLocation,
