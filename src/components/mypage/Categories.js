@@ -9,7 +9,6 @@ import { getCookie } from "../../utils/cookie";
 const CategoriesStyle = styled.div`
   position: fixed;
   top: 180px;
-  /* top: 220px; */
   left: 90px;
   max-width: 270px;
   width: 100%;
@@ -17,6 +16,14 @@ const CategoriesStyle = styled.div`
   flex-direction: column;
   gap: 15px;
   padding: 1rem;
+
+  > div {
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-use-select: none;
+    user-select: none;
+  }
 
   h1 {
     font-size: 1.5rem;

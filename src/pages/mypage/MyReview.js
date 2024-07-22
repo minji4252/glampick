@@ -77,6 +77,10 @@ const MyReviewGroup = styled.div`
   button {
     display: flex !important;
   }
+
+  h5 {
+    display: block !important;
+  }
 `;
 
 const NoReviewsStyle = styled.div`

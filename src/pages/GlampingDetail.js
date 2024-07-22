@@ -1,21 +1,33 @@
-import { useState, useEffect, useRef } from "react";
+/* eslint-disable no-undef */
+import { useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { FaRegCalendar } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
-import { FaRegCalendar } from "react-icons/fa6";
 import {
   Link,
   useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { fetchGlampingData, toggleLikeGlamping } from "../apis/glamping";
 import AlertModal from "../components/common/AlertModal";
 import { ActionButton, MainButton } from "../components/common/Button";
+import CheckModal from "../components/common/CheckModal";
+import emptyheart from "../images/icon/heart-empty.png";
+import fillheart from "../images/icon/heart-fill.png";
+import { FaLocationDot } from "react-icons/fa6";
+
 import GlampingDetailStyle, {
   InfoGroup,
   OptionItems,
   ReviewSwiper,
   ReviewTitle,
+  RoomAround,
   RoomCard,
   RoomCardBooking,
   RoomCardLeft,
@@ -35,20 +47,6 @@ import GlampingDetailStyle, {
   SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import { Pagination } from "swiper/modules";
-import { animateScroll as scroll } from "react-scroll";
-import {
-  fetchGlampingData,
-  toggleLikeGlamping,
-  fetchMoreRooms,
-} from "../apis/glamping";
-import CheckModal from "../components/common/CheckModal";
-import axios from "axios";
-import emptyheart from "../images/icon/heart-empty.png";
-import fillheart from "../images/icon/heart-fill.png";
 import { getCookie } from "../utils/cookie";
 
 const GlampingDetail = ({ isLogin }) => {
@@ -56,13 +54,14 @@ const GlampingDetail = ({ isLogin }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
   const [roomImages, setRoomImages] = useState([]);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [initialRoomItems, setInitialRoomItems] = useState([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useState("");
-  const [visibleRoomsCount, setVisibleRoomsCount] = useState(5); // 객실 초기 표시 개수
+  const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
+  const roomSelectRef = useRef(null);
+  const roomLocationRef = useRef(null);
+  const mapElement = useRef(null);
 
   // 기본값 설정 함수
   const getDefaultDate = daysToAdd => {
@@ -78,7 +77,6 @@ const GlampingDetail = ({ isLogin }) => {
   const inDate = searchParams.get("inDate") || getDefaultDate(0);
   const outDate = searchParams.get("outDate") || getDefaultDate(1);
   const people = searchParams.get("people") || 2;
-  const roomSelectRef = useRef(null);
   const navigate = useNavigate();
 
   // 1. 글램핑디테일페이지 정보 불러오기
@@ -96,7 +94,6 @@ const GlampingDetail = ({ isLogin }) => {
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
         setRoomImages(roomImageUrls);
         setIsLiked(data.isFav === 1);
-        console.log("isFav의 현재 값은? : ", data.isFav === 1);
       } catch (error) {
         console.log(error);
       }
@@ -104,6 +101,37 @@ const GlampingDetail = ({ isLogin }) => {
 
     fetchData();
   }, [glampId, inDate, outDate, accessToken]);
+
+  // 지도 초기화
+  useEffect(() => {
+    if (glampingData && mapElement.current) {
+      const { naver } = window;
+
+      naver.maps.Service.geocode(
+        {
+          address: glampingData.glampLocation,
+        },
+        function (status, response) {
+          if (status !== naver.maps.Service.Status.OK) {
+            return console.log("error");
+          }
+
+          const result = response.v2.addresses[0];
+          const latLng = new naver.maps.LatLng(result.y, result.x);
+
+          const map = new naver.maps.Map(mapElement.current, {
+            center: latLng,
+            zoom: 10,
+          });
+
+          new naver.maps.Marker({
+            position: latLng,
+            map: map,
+          });
+        },
+      );
+    }
+  }, [glampingData]);
 
   // 로그인 여부 관련
   useEffect(() => {
@@ -173,6 +201,10 @@ const GlampingDetail = ({ isLogin }) => {
     }
   };
 
+  const handleRoomAroundClick = () => {
+    roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handleLoginConfirm = () => {
     navigate("/login");
     setShowLoginModal(false);
@@ -217,11 +249,13 @@ const GlampingDetail = ({ isLogin }) => {
     countReviewUsers,
     reviewItems,
     roomItems,
-    // isFav,
   } = glampingData;
 
   //별점 단위
   const formattedStarPoint = Number(starPointAvg).toFixed(1);
+
+  //위치 첫줄
+  const trafficFirstLine = traffic.split("\n")[0];
 
   const LinkToReview = () => {
     navigate(`/review/${glampId}`, {
@@ -251,7 +285,6 @@ const GlampingDetail = ({ isLogin }) => {
 
   // 모든 객실 품절
   const isAllSoldOut = roomItems.every(room => !room.reservationAvailable);
-  console.log("isAllSoldOut", isAllSoldOut);
 
   return (
     <GlampingDetailStyle>
@@ -283,12 +316,17 @@ const GlampingDetail = ({ isLogin }) => {
               )}
             </button>
           </RoomTitle>
+          <RoomAround onClick={handleRoomAroundClick}>
+            <FaLocationDot />
+            {trafficFirstLine}거리
+            <IoIosArrowForward />
+          </RoomAround>
           <RoomReview>
             <ReviewTitle>
               <FaStar />
               <div className="review-score">{formattedStarPoint}</div>
               <div className="review-evaluat">{countReviewUsers}명 평가</div>
-              <button onClick={() => LinkToReview()}>리뷰보기</button>
+              {/* <button onClick={() => LinkToReview()}>리뷰보기</button> */}
             </ReviewTitle>
             <ReviewSwiper>
               <Swiper
@@ -450,10 +488,10 @@ const GlampingDetail = ({ isLogin }) => {
               </div>
             </InfoGroup>
           </RoomInfomation>
-          <RoomLocation>
+          <RoomLocation ref={roomLocationRef}>
             <UnderLine />
             <h3>위치</h3>
-            {/* <p></p> */}
+            <div className="location-map" ref={mapElement} />
             <div className="location-info">
               <span>{glampLocation}</span>
               <div>

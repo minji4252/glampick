@@ -126,7 +126,7 @@ export const BookingDetailForm = ({
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
-  const [reviewWritten, setReviewWritten] = useState(false); 
+  const [reviewWritten, setReviewWritten] = useState(false);
 
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
