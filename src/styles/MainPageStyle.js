@@ -96,6 +96,10 @@ export const MainBigTitle = styled.div`
       color: #fff;
       letter-spacing: -0.9px;
       cursor: default;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-use-select: none;
+      user-select: none;
     }
     ${size.large} {
       flex-direction: column;
@@ -173,6 +177,7 @@ export const MainSearchContent = styled.ul`
       color: ${colorSystem.white};
       text-align: center;
       outline: none;
+      cursor: pointer;
       > option {
         background-color: ${colorSystem.g150};
         border-radius: 10px;
@@ -221,6 +226,7 @@ export const MainSearchContent = styled.ul`
       color: ${colorSystem.white};
       background: rgba(255, 255, 255, 0);
       outline: none;
+      cursor: pointer;
     }
     > p {
       font-size: 20px;
@@ -309,6 +315,10 @@ export const MainListTitle = styled.div`
   font-weight: 500;
   margin-bottom: 20px;
   color: ${colorSystem.g800};
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
   ${size.mid} {
     display: flex;
     justify-content: center;
@@ -320,6 +330,10 @@ export const MainListContents = styled.div`
   display: flex;
   gap: 40px;
   margin-bottom: 70px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
 
   ${size.mid} {
     flex-direction: column;

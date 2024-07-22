@@ -68,6 +68,10 @@ export const SearchResult = styled.div`
 export const ResultContents = styled.div`
   display: flex;
   align-items: center;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
   label {
     font-weight: 600;
     padding-left: 30px;
@@ -277,6 +281,10 @@ export const SearchMenu = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
 
   // 정렬
   .search-aline {
@@ -309,6 +317,10 @@ export const SearchInnerList = styled.div`
   padding-bottom: 40px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
   @media all and (max-width: 950px) {
     width: 100%;
     margin: 0 20px;
