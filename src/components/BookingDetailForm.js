@@ -175,7 +175,7 @@ export const BookingDetailForm = ({
 
   // 후기작성 버튼 표시여부
   const canWriteReview = booking.status === 1 && !reviewWritten;
-  console.log(booking.status);
+  // console.log(booking.status);
 
   return (
     <FormContents>

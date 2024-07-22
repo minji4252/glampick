@@ -104,10 +104,10 @@ const BookingCancelModal = ({
         if (accessTokenFromCookie) {
           setAccessToken(accessTokenFromCookie);
         } else {
-          console.log("쿠키에 access-Token 없음");
+          // console.log("쿠키에 access-Token 없음");
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     fetchAccessToken();
@@ -133,12 +133,12 @@ const BookingCancelModal = ({
         },
       );
       if (response.data.code === "SU") {
-        console.log("예약취소 성공", response);
+        // console.log("예약취소 성공", response);
         setIsSuccess(true); // 성공 상태 업데이트
         onConfirm();
         onBookingCancelled(reservationId); // 예약 취소 시 호출
       } else if (response.data.code === "NB") {
-        console.log("존재하지 않는 예약내역입니다.");
+        // console.log("존재하지 않는 예약내역입니다.");
       }
       return response;
     } catch (error) {

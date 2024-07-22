@@ -200,10 +200,10 @@ const CreateReviewModal = ({
         if (accessTokenFromCookie) {
           setAccessToken(accessTokenFromCookie);
         } else {
-          console.log("쿠키에 access-Token 없음");
+          // console.log("쿠키에 access-Token 없음");
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
     fetchAccessToken();
@@ -275,11 +275,11 @@ const CreateReviewModal = ({
         // 후기가 성공적으로 제출되었을 때 페이지 새로 고침
         // window.location.reload();
       }
-      console.log(response);
+      // console.log(response);
     } catch (error) {
-      console.log(error.response.data);
+      // console.log(error.response.data);
     }
-    console.log({ rating, reviewText, images });
+    // console.log({ rating, reviewText, images });
     onClose();
   };
 
