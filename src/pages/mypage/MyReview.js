@@ -158,7 +158,7 @@ const MyReview = () => {
             },
           },
         );
-        console.log(response.data.reviewListItems);
+        // console.log(response.data.reviewListItems);
         setReviews(response.data.reviewListItems);
         setSearchResults(response.data.totalReviewsCount);
       } catch (error) {

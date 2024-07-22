@@ -270,7 +270,7 @@ const ReviewCard = ({
               },
             },
           );
-          console.log(response);
+          // console.log(response);
           closeModal();
           window.location.reload();
           // openAlert("삭제가 완료되었습니다.");

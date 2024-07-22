@@ -109,6 +109,13 @@ export const ReservationInput = styled.div`
   gap: 5px;
   width: 100%;
 
+  > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 350px;
+  }
+
   label {
     font-weight: 600;
     color: ${colorSystem.g700};
