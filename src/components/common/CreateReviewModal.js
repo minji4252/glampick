@@ -255,7 +255,7 @@ const CreateReviewModal = ({
     const dto = JSON.stringify({
       reservationId: reservationId,
       reviewContent: reviewText,
-      reviewStarPoint: reviewStarPoint,
+      reviewStarPoint: rating,
     });
     formData.append("dto", dto);
 
@@ -274,6 +274,7 @@ const CreateReviewModal = ({
       if (response.status === 200) {
         // 후기가 성공적으로 제출되었을 때 페이지 새로 고침
         window.location.reload();
+        console.log("새로고침됨");
       }
       // console.log(response);
     } catch (error) {
