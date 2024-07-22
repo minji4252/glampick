@@ -22,7 +22,7 @@ export const postMailSend = async ({ userEmail }) => {
   try {
     const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
     const response = await axios.post(reqData, { userEmail });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -41,7 +41,7 @@ export const postAuthCode = async ({ userEmail, authCode }) => {
       userEmail: userEmail,
       authKey: authCode,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -57,7 +57,7 @@ export const postSendSms = async ({ userPhone }) => {
   try {
     const reqData = `/api/auth/send-sms?userPhone=${userPhone}`;
     const response = await axios.post(reqData, { userPhone });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -76,7 +76,7 @@ export const postCheckSms = async ({ userPhone, authNumber }) => {
       userPhone: userPhone,
       phoneKey: authNumber,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -103,7 +103,7 @@ export const postSignUp = async ({
       userName: userName,
       userNickname: userNickName,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -112,6 +112,7 @@ export const postSignUp = async ({
     }
     console.log(error);
   }
+  
 };
 
 // 유저 정보수정 비밀번호 확인 api
@@ -120,7 +121,7 @@ export const postPasswordCheck = async ({ userPw }) => {
     const response = await axios.post(`/api/user/password-check`, {
       userPw: userPw,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -131,7 +132,7 @@ export const postPasswordCheck = async ({ userPw }) => {
 export const deleteUser = async () => {
   try {
     const response = await axios.delete(`/api/user`);
-    console.log(response);
+    // console.log(response);
   } catch (error) {
     console.log(error);
   }

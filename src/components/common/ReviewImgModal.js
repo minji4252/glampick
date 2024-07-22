@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { colorSystem } from "../../styles/color";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -82,10 +83,12 @@ const MoreButton = styled.button`
 const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
   const [reviewImages, setReviewImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   // 리뷰 이미지 더보기 모달에서 불러올 사진
   useEffect(() => {
     const getGlamping = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
@@ -95,6 +98,8 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
         setReviewImages(prevImages => [...prevImages, ...allReviewImage]);
       } catch (error) {
         // console.log(error);
+      } finally {
+        setLoading(false); 
       }
     };
     getGlamping();
@@ -142,6 +147,7 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
           </CloseButton>
         </ModalHeader>
         <ImageContainer>
+        {loading && <Loading />}
           {filledImages.map((img, index) => (
             <ImageItem
               key={index}
