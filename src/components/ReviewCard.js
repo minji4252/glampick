@@ -1,8 +1,5 @@
 import { colorSystem } from "../styles/color";
 import styled from "@emotion/styled";
-// import reviewimg1 from "../images/review1.png";
-// import reviewimg2 from "../images/review2.png";
-// import reviewimg3 from "../images/review3.png";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa6";
 import { DeleteButton } from "./common/Button";
@@ -12,6 +9,7 @@ import AlertModal from "./common/AlertModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import defaultProfile from "../images/icon/default-img.png";
 
 const ReviewCardStyle = styled.div`
   display: flex;
@@ -43,6 +41,7 @@ const ReviewCardStyle = styled.div`
   //일반 리뷰에서는 숙소이름 가리기
   h5 {
     display: none;
+    font-weight: 600;
   }
 `;
 const UserSection = styled.div`
@@ -293,7 +292,9 @@ const ReviewCard = ({
           <div
             className="user-profile-img"
             style={{
-              backgroundImage: `url(${userProfileImage})`,
+              backgroundImage: `url(${
+                userProfileImage ? userProfileImage : defaultProfile
+              })`,
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               backgroundSize: "cover",

@@ -376,13 +376,13 @@ const PaymentPage = () => {
               >
                 <img alt="kakaopay" src={kakaopay} />
               </div>
-              <div
+              {/* <div
                 className={`payment-type ${selectedPayment === "toss" ? "toss active" : "toss"}`}
                 onClick={() => handlePaymentClick("toss")}
               >
                 <div className="toss-img" />
                 <img alt="tosspay" src={tosspay} />
-              </div>
+              </div> */}
             </PaymentTypeList>
             {/* <div className="next-check">
               <label htmlFor="check1" className="check-label">
@@ -407,7 +407,7 @@ const PaymentPage = () => {
                   checked={agreeToTerms}
                   onChange={e => setAgreeToTerms(e.target.checked)}
                 />
-                <span className="checkbox-icon"></span>
+                <span className="checkbox-icon" />
                 <span>이용약관 동의</span>
                 <p
                   onClick={() => {

@@ -93,9 +93,24 @@ export const RoomTitle = styled.div`
   }
 `;
 
+export const RoomAround = styled.div`
+  width: fit-content;
+  cursor: pointer;
+  display: flex;
+  gap: 3px;
+  color: #1273e4;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-top: 7px;
+
+  &:hover {
+    color: #0e5ab3;
+  }
+`;
+
 // 옵션 3
 export const RoomReview = styled.div`
-  margin-top: 25px;
+  margin-top: 10px;
 `;
 
 export const ReviewTitle = styled.div`
@@ -553,11 +568,6 @@ export const InfoGroup = styled.div`
       color: ${colorSystem.primary};
       font-weight: 500;
     }
-
-    /* > div {
-      margin-top: 15px;
-      line-height: 1.3rem;
-    } */
   }
 `;
 
@@ -565,15 +575,13 @@ export const RoomLocation = styled.div`
   margin-top: 20px;
   margin-bottom: 30px;
 
-  > p {
+  .location-map {
     width: 100%;
-    height: 500px;
-    background-color: lightblue;
-    border-radius: 20px;
+    height: 400px;
   }
 
   .location-info {
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 40px;
 
     > span {
