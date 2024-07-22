@@ -353,7 +353,7 @@ const SearchPage = () => {
                   </select>
                 </div>
                 <div className="search-result">
-                  {searchResults.searchCount} 개 검색 결과
+                  {searchResults.searchCount || 0} 개 검색 결과
                 </div>
               </SearchMenu>
             </SearchInnerTop>
