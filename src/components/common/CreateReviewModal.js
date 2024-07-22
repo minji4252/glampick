@@ -273,7 +273,7 @@ const CreateReviewModal = ({
       });
       if (response.status === 200) {
         // 후기가 성공적으로 제출되었을 때 페이지 새로 고침
-        // window.location.reload();
+        window.location.reload();
       }
       // console.log(response);
     } catch (error) {
