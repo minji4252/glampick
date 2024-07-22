@@ -156,7 +156,7 @@ const BottomContents = styled.div`
   .glamp-review {
     font-size: 1rem;
     margin-left: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 15px;
     font-weight: 500;
     // color: ${colorSystem.p800};
     color: #1273e4;

@@ -126,7 +126,7 @@ export const BookingDetailForm = ({
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
-  const [reviewWritten, setReviewWritten] = useState(false); 
+  const [reviewWritten, setReviewWritten] = useState(false);
 
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
@@ -134,6 +134,7 @@ export const BookingDetailForm = ({
   }, [booking]);
   // 한국어 locale 설정
   moment.locale("ko");
+
   // 예약 생성일 형식 변환 함수
   const formatCreatedAt = () => {
     // 예약 생성일을 moment 객체로 파싱
@@ -144,11 +145,13 @@ export const BookingDetailForm = ({
     const dayOfWeek = createdAtMoment.format("(ddd)");
     return `${formattedDate} ${dayOfWeek}`;
   };
+
   // 시간을 변환하는 함수
   const formatTime = timeString => {
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
   };
+
   // 예약날짜 형태 변환
   // 예약취소 모달
   const handleOpenBookCancelModdal = () => {
@@ -169,6 +172,11 @@ export const BookingDetailForm = ({
     setIsCancelModalOpen(false);
   };
   if (!booking) return null;
+
+  // 후기작성 버튼 표시여부
+  const canWriteReview = booking.status === 1 && !reviewWritten;
+  console.log(booking.status);
+
   return (
     <FormContents>
       <div className="top-contents">
@@ -212,7 +220,7 @@ export const BookingDetailForm = ({
           >
             취소
           </div>
-        ) : isCompleted && !reviewWritten ? (
+        ) : isCompleted && !canWriteReview ? (
           <div className="review-btn">
             <MainButton
               label="후기작성"

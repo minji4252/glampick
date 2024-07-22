@@ -99,10 +99,10 @@ const UserSection = styled.div`
       max-width: 570px;
       line-height: 1.5rem;
       font-size: 0.9rem;
-      overflow: hidden;
+      /* overflow: hidden;
       display: -webkit-box;
       -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+      -webkit-box-orient: vertical; */
     }
 
     button {

@@ -84,6 +84,8 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
   const [reviewImages, setReviewImages] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
+  // 더보기 버튼
+  const [hasMore, setHasMore] = useState(true);
 
   // 리뷰 이미지 더보기 모달에서 불러올 사진
   useEffect(() => {
@@ -94,17 +96,23 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
           `${process.env.PUBLIC_URL}/api/glamping?glampId=${glampId}&page=${currentPage}`,
         );
         // console.log("리뷰전체사진", response.data);
-        const allReviewImage = response.data.moreReviewImage;
-        setReviewImages(prevImages => [...prevImages, ...allReviewImage]);
+        const { moreReviewImage } = response.data;
+        setReviewImages(prevImages => [...prevImages, ...moreReviewImage]);
+
+        // 더 이상 불러올 사진이 없는 경우 hasMore를 false로 설정
+        if (moreReviewImage.length === 0) {
+          setHasMore(false);
+        }
       } catch (error) {
         // console.log(error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
     getGlamping();
-  }, [currentPage, glampId]);
+  }, [currentPage, glampId, isOpen]);
 
+  // 모달창 나타날 떄 스크롤 금지
   useEffect(() => {
     const handleBodyScroll = () => {
       if (isOpen) {
@@ -125,7 +133,6 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
   const handleMoreClick = () => {
     setCurrentPage(prevPage => prevPage + 1); // 모달창 페이지 증가
   };
-
   // 빈 요소를 추가하여 총 5의 배수가 되도록 함
   const filledImages = [
     ...reviewImages,
@@ -147,7 +154,7 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
           </CloseButton>
         </ModalHeader>
         <ImageContainer>
-        {loading && <Loading />}
+          {loading && <Loading />}
           {filledImages.map((img, index) => (
             <ImageItem
               key={index}
@@ -158,7 +165,9 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
             />
           ))}
         </ImageContainer>
-        <MoreButton onClick={handleMoreClick}>더보기</MoreButton>
+        {hasMore && !loading && (
+          <MoreButton onClick={handleMoreClick}>더보기</MoreButton>
+        )}
       </ModalContent>
     </ModalOverlay>
   );

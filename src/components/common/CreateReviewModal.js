@@ -178,7 +178,7 @@ const CreateReviewModal = ({
   const maxImageCount = 3;
   const [uploadedImageCount, setUploadedImageCount] = useState(images.length);
   const [loading, setLoading] = useState(false);
-  
+
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
     if (isOpen) {
@@ -271,6 +271,10 @@ const CreateReviewModal = ({
           "Content-Type": "multipart/form-data",
         },
       });
+      if (response.status === 200) {
+        // 후기가 성공적으로 제출되었을 때 페이지 새로 고침
+        // window.location.reload();
+      }
       console.log(response);
     } catch (error) {
       console.log(error.response.data);

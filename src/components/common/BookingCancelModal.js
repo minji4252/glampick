@@ -32,11 +32,11 @@ const ModalContent = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   padding-top: 15px;
- 
-  > h2{
-  font-size: 0.9rem;
-  color: ${colorSystem.g800};
-}
+
+  > h2 {
+    font-size: 0.9rem;
+    color: ${colorSystem.g800};
+  }
 `;
 
 const ModalBody = styled.div`
@@ -57,16 +57,16 @@ const ModalFooter = styled.div`
   justify-content: center;
   margin-bottom: 15px;
 
-  .cancel{
-    > button{
-    height: 2em;
-  }
+  .cancel {
+    > button {
+      height: 2em;
+    }
   }
 
-  .confirm{
-    > button{
-    height: 2em;
-  }
+  .confirm {
+    > button {
+      height: 2em;
+    }
   }
 `;
 
@@ -81,7 +81,7 @@ const BookingCancelModal = ({
   const [accessToken, setAccessToken] = useState("");
   // 예약 취소 성공 여부 상태 추가
   const [isSuccess, setIsSuccess] = useState(false);
-  
+
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
     if (isOpen) {
@@ -142,13 +142,16 @@ const BookingCancelModal = ({
       }
       return response;
     } catch (error) {
-      console.log("예약취소 실패", error);
+      // console.log("예약취소 실패", error);
     }
   };
-  // 예약 취소 성공 시 모달 닫기
+  // 예약 취소 성공 시 페이지 새로고침
   useEffect(() => {
     if (isSuccess) {
+      // 모달 닫기
       onClose();
+      // 페이지 새로 고침
+      window.location.reload();
     }
   }, [isSuccess, onClose]);
 
@@ -156,26 +159,23 @@ const BookingCancelModal = ({
     <ModalOverlay>
       <ModalContent>
         <h2>예약 취소</h2>
-        <ModalLine/>
+        <ModalLine />
         <ModalBody>
           <p>정말 예약을 취소하시겠습니까?</p>
         </ModalBody>
         <ModalFooter>
           <div className="cancel">
-          <ActionButton
-            label="취소"
-            onClick={() => {
-              onClose();
-            }}
-          ></ActionButton>
+            <ActionButton
+              label="취소"
+              onClick={() => {
+                onClose();
+              }}
+            ></ActionButton>
           </div>
           <div className="confirm">
-          <DeleteButton
-            label="확인"
-            onClick={handleConfirm}
-          >
-            확인
-          </DeleteButton>
+            <DeleteButton label="확인" onClick={handleConfirm}>
+              확인
+            </DeleteButton>
           </div>
         </ModalFooter>
       </ModalContent>

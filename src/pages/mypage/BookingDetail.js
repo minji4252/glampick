@@ -38,7 +38,7 @@ const WrapStyle = styled.div`
     color: ${colorSystem.g900};
     font-weight: 600;
     margin-top: 20px;
-    
+
     ${size.mid} {
       margin-left: 70px;
     }
@@ -62,6 +62,7 @@ const WrapStyle = styled.div`
     gap: 50px;
     width: 90%;
     margin-top: 40px;
+    margin-bottom: 60px;
 
     ${size.mid} {
       display: flex;
@@ -235,9 +236,11 @@ const BookingDetail = () => {
     }
   };
 
-  // 예약이 취소될 때 BookingDetail 컴포넌트의 상태를 업데이트 
-  const handleBookingCancelled = (reservationId) => {
-    setUpcomingBookings(prevBookings => prevBookings.filter(booking => booking.reservationId !== reservationId));
+  // 예약이 취소될 때 BookingDetail 컴포넌트의 상태를 업데이트
+  const handleBookingCancelled = reservationId => {
+    setUpcomingBookings(prevBookings =>
+      prevBookings.filter(booking => booking.reservationId !== reservationId),
+    );
     setCancelledBookings(prevBookings => [...prevBookings, reservationId]);
   };
 
