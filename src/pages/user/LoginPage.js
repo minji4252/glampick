@@ -10,6 +10,7 @@ import { colorSystem, size } from "../../styles/color";
 import { setCookie } from "../../utils/cookie";
 import AlertModal from "../../components/common/AlertModal";
 import useModal from "../../hooks/UseModal";
+import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -217,6 +218,7 @@ const LoginPage = () => {
   const [userPw, setUserPw] = useState("");
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
@@ -224,7 +226,7 @@ const LoginPage = () => {
   // 로그인시 처리할 함수
   const handleLogin = async e => {
     e.preventDefault();
-
+    setLoading(true);
     // 입력 필드 검사
     if (!userEmail || !userPw) {
       setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
@@ -249,11 +251,13 @@ const LoginPage = () => {
       // console.log("로그인 실패");
       setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
     }
+    setLoading(false);
     // navigate("/");
   };
 
   return (
     <WrapStyle>
+      {loading && <Loading />}
       <main>
         <div className="inner">
           <div className="container">

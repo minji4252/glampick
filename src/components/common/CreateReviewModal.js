@@ -177,7 +177,8 @@ const CreateReviewModal = ({
   // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
   const maxImageCount = 3;
   const [uploadedImageCount, setUploadedImageCount] = useState(images.length);
-
+  const [loading, setLoading] = useState(false);
+  
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
     if (isOpen) {

@@ -38,6 +38,10 @@ const WrapStyle = styled.div`
     color: ${colorSystem.g900};
     font-weight: 600;
     margin-top: 20px;
+    
+    ${size.mid} {
+      margin-left: 70px;
+    }
   }
 
   .tab {
@@ -62,7 +66,7 @@ const WrapStyle = styled.div`
     ${size.mid} {
       display: flex;
       flex-direction: column;
-      margin-top: 40px;
+      /* margin-top: 40px; */
     }
 
     .form-group {
@@ -162,10 +166,6 @@ const BookingDetail = () => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(6); // 페이지네이션 페이지당 보여질 목록 수
-  const [searchResults, setSearchResults] = useState({
-    totalItems: 0,
-    glampingListItems: [],
-  });
 
   // 토큰정보 불러오기
   useEffect(() => {
@@ -235,6 +235,12 @@ const BookingDetail = () => {
     }
   };
 
+  // 예약이 취소될 때 BookingDetail 컴포넌트의 상태를 업데이트 
+  const handleBookingCancelled = (reservationId) => {
+    setUpcomingBookings(prevBookings => prevBookings.filter(booking => booking.reservationId !== reservationId));
+    setCancelledBookings(prevBookings => [...prevBookings, reservationId]);
+  };
+
   // 현재 보여줄 예약 목록
   const bookingsToShow = getBookingsByTab().slice(
     (currentPage - 1) * postPerPage,
@@ -269,9 +275,9 @@ const BookingDetail = () => {
             이용완료
           </div>
           <div
-            className={`tab ${activeTab === "cancelde" ? "active" : ""}`}
+            className={`tab ${activeTab === "cancelled" ? "active" : ""}`}
             onClick={() => {
-              handleTabClick("cancelde");
+              handleTabClick("cancelled");
             }}
           >
             취소내역
@@ -336,7 +342,7 @@ const BookingDetail = () => {
           </>
         )}
         {/* 취소 내역 */}
-        {activeTab === "cancelde" && (
+        {activeTab === "cancelled" && (
           <>
             <div className="container">
               {bookingsToShow.length > 0 ? (

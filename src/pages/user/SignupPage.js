@@ -523,6 +523,8 @@ const SignupPage = () => {
       });
       return;
     }
+
+    setLoading(true);
     // 백엔드에 전달할 회원가입 유저 정보
     const result = await postSignUp({
       userEmail,
@@ -531,7 +533,7 @@ const SignupPage = () => {
       userName,
       userNickName,
     });
-
+    setLoading(false);
     // console.log(result.data);
     if (result.data.code === "SU") {
       openModal({
@@ -637,7 +639,7 @@ const SignupPage = () => {
                   {/* 타이머 */}
                   {isEmailSent && emailTimer > 0 && (
                     <div>
-                      <p className="timer">남은 시간: {formatEmailTimer()}</p>
+                      <p className="timer">남은시간: {formatEmailTimer()}</p>
                     </div>
                   )}
                   {isEmailSent && emailTimer === 0 && (
@@ -802,7 +804,7 @@ const SignupPage = () => {
                   {/* 타이머 */}
                   {isSmsSent && phoneTimer > 0 && (
                     <div>
-                      <p className="timer">남은 시간: {formatPhoneTimer()}</p>
+                      <p className="timer">남은시간: {formatPhoneTimer()}</p>
                     </div>
                   )}
                   {isSmsSent && phoneTimer === 0 && (
