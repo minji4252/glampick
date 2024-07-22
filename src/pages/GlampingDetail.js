@@ -358,7 +358,7 @@ const GlampingDetail = ({ isLogin }) => {
           </RoomReview>
           <RoomOption>
             <UnderLine />
-            <h3 className="option-title">테마</h3>
+            <h3 className="option-title">객실옵션</h3>
             <OptionItems>
               <div className="option-item">
                 {glampingData.roomService.map((service, index) => (

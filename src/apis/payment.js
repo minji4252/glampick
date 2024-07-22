@@ -22,7 +22,7 @@ export const kakaopayMethod = (amount, buyerName) => {
         msg += "// 상점 거래ID : " + data.merchant_uid;
         msg += "// 결제 금액 : " + data.paid_amount;
         msg += "// 구매자 이름 : " + data.buyer_name;
-        console.log("msg", msg);
+        // console.log("msg", msg);
         axios
           .post("/api/order/", {
             ID: data.buyer_email,

@@ -38,7 +38,7 @@ const PaymentPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchParams] = useSearchParams();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-  // const [savePaymentMethod, setSavePaymentMethod] = useState(false);
+  const [sameAsOrderer, setSameAsOrderer] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const [reservationInfo, setReservationInfo] = useState({
@@ -88,6 +88,7 @@ const PaymentPage = () => {
   const [accessToken, setAccessToken] = useState("");
   const [userInfo, setUserInfo] = useState({
     userPhone: "",
+    userName: "",
   });
 
   // 기본값 설정 함수
@@ -126,6 +127,7 @@ const PaymentPage = () => {
         });
         setUserInfo({
           userPhone: response.data.userPhone,
+          userName: response.data.userName,
         });
       } catch (error) {
         console.log(error);
@@ -140,7 +142,7 @@ const PaymentPage = () => {
       const apiUrl = `${process.env.PUBLIC_URL}/api/book/reservation?roomId=${roomId}&personnel=${people}&glampId=${glampId}`;
       try {
         const response = await axios.get(apiUrl);
-        console.log("response : ", response);
+        // console.log("response : ", response);
         setReservationInfo(response.data);
       } catch (error) {
         console.log(error);
@@ -204,7 +206,7 @@ const PaymentPage = () => {
           msg += "// 상점 거래ID : " + data.merchant_uid;
           msg += "// 결제 금액 : " + data.paid_amount;
           msg += "// 구매자 이름 : " + data.buyer_name;
-          console.log("msg", msg);
+          // console.log("msg", msg);
           completed = true;
           try {
             await axios.post(
@@ -256,6 +258,16 @@ const PaymentPage = () => {
         }
       },
     );
+  };
+
+  const handleSameAsOrdererChange = e => {
+    const isChecked = e.target.checked;
+    setSameAsOrderer(isChecked);
+    if (isChecked) {
+      setUserName(userInfo.userName);
+    } else {
+      setUserName("");
+    }
   };
 
   const handleSubmit = async e => {
@@ -331,7 +343,23 @@ const PaymentPage = () => {
             <h2>예약자 정보</h2>
             <InputGroup>
               <ReservationInput>
-                <label htmlFor="name">예약자 이름</label>
+                <div>
+                  <label htmlFor="name">예약자 이름</label>
+
+                  <div className="agree-box">
+                    <label htmlFor="sameAsOrderer" className="check-label">
+                      <input
+                        type="checkbox"
+                        id="sameAsOrderer"
+                        checked={sameAsOrderer}
+                        onChange={handleSameAsOrdererChange}
+                      />
+                      <span className="checkbox-icon" />
+                      <span>회원 정보와 동일</span>
+                    </label>
+                  </div>
+                </div>
+
                 <input
                   type="text"
                   id="name"
@@ -360,9 +388,7 @@ const PaymentPage = () => {
                   value={formatPhone(userInfo.userPhone)}
                   readOnly
                 />
-                <p>
-                  입력하신 휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다
-                </p>
+                <p>휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다</p>
               </ReservationInput>
             </InputGroup>
           </ReservationInfo>
@@ -400,10 +426,10 @@ const PaymentPage = () => {
 
           <PayButton>
             <div className="agree-box">
-              <label htmlFor="check2" className="check-label">
+              <label htmlFor="agreeToTerms" className="check-label">
                 <input
                   type="checkbox"
-                  id="check2"
+                  id="agreeToTerms"
                   checked={agreeToTerms}
                   onChange={e => setAgreeToTerms(e.target.checked)}
                 />
