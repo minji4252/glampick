@@ -10,12 +10,20 @@ import AlertModal from "../../components/common/AlertModal";
 import { MainButton } from "../../components/common/Button";
 import TermsModal from "../../components/common/TermsModal";
 import useModal from "../../hooks/UseModal";
-import { TermsGroupStyle, WrapStyle } from "../../styles/signupstyle";
+import {
+  Tab,
+  Tabs,
+  TermsGroupStyle,
+  WrapStyle,
+} from "../../styles/signupstyle";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/common/Loading";
 
 const SignupPage = () => {
-  // 폼 입력 상태 관리 설정
+  // 탭
+  const [activeTab, setActiveTab] = useState("user");
+
+  // 폼 입력 상태 관리 설정 (사용자)
   const [userEmail, setUserEmail] = useState("");
   const [authCode, setAuthCode] = useState("");
   const [userPw, setUserPw] = useState("");
@@ -24,6 +32,9 @@ const SignupPage = () => {
   const [userNickName, setUserNickName] = useState("");
   const [userPhone, setUserPhone] = useState("");
   const [authNumber, setAuthNumber] = useState("");
+
+  // 사장님
+  const [ownerBusiness, setOwnerBusiness] = useState("");
 
   // 문자열 형식 유효성 검사
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -82,6 +93,10 @@ const SignupPage = () => {
   const [selectedModal, setSelectedModal] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const handleTabClick = tab => {
+    setActiveTab(tab);
+  };
 
   // 이용약관 내용
   const TERMS = `제1조 (목적)
@@ -563,389 +578,785 @@ const SignupPage = () => {
       <main>
         <div className="inner">
           <div className="container">
-            <h2>회원가입</h2>
-            <div className="line"></div>
-            <div className="wrap">
-              <form
-                className="signup-form"
-                onSubmit={e => {
-                  handleSubmit(e);
+            <Tabs>
+              <Tab
+                active={activeTab === "user"}
+                onClick={() => {
+                  handleTabClick("user");
                 }}
               >
-                <fieldset>
-                  <legend></legend>
-                  <div className="form-group">
-                    <label htmlFor="email">이메일</label>
-                    <div className="input-group">
-                      <input
-                        type="email"
-                        id="email"
-                        required
-                        placeholder="glampick@good.kr"
-                        value={userEmail}
-                        onChange={e => {
-                          setUserEmail(e.target.value);
-                          setEmailValid(emailPattern.test(e.target.value));
-                        }}
-                        disabled={isEmailVerified}
-                      />
-                      <div className="form-button">
-                        <MainButton
-                          label="인증코드 발송"
-                          onClick={e => {
-                            handlEmailSubmit(e);
+                사용자 회원가입
+              </Tab>
+              <Tab
+                active={activeTab === "owner"}
+                onClick={() => {
+                  handleTabClick("owner");
+                }}
+              >
+                사장님 회원가입
+              </Tab>
+            </Tabs>
+
+            {/* <h2>회원가입</h2> */}
+            {/* 사용자 회원가입 */}
+            {activeTab === "user" && (
+              <div className="wrap">
+                <form
+                  className="signup-form"
+                  onSubmit={e => {
+                    handleSubmit(e);
+                  }}
+                >
+                  <fieldset>
+                    <legend></legend>
+                    <div className="form-group">
+                      <label htmlFor="email">이메일</label>
+                      <div className="input-group">
+                        <input
+                          type="email"
+                          id="email"
+                          required
+                          placeholder="glampick@good.kr"
+                          value={userEmail}
+                          onChange={e => {
+                            setUserEmail(e.target.value);
+                            setEmailValid(emailPattern.test(e.target.value));
                           }}
+                          disabled={isEmailVerified}
                         />
-                        <AlertModal
-                          isOpen={isModalOpen}
-                          onClose={closeModal}
-                          message={modalMessage}
-                        />
+                        <div className="form-button">
+                          <MainButton
+                            label="인증코드 발송"
+                            onClick={e => {
+                              handlEmailSubmit(e);
+                            }}
+                          />
+                          <AlertModal
+                            isOpen={isModalOpen}
+                            onClose={closeModal}
+                            message={modalMessage}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  {!emailValid && (
-                    <p className="error-message">
-                      유효한 이메일 형식이 아닙니다.
-                    </p>
-                  )}
-                  <div className="form-group">
-                    <label htmlFor="auth-code">인증코드</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="auth-code"
-                        maxLength="6"
-                        pattern="\d{6}"
-                        placeholder="인증코드를 입력해주세요"
-                        value={authCode}
-                        onChange={e => {
-                          setAuthCode(e.target.value);
-                          setAuthCodeValid(
-                            authCodePattern.test(e.target.value),
-                          );
-                        }}
-                      />
-                      <div className="form-button">
-                        <MainButton
-                          label="확인"
-                          onClick={e => {
-                            handleAuthCodeSubmit(e);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* 타이머 */}
-                  {isEmailSent && emailTimer > 0 && (
-                    <div>
-                      <p className="timer">남은시간: {formatEmailTimer()}</p>
-                    </div>
-                  )}
-                  {isEmailSent && emailTimer === 0 && (
-                    <div>
-                      <p className="time-over">
-                        인증 시간이 만료되었습니다. 다시 발송해주세요.
+                    {!emailValid && (
+                      <p className="error-message">
+                        유효한 이메일 형식이 아닙니다.
                       </p>
+                    )}
+                    <div className="form-group">
+                      <label htmlFor="auth-code">인증코드</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="auth-code"
+                          maxLength="6"
+                          pattern="\d{6}"
+                          placeholder="인증코드를 입력해주세요"
+                          value={authCode}
+                          onChange={e => {
+                            setAuthCode(e.target.value);
+                            setAuthCodeValid(
+                              authCodePattern.test(e.target.value),
+                            );
+                          }}
+                        />
+                        <div className="form-button">
+                          <MainButton
+                            label="확인"
+                            onClick={e => {
+                              handleAuthCodeSubmit(e);
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  {/* {!authCodeValid && (
+                    {/* 타이머 */}
+                    {isEmailSent && emailTimer > 0 && (
+                      <div>
+                        <p className="timer">남은시간: {formatEmailTimer()}</p>
+                      </div>
+                    )}
+                    {isEmailSent && emailTimer === 0 && (
+                      <div>
+                        <p className="time-over">
+                          인증 시간이 만료되었습니다. 다시 발송해주세요.
+                        </p>
+                      </div>
+                    )}
+                    {/* {!authCodeValid && (
                     <p className="error-message">
                       인증코드는 숫자로만 입력해주세요.
                     </p>
                   )} */}
-                  <div className="form-group">
-                    <label htmlFor="password">비밀번호</label>
-                    <input
-                      type="password"
-                      id="password"
-                      className="password-input"
-                      required
-                      placeholder="비밀번호를 입력해주세요"
-                      value={userPw}
-                      onChange={e => {
-                        setUserPw(e.target.value);
-                        setPasswordValid(passwordPattern.test(e.target.value));
-                        setPasswordMatch(e.target.value === userPwCheck);
-                      }}
-                    />
-                    {!passwordValid && (
-                      <p className="error-message">
-                        비밀번호가 형식에 맞지 않습니다 (영어, 숫자, 특수문자
-                        포함 8자 이상 가능)
-                      </p>
-                    )}
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="confirm-password">비밀번호 확인</label>
-                    <input
-                      type="password"
-                      id="confirm-password"
-                      className="confirm-password-input"
-                      required
-                      placeholder="비밀번호를 한번 더 입력해주세요"
-                      value={userPwCheck}
-                      onChange={e => {
-                        setUserPwCheck(e.target.value);
-                        setPasswordMatch(e.target.value === userPw);
-                      }}
-                    />
-                    {userPwCheck && !passwordMatch && (
-                      <p className="error-message">
-                        비밀번호가 일치하지 않습니다.
-                      </p>
-                    )}
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="name">이름</label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="name-input"
-                      required
-                      placeholder="이름을 입력해주세요"
-                      value={userName}
-                      onChange={e => {
-                        setUserName(e.target.value);
-                        setNameValid(namePattern.test(e.target.value));
-                      }}
-                    />
-                  </div>
-                  {!nameValid && (
-                    <p className="error-message">
-                      이름이 형식에 맞지 않습니다 (1~10자 사이 한글만 가능)
-                    </p>
-                  )}
-                  <div className="form-group">
-                    <label htmlFor="nickname">닉네임</label>
-                    <div className="input-group">
+                    <div className="form-group">
+                      <label htmlFor="password">비밀번호</label>
                       <input
-                        type="text"
-                        id="nickname"
+                        type="password"
+                        id="password"
+                        className="password-input"
                         required
-                        placeholder="닉네임을 입력해주세요"
-                        value={userNickName}
+                        placeholder="비밀번호를 입력해주세요"
+                        value={userPw}
                         onChange={e => {
-                          setUserNickName(e.target.value);
-                          setNickNameValid(
-                            nickNamePattern.test(e.target.value),
+                          setUserPw(e.target.value);
+                          setPasswordValid(
+                            passwordPattern.test(e.target.value),
                           );
+                          setPasswordMatch(e.target.value === userPwCheck);
                         }}
                       />
-                      {/* <div className="form-button">
+                      {!passwordValid && (
+                        <p className="error-message">
+                          비밀번호가 형식에 맞지 않습니다 (영어, 숫자, 특수문자
+                          포함 8자 이상 가능)
+                        </p>
+                      )}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="confirm-password">비밀번호 확인</label>
+                      <input
+                        type="password"
+                        id="confirm-password"
+                        className="confirm-password-input"
+                        required
+                        placeholder="비밀번호를 한번 더 입력해주세요"
+                        value={userPwCheck}
+                        onChange={e => {
+                          setUserPwCheck(e.target.value);
+                          setPasswordMatch(e.target.value === userPw);
+                        }}
+                      />
+                      {userPwCheck && !passwordMatch && (
+                        <p className="error-message">
+                          비밀번호가 일치하지 않습니다.
+                        </p>
+                      )}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="name">이름</label>
+                      <input
+                        type="text"
+                        id="name"
+                        className="name-input"
+                        required
+                        placeholder="이름을 입력해주세요"
+                        value={userName}
+                        onChange={e => {
+                          setUserName(e.target.value);
+                          setNameValid(namePattern.test(e.target.value));
+                        }}
+                      />
+                    </div>
+                    {!nameValid && (
+                      <p className="error-message">
+                        이름이 형식에 맞지 않습니다 (1~10자 사이 한글만 가능)
+                      </p>
+                    )}
+                    <div className="form-group">
+                      <label htmlFor="nickname">닉네임</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="nickname"
+                          required
+                          placeholder="닉네임을 입력해주세요"
+                          value={userNickName}
+                          onChange={e => {
+                            setUserNickName(e.target.value);
+                            setNickNameValid(
+                              nickNamePattern.test(e.target.value),
+                            );
+                          }}
+                        />
+                        {/* <div className="form-button">
                         <MainButton label="중복확인" />
                       </div> */}
+                      </div>
+                      {!nickNameValid && (
+                        <p className="error-message">
+                          닉네임이 형식에 맞지 않습니다 (3~10자의 대소문자,
+                          한글, 숫자만 가능)
+                        </p>
+                      )}
                     </div>
-                    {!nickNameValid && (
-                      <p className="error-message">
-                        닉네임이 형식에 맞지 않습니다 (3~10자의 대소문자, 한글,
-                        숫자만 가능)
-                      </p>
-                    )}
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="cellphone">휴대폰</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="cellphone"
-                        required
-                        placeholder="휴대폰번호를 정확히 입력해주세요"
-                        value={userPhone}
-                        onChange={e => {
-                          setUserPhone(e.target.value);
-                          setPhoneValid(phonePattern.test(e.target.value));
-                        }}
-                        disabled={isPhoneVerified}
-                      />
-                      <div className="form-button">
-                        <MainButton
-                          label="인증번호 발송"
-                          onClick={e => {
-                            handleSmsSubmit(e);
+                    <div className="form-group">
+                      <label htmlFor="cellphone">휴대폰</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="cellphone"
+                          required
+                          placeholder="휴대폰번호를 정확히 입력해주세요"
+                          value={userPhone}
+                          onChange={e => {
+                            setUserPhone(e.target.value);
+                            setPhoneValid(phonePattern.test(e.target.value));
+                          }}
+                          disabled={isPhoneVerified}
+                        />
+                        <div className="form-button">
+                          <MainButton
+                            label="인증번호 발송"
+                            onClick={e => {
+                              handleSmsSubmit(e);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      {!phoneValid && (
+                        <p className="error-message">
+                          핸드폰 번호를 바르게 기재해주세요 (11~13자의 숫자만
+                          가능)
+                        </p>
+                      )}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="auth-number">인증번호</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="auth-number"
+                          maxLength="6"
+                          pattern="\d{6}"
+                          placeholder="인증번호를 입력해주세요"
+                          value={authNumber}
+                          onChange={e => {
+                            setAuthNumber(e.target.value);
+                            setAuthNumberValid(
+                              authNumberPattern.test(e.target.value),
+                            );
                           }}
                         />
+                        <div className="form-button">
+                          <MainButton
+                            label="확인"
+                            onClick={e => {
+                              handleAuthNumberSubmit(e);
+                            }}
+                          />
+                        </div>
                       </div>
                     </div>
-                    {!phoneValid && (
-                      <p className="error-message">
-                        핸드폰 번호를 바르게 기재해주세요 (11~13자의 숫자만
-                        가능)
-                      </p>
+                    {/* 타이머 */}
+                    {isSmsSent && phoneTimer > 0 && (
+                      <div>
+                        <p className="timer">남은시간: {formatPhoneTimer()}</p>
+                      </div>
                     )}
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="auth-number">인증번호</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="auth-number"
-                        maxLength="6"
-                        pattern="\d{6}"
-                        placeholder="인증번호를 입력해주세요"
-                        value={authNumber}
-                        onChange={e => {
-                          setAuthNumber(e.target.value);
-                          setAuthNumberValid(
-                            authNumberPattern.test(e.target.value),
-                          );
-                        }}
-                      />
-                      <div className="form-button">
-                        <MainButton
-                          label="확인"
-                          onClick={e => {
-                            handleAuthNumberSubmit(e);
-                          }}
-                        />
+                    {isSmsSent && phoneTimer === 0 && (
+                      <div>
+                        <p className="time-over">
+                          인증 시간이 만료되었습니다. 다시 발송해주세요.
+                        </p>
                       </div>
-                    </div>
-                  </div>
-                  {/* 타이머 */}
-                  {isSmsSent && phoneTimer > 0 && (
-                    <div>
-                      <p className="timer">남은시간: {formatPhoneTimer()}</p>
-                    </div>
-                  )}
-                  {isSmsSent && phoneTimer === 0 && (
-                    <div>
-                      <p className="time-over">
-                        인증 시간이 만료되었습니다. 다시 발송해주세요.
-                      </p>
-                    </div>
-                  )}
-                  {/* {!authNumberValid && (
+                    )}
+                    {/* {!authNumberValid && (
                     <p className="error-message">
                       인증번호는 숫자로만 입력해주세요.
                     </p>
                   )} */}
-                </fieldset>
+                  </fieldset>
 
-                {/* 약관 동의 */}
-                <TermsGroupStyle>
-                  <div className="terms-group">
-                    <p>이용약관 동의</p>
-                    <ul>
-                      <li>
+                  {/* 약관 동의 */}
+                  <TermsGroupStyle>
+                    <div className="terms-group">
+                      <p>이용약관 동의</p>
+                      <ul>
+                        <li>
+                          <input
+                            type="checkbox"
+                            id="agreeAll"
+                            checked={isAgreeAllChecked}
+                            onChange={e => {
+                              handleAgreeAllChange(e);
+                            }}
+                          />
+                          <label htmlFor="agreeAll" className="agree-all">
+                            모두 동의
+                          </label>
+                        </li>
+                        <li className="terms-item">
+                          <div className="left-content">
+                            <input
+                              type="checkbox"
+                              id="agreeTerms"
+                              checked={checkboxes.agreeTerms}
+                              onChange={e => {
+                                handleCheckboxChange(e);
+                              }}
+                            />
+                            <label htmlFor="agreeTerms">(필수) 이용약관</label>
+                          </div>
+                          <button
+                            type="button"
+                            className="view-terms-btn"
+                            onClick={() => {
+                              openTermsModal("terms");
+                            }}
+                          >
+                            약관보기 &gt;
+                          </button>
+                          {selectedModal === "terms" && (
+                            <TermsModal
+                              isOpen={isTermsModalOpen}
+                              onClose={closeTermsModal}
+                              title="이용약관"
+                              content={TERMS}
+                            />
+                          )}
+                        </li>
+                        <li className="terms-item">
+                          <div className="left-content">
+                            <input
+                              type="checkbox"
+                              id="agreePrivacy"
+                              checked={checkboxes.agreePrivacy}
+                              onChange={e => {
+                                handleCheckboxChange(e);
+                              }}
+                            />
+                            <label htmlFor="agreePrivacy">
+                              (필수) 개인정보 처리방침
+                            </label>
+                          </div>
+                          <button
+                            type="button"
+                            className="view-terms-btn"
+                            onClick={() => {
+                              openTermsModal("privacy");
+                            }}
+                          >
+                            약관보기 &gt;
+                          </button>
+                          {selectedModal === "privacy" && (
+                            <TermsModal
+                              isOpen={isTermsModalOpen}
+                              onClose={closeTermsModal}
+                              title="개인정보 처리방침"
+                              content={PRIVACY_TERMS}
+                            />
+                          )}
+                        </li>
+                        <li className="terms-item">
+                          <div className="left-content">
+                            <input
+                              type="checkbox"
+                              id="agreeMarketing"
+                              checked={checkboxes.agreeMarketing}
+                              onChange={e => {
+                                handleCheckboxChange(e);
+                              }}
+                            />
+                            <label htmlFor="agreeMarketing">
+                              (선택) 이벤트 정보 및 마케팅 수신활용
+                            </label>
+                          </div>
+                          <button
+                            type="button"
+                            className="view-terms-btn"
+                            onClick={() => {
+                              openTermsModal("marketing");
+                            }}
+                          >
+                            약관보기 &gt;
+                          </button>
+                          {selectedModal === "marketing" && (
+                            <TermsModal
+                              isOpen={isTermsModalOpen}
+                              onClose={closeTermsModal}
+                              title="마케팅 수신활용"
+                              content={MARKETING_TERMS}
+                            />
+                          )}
+                        </li>
+                      </ul>
+                    </div>
+                  </TermsGroupStyle>
+                  <div className="sign-button">
+                    <MainButton
+                      label="회원가입"
+                      onClick={e => {
+                        handleSubmit(e);
+                      }}
+                    />
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* 사장님 회원가입 */}
+            {activeTab === "owner" && (
+              <div className="wrap">
+                <form
+                  className="signup-form"
+                  onSubmit={e => {
+                    handleSubmit(e);
+                  }}
+                >
+                  <fieldset>
+                    <legend></legend>
+                    <div className="form-group">
+                      <label htmlFor="email">이메일</label>
+                      <div className="input-group">
                         <input
-                          type="checkbox"
-                          id="agreeAll"
-                          checked={isAgreeAllChecked}
+                          type="email"
+                          id="email"
+                          required
+                          placeholder="glampick@good.kr"
+                          value={userEmail}
                           onChange={e => {
-                            handleAgreeAllChange(e);
+                            setUserEmail(e.target.value);
+                            setEmailValid(emailPattern.test(e.target.value));
+                          }}
+                          disabled={isEmailVerified}
+                        />
+                        <div className="form-button">
+                          <MainButton
+                            label="인증코드 발송"
+                            onClick={e => {
+                              handlEmailSubmit(e);
+                            }}
+                          />
+                          <AlertModal
+                            isOpen={isModalOpen}
+                            onClose={closeModal}
+                            message={modalMessage}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {!emailValid && (
+                      <p className="error-message">
+                        유효한 이메일 형식이 아닙니다.
+                      </p>
+                    )}
+                    <div className="form-group">
+                      <label htmlFor="auth-code">인증코드</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="auth-code"
+                          maxLength="6"
+                          pattern="\d{6}"
+                          placeholder="인증코드를 입력해주세요"
+                          value={authCode}
+                          onChange={e => {
+                            setAuthCode(e.target.value);
+                            setAuthCodeValid(
+                              authCodePattern.test(e.target.value),
+                            );
                           }}
                         />
-                        <label htmlFor="agreeAll" className="agree-all">
-                          모두 동의
-                        </label>
-                      </li>
-                      <li className="terms-item">
-                        <div className="left-content">
-                          <input
-                            type="checkbox"
-                            id="agreeTerms"
-                            checked={checkboxes.agreeTerms}
-                            onChange={e => {
-                              handleCheckboxChange(e);
+                        <div className="form-button">
+                          <MainButton
+                            label="확인"
+                            onClick={e => {
+                              handleAuthCodeSubmit(e);
                             }}
                           />
-                          <label htmlFor="agreeTerms">(필수) 이용약관</label>
                         </div>
-                        <button
-                          type="button"
-                          className="view-terms-btn"
-                          onClick={() => {
-                            openTermsModal("terms");
+                      </div>
+                    </div>
+                    {/* 타이머 */}
+                    {isEmailSent && emailTimer > 0 && (
+                      <div>
+                        <p className="timer">남은시간: {formatEmailTimer()}</p>
+                      </div>
+                    )}
+                    {isEmailSent && emailTimer === 0 && (
+                      <div>
+                        <p className="time-over">
+                          인증 시간이 만료되었습니다. 다시 발송해주세요.
+                        </p>
+                      </div>
+                    )}
+                    {/* {!authCodeValid && (
+                   <p className="error-message">
+                     인증코드는 숫자로만 입력해주세요.
+                   </p>
+                 )} */}
+                    <div className="form-group">
+                      <label htmlFor="password">비밀번호</label>
+                      <input
+                        type="password"
+                        id="password"
+                        className="password-input"
+                        required
+                        placeholder="비밀번호를 입력해주세요"
+                        value={userPw}
+                        onChange={e => {
+                          setUserPw(e.target.value);
+                          setPasswordValid(
+                            passwordPattern.test(e.target.value),
+                          );
+                          setPasswordMatch(e.target.value === userPwCheck);
+                        }}
+                      />
+                      {!passwordValid && (
+                        <p className="error-message">
+                          비밀번호가 형식에 맞지 않습니다 (영어, 숫자, 특수문자
+                          포함 8자 이상 가능)
+                        </p>
+                      )}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="confirm-password">비밀번호 확인</label>
+                      <input
+                        type="password"
+                        id="confirm-password"
+                        className="confirm-password-input"
+                        required
+                        placeholder="비밀번호를 한번 더 입력해주세요"
+                        value={userPwCheck}
+                        onChange={e => {
+                          setUserPwCheck(e.target.value);
+                          setPasswordMatch(e.target.value === userPw);
+                        }}
+                      />
+                      {userPwCheck && !passwordMatch && (
+                        <p className="error-message">
+                          비밀번호가 일치하지 않습니다.
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="ownerBusiness">사업자 등록번호</label>
+                      <input
+                        type="text"
+                        id="ownerBusiness"
+                        name="ownerBusiness"
+                        value={ownerBusiness}
+                        placeholder="사업자 등록번호를 입력하세요"
+                        // onChange={e => setOwnerBusiness(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="name">이름</label>
+                      <input
+                        type="text"
+                        id="name"
+                        className="name-input"
+                        required
+                        placeholder="이름을 입력해주세요"
+                        value={userName}
+                        onChange={e => {
+                          setUserName(e.target.value);
+                          setNameValid(namePattern.test(e.target.value));
+                        }}
+                      />
+                    </div>
+                    {!nameValid && (
+                      <p className="error-message">
+                        이름이 형식에 맞지 않습니다 (1~10자 사이 한글만 가능)
+                      </p>
+                    )}
+                    <div className="form-group">
+                      <label htmlFor="cellphone">휴대폰</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="cellphone"
+                          required
+                          placeholder="휴대폰번호를 정확히 입력해주세요"
+                          value={userPhone}
+                          onChange={e => {
+                            setUserPhone(e.target.value);
+                            setPhoneValid(phonePattern.test(e.target.value));
                           }}
-                        >
-                          약관보기 &gt;
-                        </button>
-                        {selectedModal === "terms" && (
-                          <TermsModal
-                            isOpen={isTermsModalOpen}
-                            onClose={closeTermsModal}
-                            title="이용약관"
-                            content={TERMS}
-                          />
-                        )}
-                      </li>
-                      <li className="terms-item">
-                        <div className="left-content">
-                          <input
-                            type="checkbox"
-                            id="agreePrivacy"
-                            checked={checkboxes.agreePrivacy}
-                            onChange={e => {
-                              handleCheckboxChange(e);
+                          disabled={isPhoneVerified}
+                        />
+                        <div className="form-button">
+                          <MainButton
+                            label="인증번호 발송"
+                            onClick={e => {
+                              handleSmsSubmit(e);
                             }}
                           />
-                          <label htmlFor="agreePrivacy">
-                            (필수) 개인정보 처리방침
+                        </div>
+                      </div>
+                      {!phoneValid && (
+                        <p className="error-message">
+                          핸드폰 번호를 바르게 기재해주세요 (11~13자의 숫자만
+                          가능)
+                        </p>
+                      )}
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="auth-number">인증번호</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          id="auth-number"
+                          maxLength="6"
+                          pattern="\d{6}"
+                          placeholder="인증번호를 입력해주세요"
+                          value={authNumber}
+                          onChange={e => {
+                            setAuthNumber(e.target.value);
+                            setAuthNumberValid(
+                              authNumberPattern.test(e.target.value),
+                            );
+                          }}
+                        />
+                        <div className="form-button">
+                          <MainButton
+                            label="확인"
+                            onClick={e => {
+                              handleAuthNumberSubmit(e);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    {/* 타이머 */}
+                    {isSmsSent && phoneTimer > 0 && (
+                      <div>
+                        <p className="timer">남은시간: {formatPhoneTimer()}</p>
+                      </div>
+                    )}
+                    {isSmsSent && phoneTimer === 0 && (
+                      <div>
+                        <p className="time-over">
+                          인증 시간이 만료되었습니다. 다시 발송해주세요.
+                        </p>
+                      </div>
+                    )}
+                    {/* {!authNumberValid && (
+                   <p className="error-message">
+                     인증번호는 숫자로만 입력해주세요.
+                   </p>
+                 )} */}
+                  </fieldset>
+
+                  {/* 약관 동의 */}
+                  <TermsGroupStyle>
+                    <div className="terms-group">
+                      <p>이용약관 동의</p>
+                      <ul>
+                        <li>
+                          <input
+                            type="checkbox"
+                            id="agreeAll"
+                            checked={isAgreeAllChecked}
+                            onChange={e => {
+                              handleAgreeAllChange(e);
+                            }}
+                          />
+                          <label htmlFor="agreeAll" className="agree-all">
+                            모두 동의
                           </label>
-                        </div>
-                        <button
-                          type="button"
-                          className="view-terms-btn"
-                          onClick={() => {
-                            openTermsModal("privacy");
-                          }}
-                        >
-                          약관보기 &gt;
-                        </button>
-                        {selectedModal === "privacy" && (
-                          <TermsModal
-                            isOpen={isTermsModalOpen}
-                            onClose={closeTermsModal}
-                            title="개인정보 처리방침"
-                            content={PRIVACY_TERMS}
-                          />
-                        )}
-                      </li>
-                      <li className="terms-item">
-                        <div className="left-content">
-                          <input
-                            type="checkbox"
-                            id="agreeMarketing"
-                            checked={checkboxes.agreeMarketing}
-                            onChange={e => {
-                              handleCheckboxChange(e);
+                        </li>
+                        <li className="terms-item">
+                          <div className="left-content">
+                            <input
+                              type="checkbox"
+                              id="agreeTerms"
+                              checked={checkboxes.agreeTerms}
+                              onChange={e => {
+                                handleCheckboxChange(e);
+                              }}
+                            />
+                            <label htmlFor="agreeTerms">(필수) 이용약관</label>
+                          </div>
+                          <button
+                            type="button"
+                            className="view-terms-btn"
+                            onClick={() => {
+                              openTermsModal("terms");
                             }}
-                          />
-                          <label htmlFor="agreeMarketing">
-                            (선택) 이벤트 정보 및 마케팅 수신활용
-                          </label>
-                        </div>
-                        <button
-                          type="button"
-                          className="view-terms-btn"
-                          onClick={() => {
-                            openTermsModal("marketing");
-                          }}
-                        >
-                          약관보기 &gt;
-                        </button>
-                        {selectedModal === "marketing" && (
-                          <TermsModal
-                            isOpen={isTermsModalOpen}
-                            onClose={closeTermsModal}
-                            title="마케팅 수신활용"
-                            content={MARKETING_TERMS}
-                          />
-                        )}
-                      </li>
-                    </ul>
+                          >
+                            약관보기 &gt;
+                          </button>
+                          {selectedModal === "terms" && (
+                            <TermsModal
+                              isOpen={isTermsModalOpen}
+                              onClose={closeTermsModal}
+                              title="이용약관"
+                              content={TERMS}
+                            />
+                          )}
+                        </li>
+                        <li className="terms-item">
+                          <div className="left-content">
+                            <input
+                              type="checkbox"
+                              id="agreePrivacy"
+                              checked={checkboxes.agreePrivacy}
+                              onChange={e => {
+                                handleCheckboxChange(e);
+                              }}
+                            />
+                            <label htmlFor="agreePrivacy">
+                              (필수) 개인정보 처리방침
+                            </label>
+                          </div>
+                          <button
+                            type="button"
+                            className="view-terms-btn"
+                            onClick={() => {
+                              openTermsModal("privacy");
+                            }}
+                          >
+                            약관보기 &gt;
+                          </button>
+                          {selectedModal === "privacy" && (
+                            <TermsModal
+                              isOpen={isTermsModalOpen}
+                              onClose={closeTermsModal}
+                              title="개인정보 처리방침"
+                              content={PRIVACY_TERMS}
+                            />
+                          )}
+                        </li>
+                        <li className="terms-item">
+                          <div className="left-content">
+                            <input
+                              type="checkbox"
+                              id="agreeMarketing"
+                              checked={checkboxes.agreeMarketing}
+                              onChange={e => {
+                                handleCheckboxChange(e);
+                              }}
+                            />
+                            <label htmlFor="agreeMarketing">
+                              (선택) 이벤트 정보 및 마케팅 수신활용
+                            </label>
+                          </div>
+                          <button
+                            type="button"
+                            className="view-terms-btn"
+                            onClick={() => {
+                              openTermsModal("marketing");
+                            }}
+                          >
+                            약관보기 &gt;
+                          </button>
+                          {selectedModal === "marketing" && (
+                            <TermsModal
+                              isOpen={isTermsModalOpen}
+                              onClose={closeTermsModal}
+                              title="마케팅 수신활용"
+                              content={MARKETING_TERMS}
+                            />
+                          )}
+                        </li>
+                      </ul>
+                    </div>
+                  </TermsGroupStyle>
+                  <div className="sign-button">
+                    <MainButton
+                      label="회원가입"
+                      onClick={e => {
+                        handleSubmit(e);
+                      }}
+                    />
                   </div>
-                </TermsGroupStyle>
-                <div className="sign-button">
-                  <MainButton
-                    label="회원가입"
-                    onClick={e => {
-                      handleSubmit(e);
-                    }}
-                  />
-                </div>
-              </form>
-            </div>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       </main>

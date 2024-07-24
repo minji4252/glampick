@@ -115,6 +115,19 @@ export const FormContents = styled.div`
     justify-content: flex-end;
     margin-left: auto;
   }
+
+  /* 취소사유 */
+  .cancelled-info {
+    display: flex;
+    width: 100%;
+    height: 35px;
+    justify-content: flex-start;
+    align-items: center;
+    > p {
+      margin-left: 3px;
+      color: ${colorSystem.error};
+    }
+  }
 `;
 export const BookingDetailForm = ({
   booking,
@@ -174,8 +187,12 @@ export const BookingDetailForm = ({
   if (!booking) return null;
 
   // 후기작성 버튼 표시여부
-  const canWriteReview = booking.status === 1 && !reviewWritten;
+  const [canWriteReview, setCanWriteReview] = useState(0);
+  // booking.status === 1 && !reviewWritten;
   // console.log(booking.status);
+  useEffect(() => {
+    setCanWriteReview(booking.status);
+  }, [booking]);
 
   return (
     <FormContents>
@@ -229,6 +246,10 @@ export const BookingDetailForm = ({
               }}
             />
           </div>
+        ) : isCancelled ? (
+          <div className="cancelled-info">
+            <p>취소 사유: {booking.comment}</p>
+          </div>
         ) : (
           <div className="empty-space"></div>
         )}
@@ -244,6 +265,7 @@ export const BookingDetailForm = ({
         roomName={booking.roomName}
         checkInDate={booking.checkInDate}
         checkOutDate={booking.checkOutDate}
+        setCanWriteReview={setCanWriteReview}
       />
       <BookingCancelModal
         isOpen={isCancelModalOpen}
