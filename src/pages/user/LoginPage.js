@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { postSignIn } from "../../apis/userapi";
 import { MainButton } from "../../components/common/Button";
@@ -207,26 +207,67 @@ const WrapStyle = styled.div`
       height: 42px;
     }
   }
+
+  /* 이메일 기억하기 */
+  .remember-me {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    margin-left: 3px;
+    > input {
+      width: 13px;
+      height: 13px;
+      margin-right: 5px;
+    }
+    > label {
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      margin: 0;
+    }
+  }
 `;
 
 const LoginPage = () => {
-  // const [userEmail, setUserEmail] = useState("test1@test.net");
-  // const [userPw, setUserPw] = useState("Asdf@1234");
-
-  // 임시 로그인 계정 (정보 담아둠)
+  // 사용자 로그인
   const [userEmail, setUserEmail] = useState("");
   const [userPw, setUserPw] = useState("");
   // 에러 메시지 상태
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+  // 이메일 기억하기 체크박스 상태
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("savedEmail");
+    if (savedEmail) {
+      setUserEmail(savedEmail);
+      setRememberMe(true); // 로컬 스토리지에서 이메일을 불러오면 체크박스를 선택된 상태로 설정
+    }
+  }, []);
+
+  // 이메일 저장
+  const handleRememberMeChange = () => {
+    setRememberMe(prev => {
+      const newRememberMe = !prev;
+      if (newRememberMe) {
+        localStorage.setItem("savedEmail", userEmail);
+      } else {
+        localStorage.removeItem("savedEmail");
+      }
+      return newRememberMe;
+    });
+  };
 
   // 로그인시 처리할 함수
   const handleLogin = async e => {
     e.preventDefault();
     setLoading(true);
+
     // 입력 필드 검사
     if (!userEmail || !userPw) {
       setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
@@ -292,6 +333,15 @@ const LoginPage = () => {
                     setUserPw(e.target.value);
                   }}
                 />
+                <div className="remember-me">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    checked={rememberMe}
+                    onChange={handleRememberMeChange}
+                  />
+                  <label htmlFor="rememberMe">이메일 기억하기</label>
+                </div>
                 <p className="error-message">{errorMessage}</p>
                 <div className="login-btn">
                   <MainButton label="로그인" />

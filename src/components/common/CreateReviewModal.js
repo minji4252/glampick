@@ -168,6 +168,7 @@ const CreateReviewModal = ({
   roomName,
   checkInDate,
   checkOutDate,
+  setCanWriteReview,
 }) => {
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
@@ -273,12 +274,14 @@ const CreateReviewModal = ({
       });
       if (response.status === 200) {
         // 후기가 성공적으로 제출되었을 때 페이지 새로 고침
-        window.location.reload();
+        //window.location.reload();
         console.log("새로고침됨");
+        setCanWriteReview(1);
       }
       // console.log(response);
     } catch (error) {
       // console.log(error.response.data);
+      setCanWriteReview(0);
     }
     // console.log({ rating, reviewText, images });
     onClose();

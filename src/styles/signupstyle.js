@@ -18,21 +18,17 @@ export const WrapStyle = styled.div`
   }
 
   h2 {
+    width: 80%;
+    display: flex;
+    padding: 20px;
+    justify-content: center;
     color: ${colorSystem.g800};
-    margin-top: 40px;
-    margin-bottom: 30px;
     font-size: 1.6rem;
+    border-bottom: 1.5px solid ${colorSystem.g500};
     /* 반응형 */
     ${size.mid} {
       font-size: 1.4rem;
     }
-  }
-
-  /* 구분선 */
-  .line {
-    width: 80%;
-    border-bottom: 1.5px solid ${colorSystem.g500};
-    margin-bottom: 15px;
   }
 
   /* 회원가입 폼 */
@@ -132,6 +128,35 @@ export const WrapStyle = styled.div`
       font-size: 1.1rem;
       margin-bottom: 80px;
     }
+  }
+`;
+
+export const Tabs = styled.div`
+  display: flex;
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  justify-content: space-between;
+  border-bottom: 1px solid #355179;
+`;
+
+export const Tab = styled.button`
+  flex: 1; // 각 탭을 균등하게 배치
+  font-size: 1rem;
+  padding: 10px 0;
+  border: none;
+  background-color: ${({ active }) => (active ? "#fff" : "#f5f5f5")};
+  color: ${({ active }) => (active ? "#000" : "#162132")};
+  cursor: pointer;
+  text-align: center;
+  border-top: ${({ active }) =>
+    active ? "3px solid #355179" : "none"}; // 선택된 탭 하단에 강조선을 추가
+  &:focus {
+    outline: none;
+  }
+  &:not(:last-child) {
+    border-right: 1px solid #ccc; // 탭 간에 경계선을 추가
   }
 `;
 
