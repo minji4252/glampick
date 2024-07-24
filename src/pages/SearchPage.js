@@ -14,11 +14,14 @@ import SearchPageStyle, {
   SearchResult,
   SearchTop,
   NoResultStyle,
+  SearchRight,
+  SearchLeft,
+  SearchMap,
 } from "../styles/SearchPageStyle";
 import "../styles/common.css";
 import "../styles/reset.css";
-import Loading from "../components/common/Loading";
 import SearchCalendar from "../components/SearchCalendar";
+import LoadingNobg from "../components/common/LoadingNobg";
 
 const SearchPage = () => {
   const today = new Date();
@@ -215,7 +218,7 @@ const SearchPage = () => {
 
   return (
     <SearchPageStyle>
-      {loading && <Loading />}
+      {loading && <LoadingNobg />}
       <main>
         <div className="search-wrap">
           <SearchTop>
@@ -290,7 +293,8 @@ const SearchPage = () => {
             </SearchResult>
           </SearchTop>
           <SearchInner>
-            <SearchInnerTop>
+            <SearchLeft>
+              <SearchMap></SearchMap>
               <SearchFilter>
                 <div className="search-filter">
                   <div
@@ -337,62 +341,66 @@ const SearchPage = () => {
                   />
                 </div>
               </SearchFilter>
-              <SearchMenu>
-                <div className="search-aline">
-                  <select
-                    name="aline"
-                    id="aline"
-                    value={sort}
-                    onChange={handleSortChange}
-                  >
-                    <option value="1">추천순</option>
-                    <option value="2">평점 높은순</option>
-                    <option value="3">리뷰 많은순</option>
-                    <option value="4">낮은 가격순</option>
-                    <option value="5">높은 가격순</option>
-                  </select>
-                </div>
-                <div className="search-result">
-                  {searchResults.searchCount || 0} 개 검색 결과
-                </div>
-              </SearchMenu>
-            </SearchInnerTop>
-            <SearchInnerList>
-              {searchResults.code === "RN" ? (
-                <NoResultStyle>
-                  <div className="no-result-img" />
-                  <h4>검색 결과가 없습니다</h4>
-                  <p>{searchWord1} 에 대한 철자나 띄어쓰기를 확인해 보세요</p>
-                </NoResultStyle>
-              ) : (
-                searchData.map(item => (
-                  <SearchCard
-                    key={item.glampId}
-                    glampId={item.glampId}
-                    glampPic={item.glampPic}
-                    glampName={item.glampName}
-                    region={regionNames[item.region] || ""}
-                    starPoint={item.starPoint}
-                    reviewCount={item.reviewCount}
-                    price={item.price}
-                    inDate={inDate1}
-                    outDate={outDate1}
-                    people={people1}
+            </SearchLeft>
+            <SearchRight>
+              <SearchInnerTop>
+                <SearchMenu>
+                  <div className="search-aline">
+                    <select
+                      name="aline"
+                      id="aline"
+                      value={sort}
+                      onChange={handleSortChange}
+                    >
+                      <option value="1">추천순</option>
+                      <option value="2">평점 높은순</option>
+                      <option value="3">리뷰 많은순</option>
+                      <option value="4">낮은 가격순</option>
+                      <option value="5">높은 가격순</option>
+                    </select>
+                  </div>
+                  <div className="search-result">
+                    {searchResults.searchCount || 0} 개 검색 결과
+                  </div>
+                </SearchMenu>
+              </SearchInnerTop>
+              <SearchInnerList>
+                {searchResults.code === "RN" ? (
+                  <NoResultStyle>
+                    <div className="no-result-img" />
+                    <h4>검색 결과가 없습니다</h4>
+                    <p>{searchWord1} 에 대한 철자나 띄어쓰기를 확인해 보세요</p>
+                  </NoResultStyle>
+                ) : (
+                  searchData.map(item => (
+                    <SearchCard
+                      key={item.glampId}
+                      glampId={item.glampId}
+                      glampPic={item.glampPic}
+                      glampName={item.glampName}
+                      region={regionNames[item.region] || ""}
+                      starPoint={item.starPoint}
+                      reviewCount={item.reviewCount}
+                      price={item.price}
+                      inDate={inDate1}
+                      outDate={outDate1}
+                      people={people1}
+                    />
+                  ))
+                )}
+              </SearchInnerList>
+              {searchResults.code !== "RN" && (
+                <SearchInnerBottom>
+                  <ListPagination
+                    currentPage={currentPage}
+                    totalItems={searchResults.searchCount || 1}
+                    itemsPerPage={postPerPage}
+                    onPageChange={setCurrentPage}
+                    totalPages={totalPages}
                   />
-                ))
+                </SearchInnerBottom>
               )}
-            </SearchInnerList>
-            {searchResults.code !== "RN" && (
-              <SearchInnerBottom>
-                <ListPagination
-                  currentPage={currentPage}
-                  totalItems={searchResults.searchCount || 1}
-                  itemsPerPage={postPerPage}
-                  onPageChange={setCurrentPage}
-                  totalPages={totalPages}
-                />
-              </SearchInnerBottom>
-            )}
+            </SearchRight>
           </SearchInner>
         </div>
       </main>

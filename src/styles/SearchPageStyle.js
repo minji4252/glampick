@@ -21,13 +21,13 @@ export const SearchPageStyle = styled.div`
 `;
 export const SearchInner = styled.div`
   width: calc(100% - 30px);
-  max-width: 1200px;
+  max-width: 1300px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 0px auto;
   padding: 90px 0 250px 0;
-  flex-direction: column;
+  flex-direction: row;
   @media all and (max-width: 950px) {
     padding: 50px 0 200px 0;
   }
@@ -161,27 +161,38 @@ export const ResultContents = styled.div`
   }
 `;
 
-export const SearchInnerTop = styled.div`
-  width: 100%;
-  max-width: 1080px;
-  height: 105px;
-  align-content: flex-end;
-  ${size.mid} {
-    width: 100%;
-    max-width: 1080px;
-    height: 200px;
-  }
-  @media all and (max-width: 394px) {
-    height: 300px;
-  }
-  @media all and (max-width: 302px) {
-    height: 350px;
-  }
+export const SearchLeft = styled.div`
+  width: 350px;
+  display: flex;
+  flex-direction: column;
 `;
 
+// export const SearchInnerTop = styled.div`
+//   width: 100%;
+//   max-width: 1080px;
+//   height: 105px;
+//   align-content: flex-end;
+//   ${size.mid} {
+//     width: 100%;
+//     max-width: 1080px;
+//     height: 200px;
+//   }
+//   @media all and (max-width: 394px) {
+//     height: 300px;
+//   }
+//   @media all and (max-width: 302px) {
+//     height: 350px;
+//   }
+// `;
+
+export const SearchMap = styled.div`
+  width: 350px;
+  height: 250px;
+  background: pink;
+`;
 // 상단 필터 항목
 export const SearchFilter = styled.div`
-  height: 60px;
+  /* height: 60px; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -194,11 +205,12 @@ export const SearchFilter = styled.div`
 
   .search-filter {
     display: flex;
+    flex-direction: column;
     gap: 30px;
 
     > div {
-      width: 52px;
-      height: 55px;
+      width: 108px;
+      height: 32px;
       background-size: auto;
       background-repeat: no-repeat;
       background-position: center;
@@ -242,11 +254,9 @@ export const SearchFilter = styled.div`
       background-image: url(${filterBarbecue});
     }
     .filter-toilet {
-      width: 65px;
       background-image: url(${filterToilet2});
     }
     .filter-toilet.active {
-      width: 65px;
       background-image: url(${filterToilet});
     }
 
@@ -257,7 +267,6 @@ export const SearchFilter = styled.div`
       flex-wrap: wrap;
       justify-content: flex-start;
       display: flex;
-      /* grid-template-columns: repeat(5, 52px); */
       justify-content: center;
       gap: 5px 20px;
       > div {
@@ -272,6 +281,26 @@ export const SearchFilter = styled.div`
     @media all and (max-width: 394px) {
       height: 250px;
     }
+  }
+`;
+
+export const SearchRight = styled.div``;
+
+export const SearchInnerTop = styled.div`
+  width: 100%;
+  max-width: 1080px;
+  height: 105px;
+  align-content: flex-end;
+  ${size.mid} {
+    width: 100%;
+    max-width: 1080px;
+    height: 200px;
+  }
+  @media all and (max-width: 394px) {
+    height: 300px;
+  }
+  @media all and (max-width: 302px) {
+    height: 350px;
   }
 `;
 
@@ -313,7 +342,7 @@ export const SearchInnerList = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  width: 1080px;
+  width: 900px;
   padding-bottom: 40px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;

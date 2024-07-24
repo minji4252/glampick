@@ -22,6 +22,7 @@ import MainPageStyle, {
 import "../styles/common.css";
 import "../styles/reset.css";
 import { removeCookie } from "../utils/cookie";
+import MainBanner from "../components/MainBanner";
 
 const MainPage = ({ isLogin }) => {
   const today = new Date();
@@ -266,6 +267,7 @@ const MainPage = ({ isLogin }) => {
           </MainSearch>
         </MainSec1>
         <MainSec2>
+          <MainBanner />
           <MainList>
             <MainListTitle>
               <Link
