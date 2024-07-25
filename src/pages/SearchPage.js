@@ -294,55 +294,6 @@ const SearchPage = () => {
           </SearchTop>
           <SearchInner>
             <SearchLeft>
-              <SearchMap></SearchMap>
-              <SearchFilter>
-                <div className="search-filter">
-                  <div
-                    className={`filter-pet ${
-                      activeFilters.pet ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("pet")}
-                  />
-                  <div
-                    className={`filter-ocean ${
-                      activeFilters.ocean ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("ocean")}
-                  />
-                  <div
-                    className={`filter-mountain ${
-                      activeFilters.mountain ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("mountain")}
-                  />
-                  <div
-                    className={`filter-swim ${
-                      activeFilters.swim ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("swim")}
-                  />
-                  <div
-                    className={`filter-wifi ${
-                      activeFilters.wifi ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("wifi")}
-                  />
-                  <div
-                    className={`filter-barbecue ${
-                      activeFilters.barbecue ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("barbecue")}
-                  />
-                  <div
-                    className={`filter-toilet ${
-                      activeFilters.toilet ? "active" : ""
-                    }`}
-                    onClick={() => toggleFilter("toilet")}
-                  />
-                </div>
-              </SearchFilter>
-            </SearchLeft>
-            <SearchRight>
               <SearchInnerTop>
                 <SearchMenu>
                   <div className="search-aline">
@@ -400,6 +351,55 @@ const SearchPage = () => {
                   />
                 </SearchInnerBottom>
               )}
+            </SearchLeft>
+            <SearchRight>
+              <SearchMap></SearchMap>
+              <SearchFilter>
+                <div className="search-filter">
+                  <div
+                    className={`filter-pet ${
+                      activeFilters.pet ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("pet")}
+                  />
+                  <div
+                    className={`filter-ocean ${
+                      activeFilters.ocean ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("ocean")}
+                  />
+                  <div
+                    className={`filter-mountain ${
+                      activeFilters.mountain ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("mountain")}
+                  />
+                  <div
+                    className={`filter-swim ${
+                      activeFilters.swim ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("swim")}
+                  />
+                  <div
+                    className={`filter-wifi ${
+                      activeFilters.wifi ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("wifi")}
+                  />
+                  <div
+                    className={`filter-barbecue ${
+                      activeFilters.barbecue ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("barbecue")}
+                  />
+                  <div
+                    className={`filter-toilet ${
+                      activeFilters.toilet ? "active" : ""
+                    }`}
+                    onClick={() => toggleFilter("toilet")}
+                  />
+                </div>
+              </SearchFilter>
             </SearchRight>
           </SearchInner>
         </div>

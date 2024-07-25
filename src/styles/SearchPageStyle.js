@@ -1,17 +1,17 @@
 import styled from "@emotion/styled";
-import filterBarbecue from "../images/icon/filter-barbecue.png";
+import filterBarbecue from "../images/icon/filter-barbecue3.png";
 import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
-import filterMountain from "../images/icon/filter-mountain.png";
+import filterMountain from "../images/icon/filter-mountain3.png";
 import filterMountain2 from "../images/icon/filter-mountain2.png";
-import filterOcean from "../images/icon/filter-ocean.png";
+import filterOcean from "../images/icon/filter-ocean3.png";
 import filterOcean2 from "../images/icon/filter-ocean2.png";
-import filterPet from "../images/icon/filter-pet.png";
+import filterPet from "../images/icon/filter-pet3.png";
 import filterPet2 from "../images/icon/filter-pet2.png";
-import filterSwim from "../images/icon/filter-swim.png";
+import filterSwim from "../images/icon/filter-swim3.png";
 import filterSwim2 from "../images/icon/filter-swim2.png";
-import filterToilet from "../images/icon/filter-toilet.png";
+import filterToilet from "../images/icon/filter-toilet3.png";
 import filterToilet2 from "../images/icon/filter-toilet2.png";
-import filterWifi from "../images/icon/filter-wifi.png";
+import filterWifi from "../images/icon/filter-wifi3.png";
 import filterWifi2 from "../images/icon/filter-wifi2.png";
 import emptyImg from "../images/emptyImg.png";
 import { colorSystem, size } from "../styles/color";
@@ -26,7 +26,7 @@ export const SearchInner = styled.div`
   align-items: center;
   justify-content: space-between;
   margin: 0px auto;
-  padding: 90px 0 250px 0;
+  padding: 20px 0 250px 0;
   flex-direction: row;
   @media all and (max-width: 950px) {
     padding: 50px 0 200px 0;
@@ -161,7 +161,11 @@ export const ResultContents = styled.div`
   }
 `;
 
-export const SearchLeft = styled.div`
+export const SearchRight = styled.div`
+  position: fixed;
+  top: 250px;
+  right: 250px;
+  height: 100%;
   width: 350px;
   display: flex;
   flex-direction: column;
@@ -189,13 +193,16 @@ export const SearchMap = styled.div`
   width: 350px;
   height: 250px;
   background: pink;
+  margin-top: 20px;
+  margin-bottom: 30px;
 `;
 // 상단 필터 항목
 export const SearchFilter = styled.div`
   /* height: 60px; */
+  margin-right: 30px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   @media all and (max-width: 394px) {
     height: 200px;
   }
@@ -206,7 +213,7 @@ export const SearchFilter = styled.div`
   .search-filter {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 
     > div {
       width: 108px;
@@ -284,7 +291,7 @@ export const SearchFilter = styled.div`
   }
 `;
 
-export const SearchRight = styled.div``;
+export const SearchLeft = styled.div``;
 
 export const SearchInnerTop = styled.div`
   width: 100%;
