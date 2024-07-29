@@ -7,6 +7,8 @@ import { postPasswordCheck } from "../../apis/userapi";
 import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "./Button";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 
 export const ModalWrapper = styled.div`
   // display: ${props => (props.showModal ? "flex" : "none")};
@@ -119,7 +121,7 @@ const ModalContent = styled.div`
 
 const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   const [password, setPassword] = useState("");
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -154,11 +156,11 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
-        const accessTokenFromCookie = getCookie("access-Token");
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+          setAccessToken(token);
         } else {
-          console.log("쿠키에 access-Token 없음");
+          console.log("accessToken 없음");
         }
       } catch (error) {
         console.log(error);

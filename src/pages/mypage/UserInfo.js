@@ -14,6 +14,8 @@ import Categories from "../../components/mypage/Categories";
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
 import { getCookie, removeCookie } from "../../utils/cookie";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 
 const WrapStyle = styled.div`
   .inner {
@@ -317,7 +319,7 @@ const UserInfo = () => {
   const [isAuthNumberVerified, setIsAuthNumberVerified] = useState(false);
 
   // 인증토큰
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   // 유저정보
   const [userInfo, setUserInfo] = useState({
     userProfileImage: "",
@@ -336,7 +338,7 @@ const UserInfo = () => {
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const token = getCookie("access-Token");
+        const token = localStorage.getItem("accessToken");
         if (token) {
           setAccessToken(token);
         } else {

@@ -1,10 +1,9 @@
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 import ScrollToTop from "./components/common/ScrollTop";
-import store from "./store/store";
-import { Provider } from "react-redux";
+import "./index.css";
+import { RecoilRoot } from "recoil";
 // ts에서는 데이터 종류를 구별
 // as는 강제로 타입지정
 // const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -13,8 +12,10 @@ import { Provider } from "react-redux";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <BrowserRouter>
-    <ScrollToTop />
-    <App />
-  </BrowserRouter>,
+  <RecoilRoot>
+    <BrowserRouter>
+      <ScrollToTop />
+      <App />
+    </BrowserRouter>
+  </RecoilRoot>  
 );
