@@ -36,6 +36,8 @@ export const colorSystem = {
   star: "#ffd233",
 
   ceo: "#D6939B",
+
+  ceo700: "#c86e79",
   admin: "#125917",
 };
 

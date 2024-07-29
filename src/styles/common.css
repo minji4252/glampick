@@ -37,6 +37,10 @@ textarea {
   caret-color: auto;
 }
 
+textarea:focus {
+  outline: none;
+}
+
 .wrap {
   position: relative;
 }

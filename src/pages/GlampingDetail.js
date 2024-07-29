@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { FaRegCalendar } from "react-icons/fa6";
+import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
+import { TbCopy } from "react-icons/tb";
 import {
   Link,
   useNavigate,
@@ -19,8 +20,9 @@ import { ActionButton, MainButton } from "../components/common/Button";
 import CheckModal from "../components/common/CheckModal";
 import emptyheart from "../images/icon/heart-empty.png";
 import fillheart from "../images/icon/heart-fill.png";
-import { FaLocationDot } from "react-icons/fa6";
 
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../atoms/loginState";
 import GlampingDetailStyle, {
   InfoGroup,
   OptionItems,
@@ -46,9 +48,11 @@ import GlampingDetailStyle, {
   SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
+
 import { getCookie } from "../utils/cookie";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
+
 
 const GlampingDetail = ({ isLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
@@ -58,6 +62,7 @@ const GlampingDetail = ({ isLogin }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
+  const [copySuccess, setCopySuccess] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
@@ -290,6 +295,14 @@ const GlampingDetail = ({ isLogin }) => {
   // 모든 객실 품절
   const isAllSoldOut = roomItems.every(room => !room.reservationAvailable);
 
+  // 주소 복사 기능
+  const handleCopyLocation = () => {
+    navigator.clipboard.writeText(glampLocation).then(() => {
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    });
+  };
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -497,7 +510,11 @@ const GlampingDetail = ({ isLogin }) => {
             <h3>위치</h3>
             <div className="location-map" ref={mapElement} />
             <div className="location-info">
-              <span>{glampLocation}</span>
+              <span>
+                {glampLocation}
+                <TbCopy onClick={handleCopyLocation} />
+                {copySuccess && <span>복사완료!</span>}
+              </span>
               <div>
                 <h4>{traffic}</h4>
               </div>
