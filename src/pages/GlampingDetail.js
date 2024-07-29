@@ -58,6 +58,7 @@ const GlampingDetail = ({ isLogin }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useState("");
+
   const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
   const roomSelectRef = useRef(null);
   const roomLocationRef = useRef(null);
@@ -133,19 +134,18 @@ const GlampingDetail = ({ isLogin }) => {
 
   // 로그인 여부 관련
   useEffect(() => {
-    const fetchAccessToken = async () => {
+    const fetchAccessToken = () => {
       try {
-        const accessTokenFromCookie = getCookie("access-Token");
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+          setAccessToken(token);
         } else {
-          console.log("쿠키에 access-Token 없음");
+          console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log(error);
+        console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
-
     fetchAccessToken();
   }, []);
 
