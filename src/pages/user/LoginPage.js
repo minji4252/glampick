@@ -247,7 +247,7 @@ const WrapStyle = styled.div`
       margin: 0 auto;
       background: ${colorSystem.g100};
       border: none;
-      border-radius: 10px;
+      border-radius: 20;
       /* &:hover {
         background: ${colorSystem.g200};
       } */
