@@ -81,6 +81,7 @@ function App() {
 
         {/* 로그인, 회원가입 */}
         <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/ceosignup" element={<CeoSignup />}></Route>
         <Route path="/signup" element={<SignupPage />}></Route>
         <Route path="/sns-signup" element={<SnsSignupPage />}></Route>
 
@@ -105,11 +106,13 @@ function App() {
         <Route path="/userinfo" element={<UserInfo />} />
 
         {/* 사장님 페이지 */}
+
         <Route path="/ceoglamping" element={<CeoGlamping />} />
         <Route path="/ceoroom" element={<CeoRoom />} />
         <Route path="/ceobooking" element={<CeoBooking />} />
         <Route path="/ceoreview" element={<CeoReview />} />
         <Route path="/chart" element={<Chart />} />
+        <Route path="/ceoinfo" element={<CeoInfo />} />
 
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />

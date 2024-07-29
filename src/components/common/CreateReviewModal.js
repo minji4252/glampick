@@ -8,6 +8,8 @@ import { colorSystem } from "../../styles/color";
 import { getCookie } from "../../utils/cookie";
 import { MainButton } from "./Button";
 import { ModalWrapper } from "./PasswordCheckModal";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 
 const ReviewModalStyle = styled.div`
   position: fixed;
@@ -173,7 +175,7 @@ const CreateReviewModal = ({
   const [rating, setRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
   const [images, setImages] = useState([]);
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
   const maxImageCount = 3;
@@ -193,18 +195,18 @@ const CreateReviewModal = ({
     };
   }, [isOpen]);
 
-  // 토큰 정보 불러오기
+  // 토큰정보 불러오기
   useEffect(() => {
-    const fetchAccessToken = async () => {
+    const fetchAccessToken = () => {
       try {
-        const accessTokenFromCookie = getCookie("access-Token");
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+          setAccessToken(token);
         } else {
-          // console.log("쿠키에 access-Token 없음");
+          console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        // console.log(error);
+        console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
     fetchAccessToken();
@@ -275,7 +277,7 @@ const CreateReviewModal = ({
       if (response.status === 200) {
         // 후기가 성공적으로 제출되었을 때 페이지 새로 고침
         //window.location.reload();
-        console.log("새로고침됨");
+        // console.log("새로고침됨");
         setCanWriteReview(1);
       }
       // console.log(response);

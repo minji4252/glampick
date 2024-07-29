@@ -132,7 +132,7 @@ const GlampingDetail = ({ isLogin }) => {
     }
   }, [glampingData]);
 
-  // 로그인 여부 관련
+  // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
