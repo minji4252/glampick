@@ -237,8 +237,8 @@ const WrapStyle = styled.div`
 
   /* ceo 회원가입 */
   .ceo-signup {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
 
     .ceo-signup-btn > button {
       width: 80%;
@@ -247,9 +247,10 @@ const WrapStyle = styled.div`
       margin: 0 auto;
       background: ${colorSystem.g100};
       border: none;
-      &:hover {
+      border-radius: 10px;
+      /* &:hover {
         background: ${colorSystem.g200};
-      }
+      } */
       ${size.mid} {
         font-size: 1rem;
         height: 45px;

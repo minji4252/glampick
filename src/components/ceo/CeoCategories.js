@@ -87,6 +87,7 @@ const categorieTab = [
   { name: "ceobooking", text: "예약 관리" },
   { name: "ceoreview", text: "리뷰 관리" },
   { name: "chart", text: "매장 분석" },
+  { name: "ceoinfo", text: "내 정보 관리" },
 ];
 
 const CeoCategories = () => {

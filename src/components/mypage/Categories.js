@@ -88,7 +88,6 @@ const categories = [
   { name: "bookingdetail", text: "나의 예약" },
   { name: "myreview", text: "나의 후기" },
   { name: "favorite", text: "관심 글램핑장" },
-  { name: "coupon", text: "내 쿠폰" },
   { name: "userinfo", text: "내 정보 관리" },
 ];
 
