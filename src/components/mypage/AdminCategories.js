@@ -5,7 +5,8 @@ import { colorSystem } from "../../styles/color";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getCookie } from "../../utils/cookie";
-
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 const CategoriesStyle = styled.div`
   position: fixed;
   top: 180px;
@@ -16,7 +17,6 @@ const CategoriesStyle = styled.div`
   flex-direction: column;
   gap: 15px;
   padding: 1rem;
-
   > div {
     cursor: default;
     -webkit-user-select: none;
@@ -24,18 +24,15 @@ const CategoriesStyle = styled.div`
     -ms-use-select: none;
     user-select: none;
   }
-
   h1 {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 4px;
   }
-
   h2 {
     font-size: 1rem;
     color: ${colorSystem.g400};
   }
-
   @media all and (max-width: 1910px) {
     position: relative;
     /* top: 170px; */
@@ -43,7 +40,6 @@ const CategoriesStyle = styled.div`
     left: 90px;
   }
 `;
-
 const NavLinkStyle = styled(NavLink)`
   width: 166px;
   font-size: 1.1rem;
@@ -54,53 +50,43 @@ const NavLinkStyle = styled(NavLink)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   span {
     height: 20px;
   }
-
   &:hover {
     color: ${colorSystem.g500};
   }
-
   &.active {
     color: ${colorSystem.primary};
     font-weight: 700;
-
     span {
       border-bottom: 2px solid ${colorSystem.primary};
     }
   }
-
   > svg {
     color: ${colorSystem.primary};
   }
 `;
-
 const UnderLine = styled.div`
   border-bottom: 2px solid ${colorSystem.g300};
   margin: 30px 0;
 `;
-
 const categories = [
-  { name: "bookingdetail", text: "나의 예약" },
-  { name: "myreview", text: "나의 후기" },
-  { name: "favorite", text: "관심 글램핑장" },
-  { name: "userinfo", text: "내 정보 관리" },
+  { name: "adminstore", text: "입점 승인" },
+  { name: "adminexit", text: "탈퇴 관리" },
 ];
-
-const Categories = () => {
-  const [accessToken, setAccessToken] = useState("");
+const AdminCategories = () => {
+  // const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userInfo, setUserInfo] = useState({
     userEmail: "",
     userNickname: "",
   });
-
   // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const token = getCookie("access-Token");
+        const token = localStorage.getItem("accessToken");
         if (token) {
           setAccessToken(token);
         } else {
@@ -111,8 +97,7 @@ const Categories = () => {
       }
     };
     fetchAccessToken();
-  }, []);
-
+  }, [setAccessToken]);
   // 유저 정보 불러오기
   useEffect(() => {
     const getUser = async () => {
@@ -135,16 +120,12 @@ const Categories = () => {
     getUser();
   }, [accessToken]);
 
-  const userPreEmail = userInfo.userEmail.split("@")[0];
-
   return (
     <CategoriesStyle>
-      <div>
-        <h1>{userInfo.userNickname}</h1>
-        <h2>@{userPreEmail}</h2>
+      {/* <div>
+        <h1>관리자</h1>
       </div>
-
-      <UnderLine />
+      <UnderLine /> */}
       {categories.map(categoty => (
         <NavLinkStyle key={categoty.name} to={`/${categoty.name}`}>
           <span>{categoty.text}</span> <IoIosArrowForward />
@@ -153,5 +134,4 @@ const Categories = () => {
     </CategoriesStyle>
   );
 };
-
-export default Categories;
+export default AdminCategories;
