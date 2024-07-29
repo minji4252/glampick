@@ -56,6 +56,11 @@ const DeleteButtonStyle = styled(ButtonStyle)`
   }
 `;
 
+const AdminButtonStyle = styled(ButtonStyle)`
+  background-color: ${colorSystem.admin};
+  color: ${colorSystem.white};
+`;
+
 const MainButton = ({ label = "버튼", onClick }) => {
   return <MainButtonStyle onClick={onClick}>{label}</MainButtonStyle>;
 };
@@ -68,4 +73,8 @@ const DeleteButton = ({ label = "버튼", onClick }) => {
   return <DeleteButtonStyle onClick={onClick}>{label}</DeleteButtonStyle>;
 };
 
-export { MainButton, ActionButton, DeleteButton };
+const AdminButton = ({ label = "버튼", onClick }) => {
+  return <AdminButtonStyle onClick={onClick}>{label}</AdminButtonStyle>;
+};
+
+export { MainButton, ActionButton, DeleteButton, AdminButton };

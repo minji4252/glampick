@@ -5,8 +5,14 @@ import "../../styles/footer.css";
 import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  // 관리자 페이지 header 숨김
   const locationNow = useLocation();
-  if (locationNow.pathname === "/glampingking") return null;
+  if (
+    locationNow.pathname === "/glampingking" ||
+    locationNow.pathname === "/adminexit" ||
+    locationNow.pathname === "/adminstore"
+  )
+    return null;
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -49,6 +55,7 @@ const Footer = () => {
             </li>
             <li>소비자 분쟁해결 기준</li>
             <li>콘텐츠산업진흥법에 의한 표시</li>
+            <li>글램핑 킹의 숨은 아지트</li>
           </ul>
           <div className="footer-bottom-detail">
             <p>

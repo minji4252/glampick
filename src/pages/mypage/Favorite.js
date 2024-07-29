@@ -33,7 +33,7 @@ const Favorite = () => {
           axios.defaults.withCredentials = true;
           const response = await axios.get("/api/user/favorite-glamping", {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${token}`,
             },
           });
           setFavorites(response.data.favoritelist);
@@ -72,14 +72,6 @@ const Favorite = () => {
       console.error("관심 목록 삭제 중 에러:", error);
     }
   };
-
-  // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-  function getCookie(name) {
-    const cookieValue = document.cookie.match(
-      `(^|;)\\s*${name}\\s*=\\s*([^;]*)`,
-    );
-    return cookieValue ? cookieValue.pop() : "";
-  }
 
   // 현재 페이지에 해당하는 항목들 가져오기
   const indexOfLastPost = currentPage * postPerPage;

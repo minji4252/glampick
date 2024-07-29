@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { FaRegCalendar } from "react-icons/fa6";
@@ -48,6 +47,8 @@ import GlampingDetailStyle, {
   UnderLine,
 } from "../styles/GlampingDetailStyle";
 import { getCookie } from "../utils/cookie";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../atoms/loginState";
 
 const GlampingDetail = ({ isLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
@@ -106,23 +107,28 @@ const GlampingDetail = ({ isLogin }) => {
   // 지도 초기화
   useEffect(() => {
     if (glampingData && mapElement.current) {
+      // eslint-disable-next-line no-undef
       naver.maps.Service.geocode(
         {
           address: glampingData.glampLocation,
         },
         function (status, response) {
+          // eslint-disable-next-line no-undef
           if (status !== naver.maps.Service.Status.OK) {
             return console.log("error");
           }
 
           const result = response.v2.addresses[0];
+          // eslint-disable-next-line no-undef
           const latLng = new naver.maps.LatLng(result.y, result.x);
 
+          // eslint-disable-next-line no-undef
           const map = new naver.maps.Map(mapElement.current, {
             center: latLng,
             zoom: 10,
           });
 
+          // eslint-disable-next-line no-undef
           new naver.maps.Marker({
             position: latLng,
             map: map,

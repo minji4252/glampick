@@ -36,7 +36,7 @@ export const colorSystem = {
   star: "#ffd233",
 
   ceo: "#D6939B",
-  admin: "#0D7414",
+  admin: "#125917",
 };
 
 export const fontSystem = {
