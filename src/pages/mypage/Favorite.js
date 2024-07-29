@@ -33,7 +33,7 @@ const Favorite = () => {
           axios.defaults.withCredentials = true;
           const response = await axios.get("/api/user/favorite-glamping", {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${token}`,
             },
           });
           setFavorites(response.data.favoritelist);
