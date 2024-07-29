@@ -8,8 +8,13 @@ import { removeCookie } from "../../utils/cookie";
 const Header = ({ isLogin, handleLogout }) => {
   const locationNow = useLocation();
 
-  // 메인에서 header 숨김
-  if (locationNow.pathname === "/") return null;
+  // 메인, 관리자 페이지 header 숨김
+  if (
+    locationNow.pathname === "/" ||
+    locationNow.pathname === "/glampingking"
+  ) {
+    return null;
+  }
 
   return (
     <header className="header">

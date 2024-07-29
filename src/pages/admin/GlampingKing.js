@@ -1,14 +1,14 @@
 import React from "react";
-import { AdminHeader } from "../../styles/AdminStyle";
+import { AdminHeader, GlampingKingStyle } from "../../styles/AdminStyle";
 import AdminCategories from "../../components/mypage/AdminCategories";
 
 const GlampingKing = () => {
   return (
-    <GlampingKing>
+    <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
       <AdminCategories />
       <div className="inner"></div>
-    </GlampingKing>
+    </GlampingKingStyle>
   );
 };
 
