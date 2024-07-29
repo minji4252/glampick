@@ -1,18 +1,33 @@
 import styled from "@emotion/styled";
+// import filterBarbecue from "../images/icon/filter-barbecue3.png";
+// import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
+// import filterMountain from "../images/icon/filter-mountain3.png";
+// import filterMountain2 from "../images/icon/filter-mountain2.png";
+// import filterOcean from "../images/icon/filter-ocean3.png";
+// import filterOcean2 from "../images/icon/filter-ocean2.png";
+// import filterPet from "../images/icon/filter-pet3.png";
+// import filterPet2 from "../images/icon/filter-pet2.png";
+// import filterSwim from "../images/icon/filter-swim3.png";
+// import filterSwim2 from "../images/icon/filter-swim2.png";
+// import filterToilet from "../images/icon/filter-toilet3.png";
+// import filterToilet2 from "../images/icon/filter-toilet2.png";
+// import filterWifi from "../images/icon/filter-wifi3.png";
+// import filterWifi2 from "../images/icon/filter-wifi2.png";
 import filterBarbecue from "../images/icon/filter-barbecue3.png";
-import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
+import filterBarbecue2 from "../images/icon/f-barbecue2.png";
 import filterMountain from "../images/icon/filter-mountain3.png";
-import filterMountain2 from "../images/icon/filter-mountain2.png";
+import filterMountain2 from "../images/icon/f-mountain2.png";
 import filterOcean from "../images/icon/filter-ocean3.png";
-import filterOcean2 from "../images/icon/filter-ocean2.png";
+import filterOcean2 from "../images/icon/f-ocean2.png";
 import filterPet from "../images/icon/filter-pet3.png";
-import filterPet2 from "../images/icon/filter-pet2.png";
+import filterPet2 from "../images/icon/f-pet2.png";
 import filterSwim from "../images/icon/filter-swim3.png";
-import filterSwim2 from "../images/icon/filter-swim2.png";
+import filterSwim2 from "../images/icon/f-swim2.png";
 import filterToilet from "../images/icon/filter-toilet3.png";
-import filterToilet2 from "../images/icon/filter-toilet2.png";
+import filterToilet2 from "../images/icon/f-toilet2.png";
 import filterWifi from "../images/icon/filter-wifi3.png";
-import filterWifi2 from "../images/icon/filter-wifi2.png";
+import filterWifi2 from "../images/icon/f-wifi2.png";
+
 import emptyImg from "../images/emptyImg.png";
 import { colorSystem, size } from "../styles/color";
 
@@ -23,17 +38,23 @@ export const SearchInner = styled.div`
   width: calc(100% - 30px);
   max-width: 1300px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin: 0px auto;
   padding: 20px 0 250px 0;
   flex-direction: row;
-  @media all and (max-width: 950px) {
+
+  @media all and (max-width: 1300px) {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+  /* @media all and (max-width: 950px) {
     padding: 50px 0 200px 0;
   }
   @media all and (max-width: 493px) {
     padding-top: 20px;
-  }
+  } */
 `;
 
 export const SearchTop = styled.div`
@@ -162,32 +183,16 @@ export const ResultContents = styled.div`
 `;
 
 export const SearchRight = styled.div`
-  position: fixed;
-  top: 250px;
-  right: 250px;
-  height: 100%;
   width: 350px;
   display: flex;
+  margin-top: 85px;
   flex-direction: column;
+  @media all and (max-width: 1300px) {
+    width: 100%;
+    margin-top: 30px;
+    align-items: center;
+  }
 `;
-
-// export const SearchInnerTop = styled.div`
-//   width: 100%;
-//   max-width: 1080px;
-//   height: 105px;
-//   align-content: flex-end;
-//   ${size.mid} {
-//     width: 100%;
-//     max-width: 1080px;
-//     height: 200px;
-//   }
-//   @media all and (max-width: 394px) {
-//     height: 300px;
-//   }
-//   @media all and (max-width: 302px) {
-//     height: 350px;
-//   }
-// `;
 
 export const SearchMap = styled.div`
   width: 350px;
@@ -203,6 +208,7 @@ export const SearchFilter = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+
   @media all and (max-width: 394px) {
     height: 200px;
   }
@@ -214,10 +220,12 @@ export const SearchFilter = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
+    text-align: end;
 
     > div {
-      width: 108px;
-      height: 32px;
+      width: 100px;
+      height: 20px;
+
       background-size: auto;
       background-repeat: no-repeat;
       background-position: center;
@@ -266,7 +274,10 @@ export const SearchFilter = styled.div`
     .filter-toilet.active {
       background-image: url(${filterToilet});
     }
-
+    @media all and (max-width: 1300px) {
+      display: flex;
+      flex-direction: row;
+    }
     ${size.mid} {
       max-width: 768px;
       height: 200px;
@@ -296,7 +307,7 @@ export const SearchLeft = styled.div``;
 export const SearchInnerTop = styled.div`
   width: 100%;
   max-width: 1080px;
-  height: 105px;
+  height: 85px;
   align-content: flex-end;
   ${size.mid} {
     width: 100%;

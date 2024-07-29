@@ -11,7 +11,9 @@ const Header = ({ isLogin, handleLogout }) => {
   // 메인, 관리자 페이지 header 숨김
   if (
     locationNow.pathname === "/" ||
-    locationNow.pathname === "/glampingking"
+    locationNow.pathname === "/glampingking" ||
+    locationNow.pathname === "/adminexit" ||
+    locationNow.pathname === "/adminstore"
   ) {
     return null;
   }
