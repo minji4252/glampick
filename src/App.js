@@ -29,6 +29,11 @@ import UserInfo from "./pages/mypage/UserInfo";
 import NotfoundPage from "./pages/NotfoundPage";
 import { useEffect, useState } from "react";
 import { getCookie, removeCookie } from "./utils/cookie";
+import CeoBooking from "./pages/ceo/CeoBooking";
+import CeoGlamping from "./pages/ceo/CeoGlamping";
+import CeoRoom from "./pages/ceo/CeoRoom";
+import CeoReview from "./pages/ceo/CeoReview";
+import Chart from "./pages/ceo/Chart";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -92,6 +97,13 @@ function App() {
         <Route path="/myreview" element={<MyReview />} />
         <Route path="/favorite" element={<Favorite />} />
         <Route path="/userinfo" element={<UserInfo />} />
+
+        {/* 사장님 페이지 */}
+        <Route path="/ceoglamping" element={<CeoGlamping />} />
+        <Route path="/ceoroom" element={<CeoRoom />} />
+        <Route path="/ceobooking" element={<CeoBooking />} />
+        <Route path="/ceoreview" element={<CeoReview />} />
+        <Route path="/chart" element={<Chart />} />
 
         {/* 잘못된 경로 */}
         <Route path="/*" element={<NotfoundPage />} />
