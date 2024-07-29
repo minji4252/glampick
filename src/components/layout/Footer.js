@@ -2,8 +2,11 @@ import React from "react";
 import "../../styles/common.css";
 import "../../styles/reset.css";
 import "../../styles/footer.css";
+import { useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const locationNow = useLocation();
+  if (locationNow.pathname === "/glampingking") return null;
   return (
     <footer className="footer">
       <div className="footer-inner">

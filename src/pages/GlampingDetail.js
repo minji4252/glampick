@@ -58,6 +58,7 @@ const GlampingDetail = ({ isLogin }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useState("");
+
   const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
   const roomSelectRef = useRef(null);
   const roomLocationRef = useRef(null);
