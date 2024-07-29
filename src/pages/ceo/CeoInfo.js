@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
-import React from "react";
-import CeoCategories from "../../components/ceo/CeoCategories";
 import { colorSystem } from "../../styles/color";
+import CeoCategories from "../../components/ceo/CeoCategories";
 
 const WrapStyle = styled.div`
   .inner {
@@ -9,7 +8,7 @@ const WrapStyle = styled.div`
   }
   h3 {
     width: 100%;
-    margin-top: 160px;
+    margin-top: 50px;
     margin-left: 120px;
     font-size: 1.2rem;
     font-weight: 700;

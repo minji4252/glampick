@@ -92,7 +92,6 @@ const categories = [
 ];
 
 const Categories = () => {
-  // const [accessToken, setAccessToken] = useState("");
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userInfo, setUserInfo] = useState({
     userEmail: "",

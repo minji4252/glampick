@@ -57,7 +57,7 @@ const GlampingDetail = ({ isLogin }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
   const roomSelectRef = useRef(null);

@@ -117,8 +117,6 @@ const NoReviewsStyle = styled.div`
 
 const MyReview = () => {
   const [reviews, setReviews] = useState([]);
-  // const [accessToken, setAccessToken] = useState("");
-  // 토큰 상태관리 변경
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   const [searchResults, setSearchResults] = useState({
