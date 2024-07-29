@@ -58,6 +58,7 @@ const GlampingDetail = ({ isLogin }) => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+
   const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
   const roomSelectRef = useRef(null);
   const roomLocationRef = useRef(null);
@@ -131,7 +132,7 @@ const GlampingDetail = ({ isLogin }) => {
     }
   }, [glampingData]);
 
-  // 로그인 여부 관련
+  // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {

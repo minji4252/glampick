@@ -239,6 +239,7 @@ const ReviewCard = ({
     return stars;
   };
 
+  // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {

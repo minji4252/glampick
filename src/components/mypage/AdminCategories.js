@@ -57,14 +57,14 @@ const NavLinkStyle = styled(NavLink)`
     color: ${colorSystem.g500};
   }
   &.active {
-    color: ${colorSystem.primary};
+    color: ${colorSystem.admin};
     font-weight: 700;
     span {
-      border-bottom: 2px solid ${colorSystem.primary};
+      border-bottom: 2px solid ${colorSystem.admin};
     }
   }
   > svg {
-    color: ${colorSystem.primary};
+    color: ${colorSystem.admin};
   }
 `;
 const UnderLine = styled.div`
@@ -122,10 +122,10 @@ const AdminCategories = () => {
 
   return (
     <CategoriesStyle>
-      {/* <div>
+      <div>
         <h1>관리자</h1>
       </div>
-      <UnderLine /> */}
+      <UnderLine />
       {categories.map(categoty => (
         <NavLinkStyle key={categoty.name} to={`/${categoty.name}`}>
           <span>{categoty.text}</span> <IoIosArrowForward />
