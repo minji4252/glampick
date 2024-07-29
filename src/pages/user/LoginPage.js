@@ -1,16 +1,24 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import { postSignIn } from "../../apis/userapi";
-import { MainButton } from "../../components/common/Button";
+import {
+  errorMessageState,
+  loadingState,
+  rememberMeState,
+  userEmailState,
+  userPwState,
+} from "../../atoms/loginState";
+import AlertModal from "../../components/common/AlertModal";
+import { ActionButton, MainButton } from "../../components/common/Button";
+import Loading from "../../components/common/Loading";
+import useModal from "../../hooks/UseModal";
 import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
 import { setCookie } from "../../utils/cookie";
-import AlertModal from "../../components/common/AlertModal";
-import useModal from "../../hooks/UseModal";
-import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -226,18 +234,37 @@ const WrapStyle = styled.div`
       margin: 0;
     }
   }
+
+  /* ceo 회원가입 */
+  .ceo-signup {
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    .ceo-signup-btn > button {
+      width: 80%;
+      height: 45px;
+      font-size: 1.1rem;
+      margin: 0 auto;
+      background: ${colorSystem.g100};
+      border: none;
+      &:hover {
+        background: ${colorSystem.g200};
+      }
+      ${size.mid} {
+        font-size: 1rem;
+        height: 45px;
+      }
+    }
+  }
 `;
 
 const LoginPage = () => {
-  // 사용자 로그인
-  const [userEmail, setUserEmail] = useState("");
-  const [userPw, setUserPw] = useState("");
-  // 에러 메시지 상태
-  const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useRecoilState(userEmailState);
+  const [userPw, setUserPw] = useRecoilState(userPwState);
+  const [errorMessage, setErrorMessage] = useRecoilState(errorMessageState);
+  const [loading, setLoading] = useRecoilState(loadingState);
+  const [rememberMe, setRememberMe] = useRecoilState(rememberMeState);
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
-  // 이메일 기억하기 체크박스 상태
-  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -279,7 +306,10 @@ const LoginPage = () => {
     if (result.code === "SU") {
       // console.log(result);
       // 로그인 성공 시 쿠키에 사용자 정보 저장
-      setCookie("access-Token", result.accessToken);
+      // setCookie("access-Token", result.accessToken);
+
+      // (변경) 로그인 성공 시 로컬스토리지에 사용자 정보 저장
+      localStorage.setItem("accessToken", result.accessToken);
       openModal({ message: "로그인 성공하였습니다!" });
       setTimeout(() => {
         if (location.state && location.state.fromSignup) {
@@ -371,6 +401,11 @@ const LoginPage = () => {
                     </a>
                   </li>
                 </ul>
+              </div>
+              <div className="ceo-signup">
+                <Link to="/ceosignup" className="ceo-signup-btn">
+                  <ActionButton label="비즈니스 회원가입" />
+                </Link>
               </div>
             </div>
           </div>

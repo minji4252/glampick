@@ -7,6 +7,8 @@ import emptyImg from "../../images/emptyImg.png";
 import { colorSystem, size } from "../../styles/color";
 import ListPagination from "../../components/common/ListPagination";
 import Loading from "../../components/common/Loading";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 
 const WrapStyle = styled.div`
   .inner {
@@ -115,7 +117,9 @@ const NoReviewsStyle = styled.div`
 
 const MyReview = () => {
   const [reviews, setReviews] = useState([]);
-  const [accessToken, setAccessToken] = useState("");
+  // const [accessToken, setAccessToken] = useState("");
+  // 토큰 상태관리 변경
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   const [searchResults, setSearchResults] = useState({
     totalItems: 0,
@@ -128,12 +132,12 @@ const MyReview = () => {
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
-        const accessTokenFromCookie = getCookie("access-Token");
+        const token = localStorage.getItem("accessToken");
         setLoading(true);
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
+        if (token) {
+          setAccessToken(token);
         } else {
-          console.log("쿠키에 access-Token 없음");
+          console.log("accessToken 없음");
         }
         setLoading(false);
       } catch (error) {
