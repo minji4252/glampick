@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { colorSystem } from "../../styles/color";
+import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
 
 const WrapStyle = styled.div`
@@ -14,6 +14,21 @@ const WrapStyle = styled.div`
     font-weight: 700;
     color: ${colorSystem.g900};
   }
+
+  @media all and (max-width: 1910px) {
+    display: flex;
+    .inner {
+      margin-left: 82px;
+    }
+  }
+
+  ${size.mid} {
+    flex-direction: column;
+    h3 {
+      margin-top: 250px;
+    }
+  }
+
   .임시 {
     height: 1000px;
   }

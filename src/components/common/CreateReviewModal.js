@@ -130,6 +130,12 @@ const ReviewModalContent = styled.div`
         background-color: ${colorSystem.white};
         color: ${colorSystem.g200};
         cursor: pointer;
+
+        &:hover {
+          .camera-img {
+            color: ${colorSystem.p700};
+          }
+        }
       }
 
       .uploaded-images {
@@ -146,9 +152,6 @@ const ReviewModalContent = styled.div`
       .camera-img {
         width: 80%;
         height: 80%;
-        &:hover {
-          color: ${colorSystem.p700};
-        }
       }
       .delete-image {
         border: none;

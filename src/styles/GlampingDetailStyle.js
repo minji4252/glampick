@@ -588,6 +588,21 @@ export const RoomLocation = styled.div`
       color: ${colorSystem.g500};
       font-weight: 600;
       font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+
+      svg {
+        cursor: pointer;
+        margin-left: 15px;
+        width: 17px;
+        height: 17px;
+      }
+
+      span {
+        color: ${colorSystem.p200};
+        margin-left: 5px;
+        font-size: 0.8rem;
+      }
     }
   }
 `;
