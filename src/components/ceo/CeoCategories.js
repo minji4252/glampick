@@ -5,6 +5,8 @@ import { colorSystem } from "../../styles/color";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getCookie } from "../../utils/cookie";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 
 const CategoriesStyle = styled.div`
   position: fixed;
@@ -87,10 +89,11 @@ const categorieTab = [
   { name: "ceobooking", text: "예약 관리" },
   { name: "ceoreview", text: "리뷰 관리" },
   { name: "chart", text: "매장 분석" },
+  { name: "ceoinfo", text: "내 정보 관리" },
 ];
 
 const CeoCategories = () => {
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userInfo, setUserInfo] = useState({
     userEmail: "",
     userNickname: "",
@@ -100,7 +103,7 @@ const CeoCategories = () => {
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const token = getCookie("access-Token");
+        const token = localStorage.getItem("accessToken");
         if (token) {
           setAccessToken(token);
         } else {

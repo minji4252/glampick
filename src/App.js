@@ -37,6 +37,7 @@ import Chart from "./pages/ceo/Chart";
 import { useRecoilState } from "recoil";
 import { accessTokenState, isLoginState } from "./atoms/loginState";
 import GlampingKing from "./pages/admin/GlampingKing";
+import CeoInfo from "./pages/ceo/CeoInfo";
 
 function App() {
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
@@ -110,6 +111,7 @@ function App() {
         <Route path="/ceobooking" element={<CeoBooking />} />
         <Route path="/ceoreview" element={<CeoReview />} />
         <Route path="/chart" element={<Chart />} />
+        <Route path="/ceoinfo" element={<CeoInfo />} />
 
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />

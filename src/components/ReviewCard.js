@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import defaultProfile from "../images/icon/default-img.png";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../atoms/loginState";
 
 const ReviewCardStyle = styled.div`
   display: flex;
@@ -209,7 +211,7 @@ const ReviewCard = ({
 }) => {
   const { isModalOpen, modalMessage, CheckAction, openModal, closeModal } =
     useModal();
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   const {
     isModalOpen: isAlertOpen,
@@ -238,19 +240,18 @@ const ReviewCard = ({
   };
 
   useEffect(() => {
-    const fetchAccessToken = async () => {
+    const fetchAccessToken = () => {
       try {
-        const accessTokenFromCookie = getCookie("access-Token");
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
+        const token = localStorage.getItem("accessToken");
+        if (token) {
+          setAccessToken(token);
         } else {
-          console.log("쿠키에 access-Token 없음");
+          console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log(error);
+        console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
-
     fetchAccessToken();
   }, []);
 

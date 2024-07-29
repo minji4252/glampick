@@ -29,6 +29,8 @@ import axios from "axios";
 import { getCookie, setCookie } from "../utils/cookie";
 import TermsModal from "../components/common/TermsModal";
 import { kakaopayMethod } from "../apis/payment";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../atoms/loginState";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
@@ -85,7 +87,7 @@ const PaymentPage = () => {
   const people = searchParams.get("people") || 2;
 
   //유저정보
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userInfo, setUserInfo] = useState({
     userPhone: "",
     userName: "",
@@ -102,7 +104,7 @@ const PaymentPage = () => {
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const token = getCookie("access-Token");
+        const token = localStorage.getItem("accessToken");
         if (token) {
           setAccessToken(token);
         } else {

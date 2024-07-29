@@ -8,7 +8,7 @@ const WrapStyle = styled.div`
   }
   h3 {
     width: 100%;
-    margin-top: 160px;
+    margin-top: 50px;
     margin-left: 120px;
     font-size: 1.2rem;
     font-weight: 700;
