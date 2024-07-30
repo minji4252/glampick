@@ -39,6 +39,7 @@ import LoginPage from "./pages/user/LoginPage";
 import SignupPage from "./pages/user/SignupPage";
 import SnsSignupPage from "./pages/user/SnsSignUpPage";
 import CeoSignup from "./pages/ceo/CeoSignup";
+import CeoLogin from "./pages/ceo/CeoLogin";
 
 function App() {
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
@@ -81,9 +82,8 @@ function App() {
         {/* 메인 */}
         <Route path="/" element={<MainPage isLogin={isLogin} />}></Route>
 
-        {/* 로그인, 회원가입 */}
+        {/* 사용자 로그인, 회원가입 */}
         <Route path="/login" element={<LoginPage />}></Route>
-        <Route path="/ceosignup" element={<CeoSignup />}></Route>
         <Route path="/signup" element={<SignupPage />}></Route>
         <Route path="/sns-signup" element={<SnsSignupPage />}></Route>
 
@@ -107,8 +107,11 @@ function App() {
         <Route path="/favorite" element={<Favorite />} />
         <Route path="/userinfo" element={<UserInfo />} />
 
-        {/* 사장님 페이지 */}
+        {/* 사장님 로그인, 회원가입 */}
+        <Route path="/ceosignup" element={<CeoSignup />} />
+        <Route path="/ceologin" element={<CeoLogin />} />
 
+        {/* 사장님 페이지 */}
         <Route path="/ceoglamping" element={<CeoGlamping />} />
         <Route path="/ceoroom" element={<CeoRoom />} />
         <Route path="/ceobooking" element={<CeoBooking />} />
