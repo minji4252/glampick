@@ -17,6 +17,7 @@ const WrapStyle = styled.div`
     color: ${colorSystem.g900};
   }
 
+
   @media all and (max-width: 1910px) {
     display: flex;
     .inner {
@@ -35,6 +36,7 @@ const WrapStyle = styled.div`
   .tabs {
     height: 1000px;
   }
+
 
   /* 탭 메뉴 */
   .tabs {
@@ -62,6 +64,8 @@ const WrapStyle = styled.div`
   }
 
   .container {
+    /* 임시 높이 */
+    height: 500px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 2개의 컬럼으로 설정 */
@@ -85,17 +89,6 @@ const CeoReview = () => {
   const handleTabClick = tab => {
     setActiveTab(tab);
     // setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
-  };
-
-  const getBookingsByTab = () => {
-    switch (activeTab) {
-      case "allreview":
-        return allReviews;
-      case "nocommentreview":
-        return nocommentReviews;
-      default:
-        return [];
-    }
   };
 
   return (
@@ -125,7 +118,7 @@ const CeoReview = () => {
         {/* 전체 리뷰 */}
         {activeTab === "allreview" && (
           <div className="container">
-            <div>내부</div>
+            <div>전체 리뷰 내부</div>
             {/* {bookingsToShow.length > 0 ? (
               bookingsToShow.map((booking, index) => (
                 <div className="form-group" key={index}>
@@ -143,7 +136,7 @@ const CeoReview = () => {
         {/* 미답변 리뷰 */}
         {activeTab === "nocommentreview" && (
           <div className="container">
-            <div>내부</div>
+            <div>미답변 리뷰 내부</div>
             {/* {bookingsToShow.length > 0 ? (
               bookingsToShow.map((booking, index) => (
                 <div className="form-group" key={index}>
