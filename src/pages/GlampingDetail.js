@@ -49,11 +49,6 @@ import GlampingDetailStyle, {
   UnderLine,
 } from "../styles/GlampingDetailStyle";
 
-import { getCookie } from "../utils/cookie";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "../atoms/loginState";
-
-
 const GlampingDetail = ({ isLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);

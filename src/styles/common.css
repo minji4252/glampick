@@ -26,7 +26,7 @@ body {
 
 /* input 태그에만 커서 깜빡임 주기 */
 input {
-  caret-color: auto;
+  caret-color: #355179;
 }
 
 input:focus {
@@ -34,7 +34,7 @@ input:focus {
 }
 
 textarea {
-  caret-color: auto;
+  caret-color: #355179;
 }
 
 textarea:focus {

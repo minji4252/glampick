@@ -39,7 +39,7 @@ const Chart = () => {
     <WrapStyle>
       <CeoCategories />
       <div className="inner">
-        <h3>Chart</h3>
+        <h3>매장 분석</h3>
         <div className="임시"></div>
       </div>
     </WrapStyle>

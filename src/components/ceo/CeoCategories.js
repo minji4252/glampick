@@ -1,12 +1,11 @@
 import styled from "@emotion/styled";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
-import { colorSystem } from "../../styles/color";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { getCookie } from "../../utils/cookie";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
+import { colorSystem } from "../../styles/color";
 
 const CategoriesStyle = styled.div`
   position: fixed;
