@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { MainButton } from "../../components/common/Button";
+import { CeoButton, MainButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
 import { useForm } from "react-hook-form";
 
@@ -12,8 +12,6 @@ const CeoSignUpStyle = styled.div`
     margin: 0 auto;
     flex-direction: column;
     align-items: center;
-    /* 임시로 지정 */
-    height: 1000px;
   }
 
   h2 {
@@ -111,6 +109,7 @@ const initState = {
   password: "asdf@1234",
   name: "사장님",
   businessRegistrationNumber: "",
+  businessRegistrationImg: "",
   phone: "",
 };
 
@@ -169,6 +168,26 @@ const CeoSignup = () => {
     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
   };
 
+  // 사업자등록번호 자동 변경
+  const handleChangeBusinessNumber = e => {
+    const businessNumber = formatBusinessNumber(e.target.value);
+    // console.log(BusinessNumber);
+    setValue("businessRegistrationNumber", businessNumber);
+  };
+
+  // 사업자등록번호 형식
+  const formatBusinessNumber = value => {
+    if (!value) return value;
+    const businessNumber = value.replace(/[^\d]/g, ""); // 숫자가 아닌 문자 제거
+    const businessNumberLength = businessNumber.length;
+    if (businessNumberLength < 4) return businessNumber;
+    if (businessNumberLength < 6) {
+      return `${businessNumber.slice(0, 3)}-${businessNumber.slice(3)}`;
+    }
+
+    return `${businessNumber.slice(0, 3)}-${businessNumber.slice(3, 5)}-${businessNumber.slice(5)}`;
+  };
+
   const onSubmit = data => {
     console.log("전송시 데이터 ", data);
   };
@@ -194,7 +213,7 @@ const CeoSignup = () => {
                   })}
                 />
                 <div className="form-button">
-                  <MainButton label="인증코드 발송" />
+                  <CeoButton label="인증코드 발송" />
                 </div>
               </div>
             </div>
@@ -216,7 +235,7 @@ const CeoSignup = () => {
                   })}
                 />
                 <div className="form-button">
-                  <MainButton label="확인" />
+                  <CeoButton label="확인" />
                 </div>
               </div>
             </div>
@@ -298,15 +317,33 @@ const CeoSignup = () => {
                       message: "사업자등록번호가 형식에 맞지 않습니다.",
                     },
                   })}
+                  onChange={e => {
+                    handleChangeBusinessNumber(e);
+                  }}
                 />
                 <div className="form-button">
-                  <MainButton label="확인" />
+                  <CeoButton label="확인" />
                 </div>
               </div>
             </div>
             {errors.businessRegistrationNumber && (
               <ErrorMessage>
                 {errors.businessRegistrationNumber.message}
+              </ErrorMessage>
+            )}
+            {/* 사업자등록증 이미지 업로드 */}
+            <div className="form-group">
+              <label htmlFor="businessRegistrationImg">사업자등록증 첨부</label>
+              <input
+                type="file"
+                {...register("businessRegistrationImg", {
+                  required: "사업자등록증 첨부는 필수 항목입니다.",
+                })}
+              />
+            </div>
+            {errors.businessRegistrationImg && (
+              <ErrorMessage>
+                {errors.businessRegistrationImg.message}
               </ErrorMessage>
             )}
             <div className="form-group">
@@ -327,7 +364,7 @@ const CeoSignup = () => {
                   }}
                 />
                 <div className="form-button">
-                  <MainButton label="인증코드 발송" />
+                  <CeoButton label="인증코드 발송" />
                 </div>
               </div>
             </div>
@@ -349,7 +386,7 @@ const CeoSignup = () => {
                   })}
                 />
                 <div className="form-button">
-                  <MainButton label="확인" />
+                  <CeoButton label="확인" />
                 </div>
               </div>
             </div>
@@ -357,7 +394,7 @@ const CeoSignup = () => {
               <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
             )}
             <div className="ceosignup-button">
-              <MainButton label="회원가입" />
+              <CeoButton label="회원가입" />
             </div>
           </form>
         </SignupWrapStyle>

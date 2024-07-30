@@ -4,11 +4,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { postSignIn } from "../../apis/userapi";
 import {
+  accessTokenState,
   errorMessageState,
+  isLoginState,
   loadingState,
-  rememberMeState,
   userEmailState,
   userPwState,
+  userRememberMeState,
 } from "../../atoms/loginState";
 import AlertModal from "../../components/common/AlertModal";
 import { ActionButton, MainButton } from "../../components/common/Button";
@@ -18,7 +20,6 @@ import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
-import { setCookie } from "../../utils/cookie";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -235,12 +236,12 @@ const WrapStyle = styled.div`
     }
   }
 
-  /* ceo 회원가입 */
-  .ceo-signup {
+  /* ceo 로그인 */
+  .ceo-login {
     margin-top: 50px;
     margin-bottom: 50px;
 
-    .ceo-signup-btn > button {
+    .ceo-login-btn > button {
       width: 80%;
       height: 45px;
       font-size: 1.1rem;
@@ -264,7 +265,12 @@ const LoginPage = () => {
   const [userPw, setUserPw] = useRecoilState(userPwState);
   const [errorMessage, setErrorMessage] = useRecoilState(errorMessageState);
   const [loading, setLoading] = useRecoilState(loadingState);
-  const [rememberMe, setRememberMe] = useRecoilState(rememberMeState);
+  const [rememberMe, setRememberMe] = useRecoilState(userRememberMeState);
+
+  // 로그인 상태 업데이트
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
+
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
@@ -306,11 +312,10 @@ const LoginPage = () => {
     // console.log(result.code);
     if (result.code === "SU") {
       // console.log(result);
-      // 로그인 성공 시 쿠키에 사용자 정보 저장
-      // setCookie("access-Token", result.accessToken);
-
       // (변경) 로그인 성공 시 로컬스토리지에 사용자 정보 저장
       localStorage.setItem("accessToken", result.accessToken);
+      setAccessToken(result.accessToken);
+
       openModal({ message: "로그인 성공하였습니다!" });
       setTimeout(() => {
         if (location.state && location.state.fromSignup) {
@@ -403,9 +408,9 @@ const LoginPage = () => {
                   </li>
                 </ul>
               </div>
-              <div className="ceo-signup">
-                <Link to="/ceosignup" className="ceo-signup-btn">
-                  <ActionButton label="비즈니스 회원가입" />
+              <div className="ceo-login">
+                <Link to="/ceologin" className="ceo-login-btn">
+                  <ActionButton label="비즈니스 로그인" />
                 </Link>
               </div>
             </div>
