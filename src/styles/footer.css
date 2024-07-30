@@ -52,8 +52,13 @@
   margin-top: 30px;
   display: block;
 }
-.footer-bottom-detail p {
+.footer-bottom-detail p,
+h4 {
   font-size: 12px;
+}
+.footer-bottom-detail h4 {
+  color: #999999;
+  display: contents;
 }
 
 /* 반응형 */

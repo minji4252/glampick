@@ -1,31 +1,18 @@
 import styled from "@emotion/styled";
-// import filterBarbecue from "../images/icon/filter-barbecue3.png";
-// import filterBarbecue2 from "../images/icon/filter-barbecue2.png";
-// import filterMountain from "../images/icon/filter-mountain3.png";
-// import filterMountain2 from "../images/icon/filter-mountain2.png";
-// import filterOcean from "../images/icon/filter-ocean3.png";
-// import filterOcean2 from "../images/icon/filter-ocean2.png";
-// import filterPet from "../images/icon/filter-pet3.png";
-// import filterPet2 from "../images/icon/filter-pet2.png";
-// import filterSwim from "../images/icon/filter-swim3.png";
-// import filterSwim2 from "../images/icon/filter-swim2.png";
-// import filterToilet from "../images/icon/filter-toilet3.png";
-// import filterToilet2 from "../images/icon/filter-toilet2.png";
-// import filterWifi from "../images/icon/filter-wifi3.png";
-// import filterWifi2 from "../images/icon/filter-wifi2.png";
-import filterBarbecue from "../images/icon/filter-barbecue3.png";
+
+import filterBarbecue from "../images/icon/f-barbecue.png";
 import filterBarbecue2 from "../images/icon/f-barbecue2.png";
-import filterMountain from "../images/icon/filter-mountain3.png";
+import filterMountain from "../images/icon/f-mountain.png";
 import filterMountain2 from "../images/icon/f-mountain2.png";
-import filterOcean from "../images/icon/filter-ocean3.png";
+import filterOcean from "../images/icon/f-ocean.png";
 import filterOcean2 from "../images/icon/f-ocean2.png";
-import filterPet from "../images/icon/filter-pet3.png";
+import filterPet from "../images/icon/f-pet.png";
 import filterPet2 from "../images/icon/f-pet2.png";
-import filterSwim from "../images/icon/filter-swim3.png";
+import filterSwim from "../images/icon/f-swim.png";
 import filterSwim2 from "../images/icon/f-swim2.png";
-import filterToilet from "../images/icon/filter-toilet3.png";
+import filterToilet from "../images/icon/f-toilet.png";
 import filterToilet2 from "../images/icon/f-toilet2.png";
-import filterWifi from "../images/icon/filter-wifi3.png";
+import filterWifi from "../images/icon/f-wifi.png";
 import filterWifi2 from "../images/icon/f-wifi2.png";
 
 import emptyImg from "../images/emptyImg.png";
@@ -66,7 +53,7 @@ export const SearchTop = styled.div`
   justify-content: center;
   padding-top: 20px;
   align-items: baseline;
-  @media all and (max-width: 950px) {
+  @media all and (max-width: 1000px) {
     height: 150px;
   }
 `;
@@ -78,7 +65,7 @@ export const SearchResult = styled.div`
   justify-content: center;
   gap: 20px;
   font-size: 16px;
-  @media all and (max-width: 950px) {
+  @media all and (max-width: 1000px) {
     display: grid;
     grid-template-columns: 1fr 2fr;
     padding-right: 30px;
@@ -189,7 +176,7 @@ export const SearchRight = styled.div`
   flex-direction: column;
   @media all and (max-width: 1300px) {
     width: 100%;
-    margin-top: 30px;
+    margin-top: 0;
     align-items: center;
   }
 `;
@@ -200,6 +187,12 @@ export const SearchMap = styled.div`
   background: pink;
   margin-top: 20px;
   margin-bottom: 30px;
+  border-radius: 20px;
+
+  @media all and (max-width: 1300px) {
+    width: 100%;
+    max-width: 900px;
+  }
 `;
 // 상단 필터 항목
 export const SearchFilter = styled.div`
@@ -207,25 +200,29 @@ export const SearchFilter = styled.div`
   margin-right: 30px;
   display: flex;
   align-items: center;
+  min-width: 100px;
+  width: 100%;
   justify-content: flex-end;
-
-  @media all and (max-width: 394px) {
+  @media all and (max-width: 1300px) {
+    justify-content: center;
+  }
+  /* @media all and (max-width: 394px) {
     height: 200px;
   }
   @media all and (max-width: 302px) {
     height: 300px;
-  }
+  } */
 
   .search-filter {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    text-align: end;
+    align-items: flex-end;
+    margin-right: 10px;
 
     > div {
-      width: 100px;
+      width: 65px;
       height: 20px;
-
       background-size: auto;
       background-repeat: no-repeat;
       background-position: center;
@@ -234,45 +231,59 @@ export const SearchFilter = styled.div`
 
     .filter-pet {
       background-image: url(${filterPet2});
+      width: 52px;
     }
     .filter-pet.active {
       background-image: url(${filterPet});
+      width: 52px;
     }
     .filter-ocean {
       background-image: url(${filterOcean2});
+      width: 39px;
     }
     .filter-ocean.active {
       background-image: url(${filterOcean});
+      width: 39px;
     }
     .filter-mountain {
       background-image: url(${filterMountain2});
+      width: 52px;
     }
     .filter-mountain.active {
       background-image: url(${filterMountain});
+      width: 52px;
     }
     .filter-swim {
       background-image: url(${filterSwim2});
+      width: 38px;
     }
     .filter-swim.active {
       background-image: url(${filterSwim});
+      width: 38px;
     }
     .filter-wifi {
       background-image: url(${filterWifi2});
+      width: 51px;
     }
     .filter-wifi.active {
       background-image: url(${filterWifi});
+      width: 51px;
     }
     .filter-barbecue {
       background-image: url(${filterBarbecue2});
+      width: 39px;
     }
     .filter-barbecue.active {
       background-image: url(${filterBarbecue});
+      width: 39px;
     }
     .filter-toilet {
       background-image: url(${filterToilet2});
+      width: 64px;
     }
     .filter-toilet.active {
       background-image: url(${filterToilet});
+      width: 64px;
     }
     @media all and (max-width: 1300px) {
       display: flex;
@@ -280,19 +291,13 @@ export const SearchFilter = styled.div`
     }
     ${size.mid} {
       max-width: 768px;
-      height: 200px;
-      padding: 0 50px 50px 50px;
+
       flex-wrap: wrap;
       justify-content: flex-start;
       display: flex;
       justify-content: center;
-      gap: 5px 20px;
-      > div {
-        width: 52px;
-        margin-right: 20px;
-        margin-bottom: 20px;
-      }
     }
+
     @media all and (max-width: 493px) {
       padding: 0 0 50px 0;
     }
@@ -312,7 +317,6 @@ export const SearchInnerTop = styled.div`
   ${size.mid} {
     width: 100%;
     max-width: 1080px;
-    height: 200px;
   }
   @media all and (max-width: 394px) {
     height: 300px;
@@ -370,7 +374,7 @@ export const SearchInnerList = styled.div`
   user-select: none;
   @media all and (max-width: 950px) {
     width: 100%;
-    margin: 0 20px;
+    /* margin: 0 20px; */
   }
 `;
 
