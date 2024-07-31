@@ -10,6 +10,7 @@ const WrapStyle = styled.div`
     width: 100%;
     margin-top: 50px;
     margin-left: 120px;
+    margin-bottom: 65px;
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
@@ -30,7 +31,12 @@ const WrapStyle = styled.div`
   }
 
   .임시 {
+    max-width: 800px;
+    width: 100%;
     height: 1000px;
+    background-color: aliceblue;
+    .calendar {
+    }
   }
 `;
 
@@ -40,7 +46,10 @@ const CeoBooking = () => {
       <CeoCategories />
       <div className="inner">
         <h3>CeoBooking</h3>
-        <div className="임시"></div>
+        <div className="임시">
+          <div className="calendar"></div>
+          <div className="booking-detail"></div>
+        </div>
       </div>
     </WrapStyle>
   );

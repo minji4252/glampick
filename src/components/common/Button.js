@@ -78,13 +78,4 @@ const AdminButton = ({ label = "버튼", onClick }) => {
   return <AdminButtonStyle onClick={onClick}>{label}</AdminButtonStyle>;
 };
 
-const CeoButton = ({ label = "버튼", onClick }) => {
-  return <CeoButtonStyle onClick={onClick}>{label}</CeoButtonStyle>;
-};
-
-const AdminButton = ({ label = "버튼", onClick }) => {
-  return <AdminButtonStyle onClick={onClick}>{label}</AdminButtonStyle>;
-};
-
-
 export { MainButton, ActionButton, DeleteButton, CeoButton, AdminButton };

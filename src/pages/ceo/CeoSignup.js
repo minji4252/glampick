@@ -97,7 +97,7 @@ const SignupWrapStyle = styled.div`
 `;
 
 // 에러메세지
-const ErrorMessage = styled.span`
+export const ErrorMessage = styled.span`
   display: block;
   color: ${colorSystem.error};
   font-size: 0.9rem;
