@@ -4,7 +4,6 @@ import { NavLink } from "react-router-dom";
 import { colorSystem } from "../../styles/color";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { getCookie } from "../../utils/cookie";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
 const CategoriesStyle = styled.div`
@@ -73,7 +72,9 @@ const UnderLine = styled.div`
 `;
 const categories = [
   { name: "adminstore", text: "입점 승인" },
+  { name: "adminsignup", text: "가입 관리" },
   { name: "adminexit", text: "탈퇴 관리" },
+  { name: "adminbanner", text: "배너 관리" },
 ];
 const AdminCategories = () => {
   // const [accessToken, setAccessToken] = useState("");

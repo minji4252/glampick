@@ -40,6 +40,8 @@ import SignupPage from "./pages/user/SignupPage";
 import SnsSignupPage from "./pages/user/SnsSignUpPage";
 import CeoSignup from "./pages/ceo/CeoSignup";
 import CeoLogin from "./pages/ceo/CeoLogin";
+import AdminSignup from "./pages/admin/AdminSignup";
+import AdminBanner from "./pages/admin/AdminBanner";
 
 function App() {
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
@@ -122,7 +124,9 @@ function App() {
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />
         <Route path="/adminstore" element={<AdminStore />} />
+        <Route path="/adminsignup" element={<AdminSignup />} />
         <Route path="/adminexit" element={<AdminExit />} />
+        <Route path="/adminbanner" element={<AdminBanner />} />
 
         {/* 잘못된 경로 */}
         <Route path="/*" element={<NotfoundPage />} />

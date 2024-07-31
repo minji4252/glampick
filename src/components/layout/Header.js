@@ -12,6 +12,8 @@ const Header = ({ isLogin, handleLogout }) => {
   if (
     locationNow.pathname === "/" ||
     locationNow.pathname === "/glampingking" ||
+    locationNow.pathname === "/adminbanner" ||
+    locationNow.pathname === "/adminsignup" ||
     locationNow.pathname === "/adminexit" ||
     locationNow.pathname === "/adminstore"
   ) {

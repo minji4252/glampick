@@ -5,10 +5,12 @@ import "../../styles/footer.css";
 import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
-  // 관리자 페이지 header 숨김
+  // 관리자 페이지 footer 숨김
   const locationNow = useLocation();
   if (
     locationNow.pathname === "/glampingking" ||
+    locationNow.pathname === "/adminbanner" ||
+    locationNow.pathname === "/adminsignup" ||
     locationNow.pathname === "/adminexit" ||
     locationNow.pathname === "/adminstore"
   )

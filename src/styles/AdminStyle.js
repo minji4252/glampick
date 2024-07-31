@@ -35,7 +35,8 @@ export const AdminLogin = styled.div`
   .login-form label {
     display: block;
     font-size: 1.2rem;
-    margin-bottom: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
     ${size.mid} {
       font-size: 1.2rem;
     }
