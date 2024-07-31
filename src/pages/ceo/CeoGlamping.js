@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CeoButton } from "../../components/common/Button";
 import { FaCamera } from "react-icons/fa";
 import { FiMinusCircle } from "react-icons/fi";
@@ -123,6 +123,13 @@ const CeoBoxStyle = styled.div`
   .glamp-img-label {
     margin-bottom: 0;
   }
+
+  .glamp-address-div {
+    input {
+      cursor: pointer;
+      caret-color: transparent;
+    }
+  }
 `;
 
 const ImageUploadStyle = styled.div`
@@ -214,7 +221,7 @@ const CeoGlamping = () => {
   // 폼의 초기값
   const initState = {
     glampName: "",
-    images: "",
+    images: [],
     glampIntro: "",
     infoBasic: "",
     infoNotice: "",
@@ -228,6 +235,7 @@ const CeoGlamping = () => {
   // yup schema 셋팅
   const schema = yup.object().shape({
     glampName: yup.string().required("글램핑장 이름을 입력해 주세요"),
+    images: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
     glampIntro: yup.string().required("숙소 소개 항목을 입력해 주세요"),
     infoBasic: yup.string().required("숙소 기본정보를 입력해 주세요"),
     infoNotice: yup.string().required("숙소 유의사항을 입력해 주세요"),
@@ -259,9 +267,15 @@ const CeoGlamping = () => {
       alert(`이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`);
       return;
     }
-    setImages([...images, ...files.slice(0, maxImageCount - images.length)]);
-    setUploadedImageCount(images.length + files.length);
+    const newImages = [
+      ...images,
+      ...files.slice(0, maxImageCount - images.length),
+    ];
+    setImages(newImages);
+    setUploadedImageCount(newImages.length);
     setIsImageUploaded(true);
+    setValue("images", newImages, { shouldValidate: true });
+    trigger("images");
   };
 
   // 이미지 삭제
@@ -271,6 +285,8 @@ const CeoGlamping = () => {
     setImages(updatedImages);
     setUploadedImageCount(updatedImages.length);
     setIsImageUploaded(updatedImages.length > 0);
+    setValue("images", updatedImages, { shouldValidate: true });
+    trigger("images");
   };
 
   // -----------------------------------------------------------------------------
@@ -298,8 +314,13 @@ const CeoGlamping = () => {
     setValue("glampAddress", fullAddress);
   };
 
-  const handleClick = () => {
-    open({ onComplete: handleComplete });
+  const handleClick = e => {
+    e.preventDefault();
+    open({
+      onComplete: handleComplete,
+      left: Math.ceil((window.screen.width - 500) / 2),
+      top: Math.ceil((window.screen.height - 500) / 2),
+    });
   };
 
   //------------------------- form관련 ------------------------------------
@@ -350,6 +371,15 @@ const CeoGlamping = () => {
     console.log("전송시 데이터 sendData ", sendData);
   };
 
+  // 이미지 유효성검사 포커스
+  useEffect(() => {
+    if (errors.images) {
+      document
+        .querySelector(".glamp-img-box")
+        ?.scrollIntoView({ block: "center" });
+    }
+  }, [errors.images]);
+
   // -----------------------------------------------------------------------------
 
   return (
@@ -366,6 +396,7 @@ const CeoGlamping = () => {
               id="glampName"
               autoComplete="off"
               {...register("glampName")}
+              placeholder="글램핑장 이름"
             />
             {errors.glampName && <span>{errors.glampName.message}</span>}
           </CeoBoxStyle>
@@ -389,9 +420,7 @@ const CeoGlamping = () => {
                 id="imageUpload"
                 accept="image/*"
                 multiple
-                onChange={e => {
-                  handleImageUpload(e);
-                }}
+                onChange={handleImageUpload}
               />
               <div className="uploaded-images">
                 {images.map((image, index) => (
@@ -408,37 +437,51 @@ const CeoGlamping = () => {
                 ))}
               </div>
             </ImageUploadStyle>
+            {errors.images && <span>{errors.images.message}</span>}
           </CeoBoxStyle>
 
           {/* 숙소 소개 */}
           <CeoBoxStyle>
             <label htmlFor="glampIntro">숙소 소개</label>
-            <textarea id="glampIntro" {...register("glampIntro")} />
+            <textarea
+              id="glampIntro"
+              {...register("glampIntro")}
+              placeholder="바다앞에 위치한 글램핑장 입니다"
+            />
             {errors.glampIntro && <span>{errors.glampIntro.message}</span>}
           </CeoBoxStyle>
 
           {/* 숙소 기본정보 */}
           <CeoBoxStyle>
             <label htmlFor="infoBasic">숙소 기본정보</label>
-            <textarea id="infoBasic" {...register("infoBasic")} />
+            <textarea
+              id="infoBasic"
+              {...register("infoBasic")}
+              placeholder="전 객실 금연"
+            />
             {errors.infoBasic && <span>{errors.infoBasic.message}</span>}
           </CeoBoxStyle>
 
           {/* 숙소 유의사항 */}
           <CeoBoxStyle>
             <label htmlFor="infoNotice">숙소 유의사항</label>
-            <textarea id="infoNotice" {...register("infoNotice")} />
+            <textarea
+              id="infoNotice"
+              {...register("infoNotice")}
+              placeholder="화기 사용 금지"
+            />
             {errors.infoNotice && <span>{errors.infoNotice.message}</span>}
           </CeoBoxStyle>
 
           {/* 글램핑장 주소 */}
           <CeoBoxStyle>
             <label htmlFor="glampAddress">글램핑장 주소</label>
-            <div>
+            <div className="glamp-address-div">
               <input
                 type="text"
                 id="glampAddress"
                 {...register("glampAddress")}
+                onClick={handleClick}
               />
               <CeoButton label="주소검색" onClick={handleClick} />
             </div>
@@ -462,6 +505,7 @@ const CeoGlamping = () => {
               autoComplete="off"
               {...register("glampPhone")}
               onChange={handleChangePhone}
+              placeholder="010-0000-0000"
             />
             {errors.glampPhone && <span>{errors.glampPhone.message}</span>}
           </CeoBoxStyle>
@@ -480,13 +524,18 @@ const CeoGlamping = () => {
           {/* 1인 추가 요금*/}
           <CeoBoxStyle>
             <label htmlFor="addCost">1인 추가 요금</label>
-            <input
-              type="text"
-              id="addCost"
-              autoComplete="off"
-              {...register("addCost")}
-              onChange={handleChangeAddCost}
-            />
+            <div className="add-cost-group">
+              <input
+                className="add-cost-input"
+                type="text"
+                id="addCost"
+                autoComplete="off"
+                {...register("addCost")}
+                onChange={handleChangeAddCost}
+                placeholder="10000"
+              />
+              <p>원</p>
+            </div>
             {errors.addCost && <span>{errors.addCost.message}</span>}
           </CeoBoxStyle>
 
