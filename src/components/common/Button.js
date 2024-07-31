@@ -55,6 +55,18 @@ const CeoButtonStyle = styled(ButtonStyle)`
     background-color: ${colorSystem.ceo700};
   }
 `;
+
+const CeoActionButtonStyle = styled(ButtonStyle)`
+  background-color: ${colorSystem.white};
+  color: ${colorSystem.g800};
+  border: 2px solid ${colorSystem.ceo};
+
+  &:hover {
+    border: 2px solid ${colorSystem.ceo};
+    background-color: ${colorSystem.ceo300};
+    color: ${colorSystem.black};
+  }
+`;
 const AdminButtonStyle = styled(ButtonStyle)`
   background-color: ${colorSystem.admin};
   color: ${colorSystem.white};
@@ -71,8 +83,18 @@ const DeleteButton = ({ label = "버튼", onClick }) => {
 const CeoButton = ({ label = "버튼", onClick }) => {
   return <CeoButtonStyle onClick={onClick}>{label}</CeoButtonStyle>;
 };
+const CeoActionButton = ({ label = "버튼", onClick }) => {
+  return <CeoActionButtonStyle onClick={onClick}>{label}</CeoActionButtonStyle>;
+};
 const AdminButton = ({ label = "버튼", onClick }) => {
   return <AdminButtonStyle onClick={onClick}>{label}</AdminButtonStyle>;
 };
 
-export { MainButton, ActionButton, DeleteButton, CeoButton, AdminButton };
+export {
+  MainButton,
+  ActionButton,
+  DeleteButton,
+  CeoButton,
+  CeoActionButton,
+  AdminButton,
+};
