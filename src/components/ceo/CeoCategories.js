@@ -15,7 +15,7 @@ const CategoriesStyle = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  /* gap: 15px; */
   padding: 1rem;
 
   > div {
@@ -46,34 +46,36 @@ const CategoriesStyle = styled.div`
 
 const NavLinkStyle = styled(NavLink)`
   width: 166px;
+  background-color: ${colorSystem.white};
+  padding: 10px;
   font-size: 1.1rem;
   white-space: pre;
-  padding-bottom: 0.25rem;
   font-weight: 700;
-  color: ${colorSystem.g900};
+  color: ${colorSystem.g800};
   display: flex;
   align-items: center;
   justify-content: space-between;
-
+  border-radius: 30px;
   span {
     height: 20px;
   }
 
   &:hover {
-    color: ${colorSystem.g500};
+    color: ${colorSystem.ceo700};
   }
 
   &.active {
-    color: ${colorSystem.ceo};
+    color: ${colorSystem.g800};
+    background-color: ${colorSystem.ceo300};
     font-weight: 700;
 
     span {
-      border-bottom: 2px solid ${colorSystem.ceo};
+      /* border-bottom: 2px solid ${colorSystem.ceo}; */
     }
   }
 
   > svg {
-    color: ${colorSystem.ceo};
+    /* color: ${colorSystem.ceo}; */
   }
 `;
 
