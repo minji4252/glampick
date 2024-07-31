@@ -20,13 +20,13 @@ const GlampingKing = () => {
             //   handleLogin(e);
             // }}
           >
-            <label htmlFor="email">이메일</label>
+            <label htmlFor="email">아이디</label>
             <input
-              type="email"
-              id="email"
-              name="email"
+              type="id"
+              id="id"
+              name="id"
               // value={userEmail}
-              placeholder="glampick@good.kr"
+              // placeholder=""
               // onChange={e => {
               //   setUserEmail(e.target.value);
               // }}
@@ -37,7 +37,7 @@ const GlampingKing = () => {
               id="password"
               name="password"
               // value={userPw}
-              placeholder="비밀번호를 입력하세요"
+              // placeholder=""
               // onChange={e => {
               //   setUserPw(e.target.value);
               // }}

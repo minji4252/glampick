@@ -17,7 +17,6 @@ const WrapStyle = styled.div`
     color: ${colorSystem.g900};
   }
 
-
   @media all and (max-width: 1910px) {
     display: flex;
     .inner {
@@ -32,11 +31,9 @@ const WrapStyle = styled.div`
     }
   }
 
-
   .tabs {
     height: 1000px;
   }
-
 
   /* 탭 메뉴 */
   .tabs {
