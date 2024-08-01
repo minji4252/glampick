@@ -6,15 +6,17 @@ import * as yup from "yup";
 import { CeoActionButton, CeoButton } from "../../components/common/Button";
 import MainCalendar from "../../components/MainCalendar";
 import { colorSystem } from "../../styles/color";
+import { IoClose } from "react-icons/io5";
 
 const WrapStyle = styled.div`
   border: 2px solid ${colorSystem.ceo};
+  border-radius: 20px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 500px;
-  height: 700px;
+  height: 600px;
   background: ${colorSystem.white};
   display: flex;
   flex-direction: column;
@@ -23,16 +25,17 @@ const WrapStyle = styled.div`
 
   h3 {
     width: 100%;
-    margin-top: 50px;
+    margin-top: 70px;
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
-    margin-bottom: 65px;
+    margin-bottom: 90px;
     text-align: center;
   }
 
   form {
     width: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,25 +45,48 @@ const WrapStyle = styled.div`
       display: flex;
       justify-content: center;
       gap: 30px;
-      margin-bottom: 50px;
+      margin-top: 60px;
       button {
         width: 30%;
       }
     }
   }
+
+  .ceobox-group {
+    display: flex;
+    gap: 20px;
+
+    input {
+      text-align: center;
+    }
+  }
+
+  .close-btn {
+    background-color: transparent;
+    border: 0;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    cursor: pointer;
+    svg {
+      width: 24px;
+      height: 24px;
+      color: ${colorSystem.g800};
+    }
+  }
 `;
 
 const CeoBoxStyle = styled.div`
+  width: 100%;
+  height: 126px;
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
   padding: 20px;
-  padding-bottom: 30px;
   border-radius: 20px;
   border: 1px solid ${colorSystem.g400};
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 
   label {
     font-weight: 600;
@@ -69,7 +95,6 @@ const CeoBoxStyle = styled.div`
   }
 
   input {
-    max-width: 240px;
     width: 100%;
     border: 0px;
     background-color: ${colorSystem.g100};
@@ -83,11 +108,11 @@ const CeoBoxStyle = styled.div`
     bottom: 7px;
     color: ${colorSystem.error};
     font-size: 0.8rem;
-    margin-left: 10px;
     font-weight: 600;
   }
 
   .cost-group {
+    width: 100%;
     display: flex;
     gap: 10px;
     align-items: center;
@@ -102,7 +127,7 @@ const CeoBoxStyle = styled.div`
   }
 
   .react-datepicker__input-container {
-    max-width: 215px;
+    width: 100%;
   }
 
   .react-datepicker__close-icon::after {
@@ -115,6 +140,8 @@ const PeakModal = ({ onClose }) => {
 
   const handleDateSelect = date => {
     setSelectedDate(date);
+    setValue("peakPeriod", date, { shouldValidate: true });
+    trigger("peakPeriod");
   };
 
   const handleKeyDown = e => {
@@ -123,17 +150,27 @@ const PeakModal = ({ onClose }) => {
 
   // 폼의 초기값
   const initState = {
-    RoomName: "",
+    peakCost: "",
+    weekendCost: "",
   };
 
   // yup schema 셋팅
   const schema = yup.object().shape({
-    RoomName: yup.string().required("글램핑장 이름을 입력해 주세요"),
-    addCost: yup
-      .string()
-      .required("1인 추가 요금을 입력해 주세요")
-      .min(4, "최소 금액은 1000원입니다")
-      .max(6, "최대 금액을 초과하였습니다"),
+    peakPeriod: yup
+      .array()
+      .of(yup.date().required("날짜를 선택해 주세요"))
+      .min(2, "시작 날짜와 종료 날짜를 선택해 주세요")
+      .required("날짜를 선택해 주세요"),
+    peakCost: yup
+      .number()
+      .typeError("숫자를 입력해 주세요")
+      .required("숫자를 입력해 주세요")
+      .max(998, "최대 범위를 초과하였습니다"),
+    weekendCost: yup
+      .number()
+      .typeError("숫자를 입력해 주세요")
+      .required("숫자를 입력해 주세요")
+      .max(998, "최대 범위를 초과하였습니다"),
   });
 
   const {
@@ -141,6 +178,7 @@ const PeakModal = ({ onClose }) => {
     handleSubmit,
     setValue,
     trigger,
+    setError,
     formState: { errors },
   } = useForm({
     defaultValues: initState,
@@ -149,24 +187,35 @@ const PeakModal = ({ onClose }) => {
   });
 
   // 추가 요금 숫자 입력 처리
-  const handleChangeAddCost = e => {
-    const cost = e.target.value.replace(/[^\d]/g, "");
-    setValue("addCost", cost, { shouldValidate: true });
-    trigger("addCost");
+  const handleOnlyNumber = (e, fieldName) => {
+    let value = e.target.value.replace(/[^\d]/g, "");
+    if (value !== "") {
+      value = Math.max(0, Math.min(999, Number(value))).toString();
+    }
+    setValue(fieldName, value, { shouldValidate: true });
+    trigger(fieldName);
   };
 
   const onSubmit = data => {
-    console.log("전송시 데이터 ", data);
-    const sendData = {
-      ...data,
-      glampPhone: data.glampPhone.replaceAll("-", ""),
-    };
-    console.log("전송시 데이터 sendData ", sendData);
+    if (selectedDate.length < 2) {
+      setError("peakPeriod", {
+        type: "manual",
+        message: "성수기 기간을 선택해 주세요",
+      });
+      return;
+    }
+    console.log("전송 데이터 : ", data);
+    alert(
+      `전송 데이터 : ${data.peakPeriod}, ${data.peakCost}, ${data.weekendCost}`,
+    );
   };
 
   return (
     <WrapStyle>
       <h3>성수기 & 주말 요금 설정</h3>
+      <button className="close-btn" type="button" onClick={onClose}>
+        <IoClose />
+      </button>
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 성수기 기간 설정 */}
         <CeoBoxStyle>
@@ -176,43 +225,46 @@ const PeakModal = ({ onClose }) => {
             setSelectedDate={handleDateSelect}
             onKeyDown={handleKeyDown}
           />
+          {errors.peakPeriod && <span>{errors.peakPeriod.message}</span>}
         </CeoBoxStyle>
 
-        {/* 성수기 추가 요금 */}
-        <CeoBoxStyle>
-          <label htmlFor="peakCost">성수기 추가 요금 비율</label>
-          <div className="cost-group">
-            <input
-              className="cost-input"
-              type="text"
-              id="peakCost"
-              autoComplete="off"
-              {...register("peakCost")}
-              // onChange={handleChangeAddCost}
-              placeholder="10"
-            />
-            <p>%</p>
-          </div>
-          {errors.peakCost && <span>{errors.peakCost.message}</span>}
-        </CeoBoxStyle>
+        <div className="ceobox-group">
+          {/* 성수기 추가 요금 */}
+          <CeoBoxStyle>
+            <label htmlFor="peakCost">성수기 추가 요금</label>
+            <div className="cost-group">
+              <input
+                className="cost-input"
+                type="text"
+                id="peakCost"
+                autoComplete="off"
+                {...register("peakCost")}
+                onChange={e => handleOnlyNumber(e, "peakCost")}
+                placeholder="10"
+              />
+              <p>%</p>
+            </div>
+            {errors.peakCost && <span>{errors.peakCost.message}</span>}
+          </CeoBoxStyle>
 
-        {/* 주말 추가 요금 */}
-        <CeoBoxStyle>
-          <label htmlFor="peakCost">주말 추가 요금 비율</label>
-          <div className="cost-group">
-            <input
-              className="cost-input"
-              type="text"
-              id="peakCost"
-              autoComplete="off"
-              {...register("peakCost")}
-              // onChange={handleChangeAddCost}
-              placeholder="10"
-            />
-            <p>%</p>
-          </div>
-          {errors.peakCost && <span>{errors.peakCost.message}</span>}
-        </CeoBoxStyle>
+          {/* 주말 추가 요금 */}
+          <CeoBoxStyle>
+            <label htmlFor="weekendCost">주말 추가 요금</label>
+            <div className="cost-group">
+              <input
+                className="cost-input"
+                type="text"
+                id="weekendCost"
+                autoComplete="off"
+                {...register("weekendCost")}
+                onChange={e => handleOnlyNumber(e, "weekendCost")}
+                placeholder="10"
+              />
+              <p>%</p>
+            </div>
+            {errors.weekendCost && <span>{errors.weekendCost.message}</span>}
+          </CeoBoxStyle>
+        </div>
 
         <div className="submit-btn">
           <CeoButton label="등록하기" />

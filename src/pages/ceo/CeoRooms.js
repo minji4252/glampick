@@ -103,14 +103,14 @@ const CeoBoxStyle = styled.div`
     font-weight: 600;
   }
 
-  .add-cost-group {
+  .number-group {
     display: flex;
     gap: 10px;
     align-items: center;
   }
 
-  .add-cost-input {
-    max-width: 120px;
+  .number-input {
+    max-width: 150px;
   }
 
   .room-img-label {
@@ -130,6 +130,12 @@ const CeoBoxStyle = styled.div`
 const PeopleNumberStyle = styled.div`
   display: flex;
   align-items: center;
+  gap: 10px;
+
+  input {
+    max-width: 45px !important;
+    width: 100%;
+  }
 `;
 
 const ImageUploadStyle = styled.div`
@@ -296,11 +302,11 @@ const CeoRooms = () => {
     mode: "onChange",
   });
 
-  //  숫자만 입력 가능
-  const handleChangeOnlyNumber = e => {
+  // 숫자만 입력 가능
+  const handleOnlyNumber = (e, fieldName) => {
     const cost = e.target.value.replace(/[^\d]/g, "");
-    setValue("addCost", cost, { shouldValidate: true });
-    trigger("addCost");
+    setValue(fieldName, cost, { shouldValidate: true });
+    trigger(fieldName);
   };
 
   const onSubmit = data => {
@@ -380,35 +386,99 @@ const CeoRooms = () => {
             {errors.images && <span>{errors.images.message}</span>}
           </CeoBoxStyle>
 
+          {/* 객실 가격 */}
+          <CeoBoxStyle>
+            <label htmlFor="roomCost">객실 가격</label>
+            <div className="number-group">
+              <input
+                className="number-input"
+                type="text"
+                id="roomCost"
+                autoComplete="off"
+                {...register("roomCost")}
+                onChange={e => handleOnlyNumber(e, "roomCost")}
+              />
+              <p>원</p>
+            </div>
+            {errors.roomCost && <span>{errors.roomCost.message}</span>}
+          </CeoBoxStyle>
+
           {/* 객실 기준 인원 */}
           <CeoBoxStyle>
             <label htmlFor="peopleNum">객실 기준 인원</label>
             <PeopleNumberStyle>
-              <div className="add-cost-group">
+              <div className="number-group">
+                <p>최소</p>
                 <input
-                  className="add-cost-input"
+                  className="number-input"
                   type="text"
-                  id="addCost"
+                  id="peopleNum"
                   autoComplete="off"
-                  {...register("addCost")}
-                  onChange={handleChangeOnlyNumber}
+                  {...register("peopleNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleNum")}
                 />
                 <p>인</p>
               </div>
               <p>~</p>
-              <div className="add-cost-group">
+              <div className="number-group">
+                <p>최대</p>
                 <input
-                  className="add-cost-input"
+                  className="number-input"
                   type="text"
-                  id="addCost"
+                  id="peopleNum"
                   autoComplete="off"
-                  {...register("addCost")}
-                  onChange={handleChangeOnlyNumber}
+                  {...register("peopleNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleNum")}
                 />
                 <p>인</p>
               </div>
             </PeopleNumberStyle>
-            {errors.addCost && <span>{errors.addCost.message}</span>}
+            {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
+          </CeoBoxStyle>
+
+          {/* 입 퇴실 시간 */}
+          <CeoBoxStyle>
+            <label htmlFor="peopleNum">입실 퇴실 시간</label>
+            {/* <PeopleNumberStyle> */}
+            <div className="number-group">
+              <p>입실</p>
+              <input
+                className="number-input"
+                type="time"
+                id="peopleNum"
+                autoComplete="off"
+                {...register("peopleNum")}
+                // onChange={e => handleOnlyNumber(e, "peopleNum")}
+              />
+              <p>시</p>
+            </div>
+            <p>-</p>
+            <div className="number-group">
+              <p>퇴실</p>
+              <input
+                className="number-input"
+                type="time"
+                id="peopleNum"
+                autoComplete="off"
+                {...register("peopleNum")}
+                // onChange={e => handleOnlyNumber(e, "peopleNum")}
+              />
+              <p>시</p>
+            </div>
+            {/* </PeopleNumberStyle> */}
+            {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
+          </CeoBoxStyle>
+
+          {/* 객실 옵션 */}
+          <CeoBoxStyle>
+            <label htmlFor="RoomName">객실 옵션</label>
+            <input
+              type="text"
+              id="RoomName"
+              autoComplete="off"
+              {...register("RoomName")}
+            />
+            {errors.RoomName && <span>{errors.RoomName.message}</span>}
           </CeoBoxStyle>
 
           <div className="submit-btn">
