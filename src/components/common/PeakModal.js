@@ -3,40 +3,45 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { CeoButton } from "../../components/common/Button";
+import { CeoActionButton, CeoButton } from "../../components/common/Button";
 import MainCalendar from "../../components/MainCalendar";
 import { colorSystem } from "../../styles/color";
 
 const WrapStyle = styled.div`
+  border: 2px solid ${colorSystem.ceo};
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 600px;
+  width: 500px;
   height: 700px;
   background: ${colorSystem.white};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-  .inner {
-    flex-direction: column;
-  }
   h3 {
     width: 100%;
     margin-top: 50px;
-    margin-left: 120px;
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
     margin-bottom: 65px;
+    text-align: center;
   }
 
   form {
-    max-width: 800px;
-    width: 100%;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     .submit-btn {
       width: 100%;
       display: flex;
       justify-content: center;
+      gap: 30px;
       margin-bottom: 50px;
       button {
         width: 30%;
@@ -64,7 +69,7 @@ const CeoBoxStyle = styled.div`
   }
 
   input {
-    max-width: 640px;
+    max-width: 240px;
     width: 100%;
     border: 0px;
     background-color: ${colorSystem.g100};
@@ -90,6 +95,18 @@ const CeoBoxStyle = styled.div`
     input {
       max-width: 120px;
     }
+  }
+
+  .datepicker-custom {
+    font-size: 0.85rem;
+  }
+
+  .react-datepicker__input-container {
+    max-width: 215px;
+  }
+
+  .react-datepicker__close-icon::after {
+    background-color: ${colorSystem.ceo};
   }
 `;
 
@@ -149,61 +166,59 @@ const PeakModal = ({ onClose }) => {
 
   return (
     <WrapStyle>
-      <div className="inner">
-        <h3>객실 등록</h3>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* 성수기 기간 설정 */}
-          <CeoBoxStyle>
-            <label>성수기 기간 설정</label>
-            <MainCalendar
-              selectedDate={selectedDate}
-              setSelectedDate={handleDateSelect}
-              onKeyDown={handleKeyDown}
+      <h3>성수기 & 주말 요금 설정</h3>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* 성수기 기간 설정 */}
+        <CeoBoxStyle>
+          <label>성수기 기간 설정</label>
+          <MainCalendar
+            selectedDate={selectedDate}
+            setSelectedDate={handleDateSelect}
+            onKeyDown={handleKeyDown}
+          />
+        </CeoBoxStyle>
+
+        {/* 성수기 추가 요금 */}
+        <CeoBoxStyle>
+          <label htmlFor="peakCost">성수기 추가 요금 비율</label>
+          <div className="cost-group">
+            <input
+              className="cost-input"
+              type="text"
+              id="peakCost"
+              autoComplete="off"
+              {...register("peakCost")}
+              // onChange={handleChangeAddCost}
+              placeholder="10"
             />
-          </CeoBoxStyle>
-
-          {/* 성수기 추가 요금 */}
-          <CeoBoxStyle>
-            <label htmlFor="peakCost">성수기 추가 요금 비율</label>
-            <div className="cost-group">
-              <input
-                className="cost-input"
-                type="text"
-                id="peakCost"
-                autoComplete="off"
-                {...register("peakCost")}
-                // onChange={handleChangeAddCost}
-                placeholder="10"
-              />
-              <p>%</p>
-            </div>
-            {errors.peakCost && <span>{errors.peakCost.message}</span>}
-          </CeoBoxStyle>
-
-          {/* 주말 추가 요금 */}
-          <CeoBoxStyle>
-            <label htmlFor="peakCost">주말 추가 요금 비율</label>
-            <div className="cost-group">
-              <input
-                className="cost-input"
-                type="text"
-                id="peakCost"
-                autoComplete="off"
-                {...register("peakCost")}
-                // onChange={handleChangeAddCost}
-                placeholder="10"
-              />
-              <p>%</p>
-            </div>
-            {errors.peakCost && <span>{errors.peakCost.message}</span>}
-          </CeoBoxStyle>
-
-          <div className="submit-btn">
-            <CeoButton label="등록하기" />
+            <p>%</p>
           </div>
-        </form>
-        <button onClick={onClose}>닫기</button>
-      </div>
+          {errors.peakCost && <span>{errors.peakCost.message}</span>}
+        </CeoBoxStyle>
+
+        {/* 주말 추가 요금 */}
+        <CeoBoxStyle>
+          <label htmlFor="peakCost">주말 추가 요금 비율</label>
+          <div className="cost-group">
+            <input
+              className="cost-input"
+              type="text"
+              id="peakCost"
+              autoComplete="off"
+              {...register("peakCost")}
+              // onChange={handleChangeAddCost}
+              placeholder="10"
+            />
+            <p>%</p>
+          </div>
+          {errors.peakCost && <span>{errors.peakCost.message}</span>}
+        </CeoBoxStyle>
+
+        <div className="submit-btn">
+          <CeoButton label="등록하기" />
+          <CeoActionButton label="닫기" onClick={onClose} />
+        </div>
+      </form>
     </WrapStyle>
   );
 };

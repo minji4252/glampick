@@ -12,9 +12,6 @@ const WrapStyle = styled.div`
     flex-direction: column;
   }
   h3 {
-    /* width: 100%; */
-    /* margin-top: 50px; */
-    margin-left: 120px;
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
@@ -33,24 +30,24 @@ const WrapStyle = styled.div`
       margin-top: 250px;
     }
   }
-
-  a {
-    max-width: 150px;
-    width: 100%;
-  }
 `;
 const RoomsTitle = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 20px;
-  margin-top: 50px;
+  gap: 50px;
+  margin: 42px 0 65px 120px;
 `;
 
 const RoomsStyle = styled.div`
+  a {
+    max-width: 150px;
+    width: 100%;
+  }
+
   width: 100%;
+  margin-left: 200px;
   margin-top: 50px;
-  margin-left: 50px;
 `;
 
 const RoomAddStyle = styled.button`
@@ -113,7 +110,7 @@ const CeoRoom = () => {
           <Link to="/ceorooms">
             <RoomAddStyle>
               <FaPlus />
-              <span>객실 추가</span>
+              <span>객실 등록</span>
             </RoomAddStyle>
           </Link>
         </RoomsStyle>
