@@ -45,7 +45,7 @@ const CategoriesStyle = styled.div`
 `;
 
 const NavLinkStyle = styled(NavLink)`
-  width: 166px;
+  width: 200px;
   background-color: ${colorSystem.white};
   padding: 10px;
   font-size: 1.1rem;
@@ -56,6 +56,7 @@ const NavLinkStyle = styled(NavLink)`
   align-items: center;
   justify-content: space-between;
   border-radius: 30px;
+  margin-bottom: 5px;
   span {
     height: 20px;
   }

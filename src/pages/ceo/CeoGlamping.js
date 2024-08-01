@@ -16,12 +16,10 @@ const WrapStyle = styled.div`
   }
   h3 {
     width: 100%;
-    margin-top: 50px;
-    margin-left: 120px;
+    margin: 50px 0 65px 120px;
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
-    margin-bottom: 65px;
   }
 
   form {
