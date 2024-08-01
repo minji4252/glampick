@@ -45,7 +45,6 @@ const WrapStyle = styled.div`
     /* 캘린더 */
     .calendar {
       width: 80%;
-      height: 480px;
       margin: 0 auto;
       /* border-radius: 20px;
       background-color: white;

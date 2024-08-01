@@ -31,7 +31,6 @@ export const StyledCalendarWrapper = styled.div`
   /* 전체 폰트 컬러 */
   .react-calendar__month-view {
     abbr {
-      /* color: ${props => props.theme.gray_1}; */
       color: ${colorSystem.g800};
     }
   }
@@ -69,9 +68,14 @@ export const StyledCalendarWrapper = styled.div`
     font-weight: 800;
   }
 
-  /* 일요일에만 빨간 폰트 */
+  /* 일요일 빨간 폰트 */
   .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
-    color: ${props => props.theme.red_1};
+    color: ${colorSystem.error};
+  }
+
+  /* 토요일 파란 폰트 */
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
+    color: #1273e4;
   }
 
   /* 오늘 날짜 폰트 컬러 */
@@ -99,7 +103,7 @@ export const StyledCalendarWrapper = styled.div`
 
   /* 일 날짜 간격 */
   .react-calendar__tile {
-    padding: 5px 0px 18px;
+    padding: 10px 0px 30px;
     position: relative;
   }
 
