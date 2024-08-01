@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
@@ -55,14 +55,22 @@ const PaginationContainer = styled.div`
   }
 `;
 
-const ListPagination = ({
+interface ListPaginationProps {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPageChange: (pageNumber: number) => void;
+  totalPages?: number;
+}
+
+const ListPagination: React.FC<ListPaginationProps> = ({
   currentPage,
   totalItems,
   itemsPerPage,
   onPageChange,
   totalPages,
 }) => {
-  const handlePageChange = pageNumber => {
+  const handlePageChange = (pageNumber: number) => {
     onPageChange(pageNumber);
   };
 
