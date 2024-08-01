@@ -15,6 +15,7 @@ const BookingCalendar = () => {
         showNeighboringMonth={false}
         value={new Date()}
         // customHeader라는 이름으로 커스터마이징
+        calendarType="gregory" // 요일 시작을 일요일로 설정
         customHeader={CustomCalendarHeader}
       />
     </StyledCalendarWrapper>
