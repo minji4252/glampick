@@ -19,15 +19,33 @@ const CeoBookingDetailStyle = styled.div`
 
     .guest-info {
       display: flex;
+      align-items: center;
       gap: 5px;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 7px;
+    }
+
+    .guest-name{
+      padding: 4px 0px;
+    }
+
+    .guest-number{
+      padding: 4px 0px;
     }
 
     .stay-info {
       display: flex;
       gap: 5px;
       color: ${colorSystem.g700};
+    }
+
+    .stay-night{
+      color: ${colorSystem.p600};
+      background-color: #EAF4FF;
+      border: 2px solid ${colorSystem.p200}; 
+      border-radius: 5px;
+      padding: 4px 10px;
+      margin-left: 5px;
     }
   }
 
@@ -44,9 +62,9 @@ const CeoBookingDetail = () => {
     <CeoBookingDetailStyle>
       <div className="booking-info">
         <div className="guest-info">
-          <div>김토토님 |</div>
-          <div>3인</div>
-          <div>2박</div>
+          <div className="guest-name">김토토님 |</div>
+          <div className="guest-number">3인</div>
+          <div className="stay-night">2박</div>
         </div>
         <div className="stay-info">
           <div>16:00~11:00 |</div>
