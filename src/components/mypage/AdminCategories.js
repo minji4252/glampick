@@ -14,7 +14,6 @@ const CategoriesStyle = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px;
   padding: 1rem;
   > div {
     cursor: default;
@@ -40,30 +39,35 @@ const CategoriesStyle = styled.div`
   }
 `;
 const NavLinkStyle = styled(NavLink)`
-  width: 166px;
+  width: 200px;
+  background-color: ${colorSystem.white};
+  padding: 10px;
   font-size: 1.1rem;
   white-space: pre;
-  padding-bottom: 0.25rem;
+  /* padding-bottom: 0.25rem; */
   font-weight: 700;
   color: ${colorSystem.g900};
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 30px;
+  margin-bottom: 5px;
   span {
     height: 20px;
   }
   &:hover {
-    color: ${colorSystem.g500};
+    color: ${colorSystem.admin};
   }
   &.active {
-    color: ${colorSystem.admin};
+    color: ${colorSystem.g900};
+    background-color: ${colorSystem.admin3};
     font-weight: 700;
     span {
-      border-bottom: 2px solid ${colorSystem.admin};
+      /* border-bottom: 2px solid ${colorSystem.admin}; */
     }
   }
   > svg {
-    color: ${colorSystem.admin};
+    /* color: ${colorSystem.admin}; */
   }
 `;
 const UnderLine = styled.div`

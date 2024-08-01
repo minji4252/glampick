@@ -1,27 +1,27 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import SearchCard from "../components/SearchCard";
+import SearchCalendar from "../components/search/SearchCalendar";
+import SearchCard from "../components/search/SearchCard";
+import SearchMap from "../components/search/SearchMap";
 import ListPagination from "../components/common/ListPagination";
+import LoadingNobg from "../components/common/LoadingNobg";
 import SearchPageStyle, {
+  NoResultStyle,
   ResultContents,
   SearchFilter,
   SearchInner,
   SearchInnerBottom,
   SearchInnerList,
   SearchInnerTop,
+  SearchLeft,
   SearchMenu,
   SearchResult,
-  SearchTop,
-  NoResultStyle,
   SearchRight,
-  SearchLeft,
-  SearchMap,
+  SearchTop,
 } from "../styles/SearchPageStyle";
 import "../styles/common.css";
 import "../styles/reset.css";
-import SearchCalendar from "../components/SearchCalendar";
-import LoadingNobg from "../components/common/LoadingNobg";
 
 const SearchPage = () => {
   const today = new Date();
@@ -65,6 +65,8 @@ const SearchPage = () => {
   const filter1 = searchParams.get("filter"); // 필터
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
+  const [mapCenter, setMapCenter] = useState({ lat: 33.5563, lng: 126.79581 }); // 기본 좌표
+  const [mapMarkers, setMapMarkers] = useState([]); // 기본 마커 데이터는 빈 배열
 
   useEffect(() => {
     // 추천리스트에서 filter있는 항목 선택시 url에 뜨게 + 필터 액티브 효과 활성화
@@ -93,6 +95,14 @@ const SearchPage = () => {
         const totalItems = glampingResponse.data.totalItems || 1;
         setSearchData(glampingResponse.data.glampingListItems);
         setSearchResults(glampingResponse.data);
+
+        const markers = glampingResponse.data.glampingListItems.map(item => ({
+          id: item.glampId,
+          lat: item.latitude, // API 응답에서의 위도
+          lng: item.longitude, // API 응답에서의 경도
+          title: item.glampName,
+        }));
+        setMapMarkers(markers);
       } catch (error) {
         console.log(error);
       } finally {
@@ -353,7 +363,7 @@ const SearchPage = () => {
               )}
             </SearchLeft>
             <SearchRight>
-              <SearchMap></SearchMap>
+              <SearchMap center={mapCenter} markers={mapMarkers} />
               <SearchFilter>
                 <div className="search-filter">
                   <div
