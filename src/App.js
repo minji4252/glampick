@@ -7,7 +7,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import "../src/styles/color";
+import "./styles/color";
 import "../src/styles/common.css";
 import "../src/styles/reset.css";
 import "./App.css";

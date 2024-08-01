@@ -24,86 +24,91 @@ import "../styles/reset.css";
 import { removeCookie } from "../utils/cookie";
 import MainBanner from "../components/MainBanner";
 
-const MainPage = ({ isLogin }) => {
+interface GlampingData {
+  glampId: number;
+  glampingName: string;
+  region: string;
+  starPoint: number;
+  reviewCount: number;
+  price: number;
+  glampingImg: string;
+}
+
+interface MainPageProps {
+  isLogin: boolean;
+}
+
+const MainPage: React.FC<MainPageProps> = ({ isLogin }) => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
 
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollTop, setLastScrollTop] = useState(0);
-  const [popularData, setPopularData] = useState([]);
-  const [petData, setPetData] = useState([]);
-  const [mountainData, setMountainData] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState("all"); // 선택 지역
-  const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
-  const [selectedMember, setSelectedMember] = useState(2); // 선택 인원 수
-  const [selectedWord, setSelectedWord] = useState(""); // 검색어
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [lastScrollTop, setLastScrollTop] = useState<number>(0);
+  const [popularData, setPopularData] = useState<GlampingData[]>([]);
+  const [petData, setPetData] = useState<GlampingData[]>([]);
+  const [mountainData, setMountainData] = useState<GlampingData[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<string>("all"); // 선택 지역
+  const [selectedDate, setSelectedDate] = useState<Date[]>([today, tomorrow]);
+  const [selectedMember, setSelectedMember] = useState<number>(2); // 선택 인원수
+  const [selectedWord, setSelectedWord] = useState<string>(""); // 검색어
   const navigate = useNavigate();
 
   // 로그아웃
   const handleLogout = () => {
-    removeCookie("access-Token", { path: "/" });
+    removeCookie("access-Token");
     navigate("/");
   };
 
   // 검색 결과
-  const handleSearch = e => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formatDate = date => {
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      return `${year}-${month}-${day}`;
-    };
+    const formatDate = (date: Date | undefined) =>
+      date ? date.toISOString().slice(0, 10) : "";
 
     const queryParams = new URLSearchParams({
       region: selectedPlace,
       inDate: formatDate(selectedDate[0]),
       outDate: formatDate(selectedDate[1]),
-      people: selectedMember,
+      people: selectedMember.toString(),
       searchWord: selectedWord,
     });
 
     const url = `/search?${queryParams.toString()}`;
-    // window.location.href = url; // 페이지 이동
     navigate(url);
   };
 
-  // 지금 가장 인기있는 TOP3
-  useEffect(() => {
-    const fetchPopularData = async () => {
-      const popularArray = await getPopularData();
-      setPopularData(popularArray);
-    };
-    fetchPopularData();
-  }, []);
-
-  // 반려동물과 함께할 수 있는 TOP 3
-  useEffect(() => {
-    const fetchPetData = async () => {
-      const petArray = await getPetData();
-      setPetData(petArray);
-    };
-    fetchPetData();
-  }, []);
-
-  // 산속에서 즐기는 TOP 3
-  useEffect(() => {
-    const fetchMountainData = async () => {
-      const mountainArray = await getMountainData();
-      setMountainData(mountainArray);
-    };
-    fetchMountainData();
-  }, []);
-
-  const handleDateSelect = date => {
-    setSelectedDate(date);
-    // console.log("선택 날짜:", date);
+  // 데이터 불러오기
+  const fetchData = async (
+    fetchFunction: () => Promise<GlampingData[]>,
+    setData: React.Dispatch<React.SetStateAction<GlampingData[]>>,
+  ) => {
+    try {
+      const dataArray = await fetchFunction();
+      setData(dataArray);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
   };
 
-  const handleKeyDown = e => {
-    // 키보드 입력 막기
+  useEffect(() => {
+    fetchData(getPopularData, setPopularData);
+  }, []);
+
+  useEffect(() => {
+    fetchData(getPetData, setPetData);
+  }, []);
+
+  useEffect(() => {
+    fetchData(getMountainData, setMountainData);
+  }, []);
+
+  const handleDateSelect = (date: Date[]) => {
+    setSelectedDate(date);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     e.preventDefault();
   };
 
@@ -225,7 +230,6 @@ const MainPage = ({ isLogin }) => {
                 <MainCalendar
                   selectedDate={selectedDate}
                   setSelectedDate={handleDateSelect}
-                  onKeyDown={handleKeyDown}
                 />
               </li>
               <li className="m-sc-member">
@@ -236,10 +240,12 @@ const MainPage = ({ isLogin }) => {
                   max="6"
                   id="memberinput"
                   value={selectedMember}
-                  onChange={e => {
-                    setSelectedMember(e.target.value);
-                    // console.log("선택 인원:", e.target.value);
-                  }}
+                  onChange={e =>
+                    setSelectedMember(
+                      Number(e.target.value),
+                      // console.log("선택 인원:", e.target.value);
+                    )
+                  }
                   onKeyDown={handleKeyDown}
                 />
                 <p>명</p>
@@ -260,7 +266,7 @@ const MainPage = ({ isLogin }) => {
                 <Link
                   to={`/search?region=${selectedPlace}&inDate=${selectedDate[0]?.toISOString().slice(0, 10)}&outDate=${selectedDate[1]?.toISOString().slice(0, 10)}&people=${selectedMember}`}
                 >
-                  <ActionButton label="검색" onClick={e => handleSearch(e)} />
+                  <ActionButton label="검색" onClick={handleSearch} />
                 </Link>
               </li>
             </MainSearchContent>

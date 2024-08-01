@@ -112,7 +112,17 @@ const ArticleContent = styled.div`
   }
 `;
 
-export const FavoriteCard = (
+interface FavoriteCardProps {
+  reviewCount: number;
+  price: string;
+  starPoint: number;
+  glampImage?: string;
+  glampLocation: string;
+  glampName: string;
+  glampId: string;
+}
+
+export const FavoriteCard: React.FC<FavoriteCardProps> = (
   reviewCount,
   price,
   starPoint,
