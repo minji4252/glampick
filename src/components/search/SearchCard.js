@@ -1,7 +1,7 @@
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { SearchContent } from "../styles/SearchPageStyle";
-import { MainButton } from "./common/Button";
+import { MainButton } from "../common/Button";
+import { SearchContent } from "../../styles/SearchPageStyle";
 
 const SearchCard = ({
   glampId,

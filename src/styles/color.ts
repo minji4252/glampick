@@ -38,6 +38,8 @@ export const colorSystem = {
   ceo: "#D6939B",
   ceo700: "#c86e79",
   admin: "#125917",
+  admin2: "#4C9451",
+  admin3: "#8DC091",
 };
 
 export const fontSystem = {

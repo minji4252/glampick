@@ -181,19 +181,6 @@ export const SearchRight = styled.div`
   }
 `;
 
-export const SearchMap = styled.div`
-  width: 350px;
-  height: 250px;
-  background: pink;
-  margin-top: 20px;
-  margin-bottom: 30px;
-  border-radius: 20px;
-
-  @media all and (max-width: 1300px) {
-    width: 100%;
-    max-width: 900px;
-  }
-`;
 // 상단 필터 항목
 export const SearchFilter = styled.div`
   /* height: 60px; */
