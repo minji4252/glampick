@@ -49,10 +49,12 @@ export const isCeoLoginState = atom({
   key: "isCeoLoginState",
   default: false,
 });
+
 export const ceoAccessTokenState = atom<string | null>({
   key: "ceoAccessTokenState",
   default: "",
 });
+
 // ceoRole 상태
 export const ceoRoleState = atom({
   key: "ceoRoleState", // 각 atom의 고유한 식별자

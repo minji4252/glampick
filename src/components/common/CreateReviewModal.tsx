@@ -164,7 +164,19 @@ const ReviewModalContent = styled.div`
   }
 `;
 
-const CreateReviewModal = ({
+interface CreateReviewModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  reservationId: string;
+  reviewStarPoint: number;
+  glampName: string;
+  roomName: string;
+  checkInDate: string;
+  checkOutDate: string;
+  setCanWriteReview: (value: number) => void;
+}
+
+const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
   isOpen,
   onClose,
   reservationId,
@@ -175,9 +187,9 @@ const CreateReviewModal = ({
   checkOutDate,
   setCanWriteReview,
 }) => {
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
-  const [images, setImages] = useState([]);
+  const [rating, setRating] = useState<number>(0);
+  const [reviewText, setReviewText] = useState<string>("");
+  const [images, setImages] = useState<File[]>([]);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
@@ -219,18 +231,20 @@ const CreateReviewModal = ({
   const maxReviewLength = 500;
 
   // 별점
-  const handleRating = rate => {
+  const handleRating = (rate: number) => {
     setRating(rate);
   };
 
   // 후기 내용
-  const handleReviewTextChange = e => {
+  const handleReviewTextChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setReviewText(e.target.value);
   };
 
   // 이미지 업로드
-  const handleImageUpload = e => {
-    const files = Array.from(e.target.files);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
     // 이미지가 현재 배열에 있는 이미지 개수를 더해 3장 이하로 제한
     if (images.length + files.length > maxImageCount) {
       alert(`이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`);
@@ -241,7 +255,7 @@ const CreateReviewModal = ({
   };
 
   // 이미지 삭제
-  const handleImageDelete = index => {
+  const handleImageDelete = (index: number) => {
     const updatedImages = [...images];
     updatedImages.splice(index, 1);
     setImages(updatedImages);
@@ -249,7 +263,7 @@ const CreateReviewModal = ({
   };
 
   // 폼 제출
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     // submit logic here
     e.preventDefault();
     if (!accessToken) return;

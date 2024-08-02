@@ -21,9 +21,9 @@ import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
-import base64 from 'base-64';
+import base64 from "base-64";
 
-const WrapStyle = styled.div`
+export const WrapStyle = styled.div`
   position: relative;
 
   .container {
@@ -315,14 +315,16 @@ const LoginPage = () => {
     // console.log(result.code);
     if (result.code === "SU") {
       console.log(result);
-      
-      // 토큰에서 사용자 정보 파싱
-      const payload = JSON.parse(base64.decode(result.accessToken.split('.')[1]));
-      const signedUser = JSON.parse(payload.signedUser);
-      console.log("signedUser :",signedUser )
 
-       // 사용자 역할을 Recoil 상태에 저장
-      setUserRole(signedUser.role);  // userRoleState를 업데이트
+      // 토큰에서 사용자 정보 파싱
+      const payload = JSON.parse(
+        base64.decode(result.accessToken.split(".")[1]),
+      );
+      const signedUser = JSON.parse(payload.signedUser);
+      console.log("signedUser :", signedUser);
+
+      // 사용자 역할을 Recoil 상태에 저장
+      setUserRole(signedUser.role); // userRoleState를 업데이트
 
       // 로그인 성공 시 로컬스토리지에 사용자 정보 저장
       localStorage.setItem("accessToken", result.accessToken);
@@ -342,9 +344,7 @@ const LoginPage = () => {
     }
     setLoading(false);
     // navigate("/");
-    
   };
-  
 
   return (
     <WrapStyle>
