@@ -1,50 +1,96 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AdminHeader,
   AdminLogin,
   GlampingKingStyle,
 } from "../../styles/AdminStyle";
 import { AdminButton } from "../../components/common/Button";
+import { useRecoilState } from "recoil";
+import {
+  adminAccessTokenState,
+  adminIdState,
+  adminPwState,
+} from "../../atoms/loginState";
+
+import { useLocation, useNavigate } from "react-router-dom";
+import { postAdminSignin } from "../../apis/adminapi";
 
 const GlampingKing = () => {
+  const [accessToken, setAccessToken] = useRecoilState(adminAccessTokenState);
+  const [adminId, setAdminId] = useRecoilState(adminIdState);
+  const [adminPw, setAdminPw] = useRecoilState(adminPwState);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // 로그인시 처리할 함수
+  const handleAdminLogin = async e => {
+    e.preventDefault();
+    if (!adminId || !adminPw) {
+      setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+    try {
+      const result = await postAdminSignin({ adminId, adminPw });
+      if (result.code === "SU") {
+        console.log(result);
+
+        localStorage.setItem("accessToken", result.accessToken);
+        setAccessToken(result.accessToken);
+        setTimeout(() => {
+          if (location.state && location.state.fromSignup) {
+            navigate("/adminstore");
+          } else {
+            navigate("/adminstore");
+          }
+        }, 1000);
+      } else {
+        console.log("로그인 실패");
+        setErrorMessage("아이디와 비밀번호 불일치");
+      }
+    } catch (error) {
+      console.error("로그인 처리 중 오류 발생", error);
+      setErrorMessage("로그인 처리 중 오류 발생");
+    }
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>관리자 페이지 로그인</AdminHeader>
 
-      {/* <AdminCategories /> */}
       <div className="inner">
         <AdminLogin>
           <form
             className="login-form"
-            // onSubmit={e => {
-            //   handleLogin(e);
-            // }}
+            onSubmit={e => {
+              handleAdminLogin(e);
+            }}
           >
-            <label htmlFor="email">아이디</label>
+            <label htmlFor="id">아이디</label>
             <input
-              type="id"
+              type="text"
               id="id"
               name="id"
-              // value={userEmail}
-              // placeholder=""
-              // onChange={e => {
-              //   setUserEmail(e.target.value);
-              // }}
+              value={adminId}
+              placeholder=""
+              onChange={e => {
+                setAdminId(e.target.value);
+              }}
             />
             <label htmlFor="password">비밀번호</label>
             <input
               type="password"
               id="password"
               name="password"
-              // value={userPw}
-              // placeholder=""
-              // onChange={e => {
-              //   setUserPw(e.target.value);
-              // }}
+              value={adminPw}
+              placeholder=""
+              onChange={e => {
+                setAdminPw(e.target.value);
+              }}
             />
-            {/* <p className="error-message">{errorMessage}</p> */}
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
             <div className="login-btn">
-              <AdminButton label="로그인" />
+              <AdminButton type="submit" label="로그인" />
             </div>
           </form>
         </AdminLogin>

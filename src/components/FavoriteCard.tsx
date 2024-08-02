@@ -122,7 +122,7 @@ interface FavoriteCardProps {
   glampId: string;
 }
 
-export const FavoriteCard: React.FC<FavoriteCardProps> = (
+export const FavoriteCard: React.FC<FavoriteCardProps> = ({
   reviewCount,
   price,
   starPoint,
@@ -130,7 +130,7 @@ export const FavoriteCard: React.FC<FavoriteCardProps> = (
   glampLocation,
   glampName,
   glampId,
-) => {
+}) => {
   return (
     <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">

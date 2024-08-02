@@ -21,7 +21,6 @@ import MainPageStyle, {
 } from "../styles/MainPageStyle";
 import "../styles/common.css";
 import "../styles/reset.css";
-import { removeCookie } from "../utils/cookie";
 import MainBanner from "../components/MainBanner";
 
 interface GlampingData {
@@ -56,7 +55,9 @@ const MainPage: React.FC<MainPageProps> = ({ isLogin }) => {
 
   // 로그아웃
   const handleLogout = () => {
-    removeCookie("access-Token");
+    // 로컬스토리지에서 토큰 삭제
+    localStorage.removeItem("accessToken");
+    // setIsLogin(false);
     navigate("/");
   };
 

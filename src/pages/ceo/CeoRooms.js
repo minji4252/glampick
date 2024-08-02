@@ -127,17 +127,6 @@ const CeoBoxStyle = styled.div`
   }
 `;
 
-const PeopleNumberStyle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  input {
-    max-width: 45px !important;
-    width: 100%;
-  }
-`;
-
 const ImageUploadStyle = styled.div`
   position: relative;
   height: 200px;
@@ -223,8 +212,57 @@ const ImageUploadStyle = styled.div`
   }
 `;
 
+const PeopleNumberStyle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  input {
+    max-width: 45px !important;
+    width: 100%;
+  }
+`;
+
+const CheckInRoomStyle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  label {
+    margin-bottom: 1px;
+    margin-right: 7px;
+  }
+
+  .number-group {
+    gap: 5px;
+  }
+`;
+
+const RoomOptionStyle = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  color: ${colorSystem.g600};
+
+  .option {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 100px;
+    margin: 5px;
+    font-weight: 600;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+
+    &.selected {
+      background-color: ${colorSystem.primary};
+      color: ${colorSystem.white};
+    }
+  }
+`;
+
 const CeoRooms = () => {
   const [images, setImages] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   // 폼의 초기값
   const initState = {
@@ -232,7 +270,9 @@ const CeoRooms = () => {
     images: [],
     glampIntro: "",
     glampPhone: "",
-    addCost: "",
+    roomCost: "",
+    peopleMinNum: "",
+    peopleMaxNum: "",
   };
 
   // yup schema 셋팅
@@ -240,11 +280,20 @@ const CeoRooms = () => {
     RoomName: yup.string().required("글램핑장 이름을 입력해 주세요"),
     images: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
     glampPhone: yup.string().required("글램핑장 연락처를 입력해 주세요"),
-    addCost: yup
+    roomCost: yup
       .string()
-      .required("1인 추가 요금을 입력해 주세요")
-      .min(4, "최소 금액은 1000원입니다")
+      .required("숫자를 입력해 주세요")
       .max(6, "최대 금액을 초과하였습니다"),
+    peopleMinNum: yup
+      .number()
+      .typeError("숫자를 입력해 주세요")
+      .required("숫자를 입력해 주세요")
+      .max(98, "최대 범위를 초과하였습니다"),
+    peopleMaxNum: yup
+      .number()
+      .typeError("숫자를 입력해 주세요")
+      .required("숫자를 입력해 주세요")
+      .max(98, "최대 범위를 초과하였습니다"),
   });
 
   // ---------------------------------이미지----------------------------------------
@@ -304,8 +353,11 @@ const CeoRooms = () => {
 
   // 숫자만 입력 가능
   const handleOnlyNumber = (e, fieldName) => {
-    const cost = e.target.value.replace(/[^\d]/g, "");
-    setValue(fieldName, cost, { shouldValidate: true });
+    let value = e.target.value.replace(/[^\d]/g, "");
+    if (value !== "") {
+      value = Math.max(0, Math.min(99, Number(value))).toString();
+    }
+    setValue(fieldName, value, { shouldValidate: true });
     trigger(fieldName);
   };
 
@@ -328,6 +380,14 @@ const CeoRooms = () => {
   }, [errors.images]);
 
   // -----------------------------------------------------------------------------
+
+  const handleOptionClick = option => {
+    setSelectedOptions(prevOptions =>
+      prevOptions.includes(option)
+        ? prevOptions.filter(opt => opt !== option)
+        : [...prevOptions, option],
+    );
+  };
 
   return (
     <WrapStyle>
@@ -400,22 +460,23 @@ const CeoRooms = () => {
               />
               <p>원</p>
             </div>
+
             {errors.roomCost && <span>{errors.roomCost.message}</span>}
           </CeoBoxStyle>
 
           {/* 객실 기준 인원 */}
           <CeoBoxStyle>
-            <label htmlFor="peopleNum">객실 기준 인원</label>
+            <label htmlFor="peopleMinNum">객실 기준 인원</label>
             <PeopleNumberStyle>
               <div className="number-group">
                 <p>최소</p>
                 <input
                   className="number-input"
                   type="text"
-                  id="peopleNum"
+                  id="peopleMinNum"
                   autoComplete="off"
-                  {...register("peopleNum")}
-                  onChange={e => handleOnlyNumber(e, "peopleNum")}
+                  {...register("peopleMinNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleMinNum")}
                 />
                 <p>인</p>
               </div>
@@ -425,60 +486,92 @@ const CeoRooms = () => {
                 <input
                   className="number-input"
                   type="text"
-                  id="peopleNum"
+                  id="peopleMaxNum"
                   autoComplete="off"
-                  {...register("peopleNum")}
-                  onChange={e => handleOnlyNumber(e, "peopleNum")}
+                  {...register("peopleMaxNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleMaxNum")}
                 />
                 <p>인</p>
               </div>
             </PeopleNumberStyle>
-            {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
+            {errors.peopleMinNum && <span>{errors.peopleMinNum.message}</span>}
+            {errors.peopleMaxNum && <span>{errors.peopleMaxNum.message}</span>}
           </CeoBoxStyle>
 
           {/* 입 퇴실 시간 */}
           <CeoBoxStyle>
-            <label htmlFor="peopleNum">입실 퇴실 시간</label>
-            {/* <PeopleNumberStyle> */}
-            <div className="number-group">
-              <p>입실</p>
-              <input
-                className="number-input"
-                type="time"
-                id="peopleNum"
-                autoComplete="off"
-                {...register("peopleNum")}
-                // onChange={e => handleOnlyNumber(e, "peopleNum")}
-              />
-              <p>시</p>
-            </div>
-            <p>-</p>
-            <div className="number-group">
-              <p>퇴실</p>
-              <input
-                className="number-input"
-                type="time"
-                id="peopleNum"
-                autoComplete="off"
-                {...register("peopleNum")}
-                // onChange={e => handleOnlyNumber(e, "peopleNum")}
-              />
-              <p>시</p>
-            </div>
-            {/* </PeopleNumberStyle> */}
+            <label htmlFor="peopleNum">입 · 퇴실 시간</label>
+            <CheckInRoomStyle>
+              <div className="number-group">
+                <label htmlFor="checkIn">입실</label>
+                <select id="checkIn">
+                  <option value="09">09 : 00</option>
+                  <option value="10">10 : 00</option>
+                  <option value="11">11 : 00</option>
+                  <option value="12">12 : 00</option>
+                  <option value="13">13 : 00</option>
+                  <option value="14">14 : 00</option>
+                  <option value="15">15 : 00</option>
+                  <option value="16">16 : 00</option>
+                  <option value="17">17 : 00</option>
+                  <option value="18">18 : 00</option>
+                  <option value="19">19 : 00</option>
+                  <option value="20">20 : 00</option>
+                  <option value="21">21 : 00</option>
+                  <option value="22">22 : 00</option>
+                  <option value="23">23 : 00</option>
+                </select>
+                <p>시</p>
+              </div>
+              <p>-</p>
+              <div className="number-group">
+                <label htmlFor="checkOut">퇴실</label>
+                <select id="checkOut">
+                  <option value="09">09 : 00</option>
+                  <option value="10">10 : 00</option>
+                  <option value="11">11 : 00</option>
+                  <option value="12">12 : 00</option>
+                  <option value="13">13 : 00</option>
+                  <option value="14">14 : 00</option>
+                  <option value="15">15 : 00</option>
+                  <option value="16">16 : 00</option>
+                  <option value="17">17 : 00</option>
+                  <option value="18">18 : 00</option>
+                  <option value="19">19 : 00</option>
+                  <option value="20">20 : 00</option>
+                  <option value="21">21 : 00</option>
+                  <option value="22">22 : 00</option>
+                  <option value="23">23 : 00</option>
+                </select>
+                <p>시</p>
+              </div>
+            </CheckInRoomStyle>
             {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
           </CeoBoxStyle>
 
           {/* 객실 옵션 */}
           <CeoBoxStyle>
-            <label htmlFor="RoomName">객실 옵션</label>
-            <input
-              type="text"
-              id="RoomName"
-              autoComplete="off"
-              {...register("RoomName")}
-            />
-            {errors.RoomName && <span>{errors.RoomName.message}</span>}
+            <label htmlFor="RoomOption">객실 옵션 (선택) </label>
+            <RoomOptionStyle>
+              {[
+                "바베큐",
+                "와이파이",
+                "수영장",
+                "반려동물동반",
+                "마운틴뷰",
+                "오션뷰",
+                "개별화장실",
+              ].map(option => (
+                <p
+                  key={option}
+                  className={`option ${selectedOptions.includes(option) ? "selected" : ""}`}
+                  onClick={() => handleOptionClick(option)}
+                >
+                  {option}
+                </p>
+              ))}
+            </RoomOptionStyle>
+            {errors.RoomOption && <span>{errors.RoomOption.message}</span>}
           </CeoBoxStyle>
 
           <div className="submit-btn">

@@ -41,6 +41,7 @@ export const MainHeader = styled.div`
     border: none;
     border-radius: 10px;
     font-size: 16px;
+    cursor: pointer;
     p {
       font-weight: 500;
       color: #355179;
