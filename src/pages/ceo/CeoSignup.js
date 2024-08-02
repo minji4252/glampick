@@ -29,7 +29,7 @@ const CeoSignUpStyle = styled.div`
   }
 `;
 
-const SignupWrapStyle = styled.div`
+export const SignupWrapStyle = styled.div`
   width: 100%;
   margin: 0 auto;
 
@@ -45,7 +45,7 @@ const SignupWrapStyle = styled.div`
       display: block;
       font-size: 1.1rem;
       margin-top: 20px;
-      margin-bottom: 7px;
+      margin-bottom: 9px;
     }
 
     input {
@@ -83,7 +83,7 @@ const SignupWrapStyle = styled.div`
   }
 
   // 회원가입 버튼
-  .ceosignup-button > button {
+  .signup-button > button {
     width: 100%;
     height: 50px;
     margin-top: 30px;
@@ -101,11 +101,12 @@ export const ErrorMessage = styled.span`
   display: block;
   color: ${colorSystem.error};
   font-size: 0.9rem;
+  margin-left: 3px;
 `;
 
 // 폼의 초기값
 const initState = {
-  ceoemail: "ceo@test.com",
+  ceoEmail: "ceo@test.com",
   password: "asdf@1234",
   name: "사장님",
   businessRegistrationNumber: "",
@@ -204,7 +205,7 @@ const CeoSignup = () => {
                 <input
                   type="email"
                   placeholder="glampickceo@good.kr"
-                  {...register("ceoemail", {
+                  {...register("ceoEmail", {
                     required: "이메일은 필수 항목입니다",
                     pattern: {
                       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -217,8 +218,8 @@ const CeoSignup = () => {
                 </div>
               </div>
             </div>
-            {errors.ceoemail && (
-              <ErrorMessage>{errors.ceoemail.message}</ErrorMessage>
+            {errors.ceoEmail && (
+              <ErrorMessage>{errors.ceoEmail.message}</ErrorMessage>
             )}
             <div className="form-group">
               <label>인증 코드</label>
@@ -393,7 +394,7 @@ const CeoSignup = () => {
             {errors.phoneAuthCode && (
               <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
             )}
-            <div className="ceosignup-button">
+            <div className="signup-button">
               <CeoButton label="회원가입" />
             </div>
           </form>

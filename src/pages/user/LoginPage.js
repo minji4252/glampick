@@ -11,6 +11,7 @@ import {
   userEmailState,
   userPwState,
   userRememberMeState,
+  userRoleState,
 } from "../../atoms/loginState";
 import AlertModal from "../../components/common/AlertModal";
 import { ActionButton, MainButton } from "../../components/common/Button";
@@ -20,6 +21,7 @@ import KakaoIcon from "../../images/btn_kakao.svg";
 import NaverIcon from "../../images/btn_naver.png";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
+import base64 from 'base-64';
 
 const WrapStyle = styled.div`
   position: relative;
@@ -270,6 +272,7 @@ const LoginPage = () => {
   // 로그인 상태 업데이트
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
+  const [userRole, setUserRole] = useRecoilState(userRoleState); // 사용자 역할 상태를 가져오고 설정
 
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
@@ -311,8 +314,17 @@ const LoginPage = () => {
     const result = await postSignIn({ userEmail, userPw });
     // console.log(result.code);
     if (result.code === "SU") {
-      // console.log(result);
-      // (변경) 로그인 성공 시 로컬스토리지에 사용자 정보 저장
+      console.log(result);
+      
+      // 토큰에서 사용자 정보 파싱
+      const payload = JSON.parse(base64.decode(result.accessToken.split('.')[1]));
+      const signedUser = JSON.parse(payload.signedUser);
+      console.log("signedUser :",signedUser )
+
+       // 사용자 역할을 Recoil 상태에 저장
+      setUserRole(signedUser.role);  // userRoleState를 업데이트
+
+      // 로그인 성공 시 로컬스토리지에 사용자 정보 저장
       localStorage.setItem("accessToken", result.accessToken);
       setAccessToken(result.accessToken);
 
@@ -330,7 +342,9 @@ const LoginPage = () => {
     }
     setLoading(false);
     // navigate("/");
+    
   };
+  
 
   return (
     <WrapStyle>

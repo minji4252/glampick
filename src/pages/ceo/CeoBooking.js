@@ -65,7 +65,6 @@ const WrapStyle = styled.div`
         justify-content: center;
         align-items: center;
         margin-top: 20px;
-        margin-bottom: 10px;
         > p {
           font-size: 1.2rem;
           font-weight: 700;
@@ -90,7 +89,7 @@ const WrapStyle = styled.div`
           padding: 10px;
           background-color: white;
           border-radius: 10px;
-          border: 1px solid ${colorSystem.g300};
+          border: 1px solid ${colorSystem.g600};
           box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 
           > span {

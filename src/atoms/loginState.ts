@@ -26,6 +26,12 @@ export const accessTokenState = atom<string | null>({
   default: "",
 });
 
+// userRole 상태
+export const userRoleState = atom({
+  key: 'userRoleState', // 각 atom의 고유한 식별자
+  default: null, // 초기값
+});
+
 // ceo 정보 상태
 export const ceoEmailState = atom({
   key: "ceoEmailState",

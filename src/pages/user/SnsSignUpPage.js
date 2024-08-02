@@ -2,6 +2,9 @@ import React from "react";
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "../../components/common/Button";
+import { useForm } from "react-hook-form";
+import { ErrorMessage, SignupWrapStyle } from "../ceo/CeoSignup";
+import { TermsGroupStyle } from "../../styles/signupstyle";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -12,251 +15,183 @@ const WrapStyle = styled.div`
     margin: 0 auto;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-  }
-
-  .wrap {
-    width: 100%;
   }
 
   h2 {
+    width: 80%;
+    display: flex;
+    padding: 20px;
+    justify-content: center;
     color: ${colorSystem.g800};
-    margin-top: 40px;
-    margin-bottom: 30px;
     font-size: 1.6rem;
+    border-bottom: 1.5px solid ${colorSystem.g500};
     /* 반응형 */
     ${size.mid} {
       font-size: 1.4rem;
     }
   }
-
-  /* 구분선 */
-  .line {
-    width: 80%;
-    border-bottom: 1.5px solid ${colorSystem.g500};
-    margin-bottom: 35px;
-  }
-
-  /* 회원가입 폼 */
-  .signup-form {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  .form-group label {
-    display: block;
-    font-size: 1.1rem;
-    margin-bottom: 7px;
-    ${size.mid} {
-      font-size: 1rem;
-    }
-  }
-
-  .input-group {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    ${size.mid} {
-      width: calc(100% - 140px - 10px);
-      width: 100%;
-    }
-  }
-
-  .form-group input,
-  .input-group input {
-    width: calc(100% - 150px - 10px);
-    /* 너비 조정: 100%에서 버튼 너비와 마진 값을 뺀 값 */
-    height: 40px;
-    border: none;
-    background-color: ${colorSystem.g100};
-    padding: 10px;
-    font-size: 0.9rem;
-    ${size.mid} {
-      font-size: 0.8rem;
-    }
-  }
-
-  // 버튼 없는 input에 마진 주기
-  .name-input {
-    margin-bottom: 30px;
-  }
-
-  /* 폼 버튼 */
-  .form-button > button {
-    width: 140px;
-    height: 40px;
-    font-size: 0.95rem;
-    ${size.mid} {
-      width: 130px;
-      font-size: 0.8rem;
-    }
-  }
-
-  /* 회원가입 버튼 */
-  .sign-button > button {
-    width: 100%;
-    height: 50px;
-    margin-top: 20px;
-    margin-bottom: 100px;
-    font-size: 1.2rem;
-    ${size.mid} {
-      font-size: 1.1rem;
-      margin-bottom: 80px;
-    }
-  }
 `;
 
-/* 약관동의 */
-const TermsGroupStyle = styled.div`
-  .terms-group p {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 25px;
-    ${size.mid} {
-      font-size: 1rem;
-    }
-  }
-
-  .agree-all {
-    font-weight: 600;
-  }
-  .terms-group ul {
-  }
-  .terms-group li {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  /* 모두동의 체크박스 */
-  .terms-group input {
-    width: 18px;
-    height: 18px;
-    ${size.mid} {
-      width: 15px;
-      height: 15px;
-    }
-  }
-  .terms-group label {
-    font-size: 1rem;
-    ${size.mid} {
-      font-size: 0.9rem;
-    }
-  }
-
-  .terms-item {
-    display: flex;
-    justify-content: space-between;
-    ${size.mid} {
-      margin-right: 23px;
-    }
-  }
-
-  /* 필수, 선택 체크박스 */
-  .left-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .left-content input {
-    width: 18px;
-    height: 18px;
-    ${size.mid} {
-      width: 15px;
-      height: 15px;
-    }
-  }
-
-  .view-terms-btn {
-    font-size: 1rem;
-    color: ${colorSystem.g700};
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    ${size.mid} {
-      font-size: 0.9rem;
-    }
-  }
-`;
+// 폼의 초기값
+const initState = {
+  name: "",
+  nickName: "",
+  phone: "",
+};
 
 const SnsSignUpPage = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({ defaultValues: initState });
+
+  const handlPhoneClick = () => {
+    // 휴대폰 발송 로직
+  };
+
+  const handlePhoneAuthCodeClick = () => {
+    // 휴대폰 인증코드 확인 로직
+  };
+
+  // 전화번호 자동 변경
+  const handleChangePhone = e => {
+    const phoneNumber = formatPhoneNumber(e.target.value);
+    // console.log(phoneNumber);
+    setValue("phone", phoneNumber);
+  };
+
+  // 전화번호 형식
+  const formatPhoneNumber = value => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength < 4) return phoneNumber;
+    if (phoneNumberLength < 8) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  };
+
+  const onSubmit = data => {
+    console.log("전송시 데이터 ", data);
+  };
+
   return (
     <WrapStyle>
-      <main>
-        <div className="inner">
-          <div className="container">
-            <h2>회원가입</h2>
-            <div className="line"></div>
-            <div className="wrap">
-              <form className="signup-form">
-                <fieldset>
-                  <legend></legend>
-
-                  <div className="form-group">
-                    <label htmlFor="name">이름</label>
-                    <input
-                      type="text"
-                      id="name"
-                      className="name-input"
-                      required
-                      placeholder="이름을 입력해주세요"
-                    />
+      <div className="container">
+        <h2>회원가입</h2>
+        <SignupWrapStyle>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="form-group">
+              <label>이름</label>
+              <input
+                type="text"
+                  placeholder="이름을 입력해주세요"
+                  {...register("name", {
+                    required: "이름은 필수 항목입니다.",
+                    minLength: {
+                      value: 1,
+                      message: "이름은 최소 1자 이상이어야 합니다.",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "이름은 최대 10자까지 가능합니다.",
+                    },
+                    pattern: {
+                      value: /^[가-힣]+$/,
+                      message: "이름은 한글만 가능합니다.",
+                    },
+                })}
+              />
+            </div>
+            {errors.name && 
+              <ErrorMessage>{errors.name.message}</ErrorMessage>}
+            <div className="form-group">
+              <label>닉네임</label>
+              <input
+                type="text"
+                  placeholder="닉네임을 입력해주세요"
+                  {...register("nickName", {
+                    required: "닉네임은 필수 항목입니다.",
+                    minLength: {
+                      value: 2,
+                      message: "닉네임은 최소 2자 이상이어야 합니다.",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "닉네임은 최대 10자까지 가능합니다.",
+                    },
+                    pattern: {
+                      value: /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]+$/,
+                      message: "닉네임은 한글, 숫자, 대소문자만 가능합니다.",
+                    },
+                })}
+              />
+            </div>
+            {errors.nickName && 
+              <ErrorMessage>{errors.nickName.message}</ErrorMessage>}
+            <div className="form-group">
+              <label>휴대폰</label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  placeholder="휴대폰번호를 정확히 입력해주세요"
+                  {...register("phone", {
+                    required: "휴대폰은 필수 항목입니다.",
+                    pattern: {
+                      value: /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/,
+                      message: "유효한 전화번호를 입력하세요.",
+                    },
+                  })}
+                  onChange={e => {
+                    handleChangePhone(e);
+                  }}
+                />
+                <div className="form-button">
+                  <MainButton label="인증코드 발송" />
+                </div>
+              </div>
+            </div>
+            {errors.phone && (
+              <ErrorMessage>{errors.phone.message}</ErrorMessage>
+            )}     
+            <div className="form-group">
+              <label>인증 코드</label>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    placeholder="인증코드를 입력해주세요"
+                    {...register("phoneAuthCode", {
+                      required: "인증코드는 필수 항목입니다.",
+                      pattern: {
+                        value: /^[0-9]{5,6}$/, // 5자리 또는 6자리 숫자 허용
+                        message: "인증코드가 형식에 맞지 않습니다.",
+                      },
+                    })}
+                  />
+                  <div className="form-button">
+                    <MainButton label="확인" />
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="nickname">닉네임</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="nickname"
-                        required
-                        placeholder="닉네임을 입력해주세요"
-                      />
-                      <div className="form-button">
-                        <MainButton label="중복확인" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="cellphone">휴대폰</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="cellphone"
-                        required
-                        placeholder="휴대폰번호를 정확히 입력해주세요"
-                      />
-                      <div className="form-button">
-                        <MainButton label="인증번호 발송" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="auth-number">인증번호</label>
-                    <div className="input-group">
-                      <input
-                        type="text"
-                        id="auth-number"
-                        required
-                        placeholder="인증번호를 입력해주세요"
-                      />
-                      <div className="form-button">
-                        <MainButton label="확인" />
-                      </div>
-                    </div>
-                  </div>
-                </fieldset>
-                <TermsGroupStyle>
-                  <div className="terms-group">
-                    <p>이용약관 동의</p>
-                    <ul>
-                      <li>
+                </div>
+            </div>
+            {errors.phoneAuthCode && (
+              <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
+            )}
+              <TermsGroupStyle>
+                <div className="terms-group">
+                  <p>이용약관 동의</p>
+                  <ul>
+                    <li>
                         <input type="checkbox" id="agree-all" />
                         <label htmlFor="agree-all" className="agree-all">
                           모두 동의
                         </label>
-                      </li>
-                      <li className="terms-item">
+                    </li>
+                    <li className="terms-item">
                         <div className="left-content">
                           <input type="checkbox" id="agree-terms" />
                           <label htmlFor="agree-terms">(필수) 이용약관</label>
@@ -264,8 +199,8 @@ const SnsSignUpPage = () => {
                         <button type="button" className="view-terms-btn">
                           약관보기 &gt;
                         </button>
-                      </li>
-                      <li className="terms-item">
+                    </li>
+                    <li className="terms-item">
                         <div className="left-content">
                           <input type="checkbox" id="agree-privacy" />
                           <label htmlFor="agree-privacy">
@@ -275,8 +210,8 @@ const SnsSignUpPage = () => {
                         <button type="button" className="view-terms-btn">
                           약관보기 &gt;
                         </button>
-                      </li>
-                      <li className="terms-item">
+                    </li>
+                    <li className="terms-item">
                         <div className="left-content">
                           <input type="checkbox" id="agree-marketing" />
                           <label htmlFor="agree-marketing">
@@ -286,18 +221,17 @@ const SnsSignUpPage = () => {
                         <button type="button" className="view-terms-btn">
                           약관보기 &gt;
                         </button>
-                      </li>
-                    </ul>
-                  </div>
+                    </li>
+                  </ul>
+                </div>
                 </TermsGroupStyle>
-                <div className="sign-button">
+                <div className="signup-button">
                   <MainButton label="회원가입" />
                 </div>
               </form>
-            </div>
+            </SignupWrapStyle>
           </div>
-        </div>
-      </main>
+        
     </WrapStyle>
   );
 };
