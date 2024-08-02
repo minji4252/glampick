@@ -74,6 +74,7 @@ function App() {
   // 로그아웃
   const handleLogout = async () => {
     await postSignOut();
+    console.log("로그아웃성공:", postSignOut);
     // 로컬스토리지에서 토큰 삭제
     localStorage.removeItem("accessToken", { path: "/" });
     setIsLogin(false);
