@@ -14,6 +14,7 @@ import filterToilet from "../images/icon/f-toilet.png";
 import filterToilet2 from "../images/icon/f-toilet2.png";
 import filterWifi from "../images/icon/f-wifi.png";
 import filterWifi2 from "../images/icon/f-wifi2.png";
+import MapThumbnailImg from "../images/thumbnail_map.png";
 
 import emptyImg from "../images/emptyImg.png";
 import { colorSystem, size } from "../styles/color";
@@ -178,6 +179,50 @@ export const SearchRight = styled.div`
     width: 100%;
     margin-top: 0;
     align-items: center;
+  }
+`;
+
+export const MapThumbnail = styled.div`
+  position: relative;
+  width: 350px;
+  height: 250px;
+  background-image: url(${MapThumbnailImg});
+  margin-top: 20px;
+  margin-bottom: 30px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media all and (max-width: 1300px) {
+    width: 100%;
+    max-width: 900px;
+  }
+`;
+
+export const MapButton = styled.button`
+  position: absolute;
+  cursor: pointer;
+  font-family: "Pretendard Variable";
+  font-weight: 500;
+  font-size: 20px;
+  padding: 8px 16px;
+  border-radius: 30px;
+  height: 2.8rem;
+  transition:
+    border 0.3s,
+    background-color 0.3s,
+    color 0.3s;
+  border: 1px solid;
+  background-color: ${colorSystem.primary};
+  color: ${colorSystem.white};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    border: 1px solid ${colorSystem.p700};
+    background-color: ${colorSystem.p700};
   }
 `;
 

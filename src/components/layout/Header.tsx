@@ -5,7 +5,12 @@ import headerUser from "../../images/icon/member-icon.png";
 import glampickLogo from "../../images/glampick_logo.png";
 import { removeCookie } from "../../utils/cookie";
 
-const Header = ({ isLogin, handleLogout }) => {
+interface HeaderProps {
+  isLogin: boolean;
+  handleLogout: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ isLogin, handleLogout }) => {
   const locationNow = useLocation();
 
   // 메인, 관리자 페이지 header 숨김
