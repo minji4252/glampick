@@ -1,6 +1,20 @@
 import styled from "@emotion/styled";
 import { colorSystem } from "../../styles/color";
-const ButtonStyle = styled.button`
+
+interface ButtonProps {
+  bg?: string;
+  color?: string;
+  hoverBorder?: string;
+  hoverBg?: string;
+  hoverColor?: string;
+}
+
+interface ButtonComponentProps {
+  label?: string;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+const ButtonStyle = styled.button<ButtonProps>`
   cursor: pointer;
   font-family: "Pretendard Variable";
   font-weight: 500;
@@ -71,22 +85,41 @@ const AdminButtonStyle = styled(ButtonStyle)`
   background-color: ${colorSystem.admin};
   color: ${colorSystem.white};
 `;
-const MainButton = ({ label = "버튼", onClick }) => {
+
+const MainButton: React.FC<ButtonComponentProps> = ({
+  label = "버튼",
+  onClick,
+}) => {
   return <MainButtonStyle onClick={onClick}>{label}</MainButtonStyle>;
 };
-const ActionButton = ({ label = "버튼", onClick }) => {
+const ActionButton: React.FC<ButtonComponentProps> = ({
+  label = "버튼",
+  onClick,
+}) => {
   return <ActionButtonStyle onClick={onClick}>{label}</ActionButtonStyle>;
 };
-const DeleteButton = ({ label = "버튼", onClick }) => {
+const DeleteButton: React.FC<ButtonComponentProps> = ({
+  label = "버튼",
+  onClick,
+}) => {
   return <DeleteButtonStyle onClick={onClick}>{label}</DeleteButtonStyle>;
 };
-const CeoButton = ({ label = "버튼", onClick }) => {
+const CeoButton: React.FC<ButtonComponentProps> = ({
+  label = "버튼",
+  onClick,
+}) => {
   return <CeoButtonStyle onClick={onClick}>{label}</CeoButtonStyle>;
 };
-const CeoActionButton = ({ label = "버튼", onClick }) => {
+const CeoActionButton: React.FC<ButtonComponentProps> = ({
+  label = "버튼",
+  onClick,
+}) => {
   return <CeoActionButtonStyle onClick={onClick}>{label}</CeoActionButtonStyle>;
 };
-const AdminButton = ({ label = "버튼", onClick }) => {
+const AdminButton: React.FC<ButtonComponentProps> = ({
+  label = "버튼",
+  onClick,
+}) => {
   return <AdminButtonStyle onClick={onClick}>{label}</AdminButtonStyle>;
 };
 

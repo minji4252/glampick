@@ -45,7 +45,15 @@ const PaginationContainer = styled.div`
   }
 `;
 
-const ReviewPagination = () => {
+interface PaginationProps {
+  currentPage: number;
+  totalItems: number;
+  itemsPerPage: number;
+  onPageChange: (pageNumber: number) => void;
+  totalPages?: number;
+}
+
+const ReviewPagination: React.FC<PaginationProps> = () => {
   // 초기 세팅 페이지
   const [activePage, setActivePage] = useState(1);
   // 한 페이지당 목록 수
@@ -53,7 +61,7 @@ const ReviewPagination = () => {
   // 총 게시물 목록 수
   const totalItemsCount = 300;
 
-  const handlePageChange = pageNumber => {
+  const handlePageChange = (pageNumber: number) => {
     console.log(`active page is ${pageNumber}`);
     setActivePage(pageNumber);
     // 여기서 데이터를 가져오거나, 다시 렌더링을 처리할 수 있음
@@ -67,7 +75,6 @@ const ReviewPagination = () => {
         totalItemsCount={totalItemsCount}
         pageRangeDisplayed={5}
         onChange={handlePageChange}
-        e
         itemClass="page-item"
         linkClass="page-link"
         prevPageText={
