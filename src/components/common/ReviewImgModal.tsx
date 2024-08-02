@@ -24,10 +24,11 @@ const ModalContent = styled.div`
   border-radius: 8px;
   width: 60%;
   max-width: 600px;
-  max-height: 60%;
+  max-height: 80%;
   padding: 20px;
   overflow-y: auto;
   position: relative;
+  overflow: hidden; /* 스크롤이 내부에서만 발생하도록 설정 */
 `;
 
 const ModalHeader = styled.div`
@@ -56,7 +57,9 @@ const ImageContainer = styled.div`
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 10px;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  max-height: 60vh; /* 스크롤이 생길 수 있는 최대 높이 설정 */
+  overflow-y: auto; /* 수직 스크롤 허용 */
 `;
 
 const ImageItem = styled.div`
@@ -80,8 +83,19 @@ const MoreButton = styled.button`
   }
 `;
 
-const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
-  const [reviewImages, setReviewImages] = useState([]);
+// Props 타입 정의
+interface ReviewImgModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  glampId: string;
+}
+
+const ReviewImgModal: React.FC<ReviewImgModalProps> = ({
+  isOpen,
+  onClose,
+  glampId,
+}) => {
+  const [reviewImages, setReviewImages] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   // 더보기 버튼
@@ -140,8 +154,15 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
     //배열의 길이를 5로 나눈 나머지
   ];
 
+  // 배경 클릭 시 모달 닫기 핸들러
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <ModalOverlay>
+    <ModalOverlay onClick={handleOverlayClick}>
       <ModalContent>
         <ModalHeader>
           <ModalTitle>사진 전체보기</ModalTitle>
@@ -173,10 +194,11 @@ const ReviewImgModal = ({ isOpen, onClose, glampId }) => {
   );
 };
 
-ReviewImgModal.propTypes = {
-  reviewImages: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onClose: PropTypes.func.isRequired,
-  onMoreClick: PropTypes.func,
-};
+// TypeScript에서는 PropTypes를 사용하지 않음
+// ReviewImgModal.propTypes = {
+//   reviewImages: PropTypes.arrayOf(PropTypes.string).isRequired,
+//   onClose: PropTypes.func.isRequired,
+//   onMoreClick: PropTypes.func,
+// };
 
 export default ReviewImgModal;

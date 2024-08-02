@@ -43,6 +43,7 @@ import CeoSignup from "./pages/ceo/CeoSignup";
 import CeoLogin from "./pages/ceo/CeoLogin";
 import AdminSignup from "./pages/admin/AdminSignup";
 import AdminBanner from "./pages/admin/AdminBanner";
+import { postSignOut } from "./apis/userapi";
 
 function App() {
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
@@ -71,7 +72,8 @@ function App() {
   }, [locationNow]); // location 변경시마다
 
   // 로그아웃
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await postSignOut();
     // 로컬스토리지에서 토큰 삭제
     localStorage.removeItem("accessToken", { path: "/" });
     setIsLogin(false);

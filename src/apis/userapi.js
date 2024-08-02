@@ -17,6 +17,17 @@ export const postSignIn = async ({ userEmail, userPw }) => {
   }
 };
 
+// 로그아웃 Api 호출
+export const postSignOut = async () => {
+  try {
+    const response = await axios.post("/api/auth/sign-out");
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // 메일 인증 api 호출
 export const postMailSend = async ({ userEmail }) => {
   try {
@@ -112,7 +123,6 @@ export const postSignUp = async ({
     }
     console.log(error);
   }
-  
 };
 
 // 유저 정보수정 비밀번호 확인 api

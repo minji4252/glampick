@@ -1,172 +1,35 @@
-import styled from "@emotion/styled";
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import {
+  ceoAccessTokenState,
   ceoEmailState,
   ceoPwState,
   ceoRememberMeState,
+  ceoRoleState,
   errorMessageState,
+  isCeoLoginState,
 } from "../../atoms/loginState";
 import { CeoButton } from "../../components/common/Button";
-import GlampickLogo from "../../images/glampick_logo.png";
-import { colorSystem, size } from "../../styles/color";
-
-const WrapStyle = styled.div`
-  position: relative;
-
-  .container {
-    display: flex;
-    width: 760px;
-    height: 800px;
-    /* 높이 임시로 설정 */
-    margin: 0 auto;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .glampick-logo {
-    width: 180px;
-    height: 180px;
-    background: url(${GlampickLogo}) no-repeat center;
-    background-size: contain;
-    /* 반응형 */
-    ${size.mid} {
-      width: 160px;
-      height: 160px;
-    }
-  }
-
-  h2 {
-    color: ${colorSystem.g800};
-    font-size: 1.6rem;
-    margin-top: 40px;
-    margin-bottom: 40px;
-    ${size.mid} {
-      font-size: 1.5rem;
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
-  }
-
-  .wrap {
-    width: 550px;
-    position: relative;
-    ${size.mid} {
-      width: 70%;
-    }
-  }
-
-  .ceo-login-form {
-    width: 80%;
-    margin: 0 auto;
-  }
-
-  label {
-    display: block;
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    ${size.mid} {
-      font-size: 1.2rem;
-    }
-  }
-
-  input {
-    width: 100%;
-    height: 50px;
-    font-size: 1rem;
-    border-radius: 10px;
-
-    background-color: ${colorSystem.g100};
-    border: none;
-    padding: 10px;
-    ${size.mid} {
-      height: 45px;
-    }
-  }
-
-  input[type="email"] {
-    margin-bottom: 20px;
-    border-radius: 10px;
-  }
-
-  input::placeholder {
-    font-size: 1rem;
-    background-color: ${colorSystem.g100};
-    font-weight: 300;
-    ${size.mid} {
-      font-size: 0.9rem;
-    }
-  }
-
-  .error-message {
-    display: block;
-    color: ${colorSystem.error};
-    font-size: 0.9rem;
-    margin-top: 7px;
-    margin-left: 5px;
-    ${size.mid} {
-      font-size: 0.8rem;
-    }
-  }
-
-  /* 로그인 버튼 */
-  .login-btn > button {
-    width: 100%;
-    height: 50px;
-    font-size: 1.2rem;
-    margin-top: 30px;
-    ${size.mid} {
-      font-size: 1.1rem;
-      height: 45px;
-    }
-  }
-
-  /* 회원가입 */
-  .signup {
-    width: 80%;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .signup p {
-    position: absolute;
-    right: 0;
-    // 로그인버튼 하단에 위치 고정
-    color: ${colorSystem.g700};
-    font-size: 1.1rem;
-    padding: 10px;
-    ${size.mid} {
-      font-size: 1rem;
-    }
-  }
-
-  /* 이메일 기억하기 */
-  .remember-me {
-    display: flex;
-    align-items: center;
-    margin-top: 12px;
-    margin-left: 3px;
-    > input {
-      width: 13px;
-      height: 13px;
-      margin-right: 5px;
-    }
-    > label {
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      margin: 0;
-    }
-  }
-`;
+import { WrapStyle } from "../user/LoginPage";
+import base64 from "base-64";
+import { postOwnerSignin } from "../../apis/ceoapi";
+import useModal from "../../hooks/UseModal";
 
 const CeoLogin = () => {
   const [ceoEmail, setCeoEmail] = useRecoilState(ceoEmailState);
   const [ceoPw, setCeoPw] = useRecoilState(ceoPwState);
   const [errorMessage, setErrorMessage] = useRecoilState(errorMessageState);
   const [rememberMe, setRememberMe] = useRecoilState(ceoRememberMeState);
+
+  // 로그인 상태 업데이트
+  const [accessToken, setAccessToken] = useRecoilState(ceoAccessTokenState);
+  const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
+  const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState); // 사용자 역할 상태를 가져오고 설정
+
+  const navigate = useNavigate();
+
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
@@ -190,6 +53,47 @@ const CeoLogin = () => {
     });
   };
 
+  // 로그인시 처리할 함수
+  const handleCeoLogin = async e => {
+    e.preventDefault();
+
+    if (!ceoEmail || !ceoPw) {
+      setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
+      return;
+    }
+
+    const result = await postOwnerSignin({ ceoEmail, ceoPw });
+    if (result.code === "SU") {
+      console.log(result);
+
+      // 토큰에서 사용자 정보 파싱
+      const payload = JSON.parse(
+        base64.decode(result.accessToken.split(".")[1]),
+      );
+      const signedCeo = JSON.parse(payload.signedUser);
+      console.log("signedCeo :", signedCeo);
+
+      // Ceo역할을 Recoil 상태에 저장
+      setCeoRole(signedCeo.role); // userRoleState를 업데이트
+
+      // 로그인 성공 시 로컬스토리지에 사장님 정보 저장
+      localStorage.setItem("accessToken", result.accessToken);
+      setAccessToken(result.accessToken);
+      setIsCeoLogin(true);
+
+      openModal({ message: "로그인 성공하였습니다!" });
+      setTimeout(() => {
+        if (location.state && location.state.fromSignup) {
+          navigate("/");
+        } else {
+          navigate(-1);
+        }
+      }, 1000); // 1초 후에 페이지 이동
+    } else {
+      console.log("로그인 실패");
+      setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
+    }
+  };
   return (
     <WrapStyle>
       <main>
@@ -198,7 +102,12 @@ const CeoLogin = () => {
             <div className="glampick-logo"></div>
             <h2>비즈니스 로그인</h2>
             <div className="wrap">
-              <form className="ceo-login-form">
+              <form
+                className="login-form"
+                onSubmit={e => {
+                  handleCeoLogin(e);
+                }}
+              >
                 <label htmlFor="email">이메일</label>
                 <input
                   type="email"
@@ -235,7 +144,6 @@ const CeoLogin = () => {
                   <CeoButton label="로그인" />
                 </div>
               </form>
-
               <div className="signup">
                 <Link to="/ceosignup" className="ceosignup-btn">
                   <p>회원가입</p>

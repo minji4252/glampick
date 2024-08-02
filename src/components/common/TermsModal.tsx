@@ -26,6 +26,7 @@ export const ModalContent = styled.div`
   overflow-y: auto;
   white-space: pre-line;
   /* 내용이 길 경우 스크롤 */
+  overflow: hidden; /* 스크롤이 내부에서만 발생하도록 설정 */
 `;
 
 export const ModalTitle = styled.div`
@@ -51,13 +52,36 @@ export const ModalText = styled.div`
   padding: 10px;
   color: ${colorSystem.g800};
   line-height: 1.6;
+  margin-top: 6px;
+  max-height: 60vh; /* 스크롤이 생길 수 있는 최대 높이 설정 */
+  overflow-y: auto; /* 수직 스크롤 허용 */
 `;
 
-export const TermsModal = ({ isOpen, onClose, title, content }) => {
+// Props 타입 정의
+interface TermsModalProps {
+  isOpen: boolean;
+  onClose: () => void; // 함수가 호출된 후에 아무 값도 반환하지 않고 종료
+  title: string;
+  content: string;
+}
+
+export const TermsModal: React.FC<TermsModalProps> = ({
+  isOpen,
+  onClose,
+  title,
+  content,
+}) => {
   if (!isOpen) return null;
 
+  // 배경 클릭 시 모달 닫기 핸들러
+  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <ModalBackdrop>
+    <ModalBackdrop onClick={handleOverlayClick}>
       <ModalContent>
         <ModalTitle>{title}</ModalTitle>
         <CloseButton
