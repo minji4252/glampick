@@ -20,6 +20,12 @@
 > <h2>프로젝트 관련 링크</h2>
 
 <div>
+    <a href="https://www.canva.com/design/DAGLMP7V7Zs/igga4VbcFUuWIcHbjXjZ5w/edit?utm_content=DAGLMP7V7Zs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" >
+        <img src="src/images/icon/logos_canva.png" /> CANVA
+    </a>
+</div>
+<br>
+<div>
     <a href="https://www.figma.com/design/K6EFAkf02fxCtULowqFS5o/Layout?node-id=164-329&t=o7Jby7RWwhW8lphA-1" target="_blank" >
         <img src="src/images/icon/logos_figma.png" /> FIGMA
     </a>
