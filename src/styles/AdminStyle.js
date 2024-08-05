@@ -4,6 +4,20 @@ import { colorSystem, size } from "./color";
 export const GlampingKingStyle = styled.div`
   .inner {
     flex-direction: column;
+    margin-top: 20px;
+    .store-inner {
+      width: 100%;
+      margin-top: 50px;
+      padding: 0 50px;
+      display: flex;
+      justify-content: flex-start;
+    }
+  }
+  @media all and (max-width: 1910px) {
+    .inner {
+      margin-top: 50px;
+      margin-left: 82px;
+    }
   }
 
   h3 {

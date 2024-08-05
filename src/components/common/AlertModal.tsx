@@ -8,10 +8,20 @@ import {
 } from "../../styles/modalstyle";
 import { MainButton } from "./Button";
 
-export const AlertModal = ({ isOpen, onClose, message }) => {
+interface AlertModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  message: string;
+}
+
+const AlertModal: React.FC<AlertModalProps> = ({
+  isOpen,
+  onClose,
+  message,
+}) => {
   if (!isOpen) return null;
 
-  //모달 줄바꿈
+  // 모달 줄바꿈
   const formattedMessage = message.split("\n").map((line, index) => (
     <span key={index}>
       {line}

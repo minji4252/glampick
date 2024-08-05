@@ -15,6 +15,7 @@ export const MapModalStyle = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   z-index: 99999;
+  overflow: hidden;
   > p {
     margin-top: 15px;
     color: ${colorSystem.g800};
@@ -41,17 +42,20 @@ export const MapModalStyle = styled.div`
     color: #777;
   }
 `;
-export const SearchMapModal = styled.div``;
+export const SearchMapModal = styled.div`
+  height: 100%;
+`;
 
 export const MapContent = styled.div`
   display: grid;
+  height: 100%;
   flex-direction: row;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 2.5fr;
 `;
 
 export const LeftList = styled.div`
-  background: pink;
+  /* overflow-y: auto; */
 `;
 export const RightMap = styled.div`
-  background: skyblue;
+  /* overflow: hidden; */
 `;
