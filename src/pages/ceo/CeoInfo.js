@@ -139,6 +139,7 @@ const CeoInfo = () => {
   const defaultValues = {
     email: "ceo@test.com", // 기본 이메일 (수정 불가)
     name: "홍길동", // 기본 이름 (수정 불가)
+    businessRegistrationNumber: "",
     password: "", // 비밀번호
     confirmPassword: "", // 비밀번호 확인
     phone: "", // 핸드폰 번호
@@ -214,6 +215,16 @@ const CeoInfo = () => {
                 readOnly
                 defaultValue={defaultValues.name} // 수정 불가
                 {...register("name")}
+                className="readOnly"
+              />
+            </div>
+            <div className="form-group">
+              <label>사업자등록번호</label>
+              <input
+                type="text"
+                readOnly
+                defaultValue={defaultValues.businessRegistrationNumber} // 수정 불가
+                {...register("businessRegistrationNumber")}
                 className="readOnly"
               />
             </div>

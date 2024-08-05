@@ -15,19 +15,20 @@ export const userRememberMeState = atom({
 });
 
 // user 로그인 상태
-export const isLoginState = atom({
+export const isLoginState = atom<boolean>({
   key: "isLoginState",
   default: false,
 });
+
 export const accessTokenState = atom<string | null>({
   key: "accessTokenState",
   default: "",
 });
 
 // userRole 상태
-export const userRoleState = atom({
-  key: "userRoleState", // 각 atom의 고유한 식별자
-  default: "", // 초기값
+export const userRoleState = atom<string | null>({
+  key: "userRoleState",
+  default: null,
 });
 
 // ceo 정보 상태
@@ -35,10 +36,12 @@ export const ceoEmailState = atom({
   key: "ceoEmailState",
   default: "",
 });
+
 export const ceoPwState = atom({
   key: "ceoPwState",
   default: "",
 });
+
 export const ceoRememberMeState = atom({
   key: "ceoRememberMeState",
   default: false,
@@ -57,8 +60,8 @@ export const ceoAccessTokenState = atom<string | null>({
 
 // ceoRole 상태
 export const ceoRoleState = atom({
-  key: "ceoRoleState", // 각 atom의 고유한 식별자
-  default: "", // 초기값
+  key: "ownerRole",
+  default: null,
 });
 
 // 관리자 정보 상태

@@ -325,10 +325,10 @@ const LoginPage = () => {
 
       // 사용자 역할을 Recoil 상태에 저장
       setUserRole(signedUser.role); // userRoleState를 업데이트
-
       // 로그인 성공 시 로컬스토리지에 사용자 정보 저장
       localStorage.setItem("accessToken", result.accessToken);
-      setAccessToken(result.accessToken);
+      localStorage.setItem("userRole", signedUser.role);
+      // setAccessToken(result.accessToken);
 
       openModal({ message: "로그인 성공하였습니다!" });
       setTimeout(() => {
