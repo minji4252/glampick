@@ -1,5 +1,4 @@
 import React from "react";
-
 import { IoClose } from "react-icons/io5";
 import {
   MapModalStyle,
@@ -8,9 +7,12 @@ import {
   LeftList,
   RightMap,
 } from "../../styles/MapModalStyle";
+import SearchMap from "../search/SearchMap";
+import SearchCard from "../search/SearchCard";
 
-const MapModal = ({ isOpen, onClose }) => {
+const MapModal = ({ isOpen, onClose, searchData }) => {
   if (!isOpen) return null;
+
   return (
     <MapModalStyle>
       <SearchMapModal>
@@ -18,8 +20,26 @@ const MapModal = ({ isOpen, onClose }) => {
           <IoClose />
         </button>
         <MapContent>
-          <LeftList>리스트 부분</LeftList>
-          <RightMap>지도 부분</RightMap>
+          <LeftList>
+            {/* {searchData.map(item => (
+              <SearchCard
+                key={item.glampId}
+                glampId={item.glampId}
+                glampPic={item.glampPic}
+                glampName={item.glampName}
+                region={item.region}
+                starPoint={item.starPoint}
+                reviewCount={item.reviewCount}
+                price={item.price}
+                inDate={item.inDate}
+                outDate={item.outDate}
+                people={item.people}
+              />
+            ))} */}
+          </LeftList>
+          <RightMap>
+            <SearchMap />
+          </RightMap>
         </MapContent>
       </SearchMapModal>
     </MapModalStyle>
