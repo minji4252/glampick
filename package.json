@@ -7,6 +7,11 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.9.0",
+    "@nivo/bar": "^0.87.0",
+    "@nivo/core": "^0.87.0",
+    "@nivo/heatmap": "^0.87.0",
+    "@nivo/line": "^0.87.0",
+    "@nivo/pie": "^0.87.0",
     "@reduxjs/toolkit": "^2.2.6",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -76,5 +81,5 @@
     "eslint-config-react-app": "^7.0.1",
     "prettier": "^3.3.2"
   },
-  "proxy": "http://192.168.0.208:8080/"
+  "proxy": "http://192.168.0.7:8080/"
 }

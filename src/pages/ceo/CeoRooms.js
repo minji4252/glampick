@@ -281,9 +281,10 @@ const CeoRooms = () => {
     images: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
     glampPhone: yup.string().required("글램핑장 연락처를 입력해 주세요"),
     roomCost: yup
-      .string()
+      .number()
+      .typeError("숫자를 입력해 주세요")
       .required("숫자를 입력해 주세요")
-      .max(6, "최대 금액을 초과하였습니다"),
+      .max(9999998, "최대 범위를 초과하였습니다"),
     peopleMinNum: yup
       .number()
       .typeError("숫자를 입력해 주세요")
@@ -352,10 +353,10 @@ const CeoRooms = () => {
   });
 
   // 숫자만 입력 가능
-  const handleOnlyNumber = (e, fieldName) => {
+  const handleOnlyNumber = (e, fieldName, totalNum) => {
     let value = e.target.value.replace(/[^\d]/g, "");
     if (value !== "") {
-      value = Math.max(0, Math.min(99, Number(value))).toString();
+      value = Math.max(0, Math.min(totalNum, Number(value))).toString();
     }
     setValue(fieldName, value, { shouldValidate: true });
     trigger(fieldName);
@@ -456,7 +457,7 @@ const CeoRooms = () => {
                 id="roomCost"
                 autoComplete="off"
                 {...register("roomCost")}
-                onChange={e => handleOnlyNumber(e, "roomCost")}
+                onChange={e => handleOnlyNumber(e, "roomCost", 9999999)}
               />
               <p>원</p>
             </div>
@@ -476,7 +477,7 @@ const CeoRooms = () => {
                   id="peopleMinNum"
                   autoComplete="off"
                   {...register("peopleMinNum")}
-                  onChange={e => handleOnlyNumber(e, "peopleMinNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleMinNum", 99)}
                 />
                 <p>인</p>
               </div>
@@ -489,7 +490,7 @@ const CeoRooms = () => {
                   id="peopleMaxNum"
                   autoComplete="off"
                   {...register("peopleMaxNum")}
-                  onChange={e => handleOnlyNumber(e, "peopleMaxNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleMaxNum", 99)}
                 />
                 <p>인</p>
               </div>

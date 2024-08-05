@@ -1,3 +1,4 @@
+import React from "react";
 import { IoClose } from "react-icons/io5";
 import {
   ModalBtn,
@@ -7,10 +8,22 @@ import {
 } from "../../styles/modalstyle";
 import { ActionButton, MainButton } from "./Button";
 
-const CheckModal = ({ isOpen, onClose, onConfirm, message }) => {
+interface CheckModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  message: string;
+}
+
+const CheckModal: React.FC<CheckModalProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  message,
+}) => {
   if (!isOpen) return null;
 
-  //모달 줄바꿈
+  // 모달 줄바꿈
   const formattedMessage = message.split("\n").map((line, index) => (
     <span key={index}>
       {line}
