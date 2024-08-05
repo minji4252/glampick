@@ -419,7 +419,11 @@ const SearchPage = () => {
           </SearchInner>
         </div>
       </main>
-      <MapModal isOpen={isMapModalOpen} onClose={handleCloseMapModal} />
+      <MapModal
+        isOpen={isMapModalOpen}
+        onClose={handleCloseMapModal}
+        searchData={searchData}
+      />
     </SearchPageStyle>
   );
 };

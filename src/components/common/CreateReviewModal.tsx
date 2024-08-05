@@ -308,6 +308,12 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
 
   if (!isOpen) return null;
 
+  // 이벤트 인자를 받는 함수로 수정
+  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    handleSubmit(event as unknown as React.FormEvent<HTMLFormElement>);
+  };
+
   return (
     <ModalWrapper>
       <ReviewModalStyle>
@@ -380,7 +386,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
                 ))}
               </div>
             </div>
-            <MainButton label="등록하기" onClick={handleSubmit} />
+            <MainButton label="등록하기" onClick={handleButtonClick} />
           </form>
         </ReviewModalContent>
       </ReviewModalStyle>

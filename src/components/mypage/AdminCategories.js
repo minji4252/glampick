@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { IoIosArrowForward } from "react-icons/io";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { colorSystem } from "../../styles/color";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -33,9 +33,29 @@ const CategoriesStyle = styled.div`
   }
   @media all and (max-width: 1910px) {
     position: relative;
-    /* top: 170px; */
     top: 70px;
     left: 90px;
+  }
+  .admin-nav {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 17px;
+      font-weight: 500;
+      background: ${colorSystem.white};
+      border: 2px solid ${colorSystem.admin};
+      border-radius: 20px;
+      cursor: pointer;
+      &:hover {
+        background-color: ${colorSystem.admin};
+        color: ${colorSystem.white};
+        transition: all 0.2s;
+      }
+    }
   }
 `;
 const NavLinkStyle = styled(NavLink)`
@@ -63,11 +83,9 @@ const NavLinkStyle = styled(NavLink)`
     background-color: ${colorSystem.admin3};
     font-weight: 700;
     span {
-      /* border-bottom: 2px solid ${colorSystem.admin}; */
     }
   }
   > svg {
-    /* color: ${colorSystem.admin}; */
   }
 `;
 const UnderLine = styled.div`
@@ -81,54 +99,18 @@ const categories = [
   { name: "adminbanner", text: "배너 관리" },
 ];
 const AdminCategories = () => {
-  // const [accessToken, setAccessToken] = useState("");
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-  const [userInfo, setUserInfo] = useState({
-    userEmail: "",
-    userNickname: "",
-  });
-  // 토큰정보 불러오기
-  useEffect(() => {
-    const fetchAccessToken = () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-          setAccessToken(token);
-        } else {
-          console.log("엑세스 토큰 없음");
-        }
-      } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
-      }
-    };
-    fetchAccessToken();
-  }, [setAccessToken]);
-  // 유저 정보 불러오기
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        if (!accessToken) return;
-        const response = await axios.get(`/api/user`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        // console.log(response);
-        setUserInfo({
-          userEmail: response.data.userEmail,
-          userNickname: response.data.userNickname,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUser();
-  }, [accessToken]);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    setAccessToken(null);
+    localStorage.removeItem("accessToken");
+    navigate("/");
+  };
 
   return (
     <CategoriesStyle>
-      <div>
-        <h1>관리자</h1>
+      <div className="admin-nav">
+        <button onClick={handleLogout}>관리자 로그아웃</button>
       </div>
       <UnderLine />
       {categories.map(categoty => (

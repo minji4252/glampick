@@ -45,12 +45,10 @@ const GlampingKing = () => {
           }
         }, 1000);
       } else {
-        console.log("로그인 실패");
         setErrorMessage("아이디와 비밀번호 불일치");
       }
     } catch (error) {
-      console.error("로그인 처리 중 오류 발생", error);
-      setErrorMessage("로그인 처리 중 오류 발생");
+      setErrorMessage("로그인 실패");
     }
   };
 
