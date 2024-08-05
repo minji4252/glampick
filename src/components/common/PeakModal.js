@@ -3,8 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { CeoActionButton, CeoButton } from "../../components/common/Button";
-import MainCalendar from "../../components/MainCalendar";
+import { CeoActionButton, CeoButton } from "./Button";
+import MainCalendar from "../MainCalendar";
 import { colorSystem } from "../../styles/color";
 import { IoClose } from "react-icons/io5";
 

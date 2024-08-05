@@ -2,6 +2,10 @@ import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import { useState } from "react";
+import { FaStar } from "react-icons/fa";
+import BookingChart from "../../components/ceo/BookingChart";
+import SalesChart from "../../components/ceo/SalesChart";
+import CancelChart from "../../components/ceo/CancelChart";
 
 const WrapStyle = styled.div`
   .inner {
@@ -29,9 +33,49 @@ const WrapStyle = styled.div`
       margin-top: 250px;
     }
   }
+
+  .chart-title {
+    display: flex;
+    width: 100%;
+  }
 `;
 
-const ListStyle = styled.div`
+const StateStyle = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 20px;
+
+  > div {
+    max-width: 100px;
+    width: 100%;
+    border: 2px solid ${colorSystem.ceo};
+    padding: 10px;
+    border-radius: 35px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    p {
+      font-size: 1.2rem;
+      margin-top: 5px;
+    }
+  }
+
+  .star-point {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+      color: ${colorSystem.star};
+      font-size: 1.1rem;
+    }
+  }
+`;
+
+const TapStyle = styled.div`
   width: 100%;
 
   > div {
@@ -63,6 +107,8 @@ const ListStyle = styled.div`
 `;
 
 const ListContent = styled.div`
+  width: 100%;
+  max-width: 1000px;
   font-size: 2rem;
   margin-bottom: 30vh;
 `;
@@ -71,9 +117,9 @@ const Chart = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
   const menuArr = [
-    { name: "예약", content: "예약입니다" },
-    { name: "매출", content: "매출입니다" },
-    { name: "취소율", content: "취소율입니다" },
+    { name: "예약", content: <BookingChart /> },
+    { name: "매출", content: <SalesChart /> },
+    { name: "취소율", content: <CancelChart /> },
   ];
 
   const selectMenuHandler = index => {
@@ -84,8 +130,23 @@ const Chart = () => {
     <WrapStyle>
       <CeoCategories />
       <div className="inner">
-        <h3>매장 분석</h3>
-        <ListStyle>
+        <div className="chart-title">
+          <h3>매장 분석</h3>
+          <StateStyle>
+            <div>
+              <h2>북마크</h2>
+              <p>2500</p>
+            </div>
+            <div>
+              <h2>별점</h2>
+              <div className="star-point">
+                <FaStar />
+                <p>5.0</p>
+              </div>
+            </div>
+          </StateStyle>
+        </div>
+        <TapStyle>
           <div>
             {menuArr.map((ele, index) => {
               return (
@@ -101,7 +162,8 @@ const Chart = () => {
               );
             })}
           </div>
-        </ListStyle>
+        </TapStyle>
+
         <ListContent>{menuArr[currentTab].content}</ListContent>
       </div>
     </WrapStyle>
