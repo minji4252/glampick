@@ -1,9 +1,8 @@
-import React, { useState } from "react";
-import "../../styles/header.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import headerUser from "../../images/icon/member-icon.png";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import glampickLogo from "../../images/glampick_logo.png";
-import { removeCookie } from "../../utils/cookie";
+import headerUser from "../../images/icon/member-icon.png";
+import "../../styles/header.css";
 
 interface HeaderProps {
   isLogin: boolean;

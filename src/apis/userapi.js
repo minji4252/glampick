@@ -25,6 +25,7 @@ export const postSignOut = async () => {
     return response.data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 

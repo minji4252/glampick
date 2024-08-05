@@ -386,7 +386,8 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
                 ))}
               </div>
             </div>
-            <MainButton label="등록하기" onClick={handleButtonClick} />
+            <MainButton label="등록하기" />
+
           </form>
         </ReviewModalContent>
       </ReviewModalStyle>

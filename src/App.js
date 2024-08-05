@@ -11,7 +11,13 @@ import "./styles/color";
 import "../src/styles/common.css";
 import "../src/styles/reset.css";
 import "./App.css";
-import { accessTokenState, isLoginState } from "./atoms/loginState";
+import {
+  accessTokenState,
+  ceoRoleState,
+  isCeoLoginState,
+  isLoginState,
+  userRoleState,
+} from "./atoms/loginState";
 import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import GlampingDetail from "./pages/GlampingDetail";
@@ -44,10 +50,16 @@ import CeoLogin from "./pages/ceo/CeoLogin";
 import AdminSignup from "./pages/admin/AdminSignup";
 import AdminBanner from "./pages/admin/AdminBanner";
 import { postSignOut } from "./apis/userapi";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  // user
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [userRole, setUserRole] = useRecoilState(userRoleState);
+  // ceo
+  const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
+  const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
 
   const locationNow = useLocation();
   const navigate = useNavigate();
@@ -61,23 +73,52 @@ function App() {
     return <GlampingDetail isLogin={isLogin} />;
   };
 
-  // 페이지 이동할 때마다 로그인 확인
+  // 페이지 이동할 때마다 로그인 및 사용자 유형 확인
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
+    const role = localStorage.getItem("userRole");
+    const ceoAccessToken = localStorage.getItem("ceoAccessToken");
+    const ceoRole = localStorage.getItem("ownerRole");
+    console.log("현재 accessToken:", accessToken);
+    console.log("현재 role:", role);
+
     if (accessToken) {
+      // 일반 사용자 로그인
       setIsLogin(true);
+      setUserRole(role || null);
+      setIsCeoLogin(false); // 사장님이 로그인 상태가 아님
+      setCeoRole(null);
+    } else if (ceoAccessToken) {
+      // 사장님 로그인
+      setIsLogin(false); // 유저가 로그인 상태가 아님
+      setUserRole(null);
+      setIsCeoLogin(true);
+      setCeoRole(ceoRole || null);
     } else {
       setIsLogin(false);
+      setUserRole(null);
+      setIsCeoLogin(false);
+      setCeoRole(null);
     }
-  }, [locationNow]); // location 변경시마다
+  }, [locationNow]);
 
   // 로그아웃
   const handleLogout = async () => {
     await postSignOut();
-    console.log("로그아웃성공:", postSignOut);
-    // 로컬스토리지에서 토큰 삭제
-    localStorage.removeItem("accessToken", { path: "/" });
+
+    // 로컬스토리지에서 토큰 및 role삭제
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userRole");
+    localStorage.removeItem("ceoAccessToken");
+    localStorage.removeItem("ownerRole");
+
+    // 상태 업데이트
     setIsLogin(false);
+    setUserRole(null);
+    setIsCeoLogin(false);
+    setCeoRole(null);
+
+    // 페이지 이동
     navigate("/login");
   };
 
@@ -108,23 +149,100 @@ function App() {
         <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
 
         {/* 유저 페이지 */}
-        <Route path="/bookingdetail" element={<BookingDetail />} />
-        <Route path="/myreview" element={<MyReview />} />
-        <Route path="/favorite" element={<Favorite />} />
-        <Route path="/userinfo" element={<UserInfo />} />
+        <Route
+          path="/bookingdetail"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
+              <BookingDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/myreview"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
+              <MyReview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/favorite"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
+              <Favorite />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userinfo"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
+              <UserInfo />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 사장님 로그인, 회원가입 */}
         <Route path="/ceosignup" element={<CeoSignup />} />
         <Route path="/ceologin" element={<CeoLogin />} />
 
         {/* 사장님 페이지 */}
-        <Route path="/ceoglamping" element={<CeoGlamping />} />
-        <Route path="/ceoroom" element={<CeoRoom />} />
-        <Route path="/ceorooms" element={<CeoRooms />} />
-        <Route path="/ceobooking" element={<CeoBooking />} />
-        <Route path="/ceoreview" element={<CeoReview />} />
-        <Route path="/chart" element={<Chart />} />
-        <Route path="/ceoinfo" element={<CeoInfo />} />
+        <Route
+          path="/ceoglamping"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <CeoGlamping />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ceoroom"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <CeoRoom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ceorooms"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <CeoRooms />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ceobooking"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <CeoBooking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ceoreview"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <CeoReview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chart"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <Chart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ceoinfo"
+          element={
+            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
+              <CeoInfo />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />

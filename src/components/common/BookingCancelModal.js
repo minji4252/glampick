@@ -115,6 +115,7 @@ const BookingCancelModal = ({
 
   // 예약 취소 함수
   const handleConfirm = async e => {
+    console.log("예약취소 확인");
     e.preventDefault();
     if (!accessToken) return;
     axios.defaults.withCredentials = true;

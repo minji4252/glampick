@@ -23,7 +23,8 @@ const CeoLogin = () => {
   const [rememberMe, setRememberMe] = useRecoilState(ceoRememberMeState);
 
   // 로그인 상태 업데이트
-  const [accessToken, setAccessToken] = useRecoilState(ceoAccessTokenState);
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState); // 사용자 역할 상태를 가져오고 설정
 
@@ -77,8 +78,8 @@ const CeoLogin = () => {
       setCeoRole(signedCeo.role); // userRoleState를 업데이트
 
       // 로그인 성공 시 로컬스토리지에 사장님 정보 저장
-      localStorage.setItem("accessToken", result.accessToken);
-      setAccessToken(result.accessToken);
+      localStorage.setItem("ceoAccessToken", result.accessToken);
+      setCeoAccessToken(result.accessToken);
       setIsCeoLogin(true);
 
       openModal({ message: "로그인 성공하였습니다!" });
