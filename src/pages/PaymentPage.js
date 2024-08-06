@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import {
@@ -6,12 +7,14 @@ import {
   useParams,
   useSearchParams,
 } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../atoms/loginState";
 import PaymentCard from "../components/PaymentCard";
 import AlertModal from "../components/common/AlertModal";
 import { MainButton } from "../components/common/Button";
+import TermsModal from "../components/common/TermsModal";
 import useModal from "../hooks/UseModal";
 import kakaopay from "../images/kakaopay.png";
-import tosspay from "../images/tosspay.png";
 import {
   InfoStyle,
   InputGroup,
@@ -24,13 +27,6 @@ import {
   UnderLine,
   WrapStyle,
 } from "../styles/PaymentPageStyle";
-import $ from "jquery";
-import axios from "axios";
-import { getCookie, setCookie } from "../utils/cookie";
-import TermsModal from "../components/common/TermsModal";
-import { kakaopayMethod } from "../apis/payment";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "../atoms/loginState";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");

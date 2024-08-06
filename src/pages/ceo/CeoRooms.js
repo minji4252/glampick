@@ -8,6 +8,9 @@ import * as yup from "yup";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import { CeoButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { ceoAccessTokenState } from "../../atoms/loginState";
 
 const WrapStyle = styled.div`
   .inner {
@@ -23,6 +26,12 @@ const WrapStyle = styled.div`
     margin-bottom: 65px;
   }
 
+  em {
+    color: ${colorSystem.g400};
+    margin-left: 5px;
+    font-weight: 500;
+  }
+
   form {
     max-width: 800px;
     width: 100%;
@@ -31,9 +40,12 @@ const WrapStyle = styled.div`
       width: 100%;
       display: flex;
       justify-content: center;
-      margin-bottom: 50px;
+      margin-top: 60px;
+      margin-bottom: 30vh;
       button {
         width: 30%;
+        height: 50px;
+        font-size: 1.1rem;
       }
     }
   }
@@ -64,9 +76,6 @@ const CeoBoxStyle = styled.div`
   border-radius: 20px;
   border: 1px solid ${colorSystem.g400};
   margin-bottom: 30px;
-
-  > div {
-  }
 
   label {
     font-weight: 600;
@@ -115,15 +124,6 @@ const CeoBoxStyle = styled.div`
 
   .room-img-label {
     margin-bottom: 0;
-  }
-
-  .glamp-address-div {
-    display: flex;
-    gap: 15px;
-    input {
-      cursor: pointer;
-      caret-color: transparent;
-    }
   }
 `;
 
@@ -176,7 +176,7 @@ const ImageUploadStyle = styled.div`
     border-radius: 5px;
   }
 
-  .uploaded-images {
+  .uploaded-image1111s {
     z-index: 999;
     display: flex;
     align-items: center;
@@ -252,56 +252,71 @@ const RoomOptionStyle = styled.div`
     transition:
       background-color 0.3s,
       color 0.3s;
+    border: 1px solid ${colorSystem.g400};
 
     &.selected {
       background-color: ${colorSystem.primary};
       color: ${colorSystem.white};
+      border: 1px solid transparent;
+      font-weight: 500;
     }
   }
 `;
 
 const CeoRooms = () => {
-  const [images, setImages] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [roomImg, setroomImg] = useState([]);
+  const [service, setService] = useState([]);
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
+  const SERVICE_MAPPING = {
+    수영장: 1,
+    오션뷰: 2,
+    마운틴뷰: 3,
+    반려동물동반: 4,
+    바베큐: 5,
+    개별화장실: 6,
+    와이파이: 7,
+  };
 
   // 폼의 초기값
   const initState = {
-    RoomName: "",
-    images: [],
-    glampIntro: "",
-    glampPhone: "",
-    roomCost: "",
-    peopleMinNum: "",
-    peopleMaxNum: "",
+    roomName: "",
+    roomImg: [],
+    price: "",
+    peopleNum: "",
+    peopleMax: "",
+    inTime: "15",
+    outTime: "11",
+    service: [],
   };
 
   // yup schema 셋팅
   const schema = yup.object().shape({
-    RoomName: yup.string().required("글램핑장 이름을 입력해 주세요"),
-    images: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
-    glampPhone: yup.string().required("글램핑장 연락처를 입력해 주세요"),
-    roomCost: yup
+    roomName: yup.string().required("객실 이름을 입력해 주세요"),
+    roomImg: yup.array().min(1, "객실 사진을 등록해 주세요"),
+    price: yup
       .number()
       .typeError("숫자를 입력해 주세요")
       .required("숫자를 입력해 주세요")
       .max(9999998, "최대 범위를 초과하였습니다"),
-    peopleMinNum: yup
+    peopleNum: yup
       .number()
       .typeError("숫자를 입력해 주세요")
       .required("숫자를 입력해 주세요")
       .max(98, "최대 범위를 초과하였습니다"),
-    peopleMaxNum: yup
+    peopleMax: yup
       .number()
       .typeError("숫자를 입력해 주세요")
       .required("숫자를 입력해 주세요")
       .max(98, "최대 범위를 초과하였습니다"),
+    service: yup.array(),
   });
 
   // ---------------------------------이미지----------------------------------------
 
   // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
   const maxImageCount = 10;
-  const [uploadedImageCount, setUploadedImageCount] = useState(images.length);
+  const [uploadedImageCount, setUploadedImageCount] = useState(roomImg.length);
 
   // 이미지 업로드 상태 추가
   const [isImageUploaded, setIsImageUploaded] = useState(false);
@@ -310,30 +325,30 @@ const CeoRooms = () => {
   const handleImageUpload = e => {
     const files = Array.from(e.target.files);
     // 이미지가 현재 배열에 있는 이미지 개수를 더해 3장 이하로 제한
-    if (images.length + files.length > maxImageCount) {
+    if (roomImg.length + files.length > maxImageCount) {
       alert(`이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`);
       return;
     }
     const newImages = [
-      ...images,
-      ...files.slice(0, maxImageCount - images.length),
+      ...roomImg,
+      ...files.slice(0, maxImageCount - roomImg.length),
     ];
-    setImages(newImages);
+    setroomImg(newImages);
     setUploadedImageCount(newImages.length);
     setIsImageUploaded(true);
-    setValue("images", newImages, { shouldValidate: true });
-    trigger("images");
+    setValue("roomImg", newImages, { shouldValidate: true });
+    trigger("roomImg");
   };
 
   // 이미지 삭제
   const handleImageDelete = index => {
-    const updatedImages = [...images];
+    const updatedImages = [...roomImg];
     updatedImages.splice(index, 1);
-    setImages(updatedImages);
+    setroomImg(updatedImages);
     setUploadedImageCount(updatedImages.length);
     setIsImageUploaded(updatedImages.length > 0);
-    setValue("images", updatedImages, { shouldValidate: true });
-    trigger("images");
+    setValue("roomImg", updatedImages, { shouldValidate: true });
+    trigger("roomImg");
   };
 
   // -----------------------------------------------------------------------------
@@ -362,33 +377,92 @@ const CeoRooms = () => {
     trigger(fieldName);
   };
 
-  const onSubmit = data => {
-    console.log("전송시 데이터 ", data);
-    const sendData = {
-      ...data,
-      glampPhone: data.glampPhone.replaceAll("-", ""),
-    };
-    console.log("전송시 데이터 sendData ", sendData);
-  };
-
   // 이미지 유효성검사 포커스
   useEffect(() => {
-    if (errors.images) {
+    if (errors.roomImg) {
       document
         .querySelector(".room-img-box")
         ?.scrollIntoView({ block: "center" });
     }
-  }, [errors.images]);
+  }, [errors.roomImg]);
+
+  //Post 함수
+  const onSubmit = async data => {
+    const formData = new FormData();
+
+    formData.append(
+      "req",
+      JSON.stringify({
+        glampId: 55,
+        roomName: data.roomName,
+        price: data.price,
+        peopleNum: data.peopleNum,
+        peopleMax: data.peopleMax,
+        inTime: `${data.inTime}:00:00`,
+        outTime: `${data.outTime}:00:00`,
+        service: data.service.map(code => SERVICE_MAPPING[code] || code),
+      }),
+    );
+
+    roomImg.forEach((image, index) => {
+      formData.append("roomImg", image, image.name);
+    });
+
+    try {
+      if (!ceoAccessToken) return;
+      console.log("전송 데이터:", formData);
+
+      const response = await axios.post(`api/owner/room`, formData, {
+        headers: {
+          Authorization: `Bearer ${ceoAccessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("서버 응답:", response.data);
+    } catch (error) {
+      console.error("에러 발생:", error);
+    }
+  };
 
   // -----------------------------------------------------------------------------
 
+  // 객실 옵션
+  useEffect(() => {
+    setValue("service", service);
+  }, [service, setValue]);
+
+  // 객실 옵션 클릭 시 선택된 옵션의 코드로 변경
   const handleOptionClick = option => {
-    setSelectedOptions(prevOptions =>
-      prevOptions.includes(option)
+    setService(prevOptions => {
+      const updatedOptions = prevOptions.includes(option)
         ? prevOptions.filter(opt => opt !== option)
-        : [...prevOptions, option],
-    );
+        : [...prevOptions, option];
+
+      // 숫자 코드로 변환
+      const selectedCodes = updatedOptions.map(opt => SERVICE_MAPPING[opt]);
+      setValue("service", selectedCodes);
+      return updatedOptions;
+    });
   };
+
+  // --------------------------------토큰--------------------------------------
+
+  // 토큰정보 불러오기
+  useEffect(() => {
+    const fetchAccessToken = () => {
+      try {
+        const token = localStorage.getItem("ceoAccessToken");
+        if (token) {
+          setCeoAccessToken(token);
+        } else {
+          console.log("엑세스 토큰 없음");
+        }
+      } catch (error) {
+        console.log("엑세스 토큰 가져오는 중 에러", error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
 
   return (
     <WrapStyle>
@@ -398,14 +472,14 @@ const CeoRooms = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* 객실 이름 */}
           <CeoBoxStyle>
-            <label htmlFor="RoomName">객실 이름</label>
+            <label htmlFor="roomName">객실 이름</label>
             <input
               type="text"
-              id="RoomName"
+              id="roomName"
               autoComplete="off"
-              {...register("RoomName")}
+              {...register("roomName")}
             />
-            {errors.RoomName && <span>{errors.RoomName.message}</span>}
+            {errors.roomName && <span>{errors.roomName.message}</span>}
           </CeoBoxStyle>
 
           {/* 객실 사진 */}
@@ -429,9 +503,9 @@ const CeoRooms = () => {
                 multiple
                 onChange={handleImageUpload}
               />
-              <div className="uploaded-images">
-                {images.map((image, index) => (
-                  <div key={index} className="uploaded-image">
+              <div className="uploaded-image1111s">
+                {roomImg.map((image, index) => (
+                  <div key={index}>
                     <img src={URL.createObjectURL(image)} alt="uploaded" />
                     <button
                       type="button"
@@ -444,59 +518,59 @@ const CeoRooms = () => {
                 ))}
               </div>
             </ImageUploadStyle>
-            {errors.images && <span>{errors.images.message}</span>}
+            {errors.roomImg && <span>{errors.roomImg.message}</span>}
           </CeoBoxStyle>
 
           {/* 객실 가격 */}
           <CeoBoxStyle>
-            <label htmlFor="roomCost">객실 가격</label>
+            <label htmlFor="price">객실 가격</label>
             <div className="number-group">
               <input
                 className="number-input"
                 type="text"
-                id="roomCost"
+                id="price"
                 autoComplete="off"
-                {...register("roomCost")}
-                onChange={e => handleOnlyNumber(e, "roomCost", 9999999)}
+                {...register("price")}
+                onChange={e => handleOnlyNumber(e, "price", 9999999)}
               />
               <p>원</p>
             </div>
 
-            {errors.roomCost && <span>{errors.roomCost.message}</span>}
+            {errors.price && <span>{errors.price.message}</span>}
           </CeoBoxStyle>
 
           {/* 객실 기준 인원 */}
           <CeoBoxStyle>
-            <label htmlFor="peopleMinNum">객실 기준 인원</label>
+            <label htmlFor="peopleNum">객실 기준 인원</label>
             <PeopleNumberStyle>
               <div className="number-group">
                 <p>최소</p>
                 <input
                   className="number-input"
                   type="text"
-                  id="peopleMinNum"
+                  id="peopleNum"
                   autoComplete="off"
-                  {...register("peopleMinNum")}
-                  onChange={e => handleOnlyNumber(e, "peopleMinNum", 99)}
+                  {...register("peopleNum")}
+                  onChange={e => handleOnlyNumber(e, "peopleNum", 99)}
                 />
                 <p>인</p>
               </div>
-              <p>~</p>
+              <p>-</p>
               <div className="number-group">
                 <p>최대</p>
                 <input
                   className="number-input"
                   type="text"
-                  id="peopleMaxNum"
+                  id="peopleMax"
                   autoComplete="off"
-                  {...register("peopleMaxNum")}
-                  onChange={e => handleOnlyNumber(e, "peopleMaxNum", 99)}
+                  {...register("peopleMax")}
+                  onChange={e => handleOnlyNumber(e, "peopleMax", 99)}
                 />
                 <p>인</p>
               </div>
             </PeopleNumberStyle>
-            {errors.peopleMinNum && <span>{errors.peopleMinNum.message}</span>}
-            {errors.peopleMaxNum && <span>{errors.peopleMaxNum.message}</span>}
+            {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
+            {errors.peopleMax && <span>{errors.peopleMax.message}</span>}
           </CeoBoxStyle>
 
           {/* 입 퇴실 시간 */}
@@ -504,8 +578,8 @@ const CeoRooms = () => {
             <label htmlFor="peopleNum">입 · 퇴실 시간</label>
             <CheckInRoomStyle>
               <div className="number-group">
-                <label htmlFor="checkIn">입실</label>
-                <select id="checkIn">
+                <label htmlFor="inTime">입실</label>
+                <select id="inTime" {...register("inTime")}>
                   <option value="09">09 : 00</option>
                   <option value="10">10 : 00</option>
                   <option value="11">11 : 00</option>
@@ -526,8 +600,8 @@ const CeoRooms = () => {
               </div>
               <p>-</p>
               <div className="number-group">
-                <label htmlFor="checkOut">퇴실</label>
-                <select id="checkOut">
+                <label htmlFor="outTime">퇴실</label>
+                <select id="outTime" {...register("outTime")}>
                   <option value="09">09 : 00</option>
                   <option value="10">10 : 00</option>
                   <option value="11">11 : 00</option>
@@ -552,7 +626,10 @@ const CeoRooms = () => {
 
           {/* 객실 옵션 */}
           <CeoBoxStyle>
-            <label htmlFor="RoomOption">객실 옵션 (선택) </label>
+            <label htmlFor="RoomOption">
+              객실 옵션
+              <em>(선택) </em>
+            </label>
             <RoomOptionStyle>
               {[
                 "바베큐",
@@ -565,7 +642,7 @@ const CeoRooms = () => {
               ].map(option => (
                 <p
                   key={option}
-                  className={`option ${selectedOptions.includes(option) ? "selected" : ""}`}
+                  className={`option ${service.includes(option) ? "selected" : ""}`}
                   onClick={() => handleOptionClick(option)}
                 >
                   {option}
