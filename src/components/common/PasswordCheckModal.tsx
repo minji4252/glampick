@@ -11,7 +11,6 @@ import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
 
 export const ModalWrapper = styled.div`
-  // display: ${props => (props.showModal ? "flex" : "none")};
   display: flex;
   position: fixed;
   top: 0;
@@ -119,7 +118,14 @@ const ModalContent = styled.div`
   }
 `;
 
-const PasswordCheckModal = ({ isOpen, onSuccess }) => {
+interface PasswordCheckModalProps {
+  isOpen: boolean;
+  onSuccess: () => void;
+}
+const PasswordCheckModal: React.FC<PasswordCheckModalProps> = ({
+  isOpen,
+  onSuccess,
+}) => {
   const [password, setPassword] = useState("");
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [errorMessage, setErrorMessage] = useState("");
@@ -147,7 +153,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
     navigate(-1);
   };
 
-  const handlePasswordChange = e => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // console.log(e.target.value); // 입력된 비밀번호 출력
     setPassword(e.target.value);
     setErrorMessage("");
@@ -171,7 +177,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
   }, []);
 
   // 비밀번호 확인 함수
-  const handlePasswordCheck = async e => {
+  const handlePasswordCheck = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!accessToken) return;
 
@@ -201,9 +207,13 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
       }
       return response;
     } catch (error) {
-      console.log(error.response.data);
-      if (error.response.data.code === "NMP") {
-        setErrorMessage("비밀번호가 일치하지 않습니다.");
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data);
+        if (error.response?.data.code === "NMP") {
+          setErrorMessage("비밀번호가 일치하지 않습니다.");
+        }
+      } else {
+        console.error("Unexpected error", error);
       }
     }
   };
@@ -235,7 +245,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
           />
           <p className="error-message">{errorMessage}</p>
           <div className="modal-btn">
-            <MainButton type="submit" label="확인" />
+            <MainButton label="확인" />
           </div>
         </form>
       </ModalContent>
@@ -246,7 +256,7 @@ const PasswordCheckModal = ({ isOpen, onSuccess }) => {
 export default PasswordCheckModal;
 
 // 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-function getCookie(name) {
+function getCookie(name: string): string | undefined {
   const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
-  return cookieValue ? cookieValue.pop() : "";
+  return cookieValue ? cookieValue.pop() : undefined;
 }

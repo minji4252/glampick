@@ -147,7 +147,7 @@ const CeoCategories = () => {
     <CategoriesStyle>
       <div>
         <h1>{ceoInfo.ownerName}님</h1>
-        <h2>{ceoPreEmail}</h2>
+        <h2>@{ceoPreEmail}</h2>
       </div>
 
       <UnderLine />

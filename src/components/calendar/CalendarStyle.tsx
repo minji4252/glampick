@@ -1,7 +1,15 @@
 import styled from "@emotion/styled";
 import { colorSystem } from "../../styles/color";
 
-export const CustomCalendarHeader = ({ date, onClick }) => {
+interface CustomCalendarHeaderProps {
+  date: Date;
+  onClick: () => void;
+}
+
+export const CustomCalendarHeader: React.FC<CustomCalendarHeaderProps> = ({
+  date,
+  onClick,
+}) => {
   const year = date.getFullYear();
   const month = date.toLocaleString("default", { month: "long" });
 
@@ -24,13 +32,14 @@ export const StyledCalendarWrapper = styled.div`
     border: none;
     border-radius: 2rem;
     box-shadow: 4px 2px 10px 0px rgba(0, 0, 0, 0.13);
-    padding: 3% 5%;
+    padding: 3% 4%;
     background-color: white;
   }
 
   /* 전체 폰트 컬러 */
   .react-calendar__month-view {
     abbr {
+      font-size: 0.8rem;
       color: ${colorSystem.g800};
     }
   }
@@ -43,7 +52,7 @@ export const StyledCalendarWrapper = styled.div`
   /* 네비게이션 폰트 설정 */
   .react-calendar__navigation button {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   /* 네비게이션 버튼 컬러 */
@@ -62,15 +71,15 @@ export const StyledCalendarWrapper = styled.div`
   }
 
   /* 요일 */
-  .react-calendar__month-view__weekdays{
-    margin-bottom: 5px;
+  .react-calendar__month-view__weekdays {
+    margin-bottom: 7px;
   }
 
   /* 요일 글자 스타일*/
   .react-calendar__month-view__weekdays abbr {
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   /* 일요일 빨간 폰트 */
@@ -107,7 +116,7 @@ export const StyledCalendarWrapper = styled.div`
 
   /* 일 날짜 간격 */
   .react-calendar__tile {
-    padding: 10px 0px 30px;
+    padding: 10px 0px 50px;
     position: relative;
   }
 

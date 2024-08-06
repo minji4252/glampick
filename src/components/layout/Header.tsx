@@ -17,10 +17,6 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const locationNow = useLocation();
 
-  useEffect(() => {
-    console.log("Header 상태: isLogin:", isLogin);
-  }, [isLogin]);
-
   // 메인, 관리자 페이지 header 숨김
   if (
     locationNow.pathname === "/" ||

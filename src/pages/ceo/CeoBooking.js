@@ -74,22 +74,21 @@ const WrapStyle = styled.div`
       /* 예약 현황 */
       .booking-status {
         width: 100%;
-        padding: 20px;
+        padding: 30px;
       }
 
       /* 매출 현황 */
       .sales-status {
         width: 100%;
-        padding: 20px;
+        padding: 30px;
 
         .total-sales {
-          max-width: 350px;
           display: flex;
           justify-content: space-between;
           padding: 10px;
           background-color: white;
           border-radius: 10px;
-          border: 1px solid ${colorSystem.g600};
+          border: 1px solid ${colorSystem.g500};
           box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 
           > span {
@@ -114,7 +113,7 @@ const CeoBooking = () => {
     <WrapStyle>
       <CeoCategories />
       <div className="inner">
-        <h3>CeoBooking</h3>
+        <h3>예약 관리</h3>
         <div className="wrap">
           {/* 캘린더 */}
           <div className="calendar">
@@ -128,6 +127,11 @@ const CeoBooking = () => {
             </div>
             {/* 예약 현황 */}
             <div className="booking-status">
+              <CeoBookingDetail />
+              <CeoBookingDetail />
+              <CeoBookingDetail />
+              <CeoBookingDetail />
+              <CeoBookingDetail />
               <CeoBookingDetail />
               <CeoBookingDetail />
             </div>

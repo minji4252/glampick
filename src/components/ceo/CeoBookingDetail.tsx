@@ -3,7 +3,6 @@ import { colorSystem } from "../../styles/color";
 
 const CeoBookingDetailStyle = styled.div`
   width: 100%;
-  max-width: 350px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -25,11 +24,11 @@ const CeoBookingDetailStyle = styled.div`
       margin-bottom: 7px;
     }
 
-    .guest-name{
+    .guest-name {
       padding: 4px 0px;
     }
 
-    .guest-number{
+    .guest-number {
       padding: 4px 0px;
     }
 
@@ -39,10 +38,10 @@ const CeoBookingDetailStyle = styled.div`
       color: ${colorSystem.g700};
     }
 
-    .stay-night{
+    .stay-night {
       color: ${colorSystem.p600};
-      background-color: #EAF4FF;
-      border: 2px solid ${colorSystem.p200}; 
+      background-color: #eaf4ff;
+      border: 2px solid ${colorSystem.p200};
       border-radius: 5px;
       padding: 4px 10px;
       margin-left: 5px;
@@ -64,10 +63,11 @@ const CeoBookingDetail = () => {
         <div className="guest-info">
           <div className="guest-name">김토토님 |</div>
           <div className="guest-number">3인</div>
-          <div className="stay-night">2박</div>
+          {/* <div className="stay-night">2박</div> */}
         </div>
         <div className="stay-info">
-          <div>16:00~11:00 |</div>
+          {/* 체크인 체크아웃 날짜 */}
+          <div>08.06 - 08.07 |</div>
           <div>503호 B룸</div>
         </div>
       </div>
