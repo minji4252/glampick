@@ -7,12 +7,10 @@ import {
   isLoginState,
   userRoleState,
 } from "../atoms/loginState";
-
 interface ProtectedRouteProps {
   allowedRoles: string[];
   children: React.ReactNode;
 }
-
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   allowedRoles,
@@ -35,5 +33,4 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   return <Navigate to="/" replace />;
 };
-
 export default ProtectedRoute;

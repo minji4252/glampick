@@ -1,5 +1,7 @@
 /* 프리텐다드 , font-weight : 100~900으로 두께조절 가능 */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+/* Radio Canada체 */
+@import url("https://fonts.googleapis.com/css2?family=Radio+Canada:ital,wght@0,300..700;1,300..700&display=swap");
 
 * {
   margin: 0px;
