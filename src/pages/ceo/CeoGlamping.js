@@ -30,9 +30,12 @@ const WrapStyle = styled.div`
       width: 100%;
       display: flex;
       justify-content: center;
-      margin-bottom: 50px;
+      margin-top: 60px;
+      margin-bottom: 30vh;
       button {
         width: 30%;
+        height: 50px;
+        font-size: 1.1rem;
       }
     }
   }
@@ -49,10 +52,6 @@ const WrapStyle = styled.div`
     h3 {
       margin-top: 250px;
     }
-  }
-
-  .glamp-img-box {
-    /* height: 300px; */
   }
 `;
 
@@ -226,28 +225,27 @@ const CeoGlamping = () => {
   const initState = {
     glampName: "",
     images: [],
-    glampIntro: "",
-    infoBasic: "",
-    infoNotice: "",
-    glampAddress: "",
-    glampElseAddress: "",
-    glampPhone: "",
+    region: "seoul",
+    intro: "",
+    basic: "",
+    notice: "",
+    glampLocation: "",
+    glampCall: "",
     traffic: "",
-    addCost: "",
+    extraCharge: "",
   };
 
   // yup schema 셋팅
   const schema = yup.object().shape({
     glampName: yup.string().required("글램핑장 이름을 입력해 주세요"),
     images: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
-    glampIntro: yup.string().required("숙소 소개 항목을 입력해 주세요"),
-    infoBasic: yup.string().required("숙소 기본정보를 입력해 주세요"),
-    infoNotice: yup.string().required("숙소 유의사항을 입력해 주세요"),
-    glampAddress: yup.string().required("글램핑장 주소를 입력해 주세요"),
-    glampElseAddress: yup.string().required("글램핑장 주소를 입력해 주세요"),
-    glampPhone: yup.string().required("글램핑장 연락처를 입력해 주세요"),
+    intro: yup.string().required("숙소 소개 항목을 입력해 주세요"),
+    basic: yup.string().required("숙소 기본정보를 입력해 주세요"),
+    notice: yup.string().required("숙소 유의사항을 입력해 주세요"),
+    glampLocation: yup.string().required("글램핑장 주소를 입력해 주세요"),
+    glampCall: yup.string().required("글램핑장 연락처를 입력해 주세요"),
     traffic: yup.string().required("글램핑장 주변 관광지 정보를 입력해 주세요"),
-    addCost: yup
+    extraCharge: yup
       .string()
       .required("1인 추가 요금을 입력해 주세요")
       .max(6, "최대 금액을 초과하였습니다"),
@@ -314,7 +312,7 @@ const CeoGlamping = () => {
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
 
-    setValue("glampAddress", fullAddress);
+    setValue("glampLocation", fullAddress);
   };
 
   const handleClick = e => {
@@ -349,11 +347,6 @@ const CeoGlamping = () => {
 
   const onSubmit = data => {
     console.log("전송시 데이터 ", data);
-    const sendData = {
-      ...data,
-      glampPhone: data.glampPhone.replaceAll("-", ""),
-    };
-    console.log("전송시 데이터 sendData ", sendData);
   };
 
   // 이미지 유효성검사 포커스
@@ -427,8 +420,8 @@ const CeoGlamping = () => {
 
           {/* 글램핑장 지역 */}
           <CeoBoxStyle>
-            <label htmlFor="glampRegion">글램핑장 지역</label>
-            <select id="glampRegion">
+            <label htmlFor="region">글램핑장 지역</label>
+            <select id="region" {...register("region")}>
               <option value="seoul">서울/경기</option>
               <option value="gangwon">강원</option>
               <option value="chungbuk">충북</option>
@@ -439,76 +432,70 @@ const CeoGlamping = () => {
               <option value="jeonnam">전남</option>
               <option value="jeju">제주</option>
             </select>
-            {errors.glampRegion && <span>{errors.glampRegion.message}</span>}
+            {errors.region && <span>{errors.region.message}</span>}
           </CeoBoxStyle>
 
           {/* 글램핑장 주소 */}
           <CeoBoxStyle>
-            <label htmlFor="glampAddress">글램핑장 주소</label>
+            <label htmlFor="glampLocation">글램핑장 주소</label>
             <div className="glamp-address-div">
               <input
                 type="text"
-                id="glampAddress"
-                {...register("glampAddress")}
+                id="glampLocation"
+                {...register("glampLocation")}
                 onClick={handleClick}
               />
               <CeoButton label="주소검색" onClick={handleClick} />
             </div>
-            <input
-              type="text"
-              {...register("glampElseAddress")}
-              placeholder="상세주소를 입력하세요"
-            />
-            {errors.glampAddress && <span>{errors.glampAddress.message}</span>}
-            {errors.glampElseAddress && (
-              <span>{errors.glampElseAddress.message}</span>
+            {errors.glampLocation && (
+              <span>{errors.glampLocation.message}</span>
             )}
           </CeoBoxStyle>
 
           {/* 글램핑장 연락처 */}
           <CeoBoxStyle>
-            <label htmlFor="glampPhone">글램핑장 연락처</label>
+            <label htmlFor="glampCall">글램핑장 연락처</label>
             <input
               type="text"
-              id="glampPhone"
+              id="glampCall"
               autoComplete="off"
-              {...register("glampPhone")}
-              onChange={e => handleOnlyNumber(e, "glampPhone")}
+              {...register("glampCall")}
+              onChange={e => handleOnlyNumber(e, "glampCall")}
             />
-            {errors.glampPhone && <span>{errors.glampPhone.message}</span>}
+            {errors.glampCall && <span>{errors.glampCall.message}</span>}
           </CeoBoxStyle>
 
           {/* 숙소 소개 */}
           <CeoBoxStyle>
-            <label htmlFor="glampIntro">숙소 소개</label>
+            <label htmlFor="intro">숙소 소개</label>
             <textarea
-              id="glampIntro"
-              {...register("glampIntro")}
+              id="intro"
+              {...register("intro")}
               placeholder="바다앞에 위치한 글램핑장 입니다"
             />
-            {errors.glampIntro && <span>{errors.glampIntro.message}</span>}
+            {errors.intro && <span>{errors.intro.message}</span>}
           </CeoBoxStyle>
 
           {/* 숙소 기본정보 */}
           <CeoBoxStyle>
-            <label htmlFor="infoBasic">숙소 기본정보</label>
+            <label htmlFor="basic">숙소 기본정보</label>
             <textarea
-              id="infoBasic"
-              {...register("infoBasic")}
+              id="basic"
+              {...register("basic")}
               placeholder="전 객실 금연"
             />
-            {errors.infoBasic && <span>{errors.infoBasic.message}</span>}
+            {errors.basic && <span>{errors.basic.message}</span>}
           </CeoBoxStyle>
 
           {/* 숙소 유의사항 */}
           <CeoBoxStyle>
-            <label htmlFor="infoNotice">숙소 유의사항</label>
+            <label htmlFor="notice">숙소 유의사항</label>
             <textarea
-              id="infoNotice"
-              {...register("infoNotice")}
+              id="notice"
+              {...register("notice")}
               placeholder="화기 사용 금지"
             />
-            {errors.infoNotice && <span>{errors.infoNotice.message}</span>}
+            {errors.notice && <span>{errors.notice.message}</span>}
           </CeoBoxStyle>
 
           {/* 주변 관광지 */}
@@ -524,20 +511,20 @@ const CeoGlamping = () => {
 
           {/* 1인 추가 요금 */}
           <CeoBoxStyle>
-            <label htmlFor="addCost">1인 추가 요금</label>
+            <label htmlFor="extraCharge">1인 추가 요금</label>
             <div className="cost-group">
               <input
                 className="cost-input"
                 type="text"
-                id="addCost"
+                id="extraCharge"
                 autoComplete="off"
-                {...register("addCost")}
-                onChange={e => handleOnlyNumber(e, "addCost")}
+                {...register("extraCharge")}
+                onChange={e => handleOnlyNumber(e, "extraCharge")}
                 placeholder="10000"
               />
               <p>원</p>
             </div>
-            {errors.addCost && <span>{errors.addCost.message}</span>}
+            {errors.extraCharge && <span>{errors.extraCharge.message}</span>}
           </CeoBoxStyle>
 
           <div className="submit-btn">
