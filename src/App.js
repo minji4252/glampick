@@ -57,6 +57,7 @@ function App() {
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userRole, setUserRole] = useRecoilState(userRoleState);
+
   // ceo
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
@@ -73,14 +74,27 @@ function App() {
     return <GlampingDetail isLogin={isLogin} />;
   };
 
+  useEffect(() => {
+    console.log(
+      "앱 Header 업데이트: isLogin:",
+      isLogin,
+      "isCeoLogin:",
+      isCeoLogin,
+    );
+  }, [isLogin, isCeoLogin]);
+
   // 페이지 이동할 때마다 로그인 및 사용자 유형 확인
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const role = localStorage.getItem("userRole");
     const ceoAccessToken = localStorage.getItem("ceoAccessToken");
     const ceoRole = localStorage.getItem("ownerRole");
-    console.log("현재 accessToken:", accessToken);
+
+    // 상태를 업데이트하기 전에 로컬스토리지의 값을 로그로 확인
+    // console.log("현재 accessToken:", accessToken);
+    // console.log("현재 ceoAccessToken:", ceoAccessToken);
     console.log("현재 role:", role);
+    console.log("현재 ceoRole:", ceoRole);
 
     if (accessToken) {
       // 일반 사용자 로그인
@@ -124,10 +138,17 @@ function App() {
 
   return (
     <div>
-      <Header isLogin={isLogin} handleLogout={handleLogout} />
+      <Header
+        isLogin={isLogin}
+        isCeoLogin={isCeoLogin}
+        handleLogout={handleLogout}
+      />
       <Routes>
         {/* 메인 */}
-        <Route path="/" element={<MainPage isLogin={isLogin} />}></Route>
+        <Route
+          path="/"
+          element={<MainPage isLogin={isLogin} isCeoLogin={isCeoLogin} />}
+        ></Route>
 
         {/* 사용자 로그인, 회원가입 */}
         <Route path="/login" element={<LoginPage />}></Route>

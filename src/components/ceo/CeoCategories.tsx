@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { accessTokenState } from "../../atoms/loginState";
+import { accessTokenState, ceoAccessTokenState } from "../../atoms/loginState";
 import { colorSystem } from "../../styles/color";
 
 const CategoriesStyle = styled.div`
@@ -95,19 +95,20 @@ const categorieTab = [
 ];
 
 const CeoCategories = () => {
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-  const [userInfo, setUserInfo] = useState({
-    userEmail: "",
-    userNickname: "",
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
+  const [ceoInfo, setCeoInfo] = useState({
+    ownerEmail: "",
+    ownerName: "",
   });
 
   // 토큰정보 불러오기
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem("ceoAccessToken");
         if (token) {
-          setAccessToken(token);
+          setCeoAccessToken(token);
         } else {
           console.log("엑세스 토큰 없음");
         }
@@ -120,33 +121,33 @@ const CeoCategories = () => {
 
   // 유저 정보 불러오기
   useEffect(() => {
-    const getUser = async () => {
+    const getOwnerInfo = async () => {
       try {
-        if (!accessToken) return;
-        const response = await axios.get(`/api/user`, {
+        if (!ceoAccessToken) return;
+        const response = await axios.get(`/api/owner/info`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${ceoAccessToken}`,
           },
         });
-        // console.log(response);
-        setUserInfo({
-          userEmail: response.data.userEmail,
-          userNickname: response.data.userNickname,
+        console.log(response);
+        setCeoInfo({
+          ownerEmail: response.data.ownerEmail,
+          ownerName: response.data.ownerName,
         });
       } catch (error) {
         console.log(error);
       }
     };
-    getUser();
-  }, [accessToken]);
+    getOwnerInfo();
+  }, [ceoAccessToken]);
 
-  const userPreEmail = userInfo.userEmail.split("@")[0];
+  const ceoPreEmail = ceoInfo.ownerEmail.split("@")[0];
 
   return (
     <CategoriesStyle>
       <div>
-        <h1>김사장님{userInfo.userNickname}</h1>
-        <h2>@ceo123{userPreEmail}</h2>
+        <h1>{ceoInfo.ownerName}님</h1>
+        <h2>{ceoPreEmail}</h2>
       </div>
 
       <UnderLine />

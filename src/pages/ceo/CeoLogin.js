@@ -15,6 +15,7 @@ import { WrapStyle } from "../user/LoginPage";
 import base64 from "base-64";
 import { postOwnerSignin } from "../../apis/ceoapi";
 import useModal from "../../hooks/UseModal";
+import AlertModal from "../../components/common/AlertModal";
 
 const CeoLogin = () => {
   const [ceoEmail, setCeoEmail] = useRecoilState(ceoEmailState);
@@ -31,6 +32,11 @@ const CeoLogin = () => {
   const navigate = useNavigate();
 
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+
+  // Recoil 상태 변경 감지
+  useEffect(() => {
+    console.log("CeoRole 상태 변경 감지 ", ceoRole);
+  }, [ceoRole]);
 
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
@@ -75,26 +81,29 @@ const CeoLogin = () => {
       console.log("signedCeo :", signedCeo);
 
       // Ceo역할을 Recoil 상태에 저장
-      setCeoRole(signedCeo.role); // userRoleState를 업데이트
+      setCeoRole(signedCeo.role);
+      console.log("Updated ceoRole:", signedCeo.role);
 
       // 로그인 성공 시 로컬스토리지에 사장님 정보 저장
       localStorage.setItem("ceoAccessToken", result.accessToken);
+      localStorage.setItem("ownerRole", signedCeo.role);
       setCeoAccessToken(result.accessToken);
       setIsCeoLogin(true);
 
+      // 로그가 실제로 제대로 찍히는지 확인
+      console.log("Ceo 로그인 성공:", { isCeoLogin, ceoRole: signedCeo.role });
+
       openModal({ message: "로그인 성공하였습니다!" });
+      // 1초 후 페이지 이동
       setTimeout(() => {
-        if (location.state && location.state.fromSignup) {
-          navigate("/");
-        } else {
-          navigate(-1);
-        }
-      }, 1000); // 1초 후에 페이지 이동
+        navigate("/ceoglamping");
+      }, 1000);
     } else {
       console.log("로그인 실패");
       setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
     }
   };
+
   return (
     <WrapStyle>
       <main>
@@ -145,6 +154,11 @@ const CeoLogin = () => {
                   <CeoButton label="로그인" />
                 </div>
               </form>
+              <AlertModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                message={modalMessage}
+              />
               <div className="signup">
                 <Link to="/ceosignup" className="ceosignup-btn">
                   <p>회원가입</p>

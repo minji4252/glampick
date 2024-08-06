@@ -22,23 +22,16 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const ceoRole = useRecoilValue(ceoRoleState);
   const isCeoLogin = useRecoilValue(isCeoLoginState);
 
-  // console.log("User Role:", userRole);
-  // console.log("Is Login:", isLogin);
-  // console.log("CEO Access Token:", ceoRoleState);
-  // console.log("CEO Role from Storage:", isCeoLoginState);
+  // 기본 로그인 상태와 역할 확인
+  const isUserAuthorized = isLogin && allowedRoles.includes(userRole || "");
+  console.log("유저 권한 확인:", isUserAuthorized);
+  // CEO 로그인 상태와 역할 확인
+  const isCeoAuthorized = isCeoLogin && allowedRoles.includes(ceoRole || "");
+  console.log("사장님 권한 확인:", isCeoAuthorized);
 
-  if (!isLogin || !userRole || !allowedRoles.includes(userRole)) {
-    return <Navigate to="/" replace />;
+  if (isUserAuthorized || isCeoAuthorized) {
+    return <>{children}</>;
   }
-
-  // 유저 및 사장님 각각의 로그인 상태와 역할 확인
-  // if (isLogin && allowedRoles.includes(userRole || "")) {
-  //   return <>{children}</>;
-  // }
-
-  // if (isCeoLogin && allowedRoles.includes(ceoRole || "")) {
-  //   return <>{children}</>;
-  // }
 
   return <Navigate to="/" replace />;
 };
