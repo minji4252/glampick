@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { colorSystem } from "../../styles/color";
 import { ActionButton, DeleteButton } from "./Button";
 import { getCookie } from "../../utils/cookie";
@@ -70,7 +70,16 @@ const ModalFooter = styled.div`
   }
 `;
 
-const BookingCancelModal = ({
+interface BookingCancelModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  reservationId: string;
+  comment: string;
+  onBookingCancelled: (reservationId: string) => void;
+}
+
+const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -78,9 +87,9 @@ const BookingCancelModal = ({
   comment,
   onBookingCancelled, // 예약 취소 시 호출될 콜백 함수
 }) => {
-  const [accessToken, setAccessToken] = useState("");
+  const [accessToken, setAccessToken] = useState<string>("");
   // 예약 취소 성공 여부 상태 추가
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
   // 모달창 오픈시 스크롤 금지 컨트롤
   useEffect(() => {
@@ -114,7 +123,7 @@ const BookingCancelModal = ({
   }, []);
 
   // 예약 취소 함수
-  const handleConfirm = async e => {
+  const handleConfirm = async (e: FormEvent) => {
     console.log("예약취소 확인");
     e.preventDefault();
     if (!accessToken) return;
@@ -174,9 +183,7 @@ const BookingCancelModal = ({
             ></ActionButton>
           </div>
           <div className="confirm">
-            <DeleteButton label="확인" onClick={handleConfirm}>
-              확인
-            </DeleteButton>
+            <DeleteButton label="확인" onClick={handleConfirm}></DeleteButton>
           </div>
         </ModalFooter>
       </ModalContent>

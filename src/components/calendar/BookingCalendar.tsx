@@ -2,8 +2,11 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { CustomCalendarHeader, StyledCalendarWrapper } from "./CalendarStyle";
 import moment from "moment";
+import { useState } from "react";
 
-const BookingCalendar = () => {
+const BookingCalendar: React.FC = () => {
+  const [date, setDate] = useState<Date>(new Date());
+
   return (
     <StyledCalendarWrapper>
       <Calendar
@@ -13,10 +16,10 @@ const BookingCalendar = () => {
         next2Label={null}
         prev2Label={null}
         showNeighboringMonth={false}
-        value={new Date()}
+        value={date}
         // customHeader라는 이름으로 커스터마이징
         calendarType="gregory" // 요일 시작을 일요일로 설정
-        customHeader={CustomCalendarHeader}
+        // customHeader={CustomCalendarHeader}
       />
     </StyledCalendarWrapper>
   );

@@ -4,8 +4,11 @@ import CeoCategories from "../../components/ceo/CeoCategories";
 import { CeoButton } from "../../components/common/Button";
 import { useForm } from "react-hook-form";
 import { ErrorMessage } from "./CeoSignup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteModal from "../../components/common/DeleteModal";
+import axios from "axios";
+import { ceoAccessTokenState } from "../../atoms/loginState";
+import { useRecoilState } from "recoil";
 
 const WrapStyle = styled.div`
   .inner {
@@ -137,12 +140,12 @@ const CeoInfoBox = styled.div`
 
 const CeoInfo = () => {
   const defaultValues = {
-    email: "ceo@test.com", // 기본 이메일 (수정 불가)
-    name: "홍길동", // 기본 이름 (수정 불가)
-    businessRegistrationNumber: "",
+    ownerEmail: "", // 기본 이메일 (수정 불가)
+    ownerName: "", // 기본 이름 (수정 불가)
+    businessNumber: "",
     password: "", // 비밀번호
     confirmPassword: "", // 비밀번호 확인
-    phone: "", // 핸드폰 번호
+    ownerPhone: "", // 핸드폰 번호
   };
 
   const {
@@ -153,14 +156,42 @@ const CeoInfo = () => {
     formState: { errors },
   } = useForm({ defaultValues });
 
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
+
   // 회원탈퇴 모달
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // 유저 정보 불러오기
+  useEffect(() => {
+    const getOwnerInfo = async () => {
+      try {
+        if (!ceoAccessToken) return;
+        const response = await axios.get(`/api/owner/info`, {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+          },
+        });
+        const { ownerEmail, ownerName, businessNumber, ownerPhone } =
+          response.data;
+
+        setValue("ownerEmail", ownerEmail);
+        setValue("ownerName", ownerName);
+        setValue("businessNumber", businessNumber);
+        setValue("ownerPhone", ownerPhone);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getOwnerInfo();
+  }, [ceoAccessToken, setValue]);
 
   // 전화번호 자동 변경
   const handleChangePhone = e => {
     const phoneNumber = formatPhoneNumber(e.target.value);
     // console.log(phoneNumber);
-    setValue("phone", phoneNumber);
+    setValue("ownerPhone", phoneNumber);
   };
 
   // 전화번호 형식
@@ -195,7 +226,7 @@ const CeoInfo = () => {
     <WrapStyle>
       <CeoCategories />
       <div className="inner">
-        <h3>CeoInfo</h3>
+        <h3>내 정보 관리</h3>
         <CeoInfoBox>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
@@ -203,8 +234,8 @@ const CeoInfo = () => {
               <input
                 type="email"
                 readOnly
-                defaultValue={defaultValues.email} // 수정 불가
-                {...register("email")}
+                defaultValue={defaultValues.ownerEmail} // 수정 불가
+                {...register("ownerEmail")}
                 className="readOnly"
               />
             </div>
@@ -213,8 +244,8 @@ const CeoInfo = () => {
               <input
                 type="text"
                 readOnly
-                defaultValue={defaultValues.name} // 수정 불가
-                {...register("name")}
+                defaultValue={defaultValues.ownerName} // 수정 불가
+                {...register("ownerName")}
                 className="readOnly"
               />
             </div>
@@ -223,8 +254,8 @@ const CeoInfo = () => {
               <input
                 type="text"
                 readOnly
-                defaultValue={defaultValues.businessRegistrationNumber} // 수정 불가
-                {...register("businessRegistrationNumber")}
+                defaultValue={defaultValues.businessNumber} // 수정 불가
+                {...register("businessNumber")}
                 className="readOnly"
               />
             </div>
@@ -277,7 +308,7 @@ const CeoInfo = () => {
                 <input
                   type="text"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
-                  {...register("phone", {
+                  {...register("ownerPhone", {
                     validate: value => {
                       // 핸드폰 번호가 비어 있거나 유효하지 않으면 오류 메시지 반환
                       if (

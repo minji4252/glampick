@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
-import { ActionButton, DeleteButton } from "../../components/common/Button";
+import { ActionButton, DeleteButton } from "./Button";
 import { colorSystem } from "../../styles/color";
 import { deleteUser } from "../../apis/userapi";
 import axios from "axios";
@@ -84,7 +84,19 @@ const DeleteModalBtn = styled.div`
   }
 `;
 
-const DeleteModal = ({ isOpen, onClose, onConfirm, accessToken }) => {
+interface DeleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  accessToken: string;
+}
+
+const DeleteModal: React.FC<DeleteModalProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  accessToken,
+}) => {
   const navigate = useNavigate();
   if (!isOpen) return null;
 

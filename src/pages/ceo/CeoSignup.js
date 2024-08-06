@@ -2,6 +2,13 @@ import styled from "@emotion/styled";
 import { CeoButton, MainButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
 import { useForm } from "react-hook-form";
+import { postAuthCode, postMailSend } from "../../apis/userapi";
+import { useState } from "react";
+import Loading from "../../components/common/Loading";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
+import AlertModal from "../../components/common/AlertModal";
+import useModal from "../../hooks/UseModal";
 
 const CeoSignUpStyle = styled.div`
   position: relative;
@@ -54,7 +61,6 @@ export const SignupWrapStyle = styled.div`
       border: none;
       background-color: ${colorSystem.g100};
       padding: 10px;
-      margin-bottom: 10px;
       font-size: 0.9rem;
       border-radius: 10px;
     }
@@ -70,7 +76,6 @@ export const SignupWrapStyle = styled.div`
       border: none;
       background-color: ${colorSystem.g100};
       padding: 10px;
-      margin-bottom: 10px;
       font-size: 0.9rem;
       border-radius: 10px;
     }
@@ -102,16 +107,34 @@ export const ErrorMessage = styled.span`
   color: ${colorSystem.error};
   font-size: 0.9rem;
   margin-left: 3px;
+  margin-top: 5px;
 `;
 
 // 폼의 초기값
 const initState = {
-  ceoEmail: "ceo@test.com",
-  password: "asdf@1234",
-  name: "사장님",
+  ceoEmail: "",
+  password: "",
+  name: "",
   businessRegistrationNumber: "",
   businessRegistrationImg: "",
   phone: "",
+};
+
+// 메일 발송 모달 관련 함수
+const handleModalOpen = (code, openModal) => {
+  const messages = {
+    SU: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+    DE: "중복된 이메일입니다.",
+    EE: "메일 주소를 입력해주세요.",
+    IE: "메일 형식이 올바르지 않습니다.",
+    default: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
+  };
+
+  if (messages[code]) {
+    openModal({
+      message: messages[code],
+    });
+  }
 };
 
 const CeoSignup = () => {
@@ -127,14 +150,58 @@ const CeoSignup = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues: initState });
+  } = useForm({
+    resolver: yupResolver(ceoValidationSchema),
+    defaultValues: initState,
+  });
+  // 로딩
+  const [loading, setLoading] = useState(false);
+  // 모달
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
-  const handlEmailClick = () => {
+  const handlEmailClick = async e => {
     // 이메일 발송 로직
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const email = watch("ceoEmail");
+      const result = await postMailSend({ userEmail: email });
+      console.log(result);
+      handleModalOpen(result.data.code, openModal);
+    } catch (error) {
+      openModal({
+        message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEmailAuthCodeClick = () => {
+  const handleEmailAuthCodeClick = async e => {
     // 이메일 인증코드 확인 로직
+    e.preventDefault();
+    const email = watch("ceoEmail");
+    const authCode = watch("emailAuthCode");
+    const result = await postAuthCode({ userEmail: email, authCode });
+    console.log(result.data);
+    if (result.data.code === "SU") {
+      openModal({
+        message: "인증이 완료되었습니다.",
+      });
+    } else if (result.data.code === "IC") {
+      openModal({
+        message: "인증코드가 올바르지 않습니다.",
+      });
+    } else if (result.data.code === "VF") {
+      openModal({
+        message: "인증코드를 입력해주세요.",
+      });
+    } else {
+      openModal({
+        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
+      });
+    }
   };
 
   const handleBusinessRegistrationNumberClick = () => {
@@ -195,6 +262,7 @@ const CeoSignup = () => {
 
   return (
     <CeoSignUpStyle>
+      {loading && <Loading />}
       <div className="container">
         <h2>회원가입</h2>
         <SignupWrapStyle>
@@ -205,16 +273,20 @@ const CeoSignup = () => {
                 <input
                   type="email"
                   placeholder="glampickceo@good.kr"
-                  {...register("ceoEmail", {
-                    required: "이메일은 필수 항목입니다",
-                    pattern: {
-                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                      message: "메일 형식이 올바르지 않습니다.",
-                    },
-                  })}
+                  {...register("ceoEmail")}
                 />
                 <div className="form-button">
-                  <CeoButton label="인증코드 발송" />
+                  <CeoButton
+                    label="인증코드 발송"
+                    onClick={e => {
+                      handlEmailClick(e);
+                    }}
+                  />
+                  <AlertModal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    message={modalMessage}
+                  />
                 </div>
               </div>
             </div>
@@ -227,16 +299,15 @@ const CeoSignup = () => {
                 <input
                   type="text"
                   placeholder="인증코드를 입력해주세요"
-                  {...register("emailAuthCode", {
-                    required: "인증코드는 필수 항목입니다.",
-                    pattern: {
-                      value: /^[0-9]{5,6}$/, // 5자리 또는 6자리 숫자 허용
-                      message: "인증코드가 형식에 맞지 않습니다.",
-                    },
-                  })}
+                  {...register("emailAuthCode")}
                 />
                 <div className="form-button">
-                  <CeoButton label="확인" />
+                  <CeoButton
+                    label="확인"
+                    onClick={e => {
+                      handleEmailAuthCodeClick(e);
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -248,19 +319,7 @@ const CeoSignup = () => {
               <input
                 type="password"
                 placeholder="비밀번호를 입력해주세요"
-                {...register("password", {
-                  required: "비밀번호는 필수 항목입니다.",
-                  minLength: {
-                    value: 8,
-                    message: "비밀번호는 최소 8자 이상이어야 합니다.",
-                  },
-                  pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                    message:
-                      "비밀번호는 영어, 숫자, 특수문자를 포함해야 합니다.",
-                  },
-                })}
+                {...register("password")}
               />
             </div>
             {errors.password && (
@@ -271,12 +330,7 @@ const CeoSignup = () => {
               <input
                 type="password"
                 placeholder="비밀번호를 한번 더 입력해주세요"
-                {...register("confirmPassword", {
-                  required: "비밀번호 확인은 필수 항목입니다.",
-                  validate: value =>
-                    value === watch("password") ||
-                    "비밀번호가 일치하지 않습니다.",
-                })}
+                {...register("confirmPassword")}
               />
             </div>
             {errors.confirmPassword && (
@@ -287,21 +341,7 @@ const CeoSignup = () => {
               <input
                 type="text"
                 placeholder="이름을 입력해주세요"
-                {...register("name", {
-                  required: "이름은 필수 항목입니다.",
-                  minLength: {
-                    value: 1,
-                    message: "이름은 최소 1자 이상이어야 합니다.",
-                  },
-                  maxLength: {
-                    value: 10,
-                    message: "이름은 최대 10자까지 가능합니다.",
-                  },
-                  pattern: {
-                    value: /^[가-힣]+$/,
-                    message: "이름은 한글만 가능합니다.",
-                  },
-                })}
+                {...register("name")}
               />
             </div>
             {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
@@ -311,13 +351,7 @@ const CeoSignup = () => {
                 <input
                   type="text"
                   placeholder="사업자등록번호를 입력해주세요"
-                  {...register("businessRegistrationNumber", {
-                    required: "사업자등록번호는 필수 항목입니다.",
-                    pattern: {
-                      value: /^\d{3}-\d{2}-\d{5}$/,
-                      message: "사업자등록번호가 형식에 맞지 않습니다.",
-                    },
-                  })}
+                  {...register("businessRegistrationNumber")}
                   onChange={e => {
                     handleChangeBusinessNumber(e);
                   }}
@@ -353,13 +387,7 @@ const CeoSignup = () => {
                 <input
                   type="text"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
-                  {...register("phone", {
-                    required: "휴대폰은 필수 항목입니다.",
-                    pattern: {
-                      value: /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/,
-                      message: "유효한 전화번호를 입력하세요.",
-                    },
-                  })}
+                  {...register("phone")}
                   onChange={e => {
                     handleChangePhone(e);
                   }}
@@ -378,13 +406,7 @@ const CeoSignup = () => {
                 <input
                   type="text"
                   placeholder="인증코드를 입력해주세요"
-                  {...register("phoneAuthCode", {
-                    required: "인증코드는 필수 항목입니다.",
-                    pattern: {
-                      value: /^[0-9]{5,6}$/, // 5자리 또는 6자리 숫자 허용
-                      message: "인증코드가 형식에 맞지 않습니다.",
-                    },
-                  })}
+                  {...register("phoneAuthCode")}
                 />
                 <div className="form-button">
                   <CeoButton label="확인" />
