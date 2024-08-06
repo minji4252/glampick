@@ -51,7 +51,6 @@ import AdminSignup from "./pages/admin/AdminSignup";
 import AdminBanner from "./pages/admin/AdminBanner";
 import { postSignOut } from "./apis/userapi";
 import ProtectedRoute from "./components/ProtectedRoute";
-
 function App() {
   // user
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
@@ -60,10 +59,8 @@ function App() {
   // ceo
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
-
   const locationNow = useLocation();
   const navigate = useNavigate();
-
   // 숫자가 아닌 경우 NotfoundPage를 렌더링하는 컴포넌트
   const GlampingDetailWrapper = ({ isLogin }) => {
     const { glampId } = useParams();
@@ -72,7 +69,6 @@ function App() {
     }
     return <GlampingDetail isLogin={isLogin} />;
   };
-
   // 페이지 이동할 때마다 로그인 및 사용자 유형 확인
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -81,7 +77,6 @@ function App() {
     const ceoRole = localStorage.getItem("ownerRole");
     console.log("현재 accessToken:", accessToken);
     console.log("현재 role:", role);
-
     if (accessToken) {
       // 일반 사용자 로그인
       setIsLogin(true);
@@ -101,39 +96,32 @@ function App() {
       setCeoRole(null);
     }
   }, [locationNow]);
-
   // 로그아웃
   const handleLogout = async () => {
     await postSignOut();
-
     // 로컬스토리지에서 토큰 및 role삭제
     localStorage.removeItem("accessToken");
     localStorage.removeItem("userRole");
     localStorage.removeItem("ceoAccessToken");
     localStorage.removeItem("ownerRole");
-
     // 상태 업데이트
     setIsLogin(false);
     setUserRole(null);
     setIsCeoLogin(false);
     setCeoRole(null);
-
     // 페이지 이동
     navigate("/login");
   };
-
   return (
     <div>
       <Header isLogin={isLogin} handleLogout={handleLogout} />
       <Routes>
         {/* 메인 */}
         <Route path="/" element={<MainPage isLogin={isLogin} />}></Route>
-
         {/* 사용자 로그인, 회원가입 */}
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/signup" element={<SignupPage />}></Route>
         <Route path="/sns-signup" element={<SnsSignupPage />}></Route>
-
         {/* 검색 결과 */}
         <Route path="/search" element={<SearchPage />} />
         <Route
@@ -142,12 +130,10 @@ function App() {
         />
         <Route path="/roomdetail/:glampId" element={<RoomDetail />}></Route>
         <Route path="/review/:glampId" element={<Review />}></Route>
-
         {/* 결제 페이지 */}
         <Route path="/payment/:glampId" element={<PaymentPage />} />
         {/* <Route path="/payment" element={<PaymentPage />}></Route> */}
         <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
-
         {/* 유저 페이지 */}
         <Route
           path="/bookingdetail"
@@ -181,76 +167,23 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         {/* 사장님 로그인, 회원가입 */}
         <Route path="/ceosignup" element={<CeoSignup />} />
         <Route path="/ceologin" element={<CeoLogin />} />
-
         {/* 사장님 페이지 */}
-        <Route
-          path="/ceoglamping"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <CeoGlamping />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ceoroom"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <CeoRoom />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ceorooms"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <CeoRooms />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ceobooking"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <CeoBooking />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ceoreview"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <CeoReview />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/chart"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <Chart />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ceoinfo"
-          element={
-            <ProtectedRoute allowedRoles={[`ROLE_OWNER`]}>
-              <CeoInfo />
-            </ProtectedRoute>
-          }
-        />
-
+        <Route path="/ceoglamping" element={<CeoGlamping />} />
+        <Route path="/ceoroom" element={<CeoRoom />} />
+        <Route path="/ceorooms" element={<CeoRooms />} />
+        <Route path="/ceobooking" element={<CeoBooking />} />
+        <Route path="/ceoreview" element={<CeoReview />} />
+        <Route path="/chart" element={<Chart />} />
+        <Route path="/ceoinfo" element={<CeoInfo />} />
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />
         <Route path="/adminstore" element={<AdminStore />} />
         <Route path="/adminsignup" element={<AdminSignup />} />
         <Route path="/adminexit" element={<AdminExit />} />
         <Route path="/adminbanner" element={<AdminBanner />} />
-
         {/* 잘못된 경로 */}
         <Route path="/*" element={<NotfoundPage />} />
       </Routes>
