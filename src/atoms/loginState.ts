@@ -59,8 +59,8 @@ export const ceoAccessTokenState = atom<string | null>({
 });
 
 // ceoRole 상태
-export const ceoRoleState = atom({
-  key: "ownerRole",
+export const ceoRoleState = atom<string | null>({
+  key: "ceoRoleState",
   default: null,
 });
 

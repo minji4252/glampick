@@ -51,16 +51,20 @@ import AdminSignup from "./pages/admin/AdminSignup";
 import AdminBanner from "./pages/admin/AdminBanner";
 import { postSignOut } from "./apis/userapi";
 import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
+  
   // user
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userRole, setUserRole] = useRecoilState(userRoleState);
+
   // ceo
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
   const locationNow = useLocation();
   const navigate = useNavigate();
+  
   // 숫자가 아닌 경우 NotfoundPage를 렌더링하는 컴포넌트
   const GlampingDetailWrapper = ({ isLogin }) => {
     const { glampId } = useParams();
@@ -69,14 +73,30 @@ function App() {
     }
     return <GlampingDetail isLogin={isLogin} />;
   };
+
+  useEffect(() => {
+    console.log(
+      "앱 Header 업데이트: isLogin:",
+      isLogin,
+      "isCeoLogin:",
+      isCeoLogin,
+    );
+  }, [isLogin, isCeoLogin]);
+
+
   // 페이지 이동할 때마다 로그인 및 사용자 유형 확인
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const role = localStorage.getItem("userRole");
     const ceoAccessToken = localStorage.getItem("ceoAccessToken");
     const ceoRole = localStorage.getItem("ownerRole");
-    console.log("현재 accessToken:", accessToken);
+
+    // 상태를 업데이트하기 전에 로컬스토리지의 값을 로그로 확인
+    // console.log("현재 accessToken:", accessToken);
+    // console.log("현재 ceoAccessToken:", ceoAccessToken);
     console.log("현재 role:", role);
+    console.log("현재 ceoRole:", ceoRole);
+
     if (accessToken) {
       // 일반 사용자 로그인
       setIsLogin(true);
@@ -96,6 +116,7 @@ function App() {
       setCeoRole(null);
     }
   }, [locationNow]);
+  
   // 로그아웃
   const handleLogout = async () => {
     await postSignOut();
@@ -114,14 +135,24 @@ function App() {
   };
   return (
     <div>
-      <Header isLogin={isLogin} handleLogout={handleLogout} />
+      <Header
+        isLogin={isLogin}
+        isCeoLogin={isCeoLogin}
+        handleLogout={handleLogout}
+      />
       <Routes>
+          
         {/* 메인 */}
-        <Route path="/" element={<MainPage isLogin={isLogin} />}></Route>
+        <Route
+          path="/"
+          element={<MainPage isLogin={isLogin} isCeoLogin={isCeoLogin} />}
+        ></Route>
+
         {/* 사용자 로그인, 회원가입 */}
         <Route path="/login" element={<LoginPage />}></Route>
         <Route path="/signup" element={<SignupPage />}></Route>
         <Route path="/sns-signup" element={<SnsSignupPage />}></Route>
+
         {/* 검색 결과 */}
         <Route path="/search" element={<SearchPage />} />
         <Route
@@ -130,10 +161,12 @@ function App() {
         />
         <Route path="/roomdetail/:glampId" element={<RoomDetail />}></Route>
         <Route path="/review/:glampId" element={<Review />}></Route>
+
         {/* 결제 페이지 */}
         <Route path="/payment/:glampId" element={<PaymentPage />} />
         {/* <Route path="/payment" element={<PaymentPage />}></Route> */}
         <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
+
         {/* 유저 페이지 */}
         <Route
           path="/bookingdetail"
@@ -167,9 +200,11 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         {/* 사장님 로그인, 회원가입 */}
         <Route path="/ceosignup" element={<CeoSignup />} />
         <Route path="/ceologin" element={<CeoLogin />} />
+          
         {/* 사장님 페이지 */}
         <Route path="/ceoglamping" element={<CeoGlamping />} />
         <Route path="/ceoroom" element={<CeoRoom />} />
@@ -178,12 +213,14 @@ function App() {
         <Route path="/ceoreview" element={<CeoReview />} />
         <Route path="/chart" element={<Chart />} />
         <Route path="/ceoinfo" element={<CeoInfo />} />
+          
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />
         <Route path="/adminstore" element={<AdminStore />} />
         <Route path="/adminsignup" element={<AdminSignup />} />
         <Route path="/adminexit" element={<AdminExit />} />
         <Route path="/adminbanner" element={<AdminBanner />} />
+          
         {/* 잘못된 경로 */}
         <Route path="/*" element={<NotfoundPage />} />
       </Routes>

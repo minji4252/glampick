@@ -35,9 +35,10 @@ interface GlampingData {
 
 interface MainPageProps {
   isLogin: boolean;
+  isCeoLogin: boolean;
 }
 
-const MainPage: React.FC<MainPageProps> = ({ isLogin }) => {
+const MainPage: React.FC<MainPageProps> = ({ isLogin, isCeoLogin }) => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -164,7 +165,7 @@ const MainPage: React.FC<MainPageProps> = ({ isLogin }) => {
             </Link>
           </div>
           <div className="main-nav">
-            {isLogin ? (
+            {isLogin || isCeoLogin ? (
               <>
                 <button
                   className="main-logout"
@@ -175,7 +176,10 @@ const MainPage: React.FC<MainPageProps> = ({ isLogin }) => {
                   <p>로그아웃</p>
                 </button>
                 <div className="main-user">
-                  <Link to="/bookingdetail" className="main-user-nav">
+                  <Link
+                    to={isCeoLogin ? "/ceoglamping" : "/bookingdetail"}
+                    className="main-user-nav"
+                  >
                     <img
                       src={LoginUserIcon}
                       alt="로그인 유저 아이콘"

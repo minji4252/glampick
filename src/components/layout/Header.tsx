@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import glampickLogo from "../../images/glampick_logo.png";
 import headerUser from "../../images/icon/member-icon.png";
@@ -6,11 +6,20 @@ import "../../styles/header.css";
 
 interface HeaderProps {
   isLogin: boolean;
+  isCeoLogin: boolean;
   handleLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ isLogin, handleLogout }) => {
+const Header: React.FC<HeaderProps> = ({
+  isLogin,
+  isCeoLogin,
+  handleLogout,
+}) => {
   const locationNow = useLocation();
+
+  useEffect(() => {
+    console.log("Header 상태: isLogin:", isLogin);
+  }, [isLogin]);
 
   // 메인, 관리자 페이지 header 숨김
   if (
@@ -37,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ isLogin, handleLogout }) => {
           </Link>
         </div>
         <div className="header-nav">
-          {isLogin ? (
+          {isLogin || isCeoLogin ? (
             <>
               <button
                 className="header-logout"
@@ -48,7 +57,10 @@ const Header: React.FC<HeaderProps> = ({ isLogin, handleLogout }) => {
                 <p>로그아웃</p>
               </button>
               <div className="header-user">
-                <Link to="/bookingdetail" className="header-user-nav">
+                <Link
+                  to={isCeoLogin ? "/ceoglamping" : "/bookingdetail"}
+                  className="header-user-nav"
+                >
                   <img
                     src={headerUser}
                     alt="헤더 유저 아이콘"
