@@ -260,7 +260,7 @@ export const BookingDetailForm = ({
           handleCloseCreateReviewModal();
         }}
         reservationId={booking.reservationId}
-        reviewStarPoint={5} // 적절한 별점 초기 값 설정
+        reviewStarPoint={5}
         glampName={booking.glampName}
         roomName={booking.roomName}
         checkInDate={booking.checkInDate}
