@@ -12,7 +12,7 @@ const AdminStore = () => {
   );
   const [storeList, setStoreList] = useState([]);
 
-  // 토큰정보 불러오기
+  // 토큰 정보 불러오기
   useEffect(() => {
     const fetchAdminAccessToken = async () => {
       try {
