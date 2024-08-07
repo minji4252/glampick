@@ -2,7 +2,12 @@ import styled from "@emotion/styled";
 import { CeoButton, MainButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
 import { useForm } from "react-hook-form";
-import { postAuthCode, postMailSend } from "../../apis/userapi";
+import {
+  postAuthCode,
+  postCheckSms,
+  postMailSend,
+  postSendSms,
+} from "../../apis/userapi";
 import { useState } from "react";
 import Loading from "../../components/common/Loading";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -136,6 +141,23 @@ const modalMessages = {
     VF: "인증코드를 입력해주세요.",
     default: "인증에 실패하였습니다. \n 다시 시도해주세요.",
   },
+  businessNumber: {
+    SU: "사업자등록번호 인증이 완료되었습니다.",
+    INVALID: "유효하지 않은 사업자등록번호입니다.",
+    ERROR: "사업자등록번호 확인에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  smsSend: {
+    SU: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+    DT: "중복된 전화번호 입니다.",
+    IPH: "전화번호 형식이 올바르지 않습니다.",
+    default: "문자 발송에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  phoneAuth: {
+    SU: "인증이 완료되었습니다.",
+    IC: "인증코드가 올바르지 않습니다.",
+    VF: "인증코드를 입력해주세요.",
+    default: "인증에 실패하였습니다. \n 다시 시도해주세요.",
+  },
 };
 
 // 모달 열기 함수
@@ -199,10 +221,12 @@ const CeoSignup = () => {
 
   // 사업자등록번호 확인 로직
   const handleBusinessNumberClick = async e => {
+    e.preventDefault();
     const businessNumber = watch("businessNumber");
     const serviceKey =
       "XQOQV4Xnr3Q6b%2BMG2%2B6EV3HEaxW1RjQ6FZFmUpraSqUGeCBZRw2Tmh8tf6KuSVyKhXn4IjdqLzLIxSvF4shDtQ%3D%3D";
     setLoading(true);
+
     try {
       const response = await axios.post(
         `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${serviceKey}`,
@@ -216,21 +240,60 @@ const CeoSignup = () => {
         },
       );
       const result = response.data;
-      console.log(result);
+      const businessInfo = result.data[0];
+
+      console.log(result.data);
+      console.log(result.data[0]);
+      // console.log(result.data[0].b_stt_cd);
+      // console.log(result.data[0].tax_type);
+      //  console.log(result.data[0].b_stt_cd)의 결과값이 01인 경우만 인증이 완료되었습니다.
+      // 값이 비어있는 경우 console.log(result.data[0].tax_type); 에러메세지 출력하기
+
+      if (businessInfo && businessInfo.b_stt_cd === "01") {
+        handleModalOpen("SU", "businessNumber", openModal); // 성공 메시지
+      }
+      if (businessInfo && businessInfo.b_stt_cd === "") {
+        handleModalOpen("INVALID", "businessNumber", openModal); // 성공 메시지
+      }
     } catch (error) {
-      console.error("Error:", error);
-      alert("사업자 등록번호 확인에 실패하였습니다.");
+      console.error(error);
+      handleModalOpen("ERROR", "businessNumber", openModal);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlPhoneClick = () => {
-    // 휴대폰 문자 발송 로직
+  // 휴대폰 문자 발송 로직
+  const handlPhoneClick = async e => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const phone = watch("phone");
+      const result = await postSendSms({ userPhone: phone });
+      console.log(result);
+      handleModalOpen(result.data.code, "smsSend", openModal);
+    } catch (error) {
+      openModal({ message: modalMessages.smsSend.default });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handlePhoneAuthCodeClick = () => {
-    // 휴대폰 인증코드 확인 로직
+  // 휴대폰 인증코드 확인 로직
+  const handlePhoneAuthCodeClick = async e => {
+    e.preventDefault();
+    const email = watch("ceoEmail");
+    const smsAuthCode = watch("phoneAuthCode");
+    try {
+      const result = await postCheckSms({
+        userEmail: email,
+        authNumber: smsAuthCode,
+      });
+      console.log(result);
+      handleModalOpen(result.data.code, "phoneAuth", openModal);
+    } catch (error) {
+      openModal({ message: modalMessages.phoneAuth.default });
+    }
   };
 
   // 전화번호 자동 변경
@@ -249,7 +312,6 @@ const CeoSignup = () => {
     if (phoneNumberLength < 8) {
       return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
     }
-
     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
   };
 
@@ -390,7 +452,12 @@ const CeoSignup = () => {
                   }}
                 />
                 <div className="form-button">
-                  <CeoButton label="인증코드 발송" />
+                  <CeoButton
+                    label="인증코드 발송"
+                    onClick={e => {
+                      handlPhoneClick(e);
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -406,7 +473,12 @@ const CeoSignup = () => {
                   {...register("phoneAuthCode")}
                 />
                 <div className="form-button">
-                  <CeoButton label="확인" />
+                  <CeoButton
+                    label="확인"
+                    onClick={e => {
+                      handlePhoneAuthCodeClick(e);
+                    }}
+                  />
                 </div>
               </div>
             </div>
