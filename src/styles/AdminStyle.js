@@ -5,14 +5,23 @@ export const GlampingKingStyle = styled.div`
   .inner {
     flex-direction: column;
     margin-top: 20px;
-    .store-inner {
+    .store-inner,
+    .banner-inner {
       width: 100%;
       margin-top: 50px;
+      margin-bottom: 100px;
       padding: 0 50px;
       display: flex;
       justify-content: flex-start;
     }
+
+    .banner-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
   }
+
   @media all and (max-width: 1910px) {
     .inner {
       margin-top: 50px;

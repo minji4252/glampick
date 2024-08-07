@@ -1,53 +1,53 @@
-import styled from "@emotion/styled";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/mainbanner.css";
-import SwiperImg from "../images/pic.jpg";
-import SwiperImg2 from "../images/review2.png";
-import SwiperImg3 from "../images/review3.png";
-import SwiperImg4 from "../images/Rectangle 90.png";
-import SwiperImg5 from "../images/Rectangle 95.png";
+import axios from "axios";
+import { Autoplay, Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { SERVER_URL } from "../apis/config";
 
 const MainBanner = () => {
+  const [banners, setBanners] = useState([]);
+
+  // 배너 리스트 가져오기
+  useEffect(() => {
+    const getBanners = async () => {
+      try {
+        const response = await axios.get(`${SERVER_URL}/api/main/banner`);
+        // const response = await axios.get("/api/main/banner");
+        setBanners(response.data.list);
+      } catch (error) {
+        console.error("배너 데이터 겟 오류:", error);
+      }
+    };
+    getBanners();
+  }, []);
+
   return (
     <div>
-      <div className="swiper mySwiper">
-        <div className="swiper-wrapper">
-          <div className="swiper-slide">
-            <img src={SwiperImg} className="swiper-img" />
-          </div>
-          <div className="swiper-slide">
-            <img src={SwiperImg2} className="swiper-img" />
-          </div>
-          <div className="swiper-slide">
-            <img src={SwiperImg3} className="swiper-img" />
-          </div>
-          <div className="swiper-slide">
-            <img src={SwiperImg4} className="swiper-img" />
-          </div>
-          <div className="swiper-slide">
-            <img src={SwiperImg5} className="swiper-img" />
-          </div>
-        </div>
-        <div className="swiper-button-next"></div>
-        <div className="swiper-button-prev"></div>
-        <div className="swiper-pagination"></div>
-      </div>
-
-      {/* Swiper JS */}
-      {/* <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> */}
-
-      {/* <script>
-    var swiper = new Swiper(".mySwiper", {
-      pagination: {
-        el: ".swiper-pagination",
-        type: "progressbar",
-      },
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-    });
-  </script> */}
+      {banners.length > 0 && (
+        <Swiper
+          modules={[Autoplay, Navigation]}
+          pagination={{ clickable: true }}
+          navigation
+          loop={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          className="mySwiper"
+        >
+          {banners.map(banner => (
+            <SwiperSlide key={banner.bannerId}>
+              <img
+                // src={banner.bannerUrl}
+                src={`${SERVER_URL}${banner.bannerUrl}`}
+                className="swiper-img"
+                alt={`ㅂㅐ너 ${banner.bannerId}`}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
     </div>
   );
 };
