@@ -11,6 +11,7 @@ const AdminStoreCardStyle = styled.div`
   border-radius: 20px;
   border: 1px solid ${colorSystem.admin};
   padding-left: 35px;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
 
   .store-card {
     .store-name {

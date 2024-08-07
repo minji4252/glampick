@@ -7,15 +7,42 @@ export const GlampingKingStyle = styled.div`
     margin-top: 20px;
     .store-inner,
     .banner-inner {
-      width: 100%;
+      /* width: 100%; */
       margin-top: 50px;
       margin-bottom: 100px;
       padding: 0 50px;
       display: flex;
-      justify-content: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
     }
-
+    .banner-add {
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 17px;
+      padding: 8px 16px;
+      border-radius: 30px;
+      width: 150px;
+      height: 50px;
+      transition:
+        border 0.3s,
+        background-color 0.3s,
+        color 0.3s;
+      border: 1px solid;
+      background-color: ${colorSystem.admin};
+      color: ${colorSystem.white};
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &:hover {
+        border: 1px solid ${colorSystem.admin3};
+        background-color: ${colorSystem.admin3};
+        color: ${colorSystem.admin};
+      }
+    }
     .banner-list {
+      width: 600px;
+      margin-top: 50px;
       display: flex;
       flex-direction: column;
       gap: 20px;
