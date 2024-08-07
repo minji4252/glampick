@@ -9,6 +9,8 @@ import DeleteModal from "../../components/common/DeleteModal";
 import axios from "axios";
 import { ceoAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
+import useModal from "../../hooks/UseModal";
+import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 
 const WrapStyle = styled.div`
   .inner {
@@ -158,9 +160,13 @@ const CeoInfo = () => {
 
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
-
+  // 비밀번호 확인 입력창 모달
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   // 회원탈퇴 모달
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Alert 모달 관련 상태와 함수
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
   // 유저 정보 불러오기
   useEffect(() => {
@@ -186,6 +192,21 @@ const CeoInfo = () => {
     };
     getOwnerInfo();
   }, [ceoAccessToken, setValue]);
+
+  // 비밀번호 입력 확인 모달
+  useEffect(() => {
+    setIsPasswordModalOpen(true);
+  }, []);
+
+  const handleCloseModal = () => {
+    setIsPasswordModalOpen(false);
+  };
+
+  // 비밀번호 입력 성공 확인 함수
+  const handlePasswordCheckSuccess = () => {
+    // console.log("비밀번호 확인 성공");
+    setIsPasswordModalOpen(false);
+  };
 
   // 전화번호 자동 변경
   const handleChangePhone = e => {
@@ -345,6 +366,15 @@ const CeoInfo = () => {
           </button>
         </div>
       </div>
+      <PasswordCheckModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => {
+          handleCloseModal();
+        }}
+        onSuccess={() => {
+          handlePasswordCheckSuccess();
+        }}
+      />
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
