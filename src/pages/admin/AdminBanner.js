@@ -5,12 +5,16 @@ import { adminAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import AdminBannerCard from "../../components/admin/AdminBannerCard";
+import { AdminButton } from "../../components/common/Button";
+import AdminBannerModal from "../../components/admin/AdminBannerModal";
 
 const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
     adminAccessTokenState,
   );
   const [list, setList] = useState([]);
+  // 배너 추가 모달
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -50,6 +54,20 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
     }
   }, [adminAccessToken]);
 
+  // 배너 추가 모달 열고 닫기
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 배너 삭제
+  const handleDelete = deletedBannerId => {
+    setList(list.filter(item => item.bannerId !== deletedBannerId));
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
@@ -57,6 +75,9 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
       <div className="inner">
         <h3>배너 관리</h3>
         <div className="banner-inner">
+          <button className="banner-add" onClick={openModal}>
+            배너 추가하기
+          </button>
           <div className="banner-list">
             {list.map(item => (
               <AdminBannerCard
@@ -64,11 +85,13 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
                 createdAt={item.createdAt}
                 bannerId={item.bannerId}
                 bannerUrl={item.bannerUrl}
+                onDelete={handleDelete}
               />
             ))}
           </div>
         </div>
       </div>
+      <AdminBannerModal isOpen={isModalOpen} onClose={closeModal} />
     </GlampingKingStyle>
   );
 };

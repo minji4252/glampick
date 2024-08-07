@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { AdminHeader, GlampingKingStyle } from "../../styles/AdminStyle";
-import AdminCategories from "../../components/mypage/AdminCategories";
-import { adminAccessTokenState } from "../../atoms/loginState";
+import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
-import AdminStoreCard from "../../components/admin/AdminStoreCard";
 import { getAdminStoreList } from "../../apis/adminapi";
+import { adminAccessTokenState } from "../../atoms/loginState";
+import AdminStoreCard from "../../components/admin/AdminStoreCard";
+import AdminCategories from "../../components/mypage/AdminCategories";
+import { AdminHeader, GlampingKingStyle } from "../../styles/AdminStyle";
 
 const AdminStore = () => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
