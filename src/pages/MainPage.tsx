@@ -36,9 +36,14 @@ interface GlampingData {
 interface MainPageProps {
   isLogin: boolean;
   isCeoLogin: boolean;
+  handleLogout: () => void;
 }
 
-const MainPage: React.FC<MainPageProps> = ({ isLogin, isCeoLogin }) => {
+const MainPage: React.FC<MainPageProps> = ({
+  isLogin,
+  isCeoLogin,
+  handleLogout,
+}) => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
@@ -54,13 +59,13 @@ const MainPage: React.FC<MainPageProps> = ({ isLogin, isCeoLogin }) => {
   const [selectedWord, setSelectedWord] = useState<string>(""); // 검색어
   const navigate = useNavigate();
 
-  // 로그아웃
-  const handleLogout = () => {
-    // 로컬스토리지에서 토큰 삭제
-    localStorage.removeItem("accessToken");
-    // setIsLogin(false);
-    navigate("/");
-  };
+  // // 로그아웃
+  // const handleLogout = () => {
+  //   // 로컬스토리지에서 토큰 삭제
+  //   localStorage.removeItem("accessToken");
+  //   // setIsLogin(false);
+  //   navigate("/");
+  // };
 
   // 검색 결과
   const handleSearch = (e: React.FormEvent) => {

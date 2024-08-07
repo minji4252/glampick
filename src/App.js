@@ -133,7 +133,13 @@ function App() {
         {/* 메인 */}
         <Route
           path="/"
-          element={<MainPage isLogin={isLogin} isCeoLogin={isCeoLogin} />}
+          element={
+            <MainPage
+              isLogin={isLogin}
+              isCeoLogin={isCeoLogin}
+              handleLogout={handleLogout}
+            />
+          }
         ></Route>
 
         {/* 사용자 로그인, 회원가입 */}

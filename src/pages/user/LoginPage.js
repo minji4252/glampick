@@ -22,6 +22,7 @@ import NaverIcon from "../../images/btn_naver.png";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
 import base64 from "base-64";
+import { getKakaoLoginLink } from "../../apis/kkoapi";
 
 export const WrapStyle = styled.div`
   position: relative;
@@ -278,6 +279,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const kakaoLogin = getKakaoLoginLink();
+
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
     const savedEmail = localStorage.getItem("savedEmail");
@@ -411,9 +414,9 @@ const LoginPage = () => {
                 <p>sns 로그인</p>
                 <ul className="sns-login-list">
                   <li className="sns-login-item">
-                    <a href="#" className="sns-login-link">
+                    <Link to={kakaoLogin}>
                       <div className="kakao-icon" />
-                    </a>
+                    </Link>
                   </li>
                   <li className="sns-login-item">
                     <a href="#" className="sns-login-link">
