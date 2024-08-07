@@ -9,6 +9,10 @@ import { useDaumPostcodePopup } from "react-daum-postcode";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { ceoAccessTokenState } from "../../atoms/loginState";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const WrapStyle = styled.div`
   .inner {
@@ -219,12 +223,13 @@ const ImageUploadStyle = styled.div`
 `;
 
 const CeoGlamping = () => {
-  const [images, setImages] = useState([]);
+  const [glampImg, setGlampImg] = useState([]);
+  const ceoAccessToken = useFetchAccessToken();
 
   // 폼의 초기값
   const initState = {
     glampName: "",
-    images: [],
+    glampImg: [],
     region: "seoul",
     intro: "",
     basic: "",
@@ -238,7 +243,7 @@ const CeoGlamping = () => {
   // yup schema 셋팅
   const schema = yup.object().shape({
     glampName: yup.string().required("글램핑장 이름을 입력해 주세요"),
-    images: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
+    glampImg: yup.array().min(1, "글램핑장 대표사진을 등록해 주세요"),
     intro: yup.string().required("숙소 소개 항목을 입력해 주세요"),
     basic: yup.string().required("숙소 기본정보를 입력해 주세요"),
     notice: yup.string().required("숙소 유의사항을 입력해 주세요"),
@@ -255,7 +260,7 @@ const CeoGlamping = () => {
 
   // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
   const maxImageCount = 1;
-  const [uploadedImageCount, setUploadedImageCount] = useState(images.length);
+  const [uploadedImageCount, setUploadedImageCount] = useState(glampImg.length);
 
   // 이미지 업로드 상태 추가
   const [isImageUploaded, setIsImageUploaded] = useState(false);
@@ -264,30 +269,30 @@ const CeoGlamping = () => {
   const handleImageUpload = e => {
     const files = Array.from(e.target.files);
     // 이미지가 현재 배열에 있는 이미지 개수를 더해 3장 이하로 제한
-    if (images.length + files.length > maxImageCount) {
+    if (glampImg.length + files.length > maxImageCount) {
       alert(`이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`);
       return;
     }
     const newImages = [
-      ...images,
-      ...files.slice(0, maxImageCount - images.length),
+      ...glampImg,
+      ...files.slice(0, maxImageCount - glampImg.length),
     ];
-    setImages(newImages);
+    setGlampImg(newImages);
     setUploadedImageCount(newImages.length);
     setIsImageUploaded(true);
-    setValue("images", newImages, { shouldValidate: true });
-    trigger("images");
+    setValue("glampImg", newImages, { shouldValidate: true });
+    trigger("glampImg");
   };
 
   // 이미지 삭제
   const handleImageDelete = index => {
-    const updatedImages = [...images];
+    const updatedImages = [...glampImg];
     updatedImages.splice(index, 1);
-    setImages(updatedImages);
+    setGlampImg(updatedImages);
     setUploadedImageCount(updatedImages.length);
     setIsImageUploaded(updatedImages.length > 0);
-    setValue("images", updatedImages, { shouldValidate: true });
-    trigger("images");
+    setValue("glampImg", updatedImages, { shouldValidate: true });
+    trigger("glampImg");
   };
 
   // -----------------------------------------------------------------------------
@@ -345,18 +350,57 @@ const CeoGlamping = () => {
     trigger(fieldName);
   };
 
-  const onSubmit = data => {
-    console.log("전송시 데이터 ", data);
+  //Post 함수
+  const onSubmit = async data => {
+    const formData = new FormData();
+
+    formData.append(
+      "req",
+      JSON.stringify({
+        glampName: data.glampName,
+        region: data.region,
+        intro: data.intro,
+        basic: data.basic,
+        notice: data.notice,
+        glampLocation: data.glampLocation,
+        glampCall: data.glampCall,
+        traffic: data.traffic,
+        extraCharge: data.extraCharge,
+      }),
+    );
+
+    glampImg.forEach(image => {
+      formData.append("glampImg", image, image.name);
+    });
+
+    try {
+      if (!ceoAccessToken) return;
+      console.log("전송 데이터:", formData);
+
+      const response = await axios.post(`/api/owner/glamping`, formData, {
+        headers: {
+          Authorization: `Bearer ${ceoAccessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // if (response.data.code === "SU") {
+      //   alert(response.data.message);
+      // }
+      console.log("서버 응답:", response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // 이미지 유효성검사 포커스
   useEffect(() => {
-    if (errors.images) {
+    if (errors.glampImg) {
       document
         .querySelector(".glamp-img-box")
         ?.scrollIntoView({ block: "center" });
     }
-  }, [errors.images]);
+  }, [errors.glampImg]);
 
   // -----------------------------------------------------------------------------
 
@@ -401,7 +445,7 @@ const CeoGlamping = () => {
                 onChange={handleImageUpload}
               />
               <div className="uploaded-images">
-                {images.map((image, index) => (
+                {glampImg.map((image, index) => (
                   <div key={index} className="uploaded-image">
                     <img src={URL.createObjectURL(image)} alt="uploaded" />
                     <button
@@ -415,7 +459,7 @@ const CeoGlamping = () => {
                 ))}
               </div>
             </ImageUploadStyle>
-            {errors.images && <span>{errors.images.message}</span>}
+            {errors.glampImg && <span>{errors.glampImg.message}</span>}
           </CeoBoxStyle>
 
           {/* 글램핑장 지역 */}
