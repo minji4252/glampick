@@ -1,17 +1,11 @@
-import { colorSystem } from "../../styles/color";
 import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa6";
-import { DeleteButton, MainButton } from "../common/Button";
-import useModal from "../../hooks/UseModal";
-// import CheckModal from "../common/CheckModal";
-// import AlertModal from "../common/AlertModal";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { colorSystem } from "../../styles/color";
+import { MainButton } from "../common/Button";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import defaultProfile from "../../images/icon/default-img.png";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "../../atoms/loginState";
 import CeoReviewModal from "./CeoReviewModal";
 
 const ReviewCardStyle = styled.div`
@@ -41,7 +35,6 @@ const ReviewCardStyle = styled.div`
     }
   }
 
-  //일반 리뷰에서는 숙소이름 가리기
   h5 {
     display: none;
     font-weight: 600;
@@ -63,7 +56,6 @@ const UserSection = styled.div`
       letter-spacing: 1.5px;
     }
 
-    //일반 리뷰에서는 삭제 버튼 가리기
     button {
       height: 25px;
       display: none;
@@ -101,10 +93,6 @@ const UserSection = styled.div`
       max-width: 570px;
       line-height: 1.5rem;
       font-size: 0.9rem;
-      /* overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical; */
     }
 
     button {
@@ -194,7 +182,7 @@ const CeoReviewCard = ({
     setIsReviewModalOpen(true);
   };
   const handleCloseCreateReviewModal = () => {
-    console.log("모달 닫기");
+    // console.log("모달 닫기");
     setIsReviewModalOpen(false);
   };
 
