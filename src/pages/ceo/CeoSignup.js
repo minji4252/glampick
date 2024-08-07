@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
 import AlertModal from "../../components/common/AlertModal";
 import useModal from "../../hooks/UseModal";
+import axios from "axios";
 
 const CeoSignUpStyle = styled.div`
   position: relative;
@@ -115,26 +116,32 @@ const initState = {
   ceoEmail: "",
   password: "",
   name: "",
-  businessRegistrationNumber: "",
-  businessRegistrationImg: "",
+  businessNumber: "",
+  // businessRegistrationImg: "",
   phone: "",
 };
 
-// 메일 발송 모달 관련 함수
-const handleModalOpen = (code, openModal) => {
-  const messages = {
+// 모달 메시지 설정
+const modalMessages = {
+  mailSend: {
     SU: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
     DE: "중복된 이메일입니다.",
     EE: "메일 주소를 입력해주세요.",
     IE: "메일 형식이 올바르지 않습니다.",
     default: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
-  };
+  },
+  emailAuth: {
+    SU: "인증이 완료되었습니다.",
+    IC: "인증코드가 올바르지 않습니다.",
+    VF: "인증코드를 입력해주세요.",
+    default: "인증에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+};
 
-  if (messages[code]) {
-    openModal({
-      message: messages[code],
-    });
-  }
+// 모달 열기 함수
+const handleModalOpen = (code, type, openModal) => {
+  const message = modalMessages[type][code] || modalMessages[type].default;
+  openModal({ message });
 };
 
 const CeoSignup = () => {
@@ -154,62 +161,72 @@ const CeoSignup = () => {
     resolver: yupResolver(ceoValidationSchema),
     defaultValues: initState,
   });
+
   // 로딩
   const [loading, setLoading] = useState(false);
   // 모달
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
+  // 이메일 발송 로직
   const handlEmailClick = async e => {
-    // 이메일 발송 로직
     e.preventDefault();
     setLoading(true);
-
     try {
       const email = watch("ceoEmail");
       const result = await postMailSend({ userEmail: email });
       console.log(result);
-      handleModalOpen(result.data.code, openModal);
+      handleModalOpen(result.data.code, "mailSend", openModal);
     } catch (error) {
-      openModal({
-        message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
-      });
+      openModal({ message: modalMessages.mailSend.default });
     } finally {
       setLoading(false);
     }
   };
 
+  // 이메일 인증코드 확인 로직
   const handleEmailAuthCodeClick = async e => {
-    // 이메일 인증코드 확인 로직
     e.preventDefault();
     const email = watch("ceoEmail");
     const authCode = watch("emailAuthCode");
-    const result = await postAuthCode({ userEmail: email, authCode });
-    console.log(result.data);
-    if (result.data.code === "SU") {
-      openModal({
-        message: "인증이 완료되었습니다.",
-      });
-    } else if (result.data.code === "IC") {
-      openModal({
-        message: "인증코드가 올바르지 않습니다.",
-      });
-    } else if (result.data.code === "VF") {
-      openModal({
-        message: "인증코드를 입력해주세요.",
-      });
-    } else {
-      openModal({
-        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
-      });
+    try {
+      const result = await postAuthCode({ userEmail: email, authCode });
+      console.log(result);
+      handleModalOpen(result.data.code, "emailAuth", openModal);
+    } catch (error) {
+      openModal({ message: modalMessages.emailAuth.default });
     }
   };
 
-  const handleBusinessRegistrationNumberClick = () => {
-    // 사업자등록번호 확인 로직
+  // 사업자등록번호 확인 로직
+  const handleBusinessNumberClick = async e => {
+    const businessNumber = watch("businessNumber");
+    const serviceKey =
+      "XQOQV4Xnr3Q6b%2BMG2%2B6EV3HEaxW1RjQ6FZFmUpraSqUGeCBZRw2Tmh8tf6KuSVyKhXn4IjdqLzLIxSvF4shDtQ%3D%3D";
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${serviceKey}`,
+        {
+          b_no: [businessNumber],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      );
+      const result = response.data;
+      console.log(result);
+    } catch (error) {
+      console.error("Error:", error);
+      alert("사업자 등록번호 확인에 실패하였습니다.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlPhoneClick = () => {
-    // 휴대폰 발송 로직
+    // 휴대폰 문자 발송 로직
   };
 
   const handlePhoneAuthCodeClick = () => {
@@ -234,26 +251,6 @@ const CeoSignup = () => {
     }
 
     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
-  };
-
-  // 사업자등록번호 자동 변경
-  const handleChangeBusinessNumber = e => {
-    const businessNumber = formatBusinessNumber(e.target.value);
-    // console.log(BusinessNumber);
-    setValue("businessRegistrationNumber", businessNumber);
-  };
-
-  // 사업자등록번호 형식
-  const formatBusinessNumber = value => {
-    if (!value) return value;
-    const businessNumber = value.replace(/[^\d]/g, ""); // 숫자가 아닌 문자 제거
-    const businessNumberLength = businessNumber.length;
-    if (businessNumberLength < 4) return businessNumber;
-    if (businessNumberLength < 6) {
-      return `${businessNumber.slice(0, 3)}-${businessNumber.slice(3)}`;
-    }
-
-    return `${businessNumber.slice(0, 3)}-${businessNumber.slice(3, 5)}-${businessNumber.slice(5)}`;
   };
 
   const onSubmit = data => {
@@ -351,23 +348,23 @@ const CeoSignup = () => {
                 <input
                   type="text"
                   placeholder="사업자등록번호를 입력해주세요"
-                  {...register("businessRegistrationNumber")}
-                  onChange={e => {
-                    handleChangeBusinessNumber(e);
-                  }}
+                  {...register("businessNumber")}
                 />
                 <div className="form-button">
-                  <CeoButton label="확인" />
+                  <CeoButton
+                    label="확인"
+                    onClick={e => {
+                      handleBusinessNumberClick(e);
+                    }}
+                  />
                 </div>
               </div>
             </div>
-            {errors.businessRegistrationNumber && (
-              <ErrorMessage>
-                {errors.businessRegistrationNumber.message}
-              </ErrorMessage>
+            {errors.businessNumber && (
+              <ErrorMessage>{errors.businessNumber.message}</ErrorMessage>
             )}
             {/* 사업자등록증 이미지 업로드 */}
-            <div className="form-group">
+            {/* <div className="form-group">
               <label htmlFor="businessRegistrationImg">사업자등록증 첨부</label>
               <input
                 type="file"
@@ -380,7 +377,7 @@ const CeoSignup = () => {
               <ErrorMessage>
                 {errors.businessRegistrationImg.message}
               </ErrorMessage>
-            )}
+            )} */}
             <div className="form-group">
               <label>휴대폰</label>
               <div className="input-group">
