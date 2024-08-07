@@ -1,12 +1,15 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import BookingChart from "../../components/ceo/BookingChart";
 import SalesChart from "../../components/ceo/SalesChart";
 import CancelChart from "../../components/ceo/CancelChart";
 import { FaBookmark } from "react-icons/fa6";
+import axios from "axios";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
+import { getBookingData } from "../../apis/ceochartapi";
 
 const ChartWrapStyle = styled.div`
   .inner {
@@ -108,6 +111,10 @@ const TapStyle = styled.div`
   max-width: 900px;
   margin-top: 60px;
 
+  .period-select {
+    justify-content: flex-end;
+  }
+
   > div {
     width: 100%;
     display: flex;
@@ -173,9 +180,21 @@ const ListContent = styled.div`
 
 const Chart = () => {
   const [currentTab, setCurrentTab] = useState(0);
+  const [starPointAvg, setStarPointAvg] = useState(0);
+  const [heart, setHeart] = useState(0);
+  const [bookingData, setBookingData] = useState([]);
+  const ceoAccessToken = useFetchAccessToken();
+
+  // 임시
+  const startDayId = "20240801";
+  const endDayId = "20240807";
 
   const menuArr = [
-    { name: "예약", count: "21건", content: <BookingChart /> },
+    {
+      name: "예약",
+      count: "21건",
+      content: <BookingChart data={bookingData} />,
+    },
     { name: "매출", count: "520,000원", content: <SalesChart /> },
     { name: "취소율", count: "4%", content: <CancelChart /> },
   ];
@@ -183,6 +202,47 @@ const Chart = () => {
   const selectMenuHandler = index => {
     setCurrentTab(index);
   };
+
+  useEffect(() => {
+    const fetchBookingData = async () => {
+      try {
+        if (!ceoAccessToken) return;
+        const response = await getBookingData(
+          ceoAccessToken,
+          startDayId,
+          endDayId,
+        );
+        if (response.code === "SU") {
+          setBookingData(response.popularRooms);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchBookingData();
+  }, [ceoAccessToken]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!ceoAccessToken) return;
+        const response = await axios.get(`/api/jin/starheart`, {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+          },
+        });
+        if (response.data.code === "SU") {
+          setStarPointAvg(response.data.point[0].starPointAvg);
+          setHeart(response.data.point[0].heart);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [ceoAccessToken]);
 
   return (
     <ChartWrapStyle>
@@ -195,33 +255,37 @@ const Chart = () => {
               <h2>북마크</h2>
               <div className="bookmark-icon">
                 <FaBookmark />
-                <p>2561</p>
+                <p>{heart}</p>
               </div>
             </div>
             <div>
               <h2>별점</h2>
               <div className="starpoint-icon">
                 <FaStar />
-                <p>5.0</p>
+                <p>{starPointAvg}</p>
               </div>
             </div>
           </StateStyle>
         </div>
+
         <TapStyle>
+          <div className="period-select">
+            <select>
+              <option value="weekly">주간</option>
+              <option value="monthly">월간</option>
+              {/* <option value="custom">사용자 지정</option> */}
+            </select>
+          </div>
           <div>
-            {menuArr.map((ele, index) => {
-              return (
-                <li
-                  key={index}
-                  className={
-                    currentTab === index ? "submenu focused" : "submenu"
-                  }
-                  onClick={() => selectMenuHandler(index)}
-                >
-                  {ele.name} <p>{ele.count}</p>
-                </li>
-              );
-            })}
+            {menuArr.map((ele, index) => (
+              <li
+                key={index}
+                className={currentTab === index ? "submenu focused" : "submenu"}
+                onClick={() => selectMenuHandler(index)}
+              >
+                {ele.name} <p>{ele.count}</p>
+              </li>
+            ))}
           </div>
         </TapStyle>
         <ListContent>

@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
@@ -8,9 +9,7 @@ import * as yup from "yup";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import { CeoButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
-import axios from "axios";
-import { useRecoilState } from "recoil";
-import { ceoAccessTokenState } from "../../atoms/loginState";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const WrapStyle = styled.div`
   .inner {
@@ -176,7 +175,7 @@ const ImageUploadStyle = styled.div`
     border-radius: 5px;
   }
 
-  .uploaded-image1111s {
+  .uploaded-images {
     z-index: 999;
     display: flex;
     align-items: center;
@@ -266,8 +265,7 @@ const RoomOptionStyle = styled.div`
 const CeoRooms = () => {
   const [roomImg, setroomImg] = useState([]);
   const [service, setService] = useState([]);
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+  const ceoAccessToken = useFetchAccessToken();
   const SERVICE_MAPPING = {
     수영장: 1,
     오션뷰: 2,
@@ -393,6 +391,7 @@ const CeoRooms = () => {
     formData.append(
       "req",
       JSON.stringify({
+        // 임시
         glampId: 55,
         roomName: data.roomName,
         price: data.price,
@@ -404,7 +403,7 @@ const CeoRooms = () => {
       }),
     );
 
-    roomImg.forEach((image, index) => {
+    roomImg.forEach(image => {
       formData.append("roomImg", image, image.name);
     });
 
@@ -445,25 +444,6 @@ const CeoRooms = () => {
     });
   };
 
-  // --------------------------------토큰--------------------------------------
-
-  // 토큰정보 불러오기
-  useEffect(() => {
-    const fetchAccessToken = () => {
-      try {
-        const token = localStorage.getItem("ceoAccessToken");
-        if (token) {
-          setCeoAccessToken(token);
-        } else {
-          console.log("엑세스 토큰 없음");
-        }
-      } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
-      }
-    };
-    fetchAccessToken();
-  }, []);
-
   return (
     <WrapStyle>
       <CeoCategories />
@@ -503,7 +483,7 @@ const CeoRooms = () => {
                 multiple
                 onChange={handleImageUpload}
               />
-              <div className="uploaded-image1111s">
+              <div className="uploaded-images">
                 {roomImg.map((image, index) => (
                   <div key={index}>
                     <img src={URL.createObjectURL(image)} alt="uploaded" />

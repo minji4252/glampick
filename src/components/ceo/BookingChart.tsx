@@ -1,20 +1,27 @@
 import React from "react";
 import { ResponsiveLine } from "@nivo/line";
 
-const BookingChart = () => {
-  const data = [
+interface BookingDataItem {
+  days: string;
+  roomCounts: string;
+}
+
+interface BookingChartProps {
+  data: BookingDataItem[];
+}
+
+// 날짜 변환 00-00-00 -> 00-00
+const formatDate = (date: string): string => date.replace(/^\d{4}-/, "");
+
+const BookingChart: React.FC<BookingChartProps> = ({ data }) => {
+  const chartData = [
     {
       id: "1번방",
       color: "#f49998",
-      data: [
-        { x: "08-01", y: 6 },
-        { x: "08-02", y: 12 },
-        { x: "08-03", y: 4 },
-        { x: "08-04", y: 7 },
-        { x: "08-05", y: 2 },
-        { x: "08-06", y: 9 },
-        { x: "08-07", y: 5 },
-      ],
+      data: data.map(item => ({
+        x: formatDate(item.days),
+        y: Number(item.roomCounts),
+      })),
     },
   ];
 
@@ -29,7 +36,7 @@ const BookingChart = () => {
   return (
     <div style={{ width: "100%", height: 450 }}>
       <ResponsiveLine
-        data={data}
+        data={chartData}
         theme={theme}
         margin={{ top: 50, right: 60, bottom: 50, left: 60 }}
         xScale={{ type: "point" }}
