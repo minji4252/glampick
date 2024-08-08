@@ -9,7 +9,11 @@ import CancelChart from "../../components/ceo/CancelChart";
 import { FaBookmark } from "react-icons/fa6";
 import axios from "axios";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
-import { getBookingData } from "../../apis/ceochartapi";
+import {
+  getBookingData,
+  getCancelData,
+  getRevenueData,
+} from "../../apis/ceochartapi";
 
 const ChartWrapStyle = styled.div`
   .inner {
@@ -53,7 +57,7 @@ const StateStyle = styled.div`
   cursor: default;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-use-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   > div {
@@ -183,6 +187,8 @@ const Chart = () => {
   const [starPointAvg, setStarPointAvg] = useState(0);
   const [heart, setHeart] = useState(0);
   const [bookingData, setBookingData] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [cancelData, setCancelData] = useState([]);
   const ceoAccessToken = useFetchAccessToken();
 
   // 임시
@@ -195,8 +201,12 @@ const Chart = () => {
       count: "21건",
       content: <BookingChart data={bookingData} />,
     },
-    { name: "매출", count: "520,000원", content: <SalesChart /> },
-    { name: "취소율", count: "4%", content: <CancelChart /> },
+    {
+      name: "매출",
+      count: "520,000원",
+      content: <SalesChart data={revenueData} />,
+    },
+    { name: "취소율", count: "4%", content: <CancelChart data={cancelData} /> },
   ];
 
   const selectMenuHandler = index => {
@@ -204,6 +214,7 @@ const Chart = () => {
   };
 
   useEffect(() => {
+    // 예약 수
     const fetchBookingData = async () => {
       try {
         if (!ceoAccessToken) return;
@@ -219,9 +230,45 @@ const Chart = () => {
         console.log(error);
       }
     };
+    // 매출
+    const fetchRevenueData = async () => {
+      try {
+        if (!ceoAccessToken) return;
+
+        const response = await getRevenueData(
+          ceoAccessToken,
+          startDayId,
+          endDayId,
+        );
+        if (response.code === "SU") {
+          setRevenueData(response.revenue);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    //  취소율
+    const fetchCancelData = async () => {
+      try {
+        if (!ceoAccessToken) return;
+
+        const response = await getCancelData(
+          ceoAccessToken,
+          startDayId,
+          endDayId,
+        );
+        if (response.code === "SU") {
+          setCancelData(response.room);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     fetchBookingData();
-  }, [ceoAccessToken]);
+    fetchRevenueData();
+    fetchCancelData();
+  }, [ceoAccessToken, startDayId, endDayId]);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -3,9 +3,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { accessTokenState, ceoAccessTokenState } from "../../atoms/loginState";
 import { colorSystem } from "../../styles/color";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const CategoriesStyle = styled.div`
   position: fixed;
@@ -22,7 +21,7 @@ const CategoriesStyle = styled.div`
     cursor: default;
     -webkit-user-select: none;
     -moz-user-select: none;
-    -ms-use-select: none;
+    -ms-user-select: none;
     user-select: none;
   }
 
@@ -69,14 +68,6 @@ const NavLinkStyle = styled(NavLink)`
     color: ${colorSystem.g800};
     background-color: ${colorSystem.ceo300};
     font-weight: 700;
-
-    span {
-      /* border-bottom: 2px solid ${colorSystem.ceo}; */
-    }
-  }
-
-  > svg {
-    /* color: ${colorSystem.ceo}; */
   }
 `;
 
@@ -95,29 +86,11 @@ const categorieTab = [
 ];
 
 const CeoCategories = () => {
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+  const ceoAccessToken = useFetchAccessToken();
   const [ceoInfo, setCeoInfo] = useState({
     ownerEmail: "",
     ownerName: "",
   });
-
-  // 토큰정보 불러오기
-  useEffect(() => {
-    const fetchAccessToken = () => {
-      try {
-        const token = localStorage.getItem("ceoAccessToken");
-        if (token) {
-          setCeoAccessToken(token);
-        } else {
-          console.log("엑세스 토큰 없음");
-        }
-      } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
-      }
-    };
-    fetchAccessToken();
-  }, []);
 
   // 유저 정보 불러오기
   useEffect(() => {

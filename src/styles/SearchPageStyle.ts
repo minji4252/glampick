@@ -79,7 +79,7 @@ export const ResultContents = styled.div`
   align-items: center;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-use-select: none;
+  -ms-user-select: none;
   user-select: none;
   label {
     font-weight: 600;
@@ -366,7 +366,7 @@ export const SearchMenu = styled.div`
   align-items: flex-end;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-use-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   // 정렬
@@ -402,7 +402,7 @@ export const SearchInnerList = styled.div`
   border-bottom: 1px solid black;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-use-select: none;
+  -ms-user-select: none;
   user-select: none;
   @media all and (max-width: 950px) {
     width: 100%;
