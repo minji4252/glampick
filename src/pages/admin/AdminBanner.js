@@ -5,7 +5,6 @@ import { adminAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import AdminBannerCard from "../../components/admin/AdminBannerCard";
-import { AdminButton } from "../../components/common/Button";
 import AdminBannerModal from "../../components/admin/AdminBannerModal";
 
 const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
@@ -35,20 +34,20 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
   }, [setAdminAccessToken]);
 
   // 배너 리스트 가져오기
+  const getBanners = async () => {
+    try {
+      const response = await axios.get("/api/admin/banner", {
+        headers: {
+          Authorization: `Bearer ${adminAccessToken}`,
+        },
+      });
+      setList(response.data.list);
+    } catch (error) {
+      console.error("배너 데이터 겟 오류: ", error);
+    }
+  };
+
   useEffect(() => {
-    const getBanners = async () => {
-      try {
-        const response = await axios.get("/api/admin/banner", {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-          },
-        });
-        setList(response.data.list);
-        console.log("배너리스트: ", response.data.list);
-      } catch (error) {
-        console.error("배너 데이터 겟 오류: ", error);
-      }
-    };
     if (adminAccessToken) {
       getBanners();
     }
@@ -61,6 +60,7 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    getBanners();
   };
 
   // 배너 삭제
@@ -78,6 +78,10 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
           <button className="banner-add" onClick={openModal}>
             배너 추가하기
           </button>
+          <div className="banner-notice">
+            <h2>배너는 최대 5개까지 등록 가능합니다.</h2>
+            <h2>이미지는 실제 보이는 크기입니다.</h2>
+          </div>
           <div className="banner-list">
             {list.map(item => (
               <AdminBannerCard

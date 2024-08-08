@@ -1,24 +1,27 @@
 import styled from "@emotion/styled";
 import React, { useEffect } from "react";
 import { colorSystem } from "../../styles/color";
-import { AdminButton } from "../common/Button";
+import { AdminButton, DeleteButton } from "../common/Button";
 import axios from "axios";
 import { adminAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import { SERVER_URL } from "../../apis/config";
 
 const AdminBannerCardStyle = styled.div`
-  width: 100%;
+  width: 1000px;
   /* height: 300px; */
   display: flex;
   align-items: center;
   line-height: 1.4;
   border-radius: 20px;
   border: 1px solid ${colorSystem.admin};
-  padding: 20px 30px;
+  padding: 20px 20px;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
 
   .banner-card {
+    .banner-card-content {
+      margin-left: 15px;
+    }
     .banner-num {
       margin-top: 15px;
       font-size: 17px;
@@ -26,8 +29,11 @@ const AdminBannerCardStyle = styled.div`
       color: ${colorSystem.admin};
     }
     .banner-img {
-      padding: 20px 0;
-      width: 500px;
+      margin-top: 10px;
+      width: 950px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 32px;
     }
   }
 `;
@@ -57,7 +63,7 @@ const AdminBannerCard = ({ bannerId, createdAt, bannerUrl, onDelete }) => {
   // 배너 삭제하기
   const handleDelete = async () => {
     try {
-      await axios.delete(`${SERVER_URL}/api/admin/banner/${bannerId}`, {
+      await axios.delete(`/api/admin/banner?bannerId=${bannerId}`, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
         },
@@ -72,7 +78,7 @@ const AdminBannerCard = ({ bannerId, createdAt, bannerUrl, onDelete }) => {
     <AdminBannerCardStyle key={bannerId}>
       <div className="banner-card">
         <div className="banner-card-content">
-          <AdminButton label="삭제하기" onClick={handleDelete} />
+          <DeleteButton label="삭제하기" onClick={handleDelete} />
           <div className="banner-num">배너 {bannerId}</div>
           <div className="banner-date">등록일: {createdAt}</div>
         </div>

@@ -90,6 +90,9 @@ const GlampingKing = () => {
             <div className="login-btn">
               <AdminButton type="submit" label="로그인" />
             </div>
+            <div className="admin-home">
+              <p>글램픽 홈으로</p>
+            </div>
           </form>
         </AdminLogin>
       </div>

@@ -31,6 +31,7 @@ const BannerModal = styled.div`
   flex-direction: column;
   align-items: center;
   position: relative;
+  overflow: hidden;
   h2 {
     font-size: 21px;
     font-weight: 500;
@@ -95,12 +96,20 @@ const BannerModal = styled.div`
     font-size: 1.5rem;
   }
 `;
+const PreviewContainer = styled.div`
+  margin-top: 20px;
+  width: 950px;
+  height: 200px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 const PreviewImage = styled.img`
-  margin-top: 20px;
-  max-width: 100%;
-  max-height: calc(100vh - 60px);
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const AdminBannerModal = ({ isOpen, onClose }) => {
@@ -220,7 +229,11 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
             onChange={handleBannerAdd}
           />
         </div>
-        {previewImage && <PreviewImage src={previewImage} alt="미리보기" />}
+        {previewImage && (
+          <PreviewContainer>
+            <PreviewImage src={previewImage} alt="미리보기" />
+          </PreviewContainer>
+        )}
         <AdminButton
           type="submit"
           label="추가하기"

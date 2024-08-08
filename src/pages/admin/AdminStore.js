@@ -51,6 +51,20 @@ const AdminStore = () => {
     }
   }, [adminAccessToken]);
 
+  // 지역 이름
+  const regionNames = {
+    all: "전국",
+    seoul: "서울/경기",
+    gangwon: "강원",
+    chungbuk: "충북",
+    chungnam: "충남",
+    gyeongbuk: "경북",
+    gyeongnam: "경남",
+    jeonbuk: "전북",
+    jeonnam: "전남",
+    jeju: "제주",
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
@@ -62,6 +76,7 @@ const AdminStore = () => {
             storeList.map(item => (
               <AdminStoreCard
                 key={item.glampId}
+                region={regionNames[item.region] || ""}
                 glampName={item.glampName}
                 ownerName={item.ownerName}
                 businessNumber={item.businessNumber}
