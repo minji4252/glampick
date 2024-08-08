@@ -53,9 +53,7 @@ const WrapStyle = styled.div`
   }
 
   .ceobox-group {
-    display: flex;
-    gap: 20px;
-
+    width: 100%;
     input {
       text-align: center;
     }
@@ -118,7 +116,7 @@ const CeoBoxStyle = styled.div`
     align-items: center;
 
     input {
-      max-width: 120px;
+      max-width: 140px;
     }
   }
 
@@ -151,7 +149,6 @@ const PeakModal = ({ onClose }) => {
   // 폼의 초기값
   const initState = {
     peakCost: "",
-    weekendCost: "",
   };
 
   // yup schema 셋팅
@@ -162,11 +159,6 @@ const PeakModal = ({ onClose }) => {
       .min(2, "시작 날짜와 종료 날짜를 선택해 주세요")
       .required("날짜를 선택해 주세요"),
     peakCost: yup
-      .number()
-      .typeError("숫자를 입력해 주세요")
-      .required("숫자를 입력해 주세요")
-      .max(998, "최대 범위를 초과하였습니다"),
-    weekendCost: yup
       .number()
       .typeError("숫자를 입력해 주세요")
       .required("숫자를 입력해 주세요")
@@ -205,14 +197,12 @@ const PeakModal = ({ onClose }) => {
       return;
     }
     console.log("전송 데이터 : ", data);
-    alert(
-      `전송 데이터 : ${data.peakPeriod}, ${data.peakCost}, ${data.weekendCost}`,
-    );
+    alert(`전송 데이터 : ${data.peakPeriod}, ${data.peakCost}`);
   };
 
   return (
     <WrapStyle>
-      <h3>성수기 & 주말 요금 설정</h3>
+      <h3>성수기 설정</h3>
       <button className="close-btn" type="button" onClick={onClose}>
         <IoClose />
       </button>
@@ -245,24 +235,6 @@ const PeakModal = ({ onClose }) => {
               <p>%</p>
             </div>
             {errors.peakCost && <span>{errors.peakCost.message}</span>}
-          </CeoBoxStyle>
-
-          {/* 주말 추가 요금 */}
-          <CeoBoxStyle>
-            <label htmlFor="weekendCost">주말 추가 요금</label>
-            <div className="cost-group">
-              <input
-                className="cost-input"
-                type="text"
-                id="weekendCost"
-                autoComplete="off"
-                {...register("weekendCost")}
-                onChange={e => handleOnlyNumber(e, "weekendCost")}
-                placeholder="10"
-              />
-              <p>%</p>
-            </div>
-            {errors.weekendCost && <span>{errors.weekendCost.message}</span>}
           </CeoBoxStyle>
         </div>
 

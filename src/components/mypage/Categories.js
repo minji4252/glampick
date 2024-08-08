@@ -23,7 +23,7 @@ const CategoriesStyle = styled.div`
     cursor: default;
     -webkit-user-select: none;
     -moz-user-select: none;
-    -ms-use-select: none;
+    -ms-user-select: none;
     user-select: none;
   }
 

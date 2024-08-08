@@ -41,6 +41,7 @@ const RoomsTitle = styled.div`
 
 const RoomsStyle = styled.div`
   a {
+    display: block;
     max-width: 150px;
     width: 100%;
   }
@@ -51,7 +52,6 @@ const RoomsStyle = styled.div`
 `;
 
 const RoomAddStyle = styled.button`
-  max-width: 150px;
   width: 100%;
   height: 150px;
   background-color: ${colorSystem.g100};
@@ -101,10 +101,7 @@ const CeoRoom = () => {
       <div className="inner">
         <RoomsTitle>
           <h3>객실 관리</h3>
-          <CeoActionButton
-            onClick={handleOpenModal}
-            label="성수기 및 주말 설정"
-          />
+          <CeoActionButton onClick={handleOpenModal} label="성수기 설정" />
         </RoomsTitle>
         <RoomsStyle>
           <Link to="/ceorooms">

@@ -99,7 +99,7 @@ export const MainBigTitle = styled.div`
       cursor: default;
       -webkit-user-select: none;
       -moz-user-select: none;
-      -ms-use-select: none;
+      -ms-user-select: none;
       user-select: none;
     }
     ${size.large} {
@@ -318,7 +318,7 @@ export const MainListTitle = styled.div`
   color: ${colorSystem.g800};
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-use-select: none;
+  -ms-user-select: none;
   user-select: none;
   ${size.mid} {
     display: flex;
@@ -333,7 +333,7 @@ export const MainListContents = styled.div`
   margin-bottom: 70px;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-use-select: none;
+  -ms-user-select: none;
   user-select: none;
 
   ${size.mid} {
