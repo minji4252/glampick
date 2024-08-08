@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  Navigate,
   Route,
   Routes,
   useLocation,
@@ -55,12 +56,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   // user
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userRole, setUserRole] = useRecoilState(userRoleState);
-
   // ceo
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
+
   const locationNow = useLocation();
   const navigate = useNavigate();
 
@@ -81,8 +81,6 @@ function App() {
     const ceoRole = localStorage.getItem("ownerRole");
 
     // 상태를 업데이트하기 전에 로컬스토리지의 값을 로그로 확인
-    // console.log("현재 accessToken:", accessToken);
-    // console.log("현재 ceoAccessToken:", ceoAccessToken);
     console.log("현재 role:", role);
     console.log("현재 ceoRole:", ceoRole);
 
@@ -122,6 +120,18 @@ function App() {
     // 페이지 이동
     navigate("/login");
   };
+
+  // 로그인된 상태에서 로그인 및 회원가입 페이지로 접근 시 리다이렉트 처리
+  const RedirectIfLoggedIn = ({ children, forUser }) => {
+    const location = useLocation();
+    if (isLogin || isCeoLogin) {
+      if ((isLogin && forUser) || (isCeoLogin && !forUser)) {
+        return <Navigate to="/" state={{ from: location }} />;
+      }
+    }
+    return children;
+  };
+
   return (
     <div>
       <Header
@@ -143,9 +153,30 @@ function App() {
         ></Route>
 
         {/* 사용자 로그인, 회원가입 */}
-        <Route path="/login" element={<LoginPage />}></Route>
-        <Route path="/signup" element={<SignupPage />}></Route>
-        <Route path="/sns-signup" element={<SnsSignupPage />}></Route>
+        <Route
+          path="/login"
+          element={
+            <RedirectIfLoggedIn forUser={true}>
+              <LoginPage />
+            </RedirectIfLoggedIn>
+          }
+        ></Route>
+        <Route
+          path="/signup"
+          element={
+            <RedirectIfLoggedIn forUser={true}>
+              <SignupPage />
+            </RedirectIfLoggedIn>
+          }
+        ></Route>
+        <Route
+          path="/sns-signup"
+          element={
+            <RedirectIfLoggedIn forUser={true}>
+              <SnsSignupPage />
+            </RedirectIfLoggedIn>
+          }
+        ></Route>
 
         {/* 검색 결과 */}
         <Route path="/search" element={<SearchPage />} />
@@ -196,8 +227,22 @@ function App() {
         />
 
         {/* 사장님 로그인, 회원가입 */}
-        <Route path="/ceosignup" element={<CeoSignup />} />
-        <Route path="/ceologin" element={<CeoLogin />} />
+        <Route
+          path="/ceosignup"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <CeoSignup />
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/ceologin"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <CeoLogin />
+            </RedirectIfLoggedIn>
+          }
+        />
 
         {/* 사장님 페이지 */}
         <Route path="/ceoglamping" element={<CeoGlamping />} />

@@ -17,33 +17,6 @@ export const postSignIn = async ({ userEmail, userPw }) => {
   }
 };
 
-// 카카오 로그인 Api 호출
-export const fetchAccessToken = async authCode => {
-  try {
-    const response = await fetch("https://kauth.kakao.com/oauth/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "authorization_code",
-        client_id: process.env.REACT_APP_KAKAO_REST_API_KEY, // 환경 변수로 설정
-        redirect_uri: process.env.REACT_APP_KAKAO_REDIRECT_URI, // 환경 변수로 설정
-        code: authCode,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    return data.access_token; // 액세스 토큰 반환
-  } catch (error) {
-    console.error("Error fetching access token:", error);
-  }
-};
-
 // 로그아웃 Api 호출
 export const postSignOut = async () => {
   try {

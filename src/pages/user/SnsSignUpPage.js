@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { colorSystem, size } from "../../styles/color";
-import { MainButton } from "../../components/common/Button";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ErrorMessage, SignupWrapStyle } from "../ceo/CeoSignup";
+import {
+  fetchAccessToken,
+  getAccessToken,
+  getMemberWithAccessToken,
+} from "../../apis/kkoapi";
+import { MainButton } from "../../components/common/Button";
+import { colorSystem, size } from "../../styles/color";
 import { TermsGroupStyle } from "../../styles/signupstyle";
-import { fetchAccessToken } from "../../apis/userapi";
+import { ErrorMessage, SignupWrapStyle } from "../ceo/CeoSignup";
+import { useSearchParams } from "react-router-dom";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -50,28 +55,32 @@ const SnsSignUpPage = () => {
     formState: { errors },
   } = useForm({ defaultValues: initState });
 
-  const [authCode, setAuthCode] = useState(null);
+  // 카카오 인증키 알아내기
+  const [URLSearchParams, setURLSearchParams] = useSearchParams();
+  const authCode = URLSearchParams.get("code");
+
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // URL에서 authCode 추출
-    const queryParams = new URLSearchParams(window.location.search);
-    const code = queryParams.get("code");
+    const fetchData = async () => {
+      if (authCode) {
+        try {
+          // 액세스 토큰 가져오기
+          const accessToken = await getAccessToken(authCode);
 
-    if (code) {
-      setAuthCode(code);
-    }
-  }, []);
+          // 사용자 정보 가져오기
+          const userInfo = await getMemberWithAccessToken(accessToken);
 
-  useEffect(() => {
-    if (authCode) {
-      const getAccessToken = async () => {
-        const token = await fetchAccessToken(authCode);
-        console.log("Access Token:", token);
-        // 액세스 토큰을 사용하여 추가 작업 수행
-      };
+          // 사용자 정보 상태 업데이트
+          setUserData(userInfo);
+        } catch (err) {
+          setError(err.message || "Error fetching data");
+        }
+      }
+    };
 
-      getAccessToken();
-    }
+    fetchData();
   }, [authCode]);
 
   const handlPhoneClick = () => {
