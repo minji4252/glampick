@@ -35,12 +35,13 @@ const AdminStoreCard = ({
   ownerName,
   businessNumber,
   glampName,
+  region,
 }) => {
   return (
     <AdminStoreCardStyle key={glampId}>
       <div className="store-card">
         <div className="store-name">{glampName}</div>
-        <div className="store-region">지역</div>
+        <div className="store-region">{region}</div>
         <div className="store-owner">
           <p>사장님 이름: {ownerName}</p>
           <p>사업자등록번호: {businessNumber}</p>

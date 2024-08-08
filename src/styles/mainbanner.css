@@ -32,5 +32,6 @@
 
 .swiper-button-next::after,
 .swiper-button-prev::after {
+  color: #355179;
   font-size: 20px;
 }

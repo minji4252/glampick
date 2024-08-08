@@ -121,12 +121,13 @@ const CeoReview = () => {
   const [activeTab, setActiveTab] = useState("allreview");
   const [allReviews, setAllReviews] = useState([]);
   const [nocommentReviews, setNocommentReviews] = useState([]);
+
   const handleTabClick = tab => {
     setActiveTab(tab);
     // setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
   };
   const [searchResults, setSearchResults] = useState({
-    totalItems: 0,
+    totalReviewCount: 0,
   });
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
@@ -167,7 +168,7 @@ const CeoReview = () => {
         );
         console.log(response.data.reviewListItems);
         setReviews(response.data.reviewListItems);
-        setSearchResults(response.data.totalReviewsCount);
+        setSearchResults({ totalReviewCount: response.data.totalReviewsCount });
       } catch (error) {
         console.log(error);
       }
@@ -177,7 +178,7 @@ const CeoReview = () => {
   }, [ceoAccessToken, currentPage, activeTab]);
 
   // 페이지 개수 계산
-  const totalPages = Math.ceil(searchResults / postPerPage);
+  const totalPages = Math.ceil(searchResults.totalReviewCount / postPerPage);
 
   return (
     <WrapStyle>
@@ -263,7 +264,7 @@ const CeoReview = () => {
         {reviews?.length > 0 && (
           <ListPagination
             currentPage={currentPage}
-            totalItems={searchResults || 1}
+            totalItems={searchResults.totalReviewCount || 1}
             itemsPerPage={postPerPage}
             onPageChange={setCurrentPage}
             totalPages={totalPages}
