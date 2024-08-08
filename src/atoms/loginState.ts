@@ -88,3 +88,9 @@ export const loadingState = atom({
   key: "loadingState",
   default: false,
 });
+
+// 현재 날짜를 저장할 상태 정의
+// export const currentDateState = atom({
+//   key: "currentDateState",
+//   default: new Date(), // 기본값으로 현재 날짜를 설정
+// });

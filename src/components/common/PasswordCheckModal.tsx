@@ -8,7 +8,7 @@ import { colorSystem, size } from "../../styles/color";
 import { MainButton } from "./Button";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { accessTokenState } from "../../atoms/loginState";
+import { accessTokenState, ceoAccessTokenState } from "../../atoms/loginState";
 
 export const ModalWrapper = styled.div`
   display: flex;
@@ -121,13 +121,21 @@ const ModalContent = styled.div`
 interface PasswordCheckModalProps {
   isOpen: boolean;
   onSuccess: () => void;
+  apiEndpoint: string;
+  getRequestData: (password: string) => object;
+  isCeo: boolean;
 }
 const PasswordCheckModal: React.FC<PasswordCheckModalProps> = ({
   isOpen,
   onSuccess,
+  apiEndpoint,
+  getRequestData,
+  isCeo,
 }) => {
   const [password, setPassword] = useState("");
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
@@ -159,14 +167,41 @@ const PasswordCheckModal: React.FC<PasswordCheckModalProps> = ({
     setErrorMessage("");
   };
 
+  // useEffect(() => {
+  //   const fetchAccessToken = async () => {
+  //     try {
+  //       const token = localStorage.getItem("accessToken");
+  //       if (token) {
+  //         setAccessToken(token);
+  //       } else {
+  //         console.log("accessToken 없음");
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchAccessToken();
+  // }, []);
+
+  // 토큰을 로컬스토리지에서 가져오는 useEffect
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-          setAccessToken(token);
+        if (isCeo) {
+          const token = localStorage.getItem("ceoAccessToken");
+          if (token) {
+            setCeoAccessToken(token);
+          } else {
+            console.log("ceoAccessToken 없음");
+          }
         } else {
-          console.log("accessToken 없음");
+          const token = localStorage.getItem("accessToken");
+          if (token) {
+            setAccessToken(token);
+          } else {
+            console.log("accessToken 없음");
+          }
         }
       } catch (error) {
         console.log(error);
@@ -174,28 +209,24 @@ const PasswordCheckModal: React.FC<PasswordCheckModalProps> = ({
     };
 
     fetchAccessToken();
-  }, []);
+  }, [isCeo]);
 
   // 비밀번호 확인 함수
   const handlePasswordCheck = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!accessToken) return;
+    const tokenToUse = isCeo ? ceoAccessToken : accessToken;
+
+    if (!tokenToUse) return;
 
     axios.defaults.withCredentials = true;
     //console.log("비밀번호입력확인", handlePasswordCheck);
 
     try {
-      const response = await axios.post(
-        `/api/user/password-check`,
-        {
-          userPw: password,
+      const response = await axios.post(apiEndpoint, getRequestData(password), {
+        headers: {
+          Authorization: `Bearer ${tokenToUse}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
+      });
       // console.log(response);
       if (response.data.code === "SU") {
         // console.log("비밀번호 확인 성공");

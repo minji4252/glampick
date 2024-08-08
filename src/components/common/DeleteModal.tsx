@@ -1,11 +1,10 @@
 import styled from "@emotion/styled";
+import axios from "axios";
 import { HiOutlineTrash } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
-import { ActionButton, DeleteButton } from "./Button";
-import { colorSystem } from "../../styles/color";
-import { deleteUser } from "../../apis/userapi";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { colorSystem } from "../../styles/color";
+import { ActionButton, DeleteButton } from "./Button";
 
 const DeleteModalStyle = styled.div`
   position: fixed;

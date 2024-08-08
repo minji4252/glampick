@@ -374,6 +374,9 @@ const CeoInfo = () => {
         onSuccess={() => {
           handlePasswordCheckSuccess();
         }}
+        apiEndpoint="/api/owner/info"
+        getRequestData={password => ({ password: password })}
+        isCeo={true}
       />
       <DeleteModal
         isOpen={isDeleteModalOpen}

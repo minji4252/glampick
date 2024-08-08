@@ -873,6 +873,9 @@ const UserInfo = () => {
         onSuccess={() => {
           handlePasswordCheckSuccess();
         }}
+        apiEndpoint="/api/user/password-check"
+        getRequestData={password => ({ userPw: password })}
+        isCeo={false}
       />
       <DeleteModal
         isOpen={isDeleteModalOpen}
