@@ -7,24 +7,22 @@ import { useRecoilState } from "recoil";
 import { ceoAccessTokenState } from "../../atoms/loginState";
 import { StyledCalendarWrapper } from "./CalendarStyle";
 
-interface BookingCalendarProps {
-  onDateSelect: (date: Date) => void;
-}
-
 interface BookingInfo {
   ingCount: number;
   cancelCount: number;
   completeCount: number;
 }
+interface BookingCalendarProps {
+  onDateSelect: (date: Date) => void;
+}
 
 const BookingCalendar: React.FC<BookingCalendarProps> = ({ onDateSelect }) => {
   const [date, setDate] = useState<Date>(new Date());
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+  const [ceoAccessToken] = useRecoilState(ceoAccessTokenState);
   const [bookings, setBookings] = useState<Record<string, BookingInfo>>({});
 
   useEffect(() => {
-    // 예약수 가져오기
+    // 총 예약수 가져오기
     const getOwnerBookCount = async (date: Date) => {
       if (!ceoAccessToken) return;
 
@@ -40,7 +38,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ onDateSelect }) => {
           },
         );
         console.log(response);
-        console.log(response.data.countList);
+        // console.log(response.data.countList);
 
         // 기존 예약 데이터를 키로 변환하여 상태에 저장
         const bookingData = response.data.countList.reduce(
@@ -54,15 +52,29 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ onDateSelect }) => {
           },
           {},
         );
-
         setBookings(bookingData);
       } catch (error) {
         console.log(error);
       }
     };
-
     getOwnerBookCount(date);
   }, [ceoAccessToken, date]);
+
+  const handleDateChange = (newDate: Date | Date[] | null) => {
+    if (newDate === null) return;
+
+    if (Array.isArray(newDate)) {
+      if (newDate.length > 0) {
+        const firstDate = newDate[0];
+        setDate(firstDate);
+        onDateSelect(firstDate);
+      }
+    } else {
+      setDate(newDate);
+      onDateSelect(newDate);
+    }
+  };
+
   return (
     <StyledCalendarWrapper>
       <Calendar
@@ -73,6 +85,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ onDateSelect }) => {
         showNeighboringMonth={false}
         value={date}
         calendarType="gregory" // 요일 시작을 일요일로 설정
+        // onChange={handleDateChange}
         tileContent={({ date }) => {
           const formattedDate = moment(date).format("YYYY-MM-DD");
           const bookingsForDate = bookings[formattedDate];

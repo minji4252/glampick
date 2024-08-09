@@ -126,6 +126,26 @@ export const postSignUp = async ({
   }
 };
 
+// sns 회원가입 api
+export const postSocailSignUp = async ({
+  userId,
+  userName,
+  userPhone,
+  nickName,
+}) => {
+  try {
+    const response = await axios.post(`/api/auth/social/sign-up`, {
+      userId: userId,
+      userName: userName,
+      userPhone: userPhone,
+      userNickName: nickName,
+    });
+    console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // 유저 정보수정 비밀번호 확인 api
 export const postPasswordCheck = async ({ userPw }) => {
   try {

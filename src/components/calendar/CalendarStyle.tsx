@@ -166,17 +166,18 @@ export const StyledCalendarWrapper = styled.div`
   }
   /* 이용예정 내역 */
   .tile-content .ing {
-    color: ${colorSystem.white};
-    background-color: ${colorSystem.p100};
+    color: ${colorSystem.g900};
+    font-weight: 500;
+    background-color: pink;
   }
   /* 취소 내역*/
   .tile-content .cancel {
-    color: ${colorSystem.error};
-    background-color: pink;
+    color: ${colorSystem.g800};
+    background-color: ${colorSystem.g100};
   }
   /* 완료 내역 */
   .tile-content .complete {
-    color: ${colorSystem.g900};
-    background-color: ${colorSystem.beige};
+    color: ${colorSystem.white};
+    background-color: ${colorSystem.p100};
   }
 `;

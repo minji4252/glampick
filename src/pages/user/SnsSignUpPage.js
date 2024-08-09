@@ -9,8 +9,19 @@ import {
 import { MainButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
 import { TermsGroupStyle } from "../../styles/signupstyle";
-import { ErrorMessage, SignupWrapStyle } from "../ceo/CeoSignup";
+import { ErrorMessage, SignupWrapStyle, modalMessages } from "../ceo/CeoSignup";
 import { useSearchParams } from "react-router-dom";
+import useModal from "../../hooks/UseModal";
+import {
+  postCheckSms,
+  postSendSms,
+  postSignUp,
+  postSocailSignUp,
+} from "../../apis/userapi";
+import Loading from "../../components/common/Loading";
+import AlertModal from "../../components/common/AlertModal";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { userValidationSchema } from "../../components/validation/userValidationSchema";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -38,12 +49,10 @@ const WrapStyle = styled.div`
   }
 `;
 
-// 폼의 초기값
-const initState = {
-  userId: "",
-  userName: "",
-  userPhone: "",
-  userNickname: "",
+// 모달 열기 함수
+const handleModalOpen = (code, type, openModal) => {
+  const message = modalMessages[type][code] || modalMessages[type].default;
+  openModal({ message });
 };
 
 const SnsSignUpPage = () => {
@@ -53,7 +62,20 @@ const SnsSignUpPage = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues: initState });
+  } = useForm({
+    resolver: yupResolver(userValidationSchema),
+    defaultValues: {
+      userName: "",
+      nickName: "",
+      phone: "",
+      phoneAuthCode: "",
+    },
+  });
+
+  // 로딩
+  const [loading, setLoading] = useState(false);
+  // 모달
+  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
   // 카카오 인증키 알아내기
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
@@ -68,10 +90,9 @@ const SnsSignUpPage = () => {
         try {
           // 액세스 토큰 가져오기
           const accessToken = await getAccessToken(authCode);
-
           // 사용자 정보 가져오기
           const userInfo = await getMemberWithAccessToken(accessToken);
-
+          setValue("userId", userInfo.id);
           // 사용자 정보 상태 업데이트
           setUserData(userInfo);
         } catch (err) {
@@ -81,42 +102,91 @@ const SnsSignUpPage = () => {
     };
 
     fetchData();
-  }, [authCode]);
+  }, [authCode, setValue]);
 
-  const handlPhoneClick = () => {
-    // 휴대폰 발송 로직
-  };
-
-  const handlePhoneAuthCodeClick = () => {
-    // 휴대폰 인증코드 확인 로직
-  };
-
-  // 전화번호 자동 변경
-  const handleChangePhone = e => {
-    const phoneNumber = formatPhoneNumber(e.target.value);
-    // console.log(phoneNumber);
-    setValue("phone", phoneNumber);
-  };
-
-  // 전화번호 형식
-  const formatPhoneNumber = value => {
-    if (!value) return value;
-    const phoneNumber = value.replace(/[^\d]/g, "");
-    const phoneNumberLength = phoneNumber.length;
-    if (phoneNumberLength < 4) return phoneNumber;
-    if (phoneNumberLength < 8) {
-      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+  // 휴대폰 문자 발송 로직
+  const handlPhoneClick = async e => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const phone = watch("phone");
+      const result = await postSendSms({ userPhone: phone });
+      console.log(result);
+      handleModalOpen(result.data.code, "smsSend", openModal);
+    } catch (error) {
+      openModal({ message: modalMessages.smsSend.default });
+    } finally {
+      setLoading(false);
     }
-
-    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
   };
 
-  const onSubmit = data => {
+  // 휴대폰 인증코드 확인 로직
+  const handlePhoneAuthCodeClick = async e => {
+    e.preventDefault();
+    const phone = watch("phone");
+    const smsAuthCode = watch("phoneAuthCode");
+    try {
+      const result = await postCheckSms({
+        userPhone: phone,
+        authNumber: smsAuthCode,
+      });
+      console.log(result);
+      handleModalOpen(result.data.code, "phoneAuthCode", openModal);
+    } catch (error) {
+      openModal({ message: modalMessages.phoneAuthCode.default });
+    }
+  };
+
+  // // 전화번호 자동 변경
+  // const handleChangePhone = e => {
+  //   const phoneNumber = formatPhoneNumber(e.target.value);
+  //   // console.log(phoneNumber);
+  //   setValue("phone", phoneNumber);
+  // };
+
+  // // 전화번호 형식
+  // const formatPhoneNumber = value => {
+  //   if (!value) return value;
+  //   const phoneNumber = value.replace(/[^\d]/g, "");
+  //   const phoneNumberLength = phoneNumber.length;
+  //   if (phoneNumberLength < 4) return phoneNumber;
+  //   if (phoneNumberLength < 8) {
+  //     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+  //   }
+  //   return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  // };
+
+  // 회원가입 버튼 클릭 이벤트
+  const onSubmit = async data => {
+    console.log("onSubmit 함수 호출됨");
+
     console.log("전송시 데이터 ", data);
+
+    // 핸드폰 인증 확인
+    // 인증코드 확인
+    // 백엔드에 보낼 회원가입 데이터
+
+    try {
+      setLoading(true);
+      const result = await postSocailSignUp({
+        userId: data.userId,
+        userName: data.userName,
+        userPhone: data.userPhone,
+        userNickName: data.userNickname,
+      });
+      console.log("회원가입 성공:", result);
+      // 회원가입 성공 시 처리 (예: 메인 페이지로 리다이렉트)
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      openModal({ message: "회원가입에 실패했습니다. 다시 시도해주세요." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <WrapStyle>
+      {loading && <Loading />}
       <div className="container">
         <h2>회원가입</h2>
         <SignupWrapStyle>
@@ -126,44 +196,18 @@ const SnsSignUpPage = () => {
               <input
                 type="text"
                 placeholder="이름을 입력해주세요"
-                {...register("name", {
-                  required: "이름은 필수 항목입니다.",
-                  minLength: {
-                    value: 1,
-                    message: "이름은 최소 1자 이상이어야 합니다.",
-                  },
-                  maxLength: {
-                    value: 10,
-                    message: "이름은 최대 10자까지 가능합니다.",
-                  },
-                  pattern: {
-                    value: /^[가-힣]+$/,
-                    message: "이름은 한글만 가능합니다.",
-                  },
-                })}
+                {...register("userName")}
               />
             </div>
-            {errors.name && <ErrorMessage>{errors.name.message}</ErrorMessage>}
+            {errors.userName && (
+              <ErrorMessage>{errors.userName.message}</ErrorMessage>
+            )}
             <div className="form-group">
               <label>닉네임</label>
               <input
                 type="text"
                 placeholder="닉네임을 입력해주세요"
-                {...register("nickName", {
-                  required: "닉네임은 필수 항목입니다.",
-                  minLength: {
-                    value: 2,
-                    message: "닉네임은 최소 2자 이상이어야 합니다.",
-                  },
-                  maxLength: {
-                    value: 10,
-                    message: "닉네임은 최대 10자까지 가능합니다.",
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z가-힣][a-zA-Z0-9가-힣]+$/,
-                    message: "닉네임은 한글, 숫자, 대소문자만 가능합니다.",
-                  },
-                })}
+                {...register("nickName")}
               />
             </div>
             {errors.nickName && (
@@ -175,19 +219,23 @@ const SnsSignUpPage = () => {
                 <input
                   type="text"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
-                  {...register("phone", {
-                    required: "휴대폰은 필수 항목입니다.",
-                    pattern: {
-                      value: /^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/,
-                      message: "유효한 전화번호를 입력하세요.",
-                    },
-                  })}
-                  onChange={e => {
-                    handleChangePhone(e);
-                  }}
+                  {...register("phone")}
+                  // onChange={e => {
+                  //   handleChangePhone(e);
+                  // }}
                 />
                 <div className="form-button">
-                  <MainButton label="인증코드 발송" />
+                  <MainButton
+                    label="인증코드 발송"
+                    onClick={e => {
+                      handlPhoneClick(e);
+                    }}
+                  />
+                  <AlertModal
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    message={modalMessage}
+                  />
                 </div>
               </div>
             </div>
@@ -200,16 +248,15 @@ const SnsSignUpPage = () => {
                 <input
                   type="text"
                   placeholder="인증코드를 입력해주세요"
-                  {...register("phoneAuthCode", {
-                    required: "인증코드는 필수 항목입니다.",
-                    pattern: {
-                      value: /^[0-9]{5,6}$/, // 5자리 또는 6자리 숫자 허용
-                      message: "인증코드가 형식에 맞지 않습니다.",
-                    },
-                  })}
+                  {...register("phoneAuthCode")}
                 />
                 <div className="form-button">
-                  <MainButton label="확인" />
+                  <MainButton
+                    label="확인"
+                    onClick={e => {
+                      handlePhoneAuthCodeClick(e);
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -261,7 +308,7 @@ const SnsSignUpPage = () => {
               </div>
             </TermsGroupStyle>
             <div className="signup-button">
-              <MainButton label="회원가입" />
+              <MainButton label="회원가입" type="submit" />
             </div>
           </form>
         </SignupWrapStyle>

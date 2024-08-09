@@ -1,8 +1,11 @@
 import axios from "axios";
 
+// 깃허브 올리면 절대 안됨
 const rest_api_key = process.env.REACT_APP_KAKAO_REST_API_KEY;
 // 카카오 로그인 시 이동할 Redirec 주소
 const redirect_uri = process.env.REACT_APP_KAKAO_REDIRECT_URI;
+// 클라이언트 시크릿(추가)
+const client_secret = process.env.REACT_APP_KAKAO_CLIENT_SECRET;
 // 카카오 로그인시 토큰 API 경로
 const auth_code_path = "https://kauth.kakao.com/oauth/authorize";
 // 카카오 로그인 후 사용자 정보 API 경로
@@ -22,6 +25,7 @@ export const getAccessToken = async authCode => {
     client_id: rest_api_key,
     redirect_uri: redirect_uri,
     code: authCode,
+    client_secret: client_secret, // 추가
   }).toString();
 
   const header = {
@@ -53,6 +57,7 @@ export const getMemberWithAccessToken = async accessToken => {
       },
     });
     console.log(response.data);
+    console.log(response.data.id);
     return response.data;
   } catch (error) {
     console.log(error);
