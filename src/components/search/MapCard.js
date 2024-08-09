@@ -2,6 +2,7 @@ import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { MainButton } from "../common/Button";
 import { SearchContent } from "../../styles/SearchPageStyle";
+import { MapCardContent } from "../../styles/MapModalStyle";
 
 const MapCard = ({
   glampId,
@@ -24,12 +25,12 @@ const MapCard = ({
   };
 
   return (
-    <SearchContent key={glampId}>
+    <MapCardContent key={glampId}>
       <Link
         to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
       >
         <div
-          className="search-image"
+          className="map-image"
           style={{
             backgroundImage: `url(${glampPic})`,
             backgroundRepeat: "no-repeat",
@@ -38,21 +39,21 @@ const MapCard = ({
           }}
         />
       </Link>
-      <div className="search-detail">
-        <div className="sc-top">
-          <div className="sc-name">{glampName}</div>
-          <div className="sc-review">
-            <div className="sc-review-top">
+      <div className="map-detail">
+        <div className="map-top">
+          <div className="map-name">{glampName}</div>
+          <div className="map-review">
+            <div className="map-review-top">
               <FaStar />
-              <div className="sc-score">{formattedStarPoint}</div>
+              <div className="map-score">{formattedStarPoint}</div>
             </div>
-            <div className="sc-review-bottom">
-              <div className="sc-count">{reviewCount} 개 리뷰</div>
+            <div className="map-review-bottom">
+              <div className="map-count">{reviewCount} 개 리뷰</div>
             </div>
           </div>
         </div>
-        <div className="sc-bottom">
-          <div className="sc-price">{formattedPrice} 원 ~</div>
+        <div className="map-bottom">
+          <div className="map-price">{formattedPrice} 원 ~</div>
           <Link
             to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
           >
@@ -60,7 +61,7 @@ const MapCard = ({
           </Link>
         </div>
       </div>
-    </SearchContent>
+    </MapCardContent>
   );
 };
 

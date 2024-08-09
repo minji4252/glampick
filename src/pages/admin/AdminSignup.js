@@ -10,7 +10,7 @@ const AdminSignup = () => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
     adminAccessTokenState,
   );
-  // 사장님 리스트
+  // 가입 사장님 리스트
   const [signupList, setSignupList] = useState([]);
 
   // 토큰 정보 불러오기
@@ -68,7 +68,7 @@ const AdminSignup = () => {
               />
             ))
           ) : (
-            <p>승인 대기 중인 글램핑장이 없습니다.</p>
+            <h5>승인 대기 중인 목록이 없습니다.</h5>
           )}
         </div>
       </div>

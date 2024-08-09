@@ -92,30 +92,35 @@ const MainButton: React.FC<ButtonComponentProps> = ({
 }) => {
   return <MainButtonStyle onClick={onClick}>{label}</MainButtonStyle>;
 };
+
 const ActionButton: React.FC<ButtonComponentProps> = ({
   label = "버튼",
   onClick,
 }) => {
   return <ActionButtonStyle onClick={onClick}>{label}</ActionButtonStyle>;
 };
+
 const DeleteButton: React.FC<ButtonComponentProps> = ({
   label = "버튼",
   onClick,
 }) => {
   return <DeleteButtonStyle onClick={onClick}>{label}</DeleteButtonStyle>;
 };
+
 const CeoButton: React.FC<ButtonComponentProps> = ({
   label = "버튼",
   onClick,
 }) => {
   return <CeoButtonStyle onClick={onClick}>{label}</CeoButtonStyle>;
 };
+
 const CeoActionButton: React.FC<ButtonComponentProps> = ({
   label = "버튼",
   onClick,
 }) => {
   return <CeoActionButtonStyle onClick={onClick}>{label}</CeoActionButtonStyle>;
 };
+
 const AdminButton: React.FC<ButtonComponentProps> = ({
   label = "버튼",
   onClick,

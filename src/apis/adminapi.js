@@ -60,3 +60,26 @@ export const getAdminSignupList = async accessToken => {
     throw error;
   }
 };
+
+// 대기 중인 사장님 탈퇴 리스트
+export const getAdminExitList = async accessToken => {
+  try {
+    const response = await axios.get(
+      `${SERVER_URL}/api/admin/get-delete-list/owner`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    const { data } = response;
+    if (data.code === "SU") {
+      return data.list;
+    } else {
+      throw Error(data.message);
+    }
+  } catch (error) {
+    console.error("에러: ", error);
+    throw error;
+  }
+};
