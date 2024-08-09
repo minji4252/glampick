@@ -17,7 +17,7 @@ export const postSignIn = async ({ userEmail, userPw }) => {
   }
 };
 
-// 로그아웃 Api 호출
+// 로그아웃 Api 호출 (user, ceo 모두 동일)
 export const postSignOut = async () => {
   try {
     const response = await axios.post("/api/auth/sign-out");

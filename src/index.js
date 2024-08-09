@@ -15,6 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <RecoilRoot>
+
     <CeoProvider>
       <UserProvider>
         <BrowserRouter>
@@ -23,5 +24,6 @@ root.render(
         </BrowserRouter>
       </UserProvider>
     </CeoProvider>
+
   </RecoilRoot>,
 );

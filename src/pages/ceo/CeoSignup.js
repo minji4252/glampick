@@ -127,7 +127,7 @@ const initState = {
 };
 
 // 모달 메시지 설정
-const modalMessages = {
+export const modalMessages = {
   mailSend: {
     SU: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
     DE: "중복된 이메일입니다.",
@@ -157,6 +157,9 @@ const modalMessages = {
     IC: "인증코드가 올바르지 않습니다.",
     VF: "인증코드를 입력해주세요.",
     default: "인증에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  patchOwner: {
+    SU: "수정이 완료되었습니다.",
   },
 };
 
@@ -282,11 +285,11 @@ const CeoSignup = () => {
   // 휴대폰 인증코드 확인 로직
   const handlePhoneAuthCodeClick = async e => {
     e.preventDefault();
-    const email = watch("ceoEmail");
+    const phone = watch("phone");
     const smsAuthCode = watch("phoneAuthCode");
     try {
       const result = await postCheckSms({
-        userEmail: email,
+        userPhone: phone,
         authNumber: smsAuthCode,
       });
       console.log(result);
