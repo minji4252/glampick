@@ -119,10 +119,27 @@ const CeoBoxStyle = styled.div`
 
   .number-input {
     max-width: 150px;
+    text-align: center;
   }
 
   .room-img-label {
     margin-bottom: 0;
+  }
+
+  .weekday-error {
+    margin-left: 40px;
+  }
+
+  .weekend-error {
+    margin-left: 265px;
+  }
+
+  .peopleNum-error {
+    margin-left: 0px;
+  }
+
+  .peopleMax-error {
+    margin-left: 150px;
   }
 `;
 
@@ -217,7 +234,7 @@ const PeopleNumberStyle = styled.div`
   gap: 10px;
 
   input {
-    max-width: 45px !important;
+    max-width: 65px !important;
     width: 100%;
   }
 `;
@@ -280,7 +297,8 @@ const CeoRooms = () => {
   const initState = {
     roomName: "",
     roomImg: [],
-    price: "",
+    weekdayPrice: "",
+    weekendPrice: "",
     peopleNum: "",
     peopleMax: "",
     inTime: "15",
@@ -292,7 +310,12 @@ const CeoRooms = () => {
   const schema = yup.object().shape({
     roomName: yup.string().required("객실 이름을 입력해 주세요"),
     roomImg: yup.array().min(1, "객실 사진을 등록해 주세요"),
-    price: yup
+    weekdayPrice: yup
+      .number()
+      .typeError("숫자를 입력해 주세요")
+      .required("숫자를 입력해 주세요")
+      .max(9999998, "최대 범위를 초과하였습니다"),
+    weekendPrice: yup
       .number()
       .typeError("숫자를 입력해 주세요")
       .required("숫자를 입력해 주세요")
@@ -394,7 +417,8 @@ const CeoRooms = () => {
         // 임시
         glampId: 55,
         roomName: data.roomName,
-        price: data.price,
+        weekdayPrice: data.weekdayPrice,
+        weekendPrice: data.weekendPrice,
         peopleNum: data.peopleNum,
         peopleMax: data.peopleMax,
         inTime: `${data.inTime}:00:00`,
@@ -503,20 +527,40 @@ const CeoRooms = () => {
 
           {/* 객실 가격 */}
           <CeoBoxStyle>
-            <label htmlFor="price">객실 가격</label>
+            <label htmlFor="weekdayPrice">객실 가격</label>
             <div className="number-group">
+              <p>평일 </p>
               <input
                 className="number-input"
                 type="text"
-                id="price"
+                id="weekdayPrice"
                 autoComplete="off"
-                {...register("price")}
-                onChange={e => handleOnlyNumber(e, "price", 9999999)}
+                {...register("weekdayPrice")}
+                onChange={e => handleOnlyNumber(e, "weekdayPrice", 9999999)}
               />
-              <p>원</p>
+              <p>원,</p>
+              <p>주말</p>
+              <input
+                className="number-input"
+                type="text"
+                id="weekendPrice"
+                autoComplete="off"
+                {...register("weekendPrice")}
+                onChange={e => handleOnlyNumber(e, "weekendPrice", 9999999)}
+              />
+              <p>원 </p>
             </div>
 
-            {errors.price && <span>{errors.price.message}</span>}
+            {errors.weekdayPrice && (
+              <span className="weekday-error">
+                {errors.weekdayPrice.message}
+              </span>
+            )}
+            {errors.weekendPrice && (
+              <span className="weekend-error">
+                {errors.weekendPrice.message}
+              </span>
+            )}
           </CeoBoxStyle>
 
           {/* 객실 기준 인원 */}
@@ -549,8 +593,16 @@ const CeoRooms = () => {
                 <p>인</p>
               </div>
             </PeopleNumberStyle>
-            {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
-            {errors.peopleMax && <span>{errors.peopleMax.message}</span>}
+            {errors.peopleNum && (
+              <span className="peopleNum-error">
+                {errors.peopleNum.message}
+              </span>
+            )}
+            {errors.peopleMax && (
+              <span className="peopleMax-error">
+                {errors.peopleMax.message}
+              </span>
+            )}
           </CeoBoxStyle>
 
           {/* 입 퇴실 시간 */}
@@ -558,7 +610,7 @@ const CeoRooms = () => {
             <label htmlFor="peopleNum">입 · 퇴실 시간</label>
             <CheckInRoomStyle>
               <div className="number-group">
-                <label htmlFor="inTime">입실</label>
+                <p>입실</p>
                 <select id="inTime" {...register("inTime")}>
                   <option value="09">09 : 00</option>
                   <option value="10">10 : 00</option>
@@ -580,7 +632,7 @@ const CeoRooms = () => {
               </div>
               <p>-</p>
               <div className="number-group">
-                <label htmlFor="outTime">퇴실</label>
+                <p>퇴실</p>
                 <select id="outTime" {...register("outTime")}>
                   <option value="09">09 : 00</option>
                   <option value="10">10 : 00</option>
@@ -601,7 +653,6 @@ const CeoRooms = () => {
                 <p>시</p>
               </div>
             </CheckInRoomStyle>
-            {errors.peopleNum && <span>{errors.peopleNum.message}</span>}
           </CeoBoxStyle>
 
           {/* 객실 옵션 */}

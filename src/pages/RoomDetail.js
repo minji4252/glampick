@@ -111,7 +111,7 @@ const RoomDetail = () => {
                       width: "70%",
                       height: "550px",
                     }}
-                  ></div>
+                  />
                 </SwiperSlide>
               ),
             )}
@@ -140,7 +140,7 @@ const RoomDetail = () => {
                       backgroundPosition: "center",
                       backgroundSize: "cover",
                     }}
-                  ></div>
+                  />
                 </SwiperSlide>
               ),
             )}

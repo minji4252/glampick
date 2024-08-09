@@ -4,6 +4,8 @@ import App from "./App";
 import ScrollToTop from "./components/common/ScrollTop";
 import "./index.css";
 import { RecoilRoot } from "recoil";
+import { CeoProvider } from "./contexts/CeoContext";
+import { UserProvider } from "./contexts/UserContext";
 // ts에서는 데이터 종류를 구별
 // as는 강제로 타입지정
 // const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
@@ -13,9 +15,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
   <RecoilRoot>
-    <BrowserRouter>
-      <ScrollToTop />
-      <App />
-    </BrowserRouter>
-  </RecoilRoot>  
+    <CeoProvider>
+      <UserProvider>
+        <BrowserRouter>
+          <ScrollToTop />
+          <App />
+        </BrowserRouter>
+      </UserProvider>
+    </CeoProvider>
+  </RecoilRoot>,
 );
