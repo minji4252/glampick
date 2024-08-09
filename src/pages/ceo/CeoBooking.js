@@ -116,8 +116,8 @@ const WrapStyle = styled.div`
 const CeoBooking = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [bookingDetails, setBookingDetails] = useState([]);
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+  const [page, setPage] = useState(1); // 페이지 상태 추가
+  const [ceoAccessToken] = useRecoilState(ceoAccessTokenState);
 
   const handleDateSelect = async date => {
     setSelectedDate(date);
@@ -126,7 +126,7 @@ const CeoBooking = () => {
     // 예약 상세 정보를 가져오는 API 호출
     try {
       const response = await axios.get(
-        `/api/owner/book?date=${formattedDate}&page=1`,
+        `/api/owner/book?date=${formattedDate}&page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${ceoAccessToken}`,
@@ -134,11 +134,12 @@ const CeoBooking = () => {
         },
       );
       console.log(response);
-      setBookingDetails(response.data.countList);
+      setBookingDetails(response.data.complete || []);
     } catch (error) {
       console.log(error);
     }
   };
+
   return (
     <WrapStyle>
       <CeoCategories />
@@ -153,23 +154,26 @@ const CeoBooking = () => {
           <div className="booking-detail">
             {/* 선택 날짜 */}
             <div className="selected-date">
-              <p>8월 1일</p>
+              <p>
+                {selectedDate
+                  ? moment(selectedDate).format("M월 D일")
+                  : "날짜를 선택해주세요"}
+              </p>
             </div>
             {/* 예약 현황 */}
             <div className="booking-status">
-              <CeoBookingDetail />
-              <CeoBookingDetail />
-              <CeoBookingDetail />
-              <CeoBookingDetail />
-              <CeoBookingDetail />
-              <CeoBookingDetail />
-              <CeoBookingDetail />
+              <CeoBookingDetail date={selectedDate} />
             </div>
             {/* 매출 현황 */}
             <div className="sales-status">
               <div className="total-sales">
                 <span>총 매출</span>
-                <div>264,000원</div>
+                <div>
+                  {bookingDetails
+                    .reduce((total, detail) => total + detail.payAmount, 0)
+                    .toLocaleString()}
+                  원
+                </div>
               </div>
             </div>
           </div>

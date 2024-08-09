@@ -3,7 +3,8 @@ import { colorSystem } from "../../styles/color";
 import { ceoAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import moment from "moment";
 
 const CeoBookingDetailStyle = styled.div`
   width: 100%;
@@ -60,57 +61,75 @@ const CeoBookingDetailStyle = styled.div`
   }
 `;
 
-interface CeoBookingDetailProps {
-  detail: {
-    guestName: string;
-    guestNumber: number;
-    stayPeriod: string;
-    roomNumber: string;
-    totalAmount: number;
-  };
+interface BookingDetail {
+  inputName: string;
+  personnel: number;
+  roomName: string;
+  payAmount: number;
+  checkInDate: string;
+  checkOutDate: string;
 }
 
-const CeoBookingDetail: React.FC<CeoBookingDetailProps> = ({ detail }) => {
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+interface CeoBookingDetailProps {
+  bookingDetails: BookingDetail[];
+}
+const CeoBookingDetail: React.FC = () => {
+  const [ceoAccessToken] = useRecoilState(ceoAccessTokenState);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetail[]>([]);
+  const [page, setPage] = useState(1);
 
-  // useEffect(() => {
-  //   // 예약 상세 내역 불러오기
-  //   const getOwnerBook = async () => {
-  //     if (!ceoAccessToken) return;
-  //     try {
-  //       const response = await axios.get(`/api/owner/book`, {
-  //         headers: {
-  //           Authorization: `Bearer ${ceoAccessToken}`,
-  //         },
-  //       });
-  //       console.log(response);
-  //       return response.data;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   getOwnerBook();
-  // }, [ceoAccessToken]);
+  useEffect(() => {
+    // 예약 상세 내역 불러오기
+    const getOwnerBook = async (date: Date) => {
+      if (!ceoAccessToken) return;
+
+      const formattedDate = moment(date).format("YYYY-MM-DD");
+
+      try {
+        const response = await axios.get(
+          `/api/owner/book?date=${formattedDate}&page=${page}`,
+          {
+            headers: {
+              Authorization: `Bearer ${ceoAccessToken}`,
+            },
+          },
+        );
+        if (response.data.code === "SU") {
+          setBookingDetails(response.data.complete || []);
+          console.log(response);
+          return response.data;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const today = new Date();
+    getOwnerBook(today);
+  }, [ceoAccessToken]);
 
   return (
-    <CeoBookingDetailStyle>
-      <div className="booking-info">
-        <div className="guest-info">
-          <div className="guest-name">김토토님 |</div>
-          <div className="guest-number">3인</div>
-          {/* <div className="stay-night">2박</div> */}
-        </div>
-        <div className="stay-info">
-          {/* 체크인 체크아웃 날짜 */}
-          <div>08.06 - 08.07 |</div>
-          <div>503호 B룸</div>
-        </div>
-      </div>
-      <div className="total-amount">
-        <div>132,000원</div>
-      </div>
-    </CeoBookingDetailStyle>
+    <>
+      {bookingDetails.map((detail, index) => (
+        <CeoBookingDetailStyle key={index}>
+          <div className="booking-info">
+            <div className="guest-info">
+              <div className="guest-name">{detail.inputName}님 |</div>
+              <div className="guest-number">{detail.personnel}인</div>
+            </div>
+            <div className="stay-info">
+              <div>
+                {moment(detail.checkInDate).format("MM.DD")} -{" "}
+                {moment(detail.checkOutDate).format("MM.DD")} |
+              </div>
+              <div>{detail.roomName}</div>
+            </div>
+          </div>
+          <div className="total-amount">
+            <div>{detail.payAmount.toLocaleString()}원</div>
+          </div>
+        </CeoBookingDetailStyle>
+      ))}
+    </>
   );
 };
 

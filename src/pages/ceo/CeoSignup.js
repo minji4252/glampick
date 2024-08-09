@@ -1,20 +1,16 @@
 import styled from "@emotion/styled";
-import { CeoButton, MainButton } from "../../components/common/Button";
-import { colorSystem, size } from "../../styles/color";
-import { useForm } from "react-hook-form";
-import {
-  postAuthCode,
-  postCheckSms,
-  postMailSend,
-  postSendSms,
-} from "../../apis/userapi";
-import { useState } from "react";
-import Loading from "../../components/common/Loading";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
-import AlertModal from "../../components/common/AlertModal";
-import useModal from "../../hooks/UseModal";
 import axios from "axios";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { postOwnerAuthCode, postOwnerMailSend } from "../../apis/ceoapi";
+import { postCheckSms, postSendSms } from "../../apis/userapi";
+import AlertModal from "../../components/common/AlertModal";
+import { CeoButton } from "../../components/common/Button";
+import Loading from "../../components/common/Loading";
+import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
+import useModal from "../../hooks/UseModal";
+import { colorSystem, size } from "../../styles/color";
 
 const CeoSignUpStyle = styled.div`
   position: relative;
@@ -198,7 +194,7 @@ const CeoSignup = () => {
     setLoading(true);
     try {
       const email = watch("ceoEmail");
-      const result = await postMailSend({ userEmail: email });
+      const result = await postOwnerMailSend({ ceoEmail: email });
       console.log(result);
       handleModalOpen(result.data.code, "mailSend", openModal);
     } catch (error) {
@@ -214,7 +210,7 @@ const CeoSignup = () => {
     const email = watch("ceoEmail");
     const authCode = watch("emailAuthCode");
     try {
-      const result = await postAuthCode({ userEmail: email, authCode });
+      const result = await postOwnerAuthCode({ ceoEmail: email, authCode });
       console.log(result);
       handleModalOpen(result.data.code, "emailAuth", openModal);
     } catch (error) {
