@@ -7,13 +7,19 @@ import axios from "axios";
 import AdminBannerCard from "../../components/admin/AdminBannerCard";
 import AdminBannerModal from "../../components/admin/AdminBannerModal";
 
-const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
-  const [adminAccessToken, setAdminAccessToken] = useRecoilState(
+interface Banner {
+  bannerId: string;
+  createdAt: string;
+  bannerUrl: string;
+}
+
+const AdminBanner: React.FC = () => {
+  const [adminAccessToken, setAdminAccessToken] = useRecoilState<string | null>(
     adminAccessTokenState,
   );
-  const [list, setList] = useState([]);
+  const [list, setList] = useState<Banner[]>([]);
   // 배너 추가 모달
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -36,11 +42,14 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
   // 배너 리스트 가져오기
   const getBanners = async () => {
     try {
-      const response = await axios.get("/api/admin/banner", {
-        headers: {
-          Authorization: `Bearer ${adminAccessToken}`,
+      const response = await axios.get<{ list: Banner[] }>(
+        "/api/admin/banner",
+        {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
         },
-      });
+      );
       setList(response.data.list);
     } catch (error) {
       console.error("배너 데이터 겟 오류: ", error);
@@ -65,7 +74,7 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
   };
 
   // 배너 삭제
-  const handleDelete = deletedBannerId => {
+  const handleDelete = (deletedBannerId: string) => {
     setList(list.filter(item => item.bannerId !== deletedBannerId));
   };
 

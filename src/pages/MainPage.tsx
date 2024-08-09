@@ -95,7 +95,7 @@ const MainPage: React.FC<MainPageProps> = ({
       const dataArray = await fetchFunction();
       setData(dataArray);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error("에러:", error);
     }
   };
 

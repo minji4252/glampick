@@ -12,7 +12,7 @@ import {
   adminPwState,
 } from "../../atoms/loginState";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { postAdminSignin } from "../../apis/adminapi";
 
 const GlampingKing = () => {
@@ -91,7 +91,9 @@ const GlampingKing = () => {
               <AdminButton type="submit" label="로그인" />
             </div>
             <div className="admin-home">
-              <p>글램픽 홈으로</p>
+              <Link to="/">
+                <p>글램픽 홈으로</p>
+              </Link>
             </div>
           </form>
         </AdminLogin>

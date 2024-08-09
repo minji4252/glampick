@@ -23,7 +23,7 @@ const MainBanner = () => {
   }, []);
 
   return (
-    <div>
+    <div className="main-banner">
       {banners.length > 0 && (
         <Swiper
           modules={[Autoplay, Navigation]}

@@ -5,9 +5,11 @@ export const GlampingKingStyle = styled.div`
   .inner {
     flex-direction: column;
     margin-top: 20px;
+
     .store-inner,
     .banner-inner,
-    .signup-inner {
+    .signup-inner,
+    .exit-inner {
       width: 100%;
       margin-top: 50px;
       margin-bottom: 100px;
@@ -24,6 +26,7 @@ export const GlampingKingStyle = styled.div`
         }
       }
     }
+
     .banner-add {
       cursor: pointer;
       font-weight: 500;
@@ -55,6 +58,13 @@ export const GlampingKingStyle = styled.div`
       flex-direction: column;
       gap: 20px;
     }
+
+    .store-inner h5,
+    .signup-inner h5,
+    .exit-inner h5 {
+      margin-left: 10px;
+      font-size: 17px;
+    }
   }
 
   @media all and (max-width: 1910px) {
@@ -73,6 +83,7 @@ export const GlampingKingStyle = styled.div`
     color: ${colorSystem.g900};
   }
 `;
+
 export const AdminHeader = styled.div`
   width: 100%;
   color: ${colorSystem.admin};
@@ -133,5 +144,10 @@ export const AdminLogin = styled.div`
     height: 50px;
     font-size: 1.2rem;
     margin-top: 30px;
+  }
+  .admin-home {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
   }
 `;

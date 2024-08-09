@@ -14,9 +14,9 @@ const AdminBannerCardStyle = styled.div`
   align-items: center;
   line-height: 1.4;
   border-radius: 20px;
-  border: 1px solid ${colorSystem.admin};
+  border: 2px solid ${colorSystem.admin3};
   padding: 20px 20px;
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
 
   .banner-card {
     .banner-card-content {
@@ -38,8 +38,20 @@ const AdminBannerCardStyle = styled.div`
   }
 `;
 
-const AdminBannerCard = ({ bannerId, createdAt, bannerUrl, onDelete }) => {
-  const [adminAccessToken, setAdminAccessToken] = useRecoilState(
+interface AdminBannerCardProps {
+  bannerId: string;
+  createdAt: string;
+  bannerUrl: string;
+  onDelete?: (bannerId: string) => void;
+}
+
+const AdminBannerCard: React.FC<AdminBannerCardProps> = ({
+  bannerId,
+  createdAt,
+  bannerUrl,
+  onDelete,
+}) => {
+  const [adminAccessToken, setAdminAccessToken] = useRecoilState<string | null>(
     adminAccessTokenState,
   );
 

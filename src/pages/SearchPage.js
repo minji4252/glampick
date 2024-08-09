@@ -24,6 +24,7 @@ import SearchPageStyle, {
 import "../styles/common.css";
 import "../styles/reset.css";
 import MapModal from "../components/common/MapModal";
+import SearchMap from "../components/search/SearchMap";
 
 const SearchPage = () => {
   const today = new Date();
@@ -220,6 +221,7 @@ const SearchPage = () => {
     });
   };
 
+  // 지도 부분
   const handleMapButtonClick = () => {
     setIsMapModalOpen(true);
   };
@@ -227,6 +229,24 @@ const SearchPage = () => {
   const handleCloseMapModal = () => {
     setIsMapModalOpen(false);
   };
+
+  // 지역 변경할 때마다 지도에 경도위도 전달하깅
+  // 지역별 좌표
+  const regionCoordinates = {
+    all: { lat: 36.1398393, lng: 128.1135947 }, // 김천 찍고 범위크게
+    seoul: { lat: 37.5641, lng: 126.997 }, // 서울 중구
+    gangwon: { lat: 37.3703, lng: 128.3924 }, // 평창
+    chungbuk: { lat: 36.6419, lng: 127.4898 }, // 청주
+    chungnam: { lat: 36.8145, lng: 127.1469 }, // 천안?
+    gyeongbuk: { lat: 36.0194, lng: 129.3434 }, // 포하ㅏㅇ
+    gyeongnam: { lat: 35.2372, lng: 128.6811 }, // 창원
+    jeonbuk: { lat: 35.8242, lng: 127.1489 }, // 전주
+    jeonnam: { lat: 35.015, lng: 126.7095 }, // 나주
+    jeju: { lat: 33.499, lng: 126.531 },
+  };
+
+  // 현재 지역 좌표
+  const currentCenter = regionCoordinates[region1];
 
   return (
     <SearchPageStyle>
@@ -369,6 +389,7 @@ const SearchPage = () => {
               <MapThumbnail>
                 <MapButton onClick={handleMapButtonClick}>지도 보기</MapButton>
               </MapThumbnail>
+
               <SearchFilter>
                 <div className="search-filter">
                   <div
@@ -423,7 +444,11 @@ const SearchPage = () => {
         isOpen={isMapModalOpen}
         onClose={handleCloseMapModal}
         searchData={searchData}
+        center={currentCenter}
+        region={region}
+        region1={region1}
       />
+      <SearchMap center={currentCenter} region={region} region1={region1} />
     </SearchPageStyle>
   );
 };

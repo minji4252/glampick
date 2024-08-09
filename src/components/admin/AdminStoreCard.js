@@ -9,9 +9,9 @@ const AdminStoreCardStyle = styled.div`
   align-items: center;
   line-height: 1.4;
   border-radius: 20px;
-  border: 1px solid ${colorSystem.admin};
+  border: 2px solid ${colorSystem.admin3};
   padding-left: 35px;
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 
   .store-card {
@@ -21,12 +21,12 @@ const AdminStoreCardStyle = styled.div`
       font-weight: 700;
     }
     .store-region {
-      font-size: 18px;
+      font-size: 16px;
       color: ${colorSystem.g600};
     }
     .store-owner {
       margin-top: 10px;
-      font-size: 17px;
+      font-size: 16px;
     }
   }
 `;

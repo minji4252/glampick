@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { colorSystem } from "./color";
+import { colorSystem, size } from "./color";
 
 export const MapModalStyle = styled.div`
   position: fixed;
@@ -30,10 +30,11 @@ export const MapModalStyle = styled.div`
     border: 0px;
     position: absolute;
     width: 17px;
-    top: 0;
-    right: 10px;
+    top: 5px;
+    right: 15px;
     cursor: pointer;
     max-width: 25px;
+    z-index: 9;
   }
 
   .close-btn svg {
@@ -54,8 +55,98 @@ export const MapContent = styled.div`
 `;
 
 export const LeftList = styled.div`
-  /* overflow-y: auto; */
+  overflow-y: auto;
+  overflow-x: hidden;
 `;
 export const RightMap = styled.div`
   /* overflow: hidden; */
+`;
+
+export const MapCardContent = styled.div`
+  /* overflow-y: auto; */
+  display: flex;
+  flex-direction: column;
+  /* width: 100%; */
+  /* max-width: 950px; */
+  /* height: 240px; */
+  padding: 20px 10px;
+  padding-right: 35px;
+  border-top: 1px solid;
+  border-color: ${colorSystem.g200};
+  :last-child {
+    border-bottom: none;
+  }
+  :first-of-type {
+    border-top: none;
+  }
+  .map-image {
+    /* width: 200px; */
+    width: 100%;
+    height: 240px;
+    margin-left: 15px;
+    border-radius: 20px;
+  }
+  .map-detail {
+    /* width: 550px; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px 20px 10px 30px;
+
+    .map-top {
+      .map-name {
+        font-size: 20px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      .map-review {
+        display: flex;
+        font-size: 14px;
+        .map-review-top {
+          display: flex;
+
+          svg {
+            margin: 0 5px;
+            color: #ffd233;
+          }
+          .map-score {
+            margin-right: 15px;
+          }
+        }
+        .map-review-bottom {
+          .sc-count {
+          }
+        }
+        ${size.mid} {
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+    }
+    .map-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      .map-price {
+        font-size: 15px;
+        font-weight: 500;
+      }
+    }
+  }
+
+  @media all and (max-width: 950px) {
+    max-width: 950px;
+    width: 100%;
+
+    .map-image {
+      min-width: 240px;
+      width: 100%;
+      background-size: cover;
+      border-radius: 15px;
+    }
+    .map-detail {
+      gap: 30px;
+    }
+  }
 `;

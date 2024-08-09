@@ -26,7 +26,9 @@ const BannerModal = styled.div`
   /* max-width: 100%; */
   max-width: calc(100% - 10%);
   max-height: calc(100% - 20%);
-
+  min-width: 340px;
+  min-height: 180px;
+  justify-content: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,7 +38,7 @@ const BannerModal = styled.div`
     font-size: 21px;
     font-weight: 500;
     color: ${colorSystem.admin};
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   .banner-input input[type="file"] {
     position: absolute;
