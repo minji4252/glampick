@@ -2,11 +2,7 @@ import styled from "@emotion/styled";
 import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { colorSystem } from "../../styles/color";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { getCookie } from "../../utils/cookie";
-import { useRecoilState } from "recoil";
-import { accessTokenState } from "../../atoms/loginState";
+import { useUser } from "../../contexts/UserContext";
 
 const CategoriesStyle = styled.div`
   position: fixed;
@@ -40,7 +36,6 @@ const CategoriesStyle = styled.div`
 
   @media all and (max-width: 1910px) {
     position: relative;
-    /* top: 170px; */
     top: 70px;
     left: 90px;
   }
@@ -92,51 +87,7 @@ const categories = [
 ];
 
 const Categories = () => {
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
-  const [userInfo, setUserInfo] = useState({
-    userEmail: "",
-    userNickname: "",
-  });
-
-  // 토큰정보 불러오기
-  useEffect(() => {
-    const fetchAccessToken = () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        if (token) {
-          setAccessToken(token);
-        } else {
-          console.log("엑세스 토큰 없음");
-        }
-      } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
-      }
-    };
-    fetchAccessToken();
-  }, [setAccessToken]);
-
-  // 유저 정보 불러오기
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        if (!accessToken) return;
-        const response = await axios.get(`/api/user`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        // console.log(response);
-        setUserInfo({
-          userEmail: response.data.userEmail,
-          userNickname: response.data.userNickname,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUser();
-  }, [accessToken]);
-
+  const { userInfo } = useUser();
   const userPreEmail = userInfo.userEmail.split("@")[0];
 
   return (

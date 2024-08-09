@@ -1,10 +1,8 @@
 import styled from "@emotion/styled";
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
+import { useCeo } from "../../contexts/CeoContext";
 import { colorSystem } from "../../styles/color";
-import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const CategoriesStyle = styled.div`
   position: fixed;
@@ -14,7 +12,6 @@ const CategoriesStyle = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  /* gap: 15px; */
   padding: 1rem;
 
   > div {
@@ -84,36 +81,8 @@ const categorieTab = [
   { name: "chart", text: "매장 분석" },
   { name: "ceoinfo", text: "내 정보 관리" },
 ];
-
 const CeoCategories = () => {
-  const ceoAccessToken = useFetchAccessToken();
-  const [ceoInfo, setCeoInfo] = useState({
-    ownerEmail: "",
-    ownerName: "",
-  });
-
-  // 유저 정보 불러오기
-  useEffect(() => {
-    const getOwnerInfo = async () => {
-      try {
-        if (!ceoAccessToken) return;
-        const response = await axios.get(`/api/owner/info`, {
-          headers: {
-            Authorization: `Bearer ${ceoAccessToken}`,
-          },
-        });
-        console.log(response);
-        setCeoInfo({
-          ownerEmail: response.data.ownerEmail,
-          ownerName: response.data.ownerName,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getOwnerInfo();
-  }, [ceoAccessToken]);
-
+  const { ceoInfo } = useCeo();
   const ceoPreEmail = ceoInfo.ownerEmail.split("@")[0];
 
   return (
@@ -124,9 +93,9 @@ const CeoCategories = () => {
       </div>
 
       <UnderLine />
-      {categorieTab.map(categoty => (
-        <NavLinkStyle key={categoty.name} to={`/${categoty.name}`}>
-          <span>{categoty.text}</span> <IoIosArrowForward />
+      {categorieTab.map(category => (
+        <NavLinkStyle key={category.name} to={`/${category.name}`}>
+          <span>{category.text}</span> <IoIosArrowForward />
         </NavLinkStyle>
       ))}
     </CategoriesStyle>

@@ -1,17 +1,16 @@
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { ceoAccessTokenState } from "../atoms/loginState";
+import { accessTokenState } from "../atoms/loginState";
 
-const useFetchCeoAccessToken = () => {
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+const useFetchAccessToken = () => {
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
 
   useEffect(() => {
     const fetchAccessToken = () => {
       try {
-        const token = localStorage.getItem("ceoAccessToken");
+        const token = localStorage.getItem("accessToken");
         if (token) {
-          setCeoAccessToken(token);
+          setAccessToken(token);
         } else {
           console.log("엑세스 토큰 없음");
         }
@@ -20,9 +19,9 @@ const useFetchCeoAccessToken = () => {
       }
     };
     fetchAccessToken();
-  }, [setCeoAccessToken]);
+  }, [setAccessToken]);
 
-  return ceoAccessToken;
+  return accessToken;
 };
 
-export default useFetchCeoAccessToken;
+export default useFetchAccessToken;
