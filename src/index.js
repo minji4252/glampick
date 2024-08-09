@@ -17,5 +17,5 @@ root.render(
       <ScrollToTop />
       <App />
     </BrowserRouter>
-  </RecoilRoot>  
+  </RecoilRoot>,
 );
