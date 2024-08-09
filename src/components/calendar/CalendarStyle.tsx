@@ -116,8 +116,14 @@ export const StyledCalendarWrapper = styled.div`
 
   /* 일 날짜 간격 */
   .react-calendar__tile {
-    padding: 10px 0px 50px;
+    padding: 10px 5px; /* 날짜와 텍스트 간격 조절 */
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 80px; /* 모든 날짜 타일의 최소 높이 설정 */
+    box-sizing: border-box;
   }
 
   /* 네비게이션 월 스타일 적용 */
@@ -136,5 +142,41 @@ export const StyledCalendarWrapper = styled.div`
   .react-calendar__tile:enabled:focus,
   .react-calendar__tile--active {
     border-radius: 0.3rem;
+  }
+
+  /* 예약내역 표시하기 */
+  .tile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    margin-top: 5px; /* 날짜와 예약 내역 사이의 간격 */
+    text-align: center;
+    width: 100%;
+    flex-grow: 1; /* 내용이 공간을 자동으로 차지하도록 설정 */
+    min-height: 20px; /* 최소 높이 설정 */
+  }
+
+  .tile-content div {
+    width: 100%; /* 텍스트가 동일한 너비를 가지도록 설정 */
+    padding: 2px 0; /* 텍스트 간격 조절 */
+    margin-bottom: 2px;
+    border-radius: 5px;
+  }
+  /* 이용예정 내역 */
+  .tile-content .ing {
+    color: ${colorSystem.white};
+    background-color: ${colorSystem.p100};
+  }
+  /* 취소 내역*/
+  .tile-content .cancel {
+    color: ${colorSystem.error};
+    background-color: pink;
+  }
+  /* 완료 내역 */
+  .tile-content .complete {
+    color: ${colorSystem.g900};
+    background-color: ${colorSystem.beige};
   }
 `;

@@ -1,5 +1,9 @@
 import styled from "@emotion/styled";
 import { colorSystem } from "../../styles/color";
+import { ceoAccessTokenState } from "../../atoms/loginState";
+import { useRecoilState } from "recoil";
+import axios from "axios";
+import { useEffect } from "react";
 
 const CeoBookingDetailStyle = styled.div`
   width: 100%;
@@ -56,7 +60,39 @@ const CeoBookingDetailStyle = styled.div`
   }
 `;
 
-const CeoBookingDetail = () => {
+interface CeoBookingDetailProps {
+  detail: {
+    guestName: string;
+    guestNumber: number;
+    stayPeriod: string;
+    roomNumber: string;
+    totalAmount: number;
+  };
+}
+
+const CeoBookingDetail: React.FC<CeoBookingDetailProps> = ({ detail }) => {
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
+
+  // useEffect(() => {
+  //   // 예약 상세 내역 불러오기
+  //   const getOwnerBook = async () => {
+  //     if (!ceoAccessToken) return;
+  //     try {
+  //       const response = await axios.get(`/api/owner/book`, {
+  //         headers: {
+  //           Authorization: `Bearer ${ceoAccessToken}`,
+  //         },
+  //       });
+  //       console.log(response);
+  //       return response.data;
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getOwnerBook();
+  // }, [ceoAccessToken]);
+
   return (
     <CeoBookingDetailStyle>
       <div className="booking-info">

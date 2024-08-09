@@ -33,6 +33,11 @@ const CeoLogin = () => {
 
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
+  useEffect(() => {
+    console.log("CeoLogin 페이지에서 모달 상태:", isModalOpen);
+    console.log("모달 메시지:", modalMessage);
+  }, [isModalOpen, modalMessage]);
+
   // Recoil 상태 변경 감지
   useEffect(() => {
     console.log("CeoRole 상태 변경 감지 ", ceoRole);
@@ -94,6 +99,7 @@ const CeoLogin = () => {
       console.log("Ceo 로그인 성공:", { isCeoLogin, ceoRole: signedCeo.role });
 
       openModal({ message: "로그인 성공하였습니다!" });
+      console.log("모달 나타나라");
       // 1초 후 페이지 이동
       setTimeout(() => {
         navigate("/ceoglamping");

@@ -3,7 +3,7 @@ import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import { CeoButton } from "../../components/common/Button";
 import { useForm } from "react-hook-form";
-import { ErrorMessage } from "./CeoSignup";
+import { ErrorMessage, modalMessages } from "./CeoSignup";
 import { useEffect, useState } from "react";
 import DeleteModal from "../../components/common/DeleteModal";
 import axios from "axios";
@@ -11,6 +11,11 @@ import { ceoAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import useModal from "../../hooks/UseModal";
 import PasswordCheckModal from "../../components/common/PasswordCheckModal";
+import AlertModal from "../../components/common/AlertModal";
+import Loading from "../../components/common/Loading";
+import { postCheckSms, postSendSms } from "../../apis/userapi";
+import { patchOwnerInfo } from "../../apis/ceoapi";
+import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
 
 const WrapStyle = styled.div`
   .inner {
@@ -140,31 +145,41 @@ const CeoInfoBox = styled.div`
   }
 `;
 
-const CeoInfo = () => {
-  const defaultValues = {
-    ownerEmail: "", // 기본 이메일 (수정 불가)
-    ownerName: "", // 기본 이름 (수정 불가)
-    businessNumber: "",
-    password: "", // 비밀번호
-    confirmPassword: "", // 비밀번호 확인
-    ownerPhone: "", // 핸드폰 번호
-  };
+// 모달 열기 함수
+const handleModalOpen = (code, type, openModal) => {
+  const message = modalMessages[type][code] || modalMessages[type].default;
+  openModal({ message });
+};
 
+const CeoInfo = () => {
   const {
     register,
     handleSubmit,
     setValue,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({
+    defaultValues: {
+      ownerEmail: "", // 기본 이메일 (수정 불가)
+      ownerName: "", // 기본 이름 (수정 불가)
+      businessNumber: "",
+      password: "", // 비밀번호
+      confirmPassword: "", // 비밀번호 확인
+      phone: "", // 핸드폰 번호
+    },
+    validationSchema: ceoValidationSchema,
+  });
 
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
+  // 핸드폰 인증코드 발송 여부 확인
+  const [isSmsSent, setIsSmsSent] = useState(false);
   // 비밀번호 확인 입력창 모달
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   // 회원탈퇴 모달
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
+  // 로딩
+  const [loading, setLoading] = useState(false);
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
@@ -178,13 +193,12 @@ const CeoInfo = () => {
             Authorization: `Bearer ${ceoAccessToken}`,
           },
         });
-        const { ownerEmail, ownerName, businessNumber, ownerPhone } =
-          response.data;
+        const { ownerEmail, ownerName, businessNumber, phone } = response.data;
 
         setValue("ownerEmail", ownerEmail);
         setValue("ownerName", ownerName);
         setValue("businessNumber", businessNumber);
-        setValue("ownerPhone", ownerPhone);
+        setValue("phone", phone);
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -212,7 +226,7 @@ const CeoInfo = () => {
   const handleChangePhone = e => {
     const phoneNumber = formatPhoneNumber(e.target.value);
     // console.log(phoneNumber);
-    setValue("ownerPhone", phoneNumber);
+    setValue("phone", phoneNumber);
   };
 
   // 전화번호 형식
@@ -228,10 +242,72 @@ const CeoInfo = () => {
     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
   };
 
-  // 폼 제출 처리
+  // 핸드폰 인증코드 발송
+  const handlPhoneClick = async e => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const phone = watch("phone");
+      const result = await postSendSms({ userPhone: phone });
+      console.log(result);
+      handleModalOpen(result.data.code, "smsSend", openModal);
+      // Sms 발송 성공
+      setIsSmsSent(true);
+    } catch (error) {
+      openModal({ message: modalMessages.smsSend.default });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 휴대폰 인증코드 확인 로직
+  const handlePhoneAuthCodeClick = async e => {
+    e.preventDefault();
+    const phone = watch("phone");
+    const smsAuthCode = watch("phoneAuthCode");
+    try {
+      const result = await postCheckSms({
+        userPhone: phone,
+        authNumber: smsAuthCode,
+      });
+      console.log(result);
+      handleModalOpen(result.data.code, "phoneAuth", openModal);
+      // setIsSmsSent(false);
+    } catch (error) {
+      openModal({ message: modalMessages.phoneAuth.default });
+    }
+  };
+
+  // ceo 정보 수정 api
+  const patchOwnerInfo = async (password, phone) => {
+    try {
+      const params = new URLSearchParams();
+      if (password) params.append("ownerPw", password);
+      if (phone) params.append("phoneNum", phone);
+
+      const url = `/api/owner/info?${params.toString()}`;
+      const response = await axios.patch(
+        url,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+          },
+        },
+      );
+      console.log(response);
+      handleModalOpen(response.data.code, "patchOwner", openModal);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+      openModal({ message: modalMessages.phoneAuth.default });
+    }
+  };
+
+  // 수정 데이터 전송
   const onSubmit = data => {
     console.log("수정된 데이터:", data);
-    // 서버에 데이터 전송 또는 상태 업데이트 처리
+    patchOwnerInfo(data.password, data.phone);
   };
 
   // 회원탈퇴 모달
@@ -245,6 +321,7 @@ const CeoInfo = () => {
 
   return (
     <WrapStyle>
+      {loading && <Loading />}
       <CeoCategories />
       <div className="inner">
         <h3>내 정보 관리</h3>
@@ -255,7 +332,7 @@ const CeoInfo = () => {
               <input
                 type="email"
                 readOnly
-                defaultValue={defaultValues.ownerEmail} // 수정 불가
+                defaultValue={watch("ownerEmail")} // 수정 불가
                 {...register("ownerEmail")}
                 className="readOnly"
               />
@@ -265,7 +342,7 @@ const CeoInfo = () => {
               <input
                 type="text"
                 readOnly
-                defaultValue={defaultValues.ownerName} // 수정 불가
+                defaultValue={watch("ownerName")} // 수정 불가
                 {...register("ownerName")}
                 className="readOnly"
               />
@@ -275,7 +352,7 @@ const CeoInfo = () => {
               <input
                 type="text"
                 readOnly
-                defaultValue={defaultValues.businessNumber} // 수정 불가
+                defaultValue={watch("businessNumber")} // 수정 불가
                 {...register("businessNumber")}
                 className="readOnly"
               />
@@ -285,21 +362,7 @@ const CeoInfo = () => {
               <input
                 type="password"
                 placeholder="비밀번호를 입력해주세요"
-                {...register("password", {
-                  validate: value => {
-                    // 비밀번호가 비어 있거나 유효하지 않으면 오류 메시지 반환
-                    if (
-                      value &&
-                      (value.length < 8 ||
-                        !/^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/.test(
-                          value,
-                        ))
-                    ) {
-                      return "비밀번호는 최소 8자 이상이어야 하며, 영어, 숫자, 특수문자를 포함해야 합니다.";
-                    }
-                    return true;
-                  },
-                })}
+                {...register("password")}
               />
             </div>
             {errors.password && (
@@ -310,14 +373,7 @@ const CeoInfo = () => {
               <input
                 type="password"
                 placeholder="비밀번호를 한번 더 입력해주세요"
-                {...register("confirmPassword", {
-                  validate: value => {
-                    if (value && value !== watch("password")) {
-                      return "비밀번호가 일치하지 않습니다.";
-                    }
-                    return true;
-                  },
-                })}
+                {...register("confirmPassword")}
               />
             </div>
             {errors.confirmPassword && (
@@ -329,31 +385,53 @@ const CeoInfo = () => {
                 <input
                   type="text"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
-                  {...register("ownerPhone", {
-                    validate: value => {
-                      // 핸드폰 번호가 비어 있거나 유효하지 않으면 오류 메시지 반환
-                      if (
-                        value &&
-                        !/^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/.test(value)
-                      ) {
-                        return "유효한 전화번호를 입력하세요.";
-                      }
-                      return true;
-                    },
-                  })}
+                  {...register("phone")}
                   onChange={e => {
                     handleChangePhone(e);
                   }}
                 />
                 <div className="auth-code-btn">
-                  <CeoButton label="인증코드 발송" />
+                  <CeoButton
+                    label="인증코드 발송"
+                    onClick={e => {
+                      handlPhoneClick(e);
+                    }}
+                  />
                 </div>
               </div>
             </div>
+            {isSmsSent && (
+              <div className="form-group">
+                <label>인증 코드</label>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    placeholder="인증코드를 입력해주세요"
+                    {...register("phoneAuthCode")}
+                  />
+                  <div className="auth-code-btn">
+                    <CeoButton
+                      label="확인"
+                      onClick={e => {
+                        handlePhoneAuthCodeClick(e);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+            {errors.phoneAuthCode && (
+              <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
+            )}
             <div className="modify-btn">
               <CeoButton label="수정하기" />
             </div>
           </form>
+          <AlertModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            message={modalMessage}
+          />
         </CeoInfoBox>
         <div className="delete-ceo">
           <button

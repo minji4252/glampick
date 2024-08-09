@@ -3,6 +3,11 @@ import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import CeoBookingDetail from "../../components/ceo/CeoBookingDetail";
 import BookingCalendar from "../../components/calendar/BookingCalendar";
+import { useState } from "react";
+import axios from "axios";
+import { ceoAccessTokenState } from "../../atoms/loginState";
+import { useRecoilState } from "recoil";
+import moment from "moment";
 
 const WrapStyle = styled.div`
   .inner {
@@ -109,6 +114,31 @@ const WrapStyle = styled.div`
 `;
 
 const CeoBooking = () => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [bookingDetails, setBookingDetails] = useState([]);
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
+
+  const handleDateSelect = async date => {
+    setSelectedDate(date);
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+
+    // 예약 상세 정보를 가져오는 API 호출
+    try {
+      const response = await axios.get(
+        `/api/owner/book?date=${formattedDate}&page=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+          },
+        },
+      );
+      console.log(response);
+      setBookingDetails(response.data.countList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <WrapStyle>
       <CeoCategories />
@@ -117,7 +147,7 @@ const CeoBooking = () => {
         <div className="wrap">
           {/* 캘린더 */}
           <div className="calendar">
-            <BookingCalendar />
+            <BookingCalendar onDateSelect={handleDateSelect} />
           </div>
           {/* 예약 보기 */}
           <div className="booking-detail">

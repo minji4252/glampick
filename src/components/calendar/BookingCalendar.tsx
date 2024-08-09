@@ -1,25 +1,104 @@
+import axios from "axios";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { CustomCalendarHeader, StyledCalendarWrapper } from "./CalendarStyle";
-import moment from "moment";
-import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { ceoAccessTokenState } from "../../atoms/loginState";
+import { StyledCalendarWrapper } from "./CalendarStyle";
 
-const BookingCalendar: React.FC = () => {
+interface BookingCalendarProps {
+  onDateSelect: (date: Date) => void;
+}
+
+interface BookingInfo {
+  ingCount: number;
+  cancelCount: number;
+  completeCount: number;
+}
+
+const BookingCalendar: React.FC<BookingCalendarProps> = ({ onDateSelect }) => {
   const [date, setDate] = useState<Date>(new Date());
+  const [ceoAccessToken, setCeoAccessToken] =
+    useRecoilState(ceoAccessTokenState);
+  const [bookings, setBookings] = useState<Record<string, BookingInfo>>({});
 
+  useEffect(() => {
+    // 예약수 가져오기
+    const getOwnerBookCount = async (date: Date) => {
+      if (!ceoAccessToken) return;
+
+      const formattedDate = moment(date).format("YYYY-MM-DD");
+
+      try {
+        const response = await axios.get(
+          `/api/owner/book/count?date=${formattedDate}&page=1`,
+          {
+            headers: {
+              Authorization: `Bearer ${ceoAccessToken}`,
+            },
+          },
+        );
+        console.log(response);
+        console.log(response.data.countList);
+
+        // 기존 예약 데이터를 키로 변환하여 상태에 저장
+        const bookingData = response.data.countList.reduce(
+          (acc: Record<string, any>, curr: any) => {
+            acc[curr.checkInDate] = {
+              ingCount: curr.ingCount || 0,
+              cancelCount: curr.cancelCount || 0,
+              completeCount: curr.completeCount || 0,
+            };
+            return acc;
+          },
+          {},
+        );
+
+        setBookings(bookingData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getOwnerBookCount(date);
+  }, [ceoAccessToken, date]);
   return (
     <StyledCalendarWrapper>
       <Calendar
-        // 헤더를 커스터마이즈
         view="month"
         formatDay={(locale, date) => moment(date).format("D")}
         next2Label={null}
         prev2Label={null}
         showNeighboringMonth={false}
         value={date}
-        // customHeader라는 이름으로 커스터마이징
         calendarType="gregory" // 요일 시작을 일요일로 설정
-        // customHeader={CustomCalendarHeader}
+        tileContent={({ date }) => {
+          const formattedDate = moment(date).format("YYYY-MM-DD");
+          const bookingsForDate = bookings[formattedDate];
+
+          // 예약 정보가 있는 경우
+          if (bookingsForDate) {
+            return (
+              <div className="tile-content">
+                {bookingsForDate.ingCount > 0 && (
+                  <div className="ing">예정: {bookingsForDate.ingCount}</div>
+                )}
+                {bookingsForDate.cancelCount > 0 && (
+                  <div className="cancel">
+                    취소: {bookingsForDate.cancelCount}
+                  </div>
+                )}
+                {bookingsForDate.completeCount > 0 && (
+                  <div className="complete">
+                    완료: {bookingsForDate.completeCount}
+                  </div>
+                )}
+              </div>
+            );
+          }
+          return null;
+        }}
       />
     </StyledCalendarWrapper>
   );

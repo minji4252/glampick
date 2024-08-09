@@ -27,7 +27,7 @@ export const ceoValidationSchema = yup.object().shape({
     .max(10, "이름은 최대 10자까지 가능합니다.")
     .matches(/^[가-힣]+$/, "이름은 한글만 가능합니다.")
     .required("이름은 필수 항목입니다."),
-  businessRegistrationNumber: yup
+  businessNumber: yup
     .string()
     .matches(/^\d{3}-\d{2}-\d{5}$/, "사업자등록번호가 형식에 맞지 않습니다.")
     .required("사업자등록번호는 필수 항목입니다."),
