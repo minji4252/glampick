@@ -5,12 +5,17 @@ import { adminAccessTokenState } from "../../atoms/loginState";
 import AdminStoreCard from "../../components/admin/AdminStoreCard";
 import AdminCategories from "../../components/mypage/AdminCategories";
 import { AdminHeader, GlampingKingStyle } from "../../styles/AdminStyle";
+import AdminStoreModal from "../../components/admin/AdminStoreModal";
 
 const AdminStore = () => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
     adminAccessTokenState,
   );
+  // 글램핑장 리스트
   const [storeList, setStoreList] = useState([]);
+  // 글램핑장 상세보기 모달
+  const [selectedStore, setSelectedStore] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -65,6 +70,18 @@ const AdminStore = () => {
     jeju: "제주",
   };
 
+  const handleCardClick = glampId => {
+    // 클릭된 스토어 정보를 찾기
+    const store = storeList.find(item => item.glampId === glampId);
+    setSelectedStore(store);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedStore(null);
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
@@ -80,6 +97,7 @@ const AdminStore = () => {
                 glampName={item.glampName}
                 ownerName={item.ownerName}
                 businessNumber={item.businessNumber}
+                onClick={handleCardClick}
               />
             ))
           ) : (
@@ -87,6 +105,13 @@ const AdminStore = () => {
           )}
         </div>
       </div>
+      {selectedStore && (
+        <AdminStoreModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          store={selectedStore}
+        />
+      )}
     </GlampingKingStyle>
   );
 };
