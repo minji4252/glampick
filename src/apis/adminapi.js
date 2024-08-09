@@ -37,3 +37,26 @@ export const getAdminStoreList = async accessToken => {
     throw error;
   }
 };
+
+// 승인 대기 중인 사장님 회원가입 리스트
+export const getAdminSignupList = async accessToken => {
+  try {
+    const response = await axios.get(
+      `${SERVER_URL}/api/admin/business/owner-list`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    const { data } = response;
+    if (data.code === "SU") {
+      return data.list;
+    } else {
+      throw Error(data.message);
+    }
+  } catch (error) {
+    console.error("에러: ", error);
+    throw error;
+  }
+};

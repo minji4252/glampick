@@ -12,6 +12,7 @@ const AdminStoreCardStyle = styled.div`
   border: 1px solid ${colorSystem.admin};
   padding-left: 35px;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 
   .store-card {
     .store-name {
@@ -36,9 +37,10 @@ const AdminStoreCard = ({
   businessNumber,
   glampName,
   region,
+  onClick,
 }) => {
   return (
-    <AdminStoreCardStyle key={glampId}>
+    <AdminStoreCardStyle onClick={() => onClick(glampId)}>
       <div className="store-card">
         <div className="store-name">{glampName}</div>
         <div className="store-region">{region}</div>

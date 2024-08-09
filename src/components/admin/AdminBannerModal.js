@@ -181,8 +181,6 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
       });
 
       if (response.ok) {
-        setAlertMessage("파일이 업로드되었습니다.");
-        setShowAlert(true);
         setBannerImage(null);
         setPreviewImage(null);
         setFileName("이미지 사이즈: 950x200");

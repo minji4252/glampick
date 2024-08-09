@@ -45,6 +45,8 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
     } catch (error) {
       console.error("배너 데이터 겟 오류: ", error);
     }
+    // 자동 갱신 안됨 수정
+    // getBanners();
   };
 
   useEffect(() => {
@@ -60,7 +62,6 @@ const AdminBanner = ({ bannerId, createdAt, bannerUrl }) => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    getBanners();
   };
 
   // 배너 삭제

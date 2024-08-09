@@ -6,7 +6,8 @@ export const GlampingKingStyle = styled.div`
     flex-direction: column;
     margin-top: 20px;
     .store-inner,
-    .banner-inner {
+    .banner-inner,
+    .signup-inner {
       width: 100%;
       margin-top: 50px;
       margin-bottom: 100px;
@@ -14,7 +15,7 @@ export const GlampingKingStyle = styled.div`
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 20px;
+      gap: 30px;
       .banner-notice {
         margin-top: 10px;
         h2 {
