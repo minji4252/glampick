@@ -421,8 +421,6 @@ export const RoomCardLeft = styled.div`
   .roomcard-img {
     width: 100%;
     height: 240px;
-    /* background: url(${Room}) no-repeat center;
-    background-size: cover; */
     position: relative;
   }
 
