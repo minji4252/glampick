@@ -75,7 +75,7 @@ const UnderLine = styled.div`
 
 const categorieTab = [
   { name: "ceoglamping", text: "글램핑장 관리" },
-  { name: "ceoroom", text: "객실 관리" },
+  { name: "ceorooms", text: "객실 관리" },
   { name: "ceobooking", text: "예약 관리" },
   { name: "ceoreview", text: "리뷰 관리" },
   { name: "chart", text: "매장 분석" },

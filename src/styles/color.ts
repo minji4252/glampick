@@ -34,6 +34,7 @@ export const colorSystem = {
   beige: "#FCF5E7",
   background: "#F5F7FA",
   star: "#ffd233",
+  ceo100: "#f2dddf",
   ceo300: "#e4b8bd",
   ceo: "#D6939B",
   ceo700: "#c86e79",

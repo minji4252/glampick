@@ -36,8 +36,8 @@ import CeoBooking from "./pages/ceo/CeoBooking";
 import CeoGlamping from "./pages/ceo/CeoGlamping";
 import CeoInfo from "./pages/ceo/CeoInfo";
 import CeoReview from "./pages/ceo/CeoReview";
-import CeoRoom from "./pages/ceo/CeoRoom";
 import CeoRooms from "./pages/ceo/CeoRooms";
+import CeoRoom from "./pages/ceo/CeoRoom";
 import Chart from "./pages/ceo/Chart";
 import BookingDetail from "./pages/mypage/BookingDetail";
 import Favorite from "./pages/mypage/Favorite";
@@ -246,8 +246,9 @@ function App() {
 
         {/* 사장님 페이지 */}
         <Route path="/ceoglamping" element={<CeoGlamping />} />
-        <Route path="/ceoroom" element={<CeoRoom />} />
         <Route path="/ceorooms" element={<CeoRooms />} />
+        <Route path="/ceoroom/new" element={<CeoRoom />} />
+        <Route path="/ceoroom/edit/:roomId" element={<CeoRoom />} />
         <Route path="/ceobooking" element={<CeoBooking />} />
         <Route path="/ceoreview" element={<CeoReview />} />
         <Route path="/chart" element={<Chart />} />

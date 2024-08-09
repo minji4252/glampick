@@ -216,7 +216,7 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
               ></AdminButton>
               <DeleteButton
                 label="가입 거절하기"
-                onClick={noSignup}
+                // onClick={noSignup}
                 className="signup-btn"
               ></DeleteButton>
             </div>

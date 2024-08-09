@@ -55,6 +55,8 @@ const ActionButtonStyle = styled(ButtonStyle)`
 const DeleteButtonStyle = styled(ButtonStyle)`
   background-color: ${colorSystem.error};
   color: ${colorSystem.white};
+  border: 1px solid ${colorSystem.error};
+
   &:hover {
     border: 1px solid #ca2929;
     background-color: #ca2929;
@@ -77,7 +79,7 @@ const CeoActionButtonStyle = styled(ButtonStyle)`
 
   &:hover {
     border: 2px solid ${colorSystem.ceo};
-    background-color: ${colorSystem.ceo300};
+    background-color: ${colorSystem.ceo100};
     color: ${colorSystem.black};
   }
 `;
