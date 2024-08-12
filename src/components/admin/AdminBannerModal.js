@@ -125,8 +125,8 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [fileName, setFileName] = useState("이미지 사이즈: 950x200");
 
-  // 업로드 확인 모달
-  const [showAlert, setShowAlert] = useState(false);
+  // 확인 모달
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
   // 토큰 정보 불러오기
@@ -166,7 +166,7 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
   const handleSubmit = async () => {
     if (!bannerImage) {
       setAlertMessage("파일을 선택해 주세요.");
-      setShowAlert(true);
+      setIsAlertModalOpen(true);
       return;
     }
 
@@ -187,25 +187,30 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
         setPreviewImage(null);
         setFileName("이미지 사이즈: 950x200");
         onClose();
+        // 성공 메시지 설정 및 모달 열기
+        setAlertMessage("배너가 추가되었습니다.");
       } else {
         const errorData = await response.json();
         const errorMessage = errorData.message || "파일 업로드에 실패했습니다.";
         setAlertMessage(errorMessage);
-        setShowAlert(true);
       }
     } catch (error) {
       console.error("업로드 오류 발생:", error);
       setAlertMessage("업로드 중 오류가 발생했습니다.");
-      setShowAlert(true);
+    } finally {
+      setIsAlertModalOpen(true);
     }
   };
-
   // 모달 닫으면 파일 다시
   const handleClose = () => {
     setBannerImage(null);
     setPreviewImage(null);
     setFileName("이미지 사이즈: 950x200");
     onClose();
+  };
+
+  const handleConfirmClose = () => {
+    setIsAlertModalOpen(false);
   };
 
   if (!isOpen) return null;
@@ -242,8 +247,8 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
         />
       </BannerModal>
       <AlertModal
-        isOpen={showAlert}
-        onClose={() => setShowAlert(false)}
+        isOpen={isAlertModalOpen}
+        onClose={handleConfirmClose}
         message={alertMessage}
       />
     </BannerModalStyle>

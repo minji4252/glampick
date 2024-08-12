@@ -1,10 +1,9 @@
 import axios from "axios";
-import { SERVER_URL } from "./config";
 
 // 관리자 로그인 api 호출
 export const postAdminSignin = async ({ adminId, adminPw }) => {
   try {
-    const response = await axios.post(`${SERVER_URL}/api/auth/admin/sign-in`, {
+    const response = await axios.post(`/api/auth/admin/sign-in`, {
       adminId: adminId,
       adminPw: adminPw,
     });
@@ -18,14 +17,11 @@ export const postAdminSignin = async ({ adminId, adminPw }) => {
 // 승인 대기 중인 글램핑장 리스트
 export const getAdminStoreList = async accessToken => {
   try {
-    const response = await axios.get(
-      `${SERVER_URL}/api/admin/glamping-list/owner`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    const response = await axios.get(`/api/admin/glamping-list/owner`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+    });
     const { data } = response;
     if (data.code === "SU") {
       return data.list;
@@ -41,14 +37,11 @@ export const getAdminStoreList = async accessToken => {
 // 승인 대기 중인 사장님 회원가입 리스트
 export const getAdminSignupList = async accessToken => {
   try {
-    const response = await axios.get(
-      `${SERVER_URL}/api/admin/business/owner-list`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    const response = await axios.get(`/api/admin/business/owner-list`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+    });
     const { data } = response;
     if (data.code === "SU") {
       return data.list;
@@ -64,14 +57,11 @@ export const getAdminSignupList = async accessToken => {
 // 대기 중인 사장님 탈퇴 리스트
 export const getAdminExitList = async accessToken => {
   try {
-    const response = await axios.get(
-      `${SERVER_URL}/api/admin/get-delete-list/owner`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    const response = await axios.get(`/api/admin/get-delete-list/owner`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+    });
     const { data } = response;
     if (data.code === "SU") {
       return data.list;

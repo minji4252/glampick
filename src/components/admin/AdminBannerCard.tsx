@@ -5,7 +5,6 @@ import { AdminButton, DeleteButton } from "../common/Button";
 import axios from "axios";
 import { adminAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
-import { SERVER_URL } from "../../apis/config";
 
 const AdminBannerCardStyle = styled.div`
   width: 1000px;

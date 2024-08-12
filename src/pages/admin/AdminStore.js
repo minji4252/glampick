@@ -71,7 +71,7 @@ const AdminStore = () => {
   };
 
   const handleCardClick = glampId => {
-    // 클릭된 스토어 정보를 찾기
+    // 클릭된 스토어 정보
     const store = storeList.find(item => item.glampId === glampId);
     setSelectedStore(store);
     setIsModalOpen(true);

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { colorSystem } from "../../styles/color";
 import { AdminButton } from "../common/Button";
 import styled from "@emotion/styled";
-import AdminSignupModal from "./AdminSignupModal";
+import AdminExitModal from "./AdminExitModal";
 
 const AdminSignupCardStyle = styled.div`
   width: 350px;
@@ -43,9 +43,17 @@ const AdminSignupCardStyle = styled.div`
   }
 `;
 
-const AdminSignupCard = ({ ownerId, ownerName }) => {
+interface AdminExitCardProps {
+  ownerId: string;
+  ownerName: string;
+}
+
+const AdminExitCard: React.FC<AdminExitCardProps> = ({
+  ownerId,
+  ownerName,
+}) => {
   // 모달 열 닫
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -59,7 +67,7 @@ const AdminSignupCard = ({ ownerId, ownerName }) => {
       <AdminSignupCardStyle>
         <div className="signup-card">
           <div className="signup-left">
-            <h4>가입 대기 중</h4>
+            <h4>탈퇴 대기 중</h4>
             <p>{ownerName}</p>
           </div>
           <div className="signup-right">
@@ -67,7 +75,7 @@ const AdminSignupCard = ({ ownerId, ownerName }) => {
           </div>
         </div>
       </AdminSignupCardStyle>
-      <AdminSignupModal
+      <AdminExitModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         ownerId={ownerId}
@@ -76,4 +84,4 @@ const AdminSignupCard = ({ ownerId, ownerName }) => {
   );
 };
 
-export default AdminSignupCard;
+export default AdminExitCard;

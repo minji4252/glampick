@@ -43,9 +43,17 @@ const AdminSignupCardStyle = styled.div`
   }
 `;
 
-const AdminExitCard = ({ ownerId, ownerName }) => {
+interface AdminSignupCardProps {
+  ownerId: string;
+  ownerName: string;
+}
+
+const AdminSignupCard: React.FC<AdminSignupCardProps> = ({
+  ownerId,
+  ownerName,
+}) => {
   // 모달 열 닫
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -59,7 +67,7 @@ const AdminExitCard = ({ ownerId, ownerName }) => {
       <AdminSignupCardStyle>
         <div className="signup-card">
           <div className="signup-left">
-            <h4>탈퇴 대기 중</h4>
+            <h4>가입 대기 중</h4>
             <p>{ownerName}</p>
           </div>
           <div className="signup-right">
@@ -76,4 +84,4 @@ const AdminExitCard = ({ ownerId, ownerName }) => {
   );
 };
 
-export default AdminExitCard;
+export default AdminSignupCard;

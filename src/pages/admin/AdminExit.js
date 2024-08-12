@@ -5,6 +5,7 @@ import AdminSignupCard from "../../components/admin/AdminSignupCard";
 import { adminAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import { getAdminExitList } from "../../apis/adminapi";
+import AdminExitCard from "../../components/admin/AdminExitCard";
 
 const AdminExit = () => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
@@ -31,7 +32,7 @@ const AdminExit = () => {
     fetchAdminAccessToken();
   }, [setAdminAccessToken]);
 
-  // 승인 대기 중인 사장님 회원가입 리스트
+  // 탈퇴 대기 중인 사장님 회원가입 리스트
   useEffect(() => {
     const getExitList = async () => {
       try {
@@ -57,11 +58,11 @@ const AdminExit = () => {
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
       <AdminCategories />
       <div className="inner">
-        <h3>사장님 가입 관리</h3>
+        <h3>사장님 탈퇴 관리</h3>
         <div className="exit-inner">
           {exitList.length > 0 ? (
             exitList.map(item => (
-              <AdminSignupCard
+              <AdminExitCard
                 key={item.ownerId}
                 ownerName={item.ownerName}
                 ownerId={item.ownerId}
