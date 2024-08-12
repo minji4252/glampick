@@ -1,6 +1,9 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useState } from "react";
 import { colorSystem } from "../../styles/color";
+import { AdminButton } from "../common/Button";
+import AdminSignupModal from "./AdminSignupModal";
+import AdminStoreModal from "./AdminStoreModal";
 
 const AdminStoreCardStyle = styled.div`
   width: 450px;
@@ -10,11 +13,15 @@ const AdminStoreCardStyle = styled.div`
   line-height: 1.4;
   border-radius: 20px;
   border: 2px solid ${colorSystem.admin3};
-  padding-left: 35px;
+  padding: 0 35px;
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
 
   .store-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
     .store-name {
       color: ${colorSystem.admin};
       font-size: 20px;
@@ -28,8 +35,16 @@ const AdminStoreCardStyle = styled.div`
       margin-top: 10px;
       font-size: 16px;
     }
+    .store-right {
+      button {
+        width: 100px;
+        height: 40px;
+        font-size: 16px;
+      }
+    }
   }
 `;
+
 const AdminStoreCard = ({
   ownerId,
   glampId,
@@ -37,19 +52,39 @@ const AdminStoreCard = ({
   businessNumber,
   glampName,
   region,
-  onClick,
 }) => {
+  // 모달 열 닫
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
-    <AdminStoreCardStyle onClick={() => onClick(glampId)}>
-      <div className="store-card">
-        <div className="store-name">{glampName}</div>
-        <div className="store-region">{region}</div>
-        <div className="store-owner">
-          <p>사장님 이름: {ownerName}</p>
-          <p>사업자등록번호: {businessNumber}</p>
+    <>
+      <AdminStoreCardStyle>
+        <div className="store-card">
+          <div className="store-left">
+            <div className="store-name">{glampName}</div>
+            <div className="store-region">{region}</div>
+            <div className="store-owner">
+              <p>사장님 이름: {ownerName}</p>
+              <p>사업자등록번호: {businessNumber}</p>
+            </div>
+          </div>
+          <div className="store-right">
+            <AdminButton label="상세보기" onClick={handleOpenModal} />
+          </div>
         </div>
-      </div>
-    </AdminStoreCardStyle>
+      </AdminStoreCardStyle>
+      <AdminStoreModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        glampId={glampId}
+      />{" "}
+    </>
   );
 };
 

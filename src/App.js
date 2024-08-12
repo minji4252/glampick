@@ -189,7 +189,6 @@ function App() {
 
         {/* 결제 페이지 */}
         <Route path="/payment/:glampId" element={<PaymentPage />} />
-        {/* <Route path="/payment" element={<PaymentPage />}></Route> */}
         <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
 
         {/* 유저 페이지 */}

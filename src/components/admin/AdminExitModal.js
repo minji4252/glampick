@@ -5,8 +5,8 @@ import { useRecoilState } from "recoil";
 import { adminAccessTokenState } from "../../atoms/loginState";
 import axios from "axios";
 import { AdminButton, DeleteButton } from "../common/Button";
-import LoadingNobg from "../common/LoadingNobg";
 import AlertModal from "../common/AlertModal";
+import Loading from "../common/Loading";
 
 const SignupModalStyle = styled.div`
   position: fixed;
@@ -73,11 +73,10 @@ const SignupContent = styled.div`
         flex-direction: row;
       }
 
-      .signup-btn {
+      .exit-btn {
         display: flex;
         justify-content: center;
         margin-top: 60px;
-        gap: 20px;
       }
       button {
         width: 140px;
@@ -98,15 +97,7 @@ const CloseButton = styled.button`
   top: 5px;
 `;
 
-const ReasonInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid ${colorSystem.g200};
-  border-radius: 5px;
-`;
-
-const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
+const AdminExitModal = ({ isOpen, onClose, ownerId }) => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
     adminAccessTokenState,
   );
@@ -116,12 +107,8 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
     businessNumber: "",
     businessPaperImage: null,
   });
-  // 거절 이유
-  const [reason, setReason] = useState("");
-  const [isReasonVisible, setIsReasonVisible] = useState(false);
   // 확인 모달
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
   // 로딩
   const [loading, setLoading] = useState(false);
 
@@ -132,6 +119,9 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
         const token = localStorage.getItem("accessToken");
         if (token) {
           setAdminAccessToken(token);
+          console.log("accessToken 있음");
+        } else {
+          console.log("accessToken 없음");
         }
       } catch (error) {
         console.log(error);
@@ -170,55 +160,23 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
     fetchOwnerInfo();
   }, [isOpen, ownerId, adminAccessToken]);
 
-  // 가입 승인
-  const yesSignup = async () => {
+  // 탈퇴 승인
+  const yesExit = async () => {
     setLoading(true);
     try {
-      await axios.patch(
-        `/api/admin/access/owner/sign-up?ownerId=${ownerId}`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${adminAccessToken}`,
-            "Content-Type": "application/json",
-          },
-        },
-      );
-      setAlertMessage("가입 승인이 완료되었습니다.");
-      setIsAlertModalOpen(true);
-    } catch (error) {
-      console.log("가입 승인 중 오류: ", error);
-      setAlertMessage("가입 승인 중 오류가 발생했습니다.");
-      setIsAlertModalOpen(true);
-    }
-    setLoading(false);
-  };
-
-  // 가입 거절
-  const noSignup = async () => {
-    setLoading(true);
-    try {
-      await axios.delete(`/api/admin/exclution/owner/sign-up`, {
+      await axios.patch(`/api/admin/delete/owner?ownerId=${ownerId}`, null, {
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
           "Content-Type": "application/json",
         },
-        data: {
-          ownerId,
-          exclusionComment: reason,
-        },
       });
-      setAlertMessage("가입이 거절되었습니다.");
       setIsAlertModalOpen(true);
     } catch (error) {
-      console.log("가입 반려 중 오류: ", error);
-      setAlertMessage("가입 반려 중 오류가 발생했습니다.");
-      setIsAlertModalOpen(true);
+      console.log("탈퇴 승인 중 오류: ", error);
+      alert("탈퇴 승인 중 오류 발생");
     }
     setLoading(false);
   };
-
-  const handleReasonChange = e => setReason(e.target.value);
 
   const handleConfirmClose = () => {
     setIsAlertModalOpen(false);
@@ -230,7 +188,7 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
   return (
     <>
       <SignupModalStyle onClick={onClose}>
-        {loading && <LoadingNobg />}
+        {loading && <Loading />}
         <SignupContent onClick={e => e.stopPropagation()}>
           <CloseButton onClick={onClose}>×</CloseButton>
           <div className="signup-m-inner">
@@ -250,39 +208,13 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
                 <h4>사업자등록번호: </h4>
                 {ownerInfo.businessNumber}
               </div>
-              <div>
-                <h4>사업자등록증: </h4>
-                {ownerInfo.businessPaperImage && (
-                  <img
-                    src={ownerInfo.businessPaperImage}
-                    alt="사업자등록증"
-                    style={{ width: "100%", borderRadius: "5px" }}
-                  />
-                )}
-              </div>
-              {isReasonVisible && (
-                <div>
-                  <h4>거절 이유:</h4>
-                  <ReasonInput
-                    type="text"
-                    value={reason}
-                    onChange={handleReasonChange}
-                    placeholder="거절 이유를 입력하세요"
-                  />
-                </div>
-              )}
-              <div className="signup-btn">
-                <AdminButton label="가입 승인하기" onClick={yesSignup} />
-                <DeleteButton
-                  label={isReasonVisible ? "가입 거절하기" : "가입 거절하기"}
-                  onClick={() => {
-                    if (!isReasonVisible) {
-                      setIsReasonVisible(true);
-                    } else {
-                      noSignup();
-                    }
-                  }}
-                />
+
+              <div className="exit-btn">
+                <AdminButton
+                  label="탈퇴 승인하기"
+                  onClick={yesExit}
+                  className="exit-btn"
+                ></AdminButton>
               </div>
             </div>
           </div>
@@ -291,10 +223,10 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
       <AlertModal
         isOpen={isAlertModalOpen}
         onClose={handleConfirmClose}
-        message={alertMessage}
+        message="탈퇴 승인되었습니다."
       />
     </>
   );
 };
 
-export default AdminSignupModal;
+export default AdminExitModal;
