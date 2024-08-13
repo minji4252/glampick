@@ -2,25 +2,28 @@ import React from "react";
 import { ResponsiveLine } from "@nivo/line";
 
 interface BookingDataItem {
-  days: string;
-  roomCounts: string;
+  checkInDate: string;
+  reservationCount: string;
 }
 
 interface BookingChartProps {
   data: BookingDataItem[];
 }
 
-// 날짜 변환 00-00-00 -> 00-00
-const formatDate = (date: string): string => date.replace(/^\d{4}-/, "");
+// 날짜 변환 0000-00-00 -> 00-00
+const formatDate = (date: string): string => {
+  const dateParts = date.split("-");
+  return `${dateParts[1]}-${dateParts[2]}`;
+};
 
 const BookingChart: React.FC<BookingChartProps> = ({ data }) => {
   const chartData = [
     {
-      id: "1번방",
+      id: "예약 수",
       color: "#f49998",
       data: data.map(item => ({
-        x: formatDate(item.days),
-        y: Number(item.roomCounts),
+        x: formatDate(item.checkInDate),
+        y: Number(item.reservationCount),
       })),
     },
   ];

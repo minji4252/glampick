@@ -464,10 +464,12 @@ const CeoRoom = () => {
       "req",
       JSON.stringify({
         // 임시
-        glampId: 55,
+        glampId: 2,
         roomName: data.roomName,
         weekdayPrice: data.weekdayPrice,
         weekendPrice: data.weekendPrice,
+        // 임시
+        price: data.weekendPrice,
         peopleNum: data.peopleNum,
         peopleMax: data.peopleMax,
         inTime: `${data.inTime}:00:00`,
@@ -484,12 +486,17 @@ const CeoRoom = () => {
       if (!ceoAccessToken) return;
       console.log("전송 데이터:", formData);
 
-      const response = await axios.post(`api/owner/room`, formData, {
-        headers: {
-          Authorization: `Bearer ${ceoAccessToken}`,
-          "Content-Type": "multipart/form-data",
+      const response = await axios.post(
+        // eslint-disable-next-line no-undef
+        `${process.env.PUBLIC_URL}/api/owner/room`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
         },
-      });
+      );
       console.log("서버 응답:", response.data);
     } catch (error) {
       console.error("에러 발생:", error);
