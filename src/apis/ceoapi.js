@@ -49,6 +49,37 @@ export const postOwnerAuthCode = async ({ ceoEmail, authCode }) => {
   }
 };
 
+// ceo 핸드폰 인증 api 호출
+export const postOwnerSendSms = async ({ phone }) => {
+  try {
+    const reqData = `/api/auth/send-sms?ownerPhone=${phone}`;
+    const response = await axios.post(reqData, { phone });
+    console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
+    console.log(error);
+  }
+};
+
+// ceo 핸드폰 인증코드 확인 api 호출
+export const postOwnerCheckSms = async ({ phone, phoneAuthCode }) => {
+  try {
+    const reqData = `/api/auth/check-sms?ownerPhone=${phone}&phoneKey=${phoneAuthCode}`;
+    const response = await axios.post(reqData, {
+      ownerPhone: phone,
+      phoneKey: phoneAuthCode,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // ceo 사업자등록번호 확인 api 호출
 
 // ceo 회원가입 api 호출

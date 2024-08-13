@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React from "react";
+import { HiOutlineTrash } from "react-icons/hi2";
+import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { ceoRoleState, isCeoLoginState } from "../../atoms/loginState";
+import useModal from "../../hooks/UseModal";
+import { ActionButton, DeleteButton } from "../common/Button";
 import {
   DeleteIcon,
   DeleteModalBtn,
   DeleteModalStyle,
   DeleteText,
 } from "../common/DeleteModal";
-import { IoClose } from "react-icons/io5";
-import { HiOutlineTrash } from "react-icons/hi2";
-import { ActionButton, DeleteButton } from "../common/Button";
-import axios from "axios";
-import { ceoRoleState, isCeoLoginState } from "../../atoms/loginState";
-import { useRecoilState } from "recoil";
-import { useNavigate } from "react-router-dom";
 import { ModalOverlay } from "../common/ReviewImgModal";
-import useModal from "../../hooks/UseModal";
 
 interface CeoWithdrawModalProps {
   isOpen: boolean;
@@ -28,7 +28,6 @@ const CeoWithdrawModal: React.FC<CeoWithdrawModalProps> = ({
   onClose,
   onConfirm,
   ceoAccessToken,
-  glampId,
 }) => {
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
@@ -42,8 +41,8 @@ const CeoWithdrawModal: React.FC<CeoWithdrawModalProps> = ({
   const handleDelete = async () => {
     try {
       const response = await axios.patch(
-        `/api/owner/withdraw/${glampId}`,
-        null, // PATCH 요청의 body 부분이 필요 없는 경우 빈 객체를 전달합니다.
+        `/api/owner/withdraw`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${ceoAccessToken}`,
