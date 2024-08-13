@@ -16,6 +16,7 @@ import Loading from "../../components/common/Loading";
 import { postCheckSms, postSendSms } from "../../apis/userapi";
 import { patchOwnerInfo } from "../../apis/ceoapi";
 import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
+import CeoWithdrawModal from "../../components/ceo/CeoWithdrawModal";
 
 const WrapStyle = styled.div`
   .inner {
@@ -456,11 +457,12 @@ const CeoInfo = () => {
         getRequestData={password => ({ password: password })}
         isCeo={true}
       />
-      <DeleteModal
+      <CeoWithdrawModal
         isOpen={isDeleteModalOpen}
         onClose={() => {
           handleCloseDeleteModal();
         }}
+        ceoAccessToken={ceoAccessToken}
       />
     </WrapStyle>
   );

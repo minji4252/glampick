@@ -5,8 +5,11 @@ import { IoClose } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { colorSystem } from "../../styles/color";
 import { ActionButton, DeleteButton } from "./Button";
+import { useRecoilState } from "recoil";
+import { isLoginState, userRoleState } from "../../atoms/loginState";
+import { ModalOverlay } from "./ReviewImgModal";
 
-const DeleteModalStyle = styled.div`
+export const DeleteModalStyle = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -42,7 +45,7 @@ const DeleteModalStyle = styled.div`
     color: #777;
   }
 `;
-const DeleteIcon = styled.div`
+export const DeleteIcon = styled.div`
   margin-top: 26px;
   width: 52px;
   height: 52px;
@@ -58,7 +61,7 @@ const DeleteIcon = styled.div`
     color: ${colorSystem.g150};
   }
 `;
-const DeleteText = styled.div`
+export const DeleteText = styled.div`
   margin-top: 23px;
 
   h2 {
@@ -72,7 +75,7 @@ const DeleteText = styled.div`
     line-height: 1.2rem;
   }
 `;
-const DeleteModalBtn = styled.div`
+export const DeleteModalBtn = styled.div`
   margin-top: 28px;
   display: flex;
   flex-direction: column;
@@ -96,6 +99,8 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   onConfirm,
   accessToken,
 }) => {
+  const [isLogin, setIsLogin] = useRecoilState(isLoginState);
+  const [userRole, setUserRole] = useRecoilState(userRoleState);
   const navigate = useNavigate();
   if (!isOpen) return null;
 
@@ -110,6 +115,10 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
       if (response.data.code === "SU") {
         console.log("회원 탈퇴 처리완료", response);
         onConfirm(); // 부모 컴포넌트에서 모달 닫기 처리를 하도록 호출
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userRole");
+        setIsLogin(false);
+        setUserRole(null);
         navigate("/");
       } else {
         console.log("탈퇴 실패");
@@ -120,29 +129,31 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   };
 
   return (
-    <DeleteModalStyle>
-      <button className="close-btn" type="button" onClick={onClose}>
-        <IoClose />
-      </button>
-      <DeleteIcon>
-        <HiOutlineTrash />
-      </DeleteIcon>
-      <DeleteText>
-        <h2>정말 탈퇴하시겠습니까?</h2>
-        <p>
-          탈퇴 버튼 선택 시, 계정은 <br /> 삭제되며 복구되지 않습니다.
-        </p>
-      </DeleteText>
-      <DeleteModalBtn>
-        <DeleteButton
-          label="탈퇴"
-          onClick={() => {
-            handleDelete();
-          }}
-        />
-        <ActionButton label="취소" onClick={onClose} />
-      </DeleteModalBtn>
-    </DeleteModalStyle>
+    <ModalOverlay>
+      <DeleteModalStyle>
+        <button className="close-btn" type="button" onClick={onClose}>
+          <IoClose />
+        </button>
+        <DeleteIcon>
+          <HiOutlineTrash />
+        </DeleteIcon>
+        <DeleteText>
+          <h2>정말 탈퇴하시겠습니까?</h2>
+          <p>
+            탈퇴 버튼 선택 시, 계정은 <br /> 삭제되며 복구되지 않습니다.
+          </p>
+        </DeleteText>
+        <DeleteModalBtn>
+          <DeleteButton
+            label="탈퇴"
+            onClick={() => {
+              handleDelete();
+            }}
+          />
+          <ActionButton label="취소" onClick={onClose} />
+        </DeleteModalBtn>
+      </DeleteModalStyle>
+    </ModalOverlay>
   );
 };
 

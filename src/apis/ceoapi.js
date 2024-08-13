@@ -52,3 +52,24 @@ export const postOwnerAuthCode = async ({ ceoEmail, authCode }) => {
 // ceo 사업자등록번호 확인 api 호출
 
 // ceo 회원가입 api 호출
+export const postOwnerSignUp = async ({
+  businessNumber,
+  ownerEmail,
+  ownerPw,
+  ownerName,
+  ownerPhone,
+}) => {
+  try {
+    const response = await axios.post(`/api/auth/owner/sign-up`, {
+      businessNumber: businessNumber,
+      ownerEmail: ownerEmail,
+      ownerPw: ownerPw,
+      ownerName: ownerName,
+      ownerPhone: ownerPhone,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

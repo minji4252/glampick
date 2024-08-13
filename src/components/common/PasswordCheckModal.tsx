@@ -167,23 +167,6 @@ const PasswordCheckModal: React.FC<PasswordCheckModalProps> = ({
     setErrorMessage("");
   };
 
-  // useEffect(() => {
-  //   const fetchAccessToken = async () => {
-  //     try {
-  //       const token = localStorage.getItem("accessToken");
-  //       if (token) {
-  //         setAccessToken(token);
-  //       } else {
-  //         console.log("accessToken 없음");
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchAccessToken();
-  // }, []);
-
   // 토큰을 로컬스토리지에서 가져오는 useEffect
   useEffect(() => {
     const fetchAccessToken = async () => {

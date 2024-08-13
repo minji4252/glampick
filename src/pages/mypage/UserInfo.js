@@ -885,7 +885,7 @@ const UserInfo = () => {
         onConfirm={() => {
           handleConfirmDelete();
         }}
-        accessToken={accessToken} // accessToken 전달
+        accessToken={accessToken}
       />
     </WrapStyle>
   );

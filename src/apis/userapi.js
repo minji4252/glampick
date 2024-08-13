@@ -34,7 +34,7 @@ export const postMailSend = async ({ userEmail }) => {
   try {
     const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
     const response = await axios.post(reqData, { userEmail });
-    // console.log(response);
+    console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -53,7 +53,7 @@ export const postAuthCode = async ({ userEmail, authCode }) => {
       userEmail: userEmail,
       authKey: authCode,
     });
-    // console.log(response);
+    console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -69,7 +69,7 @@ export const postSendSms = async ({ userPhone }) => {
   try {
     const reqData = `/api/auth/send-sms?userPhone=${userPhone}`;
     const response = await axios.post(reqData, { userPhone });
-    // console.log(response);
+    console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -88,7 +88,7 @@ export const postCheckSms = async ({ userPhone, authNumber }) => {
       userPhone: userPhone,
       phoneKey: authNumber,
     });
-    // console.log(response);
+    console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -131,16 +131,17 @@ export const postSocailSignUp = async ({
   userId,
   userName,
   userPhone,
-  nickName,
+  userNickName,
 }) => {
   try {
     const response = await axios.post(`/api/auth/social/sign-up`, {
       userId: userId,
       userName: userName,
       userPhone: userPhone,
-      userNickName: nickName,
+      userNickName: userNickName,
     });
-    console.log(response);
+    console.log("회원가입 전송데이터:", response);
+    return response;
   } catch (error) {
     console.log(error);
   }

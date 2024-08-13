@@ -144,6 +144,17 @@ export const StyledCalendarWrapper = styled.div`
     border-radius: 0.3rem;
   }
 
+  /* 선택된 날짜의 배경색과 글자색 변경 */
+  .react-calendar__tile--active {
+    background-color: ${colorSystem.beige};
+  }
+
+  /* 선택된 날짜의 hover 상태 색상 변경 */
+  .react-calendar__tile--active:hover,
+  .react-calendar__tile--active:focus {
+    background-color: ${colorSystem.beige};
+  }
+
   /* 예약내역 표시하기 */
   .tile-content {
     display: flex;

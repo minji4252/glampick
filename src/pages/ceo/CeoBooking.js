@@ -133,10 +133,16 @@ const CeoBooking = () => {
           },
         },
       );
-      console.log(response);
-      setBookingDetails(response.data.complete || []);
+      console.log("예약상세내역 불러오기 api:", response);
+      // 올바른 데이터 구조로 변환
+      const bookingDetails = [
+        ...response.data.before,
+        // ...response.data.cancel, 취소 내역은 예약상세에 표시 X
+        ...response.data.complete,
+      ];
+      setBookingDetails(bookingDetails);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching booking details:", error);
     }
   };
 
@@ -162,20 +168,22 @@ const CeoBooking = () => {
             </div>
             {/* 예약 현황 */}
             <div className="booking-status">
-              <CeoBookingDetail date={selectedDate} />
+              <CeoBookingDetail bookingDetails={bookingDetails} />
             </div>
             {/* 매출 현황 */}
-            <div className="sales-status">
-              <div className="total-sales">
-                <span>총 매출</span>
-                <div>
-                  {bookingDetails
-                    .reduce((total, detail) => total + detail.payAmount, 0)
-                    .toLocaleString()}
-                  원
+            {bookingDetails.length > 0 && (
+              <div className="sales-status">
+                <div className="total-sales">
+                  <span>총 매출</span>
+                  <div>
+                    {bookingDetails
+                      .reduce((total, detail) => total + detail.payAmount, 0)
+                      .toLocaleString()}
+                    원
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

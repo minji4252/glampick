@@ -3,7 +3,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { postOwnerAuthCode, postOwnerMailSend } from "../../apis/ceoapi";
+import {
+  postOwnerAuthCode,
+  postOwnerMailSend,
+  postOwnerSignUp,
+  postOwnerSignin,
+} from "../../apis/ceoapi";
 import { postCheckSms, postSendSms } from "../../apis/userapi";
 import AlertModal from "../../components/common/AlertModal";
 import { CeoButton } from "../../components/common/Button";
@@ -181,6 +186,7 @@ const CeoSignup = () => {
   } = useForm({
     resolver: yupResolver(ceoValidationSchema),
     defaultValues: initState,
+    mode: "onChange",
   });
 
   // 로딩
@@ -314,8 +320,14 @@ const CeoSignup = () => {
     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
   };
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     console.log("전송시 데이터 ", data);
+    try {
+      const response = await postOwnerSignUp(data);
+      console.log(response);
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+    }
   };
 
   return (
@@ -485,7 +497,7 @@ const CeoSignup = () => {
               <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
             )}
             <div className="signup-button">
-              <CeoButton label="회원가입" />
+              <CeoButton label="회원가입" type="submit" />
             </div>
           </form>
         </SignupWrapStyle>

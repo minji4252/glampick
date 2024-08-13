@@ -332,8 +332,10 @@ const LoginPage = () => {
       localStorage.setItem("accessToken", result.accessToken);
       localStorage.setItem("userRole", signedUser.role);
       // setAccessToken(result.accessToken);
-
       openModal({ message: "로그인 성공하였습니다!" });
+      // 상태가 변경된 후 로그를 찍어봅니다
+      console.log("모달 열기 호출 후 상태:", isModalOpen);
+      console.log("모달 메시지:", modalMessage);
       setTimeout(() => {
         if (location.state && location.state.fromSignup) {
           navigate("/");
@@ -400,11 +402,11 @@ const LoginPage = () => {
                   <MainButton label="로그인" />
                 </div>
               </form>
-              <AlertModal
+              {/* <AlertModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
                 message={modalMessage}
-              />
+              /> */}
               <div className="signup">
                 <Link to="/signup" className="signup-btn">
                   <p>회원가입</p>
@@ -433,6 +435,13 @@ const LoginPage = () => {
             </div>
           </div>
         </div>
+        {isModalOpen && (
+          <AlertModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            message={modalMessage}
+          />
+        )}
       </main>
     </WrapStyle>
   );
