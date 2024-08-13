@@ -29,14 +29,17 @@ export const ceoValidationSchema = yup.object().shape({
     .required("이름은 필수 항목입니다."),
   businessNumber: yup
     .string()
-    .matches(/^\d{3}-\d{2}-\d{5}$/, "사업자등록번호가 형식에 맞지 않습니다.")
+    .matches(/^\d{3}-?\d{2}-?\d{5}$/, "사업자등록번호가 형식에 맞지 않습니다.")
     .required("사업자등록번호는 필수 항목입니다."),
   businessRegistrationImg: yup
     .mixed()
     .required("사업자등록증 첨부는 필수 항목입니다."),
   phone: yup
     .string()
-    .matches(/^[0-9]{3}-[0-9]{3,4}-[0-9]{4}$/, "유효한 전화번호를 입력하세요.")
+    .matches(
+      /^[0-9]{3}-?[0-9]{3,4}-?[0-9]{4}$/,
+      "유효한 전화번호를 입력하세요.",
+    )
     .required("휴대폰은 필수 항목입니다."),
   phoneAuthCode: yup
     .string()

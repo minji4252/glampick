@@ -64,14 +64,18 @@ const SnsSignUpPage = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(userValidationSchema),
+    mode: "onChange",
     defaultValues: {
+      userId: "",
       userName: "",
       nickName: "",
-      phone: "",
+      userPhone: "",
       phoneAuthCode: "",
     },
   });
-
+  // 핸드폰 및 인증코드 확인 상태
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
   // 로딩
   const [loading, setLoading] = useState(false);
   // 모달
@@ -92,6 +96,10 @@ const SnsSignUpPage = () => {
           const accessToken = await getAccessToken(authCode);
           // 사용자 정보 가져오기
           const userInfo = await getMemberWithAccessToken(accessToken);
+
+          // userId가 제대로 받아와졌는지 확인
+          console.log("Received userId:", userInfo.id);
+
           setValue("userId", userInfo.id);
           // 사용자 정보 상태 업데이트
           setUserData(userInfo);
@@ -112,6 +120,7 @@ const SnsSignUpPage = () => {
       const phone = watch("phone");
       const result = await postSendSms({ userPhone: phone });
       console.log(result);
+      setIsPhoneVerified(true);
       handleModalOpen(result.data.code, "smsSend", openModal);
     } catch (error) {
       openModal({ message: modalMessages.smsSend.default });
@@ -131,6 +140,7 @@ const SnsSignUpPage = () => {
         authNumber: smsAuthCode,
       });
       console.log(result);
+      setIsAuthCodeVerified(true);
       handleModalOpen(result.data.code, "phoneAuthCode", openModal);
     } catch (error) {
       openModal({ message: modalMessages.phoneAuthCode.default });
@@ -161,18 +171,31 @@ const SnsSignUpPage = () => {
     console.log("onSubmit 함수 호출됨");
 
     console.log("전송시 데이터 ", data);
+    console.log("userId:", data.userId);
+    console.log("userName:", data.userName);
+    console.log("userPhone:", data.phone); // watch("phone") 대신 data.phone 사용
+    console.log("userNickName:", data.nickName);
 
     // 핸드폰 인증 확인
     // 인증코드 확인
+    // if (!isPhoneVerified) {
+    //   openModal({ message: "휴대폰을 인증해주세요" });
+    //   return;
+    // }
+
+    // if (!isAuthCodeVerified) {
+    //   openModal({ message: "휴대폰 인증코드를 확인해주세요" });
+    //   return;
+    // }
     // 백엔드에 보낼 회원가입 데이터
 
     try {
       setLoading(true);
       const result = await postSocailSignUp({
-        userId: data.userId,
+        userId: data.id,
         userName: data.userName,
         userPhone: data.userPhone,
-        userNickName: data.userNickname,
+        userNickName: data.nickname,
       });
       console.log("회원가입 성공:", result);
       // 회원가입 성공 시 처리 (예: 메인 페이지로 리다이렉트)

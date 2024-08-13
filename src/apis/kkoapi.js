@@ -58,7 +58,9 @@ export const getMemberWithAccessToken = async accessToken => {
     });
     console.log(response.data);
     console.log(response.data.id);
-    return response.data;
+    return {
+      id: response.data.id, // userId
+    };
   } catch (error) {
     console.log(error);
     return error;
