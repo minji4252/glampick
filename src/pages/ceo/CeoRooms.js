@@ -275,7 +275,9 @@ const CeoRooms = () => {
           ))}
         </RoomListStyle>
       </div>
-      {isModalOpen && <PeakModal onClose={handleCloseModal} />}
+      {isModalOpen && (
+        <PeakModal onClose={handleCloseModal} ceoAccessToken={ceoAccessToken} />
+      )}
       <CheckModal
         isOpen={isCheckModalOpen}
         onClose={() => setIsCheckModalOpen(false)}
