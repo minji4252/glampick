@@ -64,15 +64,6 @@ function App() {
   const locationNow = useLocation();
   const navigate = useNavigate();
 
-  // 숫자가 아닌 경우 NotfoundPage를 렌더링하는 컴포넌트
-  const GlampingDetailWrapper = ({ isLogin }) => {
-    const { glampId } = useParams();
-    if (!/^\d+$/.test(glampId)) {
-      return <NotfoundPage />;
-    }
-    return <GlampingDetail isLogin={isLogin} />;
-  };
-
   // 페이지 이동할 때마다 로그인 및 사용자 유형 확인
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -182,7 +173,7 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route
           path="/places/:glampId"
-          element={<GlampingDetailWrapper isLogin={isLogin} />}
+          element={<GlampingDetail isLogin={isLogin} isCeoLogin={isCeoLogin} />}
         />
         <Route path="/roomdetail/:glampId" element={<RoomDetail />}></Route>
         <Route path="/review/:glampId" element={<Review />}></Route>

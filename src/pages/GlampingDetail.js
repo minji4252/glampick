@@ -49,7 +49,7 @@ import GlampingDetailStyle, {
   UnderLine,
 } from "../styles/GlampingDetailStyle";
 
-const GlampingDetail = ({ isLogin }) => {
+const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
@@ -65,15 +65,15 @@ const GlampingDetail = ({ isLogin }) => {
   const roomLocationRef = useRef(null);
   const mapElement = useRef(null);
 
+  const { glampId } = useParams();
+  const [searchParams] = useSearchParams();
+
   // 기본값 설정 함수
   const getDefaultDate = daysToAdd => {
     const date = new Date();
     date.setDate(date.getDate() + daysToAdd);
     return date.toISOString().split("T")[0];
   };
-
-  const { glampId } = useParams();
-  const [searchParams] = useSearchParams();
 
   // 날짜 값 설정, 값이 없으면 기본값 사용
   const inDate = searchParams.get("inDate") || getDefaultDate(0);
@@ -316,17 +316,19 @@ const GlampingDetail = ({ isLogin }) => {
           </RoomPic>
           <RoomTitle>
             <span>{glampName}</span>
-            <button onClick={toggleLike}>
-              {isLiked ? (
-                <div style={{ backgroundImage: `url(${fillheart})` }} />
-              ) : (
-                <div
-                  style={{
-                    backgroundImage: `url(${emptyheart})`,
-                  }}
-                />
-              )}
-            </button>
+            {!isCeoLogin && (
+              <button onClick={toggleLike}>
+                {isLiked ? (
+                  <div style={{ backgroundImage: `url(${fillheart})` }} />
+                ) : (
+                  <div
+                    style={{
+                      backgroundImage: `url(${emptyheart})`,
+                    }}
+                  />
+                )}
+              </button>
+            )}
           </RoomTitle>
           <RoomAround onClick={handleRoomAroundClick}>
             <FaLocationDot />
@@ -432,6 +434,7 @@ const GlampingDetail = ({ isLogin }) => {
                         />
                         <span>
                           {Number(room.roomPrice).toLocaleString("ko-KR")}원
+                          <em>/1박</em>
                         </span>
                       </>
                     ) : (
@@ -439,6 +442,7 @@ const GlampingDetail = ({ isLogin }) => {
                         <ActionButton label="예약 마감" />
                         <span>
                           {Number(room.roomPrice).toLocaleString("ko-KR")}원
+                          <em>/1박</em>
                         </span>
                       </div>
                     )}

@@ -152,6 +152,11 @@ export const PriceInfo = styled.div`
   span {
     font-weight: 600;
   }
+
+  .payment-item p {
+    color: ${colorSystem.error} !important;
+    font-weight: 600 !important;
+  }
 `;
 
 export const UnderLine = styled.div`

@@ -46,10 +46,6 @@ export const GlampingDetailStyle = styled.div`
   h4,
   h3 {
     cursor: default;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
   }
 `;
 
@@ -168,6 +164,7 @@ export const ReviewSwiper = styled.div`
   .swiper {
     width: 100%;
     height: 100%;
+    border-radius: 0;
   }
 
   .swiper-slide {
@@ -495,11 +492,18 @@ export const RoomCardBooking = styled.div`
   }
 
   span {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     position: absolute;
     right: 15px;
     bottom: 70px;
+    font-family: "Radio Canada", sans-serif !important;
+  }
+
+  em {
+    font-size: 1rem;
+    font-weight: 400;
+    margin-left: 1px;
   }
 
   button {

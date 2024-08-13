@@ -7,6 +7,7 @@ import { CeoActionButton, CeoButton } from "./Button";
 import MainCalendar from "../MainCalendar";
 import { colorSystem } from "../../styles/color";
 import { IoClose } from "react-icons/io5";
+import axios from "axios";
 
 const WrapStyle = styled.div`
   border: 2px solid ${colorSystem.ceo};
@@ -72,6 +73,14 @@ const WrapStyle = styled.div`
       color: ${colorSystem.g800};
     }
   }
+
+  .reset-btn {
+    position: absolute;
+    top: 60px;
+    right: 100px;
+    background-color: transparent;
+    border: 0;
+  }
 `;
 
 const CeoBoxStyle = styled.div`
@@ -133,7 +142,7 @@ const CeoBoxStyle = styled.div`
   }
 `;
 
-const PeakModal = ({ onClose }) => {
+const PeakModal = ({ onClose, ceoAccessToken }) => {
   const [selectedDate, setSelectedDate] = useState([]);
 
   const handleDateSelect = date => {
@@ -188,7 +197,7 @@ const PeakModal = ({ onClose }) => {
     trigger(fieldName);
   };
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     if (selectedDate.length < 2) {
       setError("peakPeriod", {
         type: "manual",
@@ -196,8 +205,36 @@ const PeakModal = ({ onClose }) => {
       });
       return;
     }
-    console.log("전송 데이터 : ", data);
-    alert(`전송 데이터 : ${data.peakPeriod}, ${data.peakCost}`);
+
+    const formatDate = date => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    const peakStartDay = formatDate(selectedDate[0]);
+    const peakEndDay = formatDate(selectedDate[1]);
+    console.log(peakStartDay, peakEndDay);
+
+    try {
+      if (!ceoAccessToken) return;
+
+      // 임시
+      const grampId = 2;
+      const response = await axios.patch(
+        `/api/owner/room/${grampId}/peak?peakStartDay=${peakStartDay}&peakEndDay=${peakEndDay}&peakCost=${data.peakCost}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+          },
+        },
+      );
+      console.log("서버 응답:", response.data);
+    } catch (error) {
+      console.error("에러 발생:", error);
+    }
   };
 
   return (
@@ -206,6 +243,10 @@ const PeakModal = ({ onClose }) => {
       <button className="close-btn" type="button" onClick={onClose}>
         <IoClose />
       </button>
+      <button className="reset-btn" type="button">
+        <CeoActionButton label="초기화" />
+      </button>
+
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 성수기 기간 설정 */}
         <CeoBoxStyle>

@@ -85,6 +85,9 @@ const PaymentCard = ({
         <div className="pay-right">
           <PriceInfo>
             <h3>결제정보</h3>
+            <div className="price-item payment-item">
+              <p>총 3박 4일 일정</p>
+            </div>
             <div className="price-item">
               <p>객실 가격</p>
               <span>{formatRoomPrice}원</span>
