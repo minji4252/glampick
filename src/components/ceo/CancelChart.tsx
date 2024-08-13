@@ -1,39 +1,35 @@
 import React from "react";
 import { ResponsivePie } from "@nivo/pie";
 
-const CancelChart = () => {
-  const data = [
-    {
-      id: "1번방",
-      label: "1번방",
-      value: 174,
-      color: "hsl(273, 70%, 50%)",
-    },
-    {
-      id: "2번방",
-      label: "2번방",
-      value: 554,
-      color: "hsl(338, 70%, 50%)",
-    },
-    {
-      id: "3번방",
-      label: "3번방",
-      value: 76,
-      color: "hsl(109, 70%, 50%)",
-    },
-    {
-      id: "4번방",
-      label: "4번방",
-      value: 377,
-      color: "hsl(25, 70%, 50%)",
-    },
-    {
-      id: "5번방",
-      label: "5번방",
-      value: 456,
-      color: "hsl(217, 70%, 50%)",
-    },
-  ];
+interface RoomData {
+  cancelCount: string;
+  nameing: string | null;
+}
+
+interface CancelData {
+  room: RoomData[];
+}
+
+interface CancelChartProps {
+  data: CancelData;
+}
+
+const CancelChart: React.FC<CancelChartProps> = ({ data }) => {
+  const cancelData = data.room
+    .filter(room => room.nameing !== null)
+    .map(room => ({
+      id: room.nameing || "Unknown",
+      label: room.nameing || "Unknown",
+      value: Number(room.cancelCount),
+      color: "hsl(217, 70%, 50%)", // 예시
+    }));
+
+  // const data1 = data.room.map(room => ({
+  //   id: room.nameing,
+  //   label: room.nameing,
+  //   value: Number(room.cancelCount),
+  //   color: "hsl(217, 70%, 50%)",
+  // }));
 
   const theme = {
     tooltip: {
@@ -46,7 +42,7 @@ const CancelChart = () => {
   return (
     <div style={{ width: "100%", height: 450 }}>
       <ResponsivePie
-        data={data}
+        data={cancelData}
         theme={theme}
         margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
         sortByValue={true}
@@ -88,64 +84,14 @@ const CancelChart = () => {
             spacing: 10,
           },
         ]}
-        fill={[
-          {
-            match: {
-              id: "ruby",
-            },
-            id: "dots",
-          },
-          {
-            match: {
-              id: "c",
-            },
-            id: "dots",
-          },
-          {
-            match: {
-              id: "go",
-            },
-            id: "dots",
-          },
-          {
-            match: {
-              id: "python",
-            },
-            id: "dots",
-          },
-          {
-            match: {
-              id: "scala",
-            },
-            id: "lines",
-          },
-          {
-            match: {
-              id: "lisp",
-            },
-            id: "lines",
-          },
-          {
-            match: {
-              id: "elixir",
-            },
-            id: "lines",
-          },
-          {
-            match: {
-              id: "javascript",
-            },
-            id: "lines",
-          },
-        ]}
         legends={[
           {
             anchor: "bottom",
             direction: "row",
             justify: false,
             translateX: 0,
-            translateY: 56,
-            itemsSpacing: 0,
+            translateY: 65,
+            itemsSpacing: 13,
             itemWidth: 100,
             itemHeight: 18,
             itemTextColor: "#999",

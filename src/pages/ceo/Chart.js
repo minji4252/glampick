@@ -192,13 +192,13 @@ const Chart = () => {
   const ceoAccessToken = useFetchAccessToken();
 
   // 임시
-  const startDayId = "20240801";
-  const endDayId = "20240807";
+  const startDayId = "2024-07-01";
+  const endDayId = "2024-07-15";
 
   const menuArr = [
     {
       name: "예약",
-      count: "21건",
+      count: `21건`,
       content: <BookingChart data={bookingData} />,
     },
     {
@@ -206,7 +206,11 @@ const Chart = () => {
       count: "520,000원",
       content: <SalesChart data={revenueData} />,
     },
-    { name: "취소율", count: "4%", content: <CancelChart data={cancelData} /> },
+    {
+      name: "취소율",
+      count: `${cancelData.formattedResult}%`,
+      content: <CancelChart data={cancelData} />,
+    },
   ];
 
   const selectMenuHandler = index => {
@@ -258,7 +262,7 @@ const Chart = () => {
           endDayId,
         );
         if (response.code === "SU") {
-          setCancelData(response.room);
+          setCancelData(response);
         }
       } catch (error) {
         console.log(error);
@@ -314,7 +318,6 @@ const Chart = () => {
             </div>
           </StateStyle>
         </div>
-
         <TapStyle>
           <div className="period-select">
             <select>
@@ -334,10 +337,8 @@ const Chart = () => {
               </li>
             ))}
           </div>
+          <ListContent>{menuArr[currentTab].content}</ListContent>
         </TapStyle>
-        <ListContent>
-          <div>{menuArr[currentTab].content}</div>
-        </ListContent>
       </div>
     </ChartWrapStyle>
   );
