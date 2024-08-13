@@ -17,8 +17,8 @@ const SearchMapStyle = styled.div`
 const SearchMap = ({ center, region, region1 }) => {
   const defaultCenter = { lat: 36.1398393, lng: 128.1135947 }; // 기본 좌표 (전국)
 
-  // 전국일때만 레벨 12, 아니면 6
-  const zoomLevel = region === "all" || region1 === "all" ? 12 : 6;
+  // 전국일때만 레벨 12, 아니면 8
+  const zoomLevel = region === "all" || region1 === "all" ? 12 : 8;
 
   return (
     <SearchMapStyle>
