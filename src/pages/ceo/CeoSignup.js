@@ -437,7 +437,7 @@ const CeoSignup = () => {
               <ErrorMessage>{errors.businessNumber.message}</ErrorMessage>
             )}
             {/* 사업자등록증 이미지 업로드 */}
-            {/* <div className="form-group">
+            <div className="form-group">
               <label htmlFor="businessRegistrationImg">사업자등록증 첨부</label>
               <input
                 type="file"
@@ -450,7 +450,7 @@ const CeoSignup = () => {
               <ErrorMessage>
                 {errors.businessRegistrationImg.message}
               </ErrorMessage>
-            )} */}
+            )}
             <div className="form-group">
               <label>휴대폰</label>
               <div className="input-group">

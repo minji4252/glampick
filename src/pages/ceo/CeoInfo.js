@@ -1,22 +1,20 @@
 import styled from "@emotion/styled";
-import { colorSystem, size } from "../../styles/color";
-import CeoCategories from "../../components/ceo/CeoCategories";
-import { CeoButton } from "../../components/common/Button";
-import { useForm } from "react-hook-form";
-import { ErrorMessage, modalMessages } from "./CeoSignup";
-import { useEffect, useState } from "react";
-import DeleteModal from "../../components/common/DeleteModal";
 import axios from "axios";
-import { ceoAccessTokenState } from "../../atoms/loginState";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
-import useModal from "../../hooks/UseModal";
-import PasswordCheckModal from "../../components/common/PasswordCheckModal";
-import AlertModal from "../../components/common/AlertModal";
-import Loading from "../../components/common/Loading";
-import { postCheckSms, postSendSms } from "../../apis/userapi";
-import { patchOwnerInfo } from "../../apis/ceoapi";
-import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
+import { postOwnerCheckSms, postOwnerSendSms } from "../../apis/ceoapi";
+import { ceoAccessTokenState } from "../../atoms/loginState";
+import CeoCategories from "../../components/ceo/CeoCategories";
 import CeoWithdrawModal from "../../components/ceo/CeoWithdrawModal";
+import AlertModal from "../../components/common/AlertModal";
+import { CeoButton } from "../../components/common/Button";
+import Loading from "../../components/common/Loading";
+import PasswordCheckModal from "../../components/common/PasswordCheckModal";
+import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
+import useModal from "../../hooks/UseModal";
+import { colorSystem, size } from "../../styles/color";
+import { ErrorMessage, modalMessages } from "./CeoSignup";
 
 const WrapStyle = styled.div`
   .inner {
@@ -173,6 +171,11 @@ const CeoInfo = () => {
 
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
+  // 정보 변경여부 체크
+  const [initialValues, setInitialValues] = useState({
+    password: "",
+    phone: "",
+  });
   // 핸드폰 인증코드 발송 여부 확인
   const [isSmsSent, setIsSmsSent] = useState(false);
   // 비밀번호 확인 입력창 모달
@@ -181,6 +184,8 @@ const CeoInfo = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // 로딩
   const [loading, setLoading] = useState(false);
+  // 정보 업데이트 완료 후
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
@@ -200,6 +205,11 @@ const CeoInfo = () => {
         setValue("ownerName", ownerName);
         setValue("businessNumber", businessNumber);
         setValue("phone", phone);
+        setInitialValues({
+          password: "",
+          phone: phone,
+        });
+
         console.log(response);
       } catch (error) {
         console.log(error);
@@ -207,6 +217,18 @@ const CeoInfo = () => {
     };
     getOwnerInfo();
   }, [ceoAccessToken, setValue]);
+
+  // 정보 변경사항 확인
+  const hasChanges = () => {
+    const currentValues = {
+      password: watch("password"),
+      phone: watch("phone"),
+    };
+    return (
+      currentValues.password !== initialValues.password ||
+      currentValues.phone !== initialValues.phone
+    );
+  };
 
   // 비밀번호 입력 확인 모달
   useEffect(() => {
@@ -249,7 +271,7 @@ const CeoInfo = () => {
     setLoading(true);
     try {
       const phone = watch("phone");
-      const result = await postSendSms({ userPhone: phone });
+      const result = await postOwnerSendSms({ phone });
       console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
       // Sms 발송 성공
@@ -265,11 +287,11 @@ const CeoInfo = () => {
   const handlePhoneAuthCodeClick = async e => {
     e.preventDefault();
     const phone = watch("phone");
-    const smsAuthCode = watch("phoneAuthCode");
+    const phoneAuthCode = watch("phoneAuthCode");
     try {
-      const result = await postCheckSms({
-        userPhone: phone,
-        authNumber: smsAuthCode,
+      const result = await postOwnerCheckSms({
+        ownerPhone: phone,
+        authNumber: phoneAuthCode,
       });
       console.log(result);
       handleModalOpen(result.data.code, "phoneAuth", openModal);
@@ -298,6 +320,8 @@ const CeoInfo = () => {
       );
       console.log(response);
       handleModalOpen(response.data.code, "patchOwner", openModal);
+      // 정보 수정 성공여부
+      setUpdateSuccess(true);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -307,8 +331,16 @@ const CeoInfo = () => {
 
   // 수정 데이터 전송
   const onSubmit = data => {
-    console.log("수정된 데이터:", data);
-    patchOwnerInfo(data.password, data.phone);
+    // 비밀번호가 변경된 경우, 비밀번호 확인 필드도 반드시 채워져야 함
+    if (data.password && !data.confirmPassword) {
+      openModal({ message: "비밀번호 확인은 필수입니다." });
+      return;
+    }
+    if (hasChanges()) {
+      patchOwnerInfo(data.password, data.phone);
+    } else {
+      openModal({ message: "변경된 내용이 없습니다." });
+    }
   };
 
   // 회원탈퇴 모달

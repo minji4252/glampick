@@ -75,6 +75,7 @@ const CeoLogin = () => {
     }
 
     const result = await postOwnerSignin({ ceoEmail, ceoPw });
+    console.log("결과:", result);
     if (result.code === "SU") {
       console.log(result);
 
@@ -104,6 +105,8 @@ const CeoLogin = () => {
       setTimeout(() => {
         navigate("/ceoglamping");
       }, 1000);
+    } else if (result.code === "NS") {
+      setErrorMessage("탈퇴한 회원입니다.");
     } else {
       console.log("로그인 실패");
       setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");

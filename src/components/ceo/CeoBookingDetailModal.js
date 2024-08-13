@@ -100,7 +100,7 @@ const ModalContent = styled.div`
     .stay-info-group {
       width: 100%;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
       align-items: center;
       font-size: 0.95rem;
       gap: 10px;
@@ -127,8 +127,12 @@ const ModalContent = styled.div`
         display: flex;
         flex-direction: column;
         gap: 5px;
-        padding: 5px;
+        padding: 7px;
 
+        > div {
+          display: flex;
+          justify-content: center;
+        }
         > span {
           background-color: ${colorSystem.p300};
           color: white;
@@ -209,11 +213,10 @@ const CeoBookingDetailModal = ({ isOpen, onClose, detail }) => {
           <div className="info-group">
             <div className="info-header">결제정보</div>
             <div className="payment-datetime">
-              결제일시{" "}
-              {moment(detail.createdAt).format("YYYY.MM.DD(ddd) HH:mm")}{" "}
+              결제일시 {moment(detail.createdAt).format("YYYY.MM.DD HH:mm")}{" "}
             </div>
             <div className="info">
-              <div className="label">객실 가격(1박)</div>
+              <div className="label">객실 가격</div>
               <div className="value">{detail.payAmount.toLocaleString()}원</div>
             </div>
             <div className="info">
