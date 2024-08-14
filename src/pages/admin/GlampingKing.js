@@ -14,6 +14,7 @@ import {
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { postAdminSignin } from "../../apis/adminapi";
+import Loading from "../../components/common/Loading";
 
 const GlampingKing = () => {
   const [accessToken, setAccessToken] = useRecoilState(adminAccessTokenState);
@@ -22,9 +23,11 @@ const GlampingKing = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
   // 로그인시 처리할 함수
   const handleAdminLogin = async e => {
+    setLoading(true);
     e.preventDefault();
     if (!adminId || !adminPw) {
       setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
@@ -37,6 +40,7 @@ const GlampingKing = () => {
 
         localStorage.setItem("accessToken", result.accessToken);
         setAccessToken(result.accessToken);
+        setLoading(false);
         setTimeout(() => {
           if (location.state && location.state.fromSignup) {
             navigate("/adminstore");
@@ -54,6 +58,7 @@ const GlampingKing = () => {
 
   return (
     <GlampingKingStyle>
+      {loading && <Loading />}
       <AdminHeader>관리자 페이지 로그인</AdminHeader>
 
       <div className="inner">

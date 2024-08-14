@@ -46,11 +46,13 @@ const AdminSignupCardStyle = styled.div`
 interface AdminExitCardProps {
   ownerId: string;
   ownerName: string;
+  onApproval: () => void;
 }
 
 const AdminExitCard: React.FC<AdminExitCardProps> = ({
   ownerId,
   ownerName,
+  onApproval,
 }) => {
   // 모달 열 닫
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -79,6 +81,7 @@ const AdminExitCard: React.FC<AdminExitCardProps> = ({
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         ownerId={ownerId}
+        onApproval={onApproval}
       />
     </>
   );

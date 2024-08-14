@@ -106,7 +106,7 @@ const ReasonInput = styled.input`
   border-radius: 5px;
 `;
 
-const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
+const AdminSignupModal = ({ isOpen, onClose, ownerId, onApproval }) => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
     adminAccessTokenState,
   );
@@ -222,6 +222,7 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId }) => {
 
   const handleConfirmClose = () => {
     setIsAlertModalOpen(false);
+    onApproval();
     onClose();
   };
 

@@ -4,8 +4,17 @@ import axios from "axios";
 import { Autoplay, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-const MainBanner = () => {
-  const [banners, setBanners] = useState([]);
+interface Banner {
+  bannerId: number;
+  bannerUrl: string;
+}
+
+interface ApiResponse {
+  list: Banner[];
+}
+
+const MainBanner: React.FC = () => {
+  const [banners, setBanners] = useState<Banner[]>([]);
 
   // 배너 리스트 가져오기
   useEffect(() => {

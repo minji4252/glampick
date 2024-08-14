@@ -7,12 +7,17 @@ import { useRecoilState } from "recoil";
 import { getAdminExitList } from "../../apis/adminapi";
 import AdminExitCard from "../../components/admin/AdminExitCard";
 
-const AdminExit = () => {
-  const [adminAccessToken, setAdminAccessToken] = useRecoilState(
+interface ExitListItem {
+  ownerId: number | any;
+  ownerName: string;
+}
+
+const AdminExit: React.FC = () => {
+  const [adminAccessToken, setAdminAccessToken] = useRecoilState<string | null>(
     adminAccessTokenState,
   );
   // 탈퇴 사장님 리스트
-  const [exitList, setExitList] = useState([]);
+  const [exitList, setExitList] = useState<ExitListItem[]>([]);
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -53,6 +58,18 @@ const AdminExit = () => {
     }
   }, [adminAccessToken]);
 
+  // 탈퇴 승인 후 리스트 갱신?
+  const refreshExitList = async () => {
+    try {
+      if (adminAccessToken) {
+        const list = await getAdminExitList(adminAccessToken);
+        setExitList(list);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
@@ -66,6 +83,7 @@ const AdminExit = () => {
                 key={item.ownerId}
                 ownerName={item.ownerName}
                 ownerId={item.ownerId}
+                onApproval={refreshExitList}
               />
             ))
           ) : (
