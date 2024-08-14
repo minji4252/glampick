@@ -86,12 +86,13 @@ const CeoLogin = () => {
         // 데이터 보관해 둠
         setSaveResult(result);
       } else if (result.code === "SF") {
-        setErrorMessage("로그인에 실패하였습니다.");
-        // setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
+        setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
       } else if (result.code === "NS") {
         setErrorMessage("탈퇴한 회원입니다.");
       } else if (result.code === "WO") {
         setErrorMessage("탈퇴 대기중인 회원입니다.");
+      } else if (result.code === "WS") {
+        setErrorMessage("가입 대기중인 회원입니다.");
       } else {
         console.log("로그인 실패");
         setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");

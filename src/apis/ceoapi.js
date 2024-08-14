@@ -90,18 +90,18 @@ export const postOwnerCheckSms = async ({ phone, phoneAuthCode }) => {
 // ceo 회원가입 api 호출
 export const postOwnerSignUp = async ({
   businessNumber,
-  ownerEmail,
-  ownerPw,
-  ownerName,
-  ownerPhone,
+  ceoEmail,
+  password,
+  name,
+  phone,
 }) => {
   try {
     const response = await axios.post(`/api/auth/owner/sign-up`, {
       businessNumber: businessNumber,
-      ownerEmail: ownerEmail,
-      ownerPw: ownerPw,
-      ownerName: ownerName,
-      ownerPhone: ownerPhone,
+      ownerEmail: ceoEmail,
+      ownerPw: password,
+      ownerName: name,
+      ownerPhone: phone,
     });
     console.log(response);
     return response;

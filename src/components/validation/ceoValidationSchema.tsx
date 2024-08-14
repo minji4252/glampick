@@ -29,7 +29,7 @@ export const ceoValidationSchema = yup.object().shape({
     .required("이름은 필수 항목입니다."),
   businessNumber: yup
     .string()
-    .matches(/^\d{3}-?\d{2}-?\d{5}$/, "사업자등록번호가 형식에 맞지 않습니다.")
+    .matches(/^\d{10}$/, "사업자등록번호는 10자리 숫자여야 합니다.")
     .required("사업자등록번호는 필수 항목입니다."),
   businessRegistrationImg: yup
     .mixed()

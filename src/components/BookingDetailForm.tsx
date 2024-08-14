@@ -129,17 +129,44 @@ export const FormContents = styled.div`
     }
   }
 `;
-export const BookingDetailForm = ({
+
+export interface Booking {
+  reservationId: any;
+  bookId: string;
+  glampId: number;
+  glampImage: string;
+  glampName: string;
+  roomName: string;
+  checkInDate: string;
+  checkOutDate: string;
+  checkInTime: string;
+  checkOutTime: string;
+  createdAt: string;
+  reviewWritten: boolean;
+  status: number;
+  comment?: string; // 취소 시만 존재할 수 있음
+  onBookingCancelled?: (reservationId: number) => void;
+}
+
+interface BookingDetailFormProps {
+  booking: Booking;
+  upcoming?: boolean;
+  isCompleted?: boolean;
+  isCancelled?: boolean;
+  glampId: number;
+}
+
+export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
   booking,
   upcoming,
   isCompleted,
   isCancelled,
   glampId,
 }) => {
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
-  const [roomMainImage, setRoomMainImage] = useState(null);
-  const [reviewWritten, setReviewWritten] = useState(false);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
+  const [roomMainImage, setRoomMainImage] = useState<string | null>(null);
+  const [reviewWritten, setReviewWritten] = useState<boolean>(false);
 
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
@@ -160,7 +187,7 @@ export const BookingDetailForm = ({
   };
 
   // 시간을 변환하는 함수
-  const formatTime = timeString => {
+  const formatTime = (timeString: string) => {
     const [hours, minutes] = timeString.split(":");
     return `${hours}:${minutes}`;
   };
@@ -273,7 +300,11 @@ export const BookingDetailForm = ({
           handleCloseBookCancelModdal();
         }}
         onConfirm={handleBookingCancelSuccess} // 예약 취소 성공 시 모달 닫기
+        comment={booking.comment}
         reservationId={booking.reservationId}
+        onBookingCancelled={() => {
+          console.log("");
+        }}
       />
     </FormContents>
   );

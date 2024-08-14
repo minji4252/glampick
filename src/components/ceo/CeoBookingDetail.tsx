@@ -81,6 +81,10 @@ interface BookingDetail {
   payAmount: number;
   checkInDate: string;
   checkOutDate: string;
+  userPhone: string;
+  createdAt: string;
+  pg: string;
+  period: number;
 }
 
 interface CeoBookingDetailProps {

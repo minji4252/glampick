@@ -1,21 +1,22 @@
 import styled from "@emotion/styled";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   postOwnerAuthCode,
+  postOwnerCheckSms,
   postOwnerMailSend,
+  postOwnerSendSms,
   postOwnerSignUp,
-  postOwnerSignin,
 } from "../../apis/ceoapi";
-import { postCheckSms, postSendSms } from "../../apis/userapi";
 import AlertModal from "../../components/common/AlertModal";
 import { CeoButton } from "../../components/common/Button";
 import Loading from "../../components/common/Loading";
 import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
+import { TimerWrap } from "./CeoInfo";
 
 const CeoSignUpStyle = styled.div`
   position: relative;
@@ -188,6 +189,28 @@ const CeoSignup = () => {
     defaultValues: initState,
     mode: "onChange",
   });
+  // 메일발송 여부 확인
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  // 사업자번호 인증 확인
+  const [isBusinessNumberCheck, setIsBuisnessNumberCheck] = useState(false);
+  // 핸드폰 발송 여부 확인
+  const [isSmsSent, setIsSmsSent] = useState(false);
+
+  // 이메일 인증을 위한 타이머 변수
+  const [emailTimer, setEmailTimer] = useState(0);
+  const [emailTimerId, setEmailTimerId] = useState(null);
+
+  // 핸드폰 인증을 위한 타이머 변수
+  const [phoneTimer, setPhoneTimer] = useState(0);
+  const [phoneTimerId, setPhoneTimerId] = useState(null);
+
+  // 인증 완료 여부 상태 추가
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
+  const [isBusinessNumberVerified, setIsBuisnessNumberVerified] =
+    useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isPhoneAuthCodeVerified, setIsPhoneAuthCodeVerified] = useState(false);
 
   // 로딩
   const [loading, setLoading] = useState(false);
@@ -203,6 +226,13 @@ const CeoSignup = () => {
       const result = await postOwnerMailSend({ ceoEmail: email });
       console.log(result);
       handleModalOpen(result.data.code, "mailSend", openModal);
+      if (result.data.code === "SU") {
+        // 메일 발송 성공
+        setIsEmailSent(true);
+        setEmailTimer(299);
+      } else {
+        setIsEmailSent(false);
+      }
     } catch (error) {
       openModal({ message: modalMessages.mailSend.default });
     } finally {
@@ -210,7 +240,33 @@ const CeoSignup = () => {
     }
   };
 
-  // 이메일 인증코드 확인 로직
+  // 메일 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    if (emailTimer > 0 && !emailTimerId) {
+      const id = setInterval(() => {
+        setEmailTimer(prevemailTimer => prevemailTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setEmailTimerId(id);
+    } else if (emailTimer === 0 && emailTimerId) {
+      clearInterval(emailTimerId);
+      setEmailTimerId(null);
+    }
+    return () => {
+      if (emailTimerId) {
+        clearInterval(emailTimerId);
+        setEmailTimerId(null);
+      }
+    };
+  }, [emailTimer, emailTimerId]);
+
+  // 이메일 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatEmailTimer = () => {
+    const minutes = Math.floor(emailTimer / 60);
+    const seconds = emailTimer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
+  // 이메일 인증코드 확인
   const handleEmailAuthCodeClick = async e => {
     e.preventDefault();
     const email = watch("ceoEmail");
@@ -218,7 +274,19 @@ const CeoSignup = () => {
     try {
       const result = await postOwnerAuthCode({ ceoEmail: email, authCode });
       console.log(result);
+      setIsEmailVerified(true);
+      setIsAuthCodeVerified(true);
       handleModalOpen(result.data.code, "emailAuth", openModal);
+      setIsEmailSent(false);
+      setEmailTimer(0);
+      if (emailTimerId) {
+        // 타이머 중지
+        clearInterval(emailTimerId);
+        setEmailTimerId(null);
+      } else {
+        // 이메일 인증 실패 시 상태 업데이트 방지
+        setIsAuthCodeVerified(false);
+      }
     } catch (error) {
       openModal({ message: modalMessages.emailAuth.default });
     }
@@ -255,10 +323,14 @@ const CeoSignup = () => {
       // 값이 비어있는 경우 console.log(result.data[0].tax_type); 에러메세지 출력하기
 
       if (businessInfo && businessInfo.b_stt_cd === "01") {
-        handleModalOpen("SU", "businessNumber", openModal); // 성공 메시지
+        handleModalOpen("SU", "businessNumber", openModal); // 성공
+        setIsBuisnessNumberCheck(true);
+        setIsBuisnessNumberVerified(true);
       }
       if (businessInfo && businessInfo.b_stt_cd === "") {
-        handleModalOpen("INVALID", "businessNumber", openModal); // 성공 메시지
+        handleModalOpen("INVALID", "businessNumber", openModal); // 실패
+        setIsBuisnessNumberCheck(false);
+        setIsBuisnessNumberVerified(false);
       }
     } catch (error) {
       console.error(error);
@@ -268,15 +340,22 @@ const CeoSignup = () => {
     }
   };
 
-  // 휴대폰 문자 발송 로직
+  // 핸드폰 인증코드 발송
   const handlPhoneClick = async e => {
     e.preventDefault();
     setLoading(true);
     try {
       const phone = watch("phone");
-      const result = await postSendSms({ userPhone: phone });
+      const result = await postOwnerSendSms({ phone });
       console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
+      if (result.data.code === "SU") {
+        // Sms 발송 성공
+        setIsSmsSent(true);
+        setPhoneTimer(299);
+      } else {
+        setIsSmsSent(false);
+      }
     } catch (error) {
       openModal({ message: modalMessages.smsSend.default });
     } finally {
@@ -284,18 +363,78 @@ const CeoSignup = () => {
     }
   };
 
+  // 핸드폰 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    if (phoneTimer > 0 && !phoneTimerId) {
+      const id = setInterval(() => {
+        setPhoneTimer(prevPhoneTimer => prevPhoneTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setPhoneTimerId(id);
+    } else if (phoneTimer === 0 && phoneTimerId) {
+      clearInterval(phoneTimerId);
+      setPhoneTimerId(null);
+    }
+    return () => {
+      if (phoneTimerId) {
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
+    };
+  }, [phoneTimer, phoneTimerId]);
+
+  // 핸드폰 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatPhoneTimer = () => {
+    const minutes = Math.floor(phoneTimer / 60);
+    const seconds = phoneTimer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
+  // 핸드폰 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    if (phoneTimer > 0 && !phoneTimerId) {
+      const id = setInterval(() => {
+        setPhoneTimer(prevPhoneTimer => prevPhoneTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setPhoneTimerId(id);
+    } else if (phoneTimer === 0 && phoneTimerId) {
+      clearInterval(phoneTimerId);
+      setPhoneTimerId(null);
+    }
+    return () => {
+      if (phoneTimerId) {
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
+    };
+  }, [phoneTimer, phoneTimerId]);
+
   // 휴대폰 인증코드 확인 로직
   const handlePhoneAuthCodeClick = async e => {
     e.preventDefault();
     const phone = watch("phone");
-    const smsAuthCode = watch("phoneAuthCode");
+    const phoneAuthCode = watch("phoneAuthCode");
     try {
-      const result = await postCheckSms({
-        userPhone: phone,
-        authNumber: smsAuthCode,
+      const result = await postOwnerCheckSms({
+        phone,
+        phoneAuthCode,
       });
       console.log(result);
       handleModalOpen(result.data.code, "phoneAuth", openModal);
+      if (result.data.code === "SU") {
+        // Sms 발송 성공
+        setIsPhoneVerified(true);
+        setIsPhoneAuthCodeVerified(true);
+      }
+      setIsSmsSent(false);
+      setPhoneTimer(0);
+      if (phoneTimerId) {
+        // 타이머 중지
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      } else {
+        // 핸드폰 인증 실패 시 상태 업데이트 방지
+        setIsPhoneAuthCodeVerified(false);
+      }
     } catch (error) {
       openModal({ message: modalMessages.phoneAuth.default });
     }
@@ -321,6 +460,33 @@ const CeoSignup = () => {
   };
 
   const onSubmit = async data => {
+    // 회원가입시 확인 사항
+    // 모든값 입력 (이건 스키마에서 확인)
+    // 이메일 인증여부 체크
+    if (!isEmailSent) {
+      openModal({ message: "이메일을 인증해주세요." });
+      return;
+    }
+    // 이메일 인증코드 확인 체크
+    if (!isAuthCodeVerified) {
+      openModal({ message: "이메일 인증코드를 확인해주세요." });
+      return;
+    }
+    // 사업자등록번호 체크
+    if (!isBusinessNumberCheck) {
+      openModal({ message: "사업자등록번호를 확인해주세요." });
+      return;
+    }
+    // 핸드폰 인증여부 체크
+    if (!isSmsSent) {
+      openModal({ message: "휴대폰을 인증해주세요." });
+      return;
+    }
+    // 핸드폰 인증코드 확인 체크
+    if (!isPhoneAuthCodeVerified) {
+      openModal({ message: "휴대폰 인증코드를 확인해주세요." });
+      return;
+    }
     console.log("전송시 데이터 ", data);
     try {
       const response = await postOwnerSignUp(data);
@@ -381,9 +547,22 @@ const CeoSignup = () => {
                 </div>
               </div>
             </div>
-            {errors.emailAuthCode && (
-              <ErrorMessage>{errors.emailAuthCode.message}</ErrorMessage>
+            {/* 타이머 */}
+            {isEmailSent && emailTimer > 0 && (
+              <TimerWrap>
+                <p className="timer">남은시간: {formatEmailTimer()}</p>
+              </TimerWrap>
             )}
+            {isEmailSent && emailTimer === 0 && (
+              <div>
+                <p className="time-over">
+                  인증 시간이 만료되었습니다. 다시 발송해주세요.
+                </p>
+              </div>
+            )}
+            {/* {errors.emailAuthCode && (
+              <ErrorMessage>{errors.emailAuthCode.message}</ErrorMessage>
+            )} */}
             <div className="form-group">
               <label>비밀번호</label>
               <input
@@ -420,7 +599,7 @@ const CeoSignup = () => {
               <div className="input-group">
                 <input
                   type="text"
-                  placeholder="사업자등록번호를 입력해주세요"
+                  placeholder="사업자등록번호는 숫자로만 입력해주세요"
                   {...register("businessNumber")}
                 />
                 <div className="form-button">
@@ -495,6 +674,19 @@ const CeoSignup = () => {
             </div>
             {errors.phoneAuthCode && (
               <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
+            )}
+            {/* 타이머 */}
+            {isSmsSent && phoneTimer > 0 && (
+              <TimerWrap>
+                <p className="timer">남은 시간: {formatPhoneTimer()}</p>
+              </TimerWrap>
+            )}
+            {isSmsSent && phoneTimer === 0 && (
+              <div>
+                <p className="time-over">
+                  인증 시간이 만료되었습니다. 다시 발송해주세요.
+                </p>
+              </div>
             )}
             <div className="signup-button">
               <CeoButton label="회원가입" type="submit" />
