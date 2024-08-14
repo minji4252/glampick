@@ -80,6 +80,22 @@ const WrapStyle = styled.div`
     right: 100px;
     background-color: transparent;
     border: 0;
+
+    button {
+      border-color: ${colorSystem.g300};
+
+      &:hover {
+        border: 2px solid ${colorSystem.g400};
+        background-color: ${colorSystem.g300};
+        color: ${colorSystem.g700};
+      }
+
+      &:active {
+        border: 2px solid ${colorSystem.g800};
+        background-color: ${colorSystem.g700};
+        color: ${colorSystem.white};
+      }
+    }
   }
 `;
 
@@ -180,12 +196,19 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
     setValue,
     trigger,
     setError,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: initState,
     resolver: yupResolver(schema),
     mode: "onChange",
   });
+
+  // 초기화
+  const handleReset = () => {
+    reset(initState);
+    setSelectedDate([]);
+  };
 
   // 추가 요금 숫자 입력 처리
   const handleOnlyNumber = (e, fieldName) => {
@@ -243,7 +266,7 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
       <button className="close-btn" type="button" onClick={onClose}>
         <IoClose />
       </button>
-      <button className="reset-btn" type="button">
+      <button className="reset-btn" type="button" onClick={handleReset}>
         <CeoActionButton label="초기화" />
       </button>
 
