@@ -166,6 +166,7 @@ const CeoInfo = () => {
       confirmPassword: "", // 비밀번호 확인
       phone: "", // 핸드폰 번호
     },
+    mode: "onBlur",
     validationSchema: ceoValidationSchema,
   });
 
@@ -188,6 +189,21 @@ const CeoInfo = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
+
+  // 비밀번호 입력 확인 모달
+  useEffect(() => {
+    setIsPasswordModalOpen(true);
+  }, []);
+
+  // 비밀번호 확인 모달 닫기
+  const handleCloseModal = () => {
+    setIsPasswordModalOpen(false);
+  };
+
+  // 비밀번호 입력 성공 확인 함수
+  const handlePasswordCheckSuccess = () => {
+    setIsPasswordModalOpen(false);
+  };
 
   // 유저 정보 불러오기
   useEffect(() => {
@@ -230,26 +246,11 @@ const CeoInfo = () => {
     );
   };
 
-  // 비밀번호 입력 확인 모달
-  useEffect(() => {
-    setIsPasswordModalOpen(true);
-  }, []);
-
-  const handleCloseModal = () => {
-    setIsPasswordModalOpen(false);
-  };
-
-  // 비밀번호 입력 성공 확인 함수
-  const handlePasswordCheckSuccess = () => {
-    // console.log("비밀번호 확인 성공");
-    setIsPasswordModalOpen(false);
-  };
-
   // 전화번호 자동 변경
   const handleChangePhone = e => {
     const phoneNumber = formatPhoneNumber(e.target.value);
     // console.log(phoneNumber);
-    setValue("phone", phoneNumber);
+    setValue("phone", phoneNumber, { shouldValidate: true });
   };
 
   // 전화번호 형식
@@ -283,15 +284,15 @@ const CeoInfo = () => {
     }
   };
 
-  // 휴대폰 인증코드 확인 로직
+  // 핸드폰 인증코드 확인
   const handlePhoneAuthCodeClick = async e => {
     e.preventDefault();
     const phone = watch("phone");
     const phoneAuthCode = watch("phoneAuthCode");
     try {
       const result = await postOwnerCheckSms({
-        ownerPhone: phone,
-        authNumber: phoneAuthCode,
+        phone,
+        phoneAuthCode,
       });
       console.log(result);
       handleModalOpen(result.data.code, "phoneAuth", openModal);
@@ -433,6 +434,9 @@ const CeoInfo = () => {
                 </div>
               </div>
             </div>
+            {errors.phone && (
+              <ErrorMessage>{errors.phone.message}</ErrorMessage>
+            )}
             {isSmsSent && (
               <div className="form-group">
                 <label>인증 코드</label>
