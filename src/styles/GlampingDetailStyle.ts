@@ -571,6 +571,12 @@ export const InfoGroup = styled.div`
       font-weight: 500;
     }
   }
+
+  .info-notice {
+    h4 {
+      line-height: 0.8rem;
+    }
+  }
 `;
 
 export const RoomLocation = styled.div`
@@ -606,6 +612,64 @@ export const RoomLocation = styled.div`
         font-size: 0.8rem;
       }
     }
+  }
+`;
+
+export const StickyOptionStyle = styled.div`
+  position: fixed;
+  top: 50%;
+  right: 30px;
+  border-radius: 12px;
+  border: 2px solid ${colorSystem.beige};
+  padding: 20px;
+  background-color: ${colorSystem.white};
+  z-index: 999;
+
+  .sticky-date div input {
+    font-weight: 500;
+    color: ${colorSystem.g700};
+    font-family: "Radio Canada", sans-serif !important;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: ${colorSystem.beige};
+
+    &:hover {
+      background-color: ${colorSystem.g150};
+    }
+    border-radius: 8px;
+  }
+  .sticky-people {
+    margin-top: 20px;
+  }
+  .sticky-people div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    border-radius: 8px;
+    background-color: ${colorSystem.beige};
+
+    &:hover {
+      background-color: ${colorSystem.g150};
+    }
+  }
+  .sticky-people div input {
+    font-size: 16px;
+    font-weight: 500;
+    color: ${colorSystem.g700};
+    background-color: transparent;
+    border: 0;
+    font-family: "Radio Canada", sans-serif !important;
+    cursor: pointer;
+    line-height: 40px;
+  }
+
+  svg {
+    position: absolute;
+    right: 10px;
+    top: -18px;
+    font-size: 3rem;
+    color: ${colorSystem.g400};
   }
 `;
 

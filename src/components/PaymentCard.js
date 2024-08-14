@@ -67,10 +67,10 @@ const PaymentCard = ({
               </div>
               <div className="pay-room-item">
                 <span>일정</span>
-                <h4>
+                <h5>
                   {formatDate(inDate)} {formatTime(checkInTime)} ~{" "}
                   {formatDate(outDate)} {formatTime(checkOutTime)}
-                </h4>
+                </h5>
               </div>
               <div className="pay-room-item">
                 <span>인원</span>
