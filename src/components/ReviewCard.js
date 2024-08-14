@@ -263,6 +263,7 @@ const ReviewCard = ({
     openModal({
       message: "정말 삭제하시겠습니까?",
       onCheck: async () => {
+        alert("삭제중");
         try {
           const response = await axios.delete(
             `/api/user/delete?reviewId=${reviewId}`,
@@ -377,9 +378,3 @@ const ReviewCard = ({
 };
 
 export default ReviewCard;
-
-// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
-function getCookie(name) {
-  const cookieValue = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]*)`);
-  return cookieValue ? cookieValue.pop() : "";
-}

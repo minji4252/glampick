@@ -1,209 +1,82 @@
-import styled from "@emotion/styled";
-import { colorSystem, size } from "../../styles/color";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import BookingChart from "../../components/ceo/BookingChart";
-import SalesChart from "../../components/ceo/SalesChart";
-import CancelChart from "../../components/ceo/CancelChart";
 import { FaBookmark } from "react-icons/fa6";
-import axios from "axios";
-import useFetchAccessToken from "../../utils/CeoAccessToken";
 import {
   getBookingData,
   getCancelData,
   getRevenueData,
 } from "../../apis/ceochartapi";
-
-const ChartWrapStyle = styled.div`
-  .inner {
-    flex-direction: column;
-  }
-  h3 {
-    width: 100%;
-    margin-top: 50px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: ${colorSystem.g900};
-  }
-
-  @media all and (max-width: 1910px) {
-    display: flex;
-    .inner {
-      margin-left: 82px;
-    }
-  }
-
-  ${size.mid} {
-    flex-direction: column;
-    h3 {
-      margin-top: 250px;
-    }
-  }
-
-  .chart-title {
-    display: flex;
-    width: 100%;
-    margin-left: 120px;
-  }
-`;
-
-const StateStyle = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 20px;
-  margin-top: 35px;
-  margin-left: 180px;
-  cursor: default;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-
-  > div {
-    border: 1px solid ${colorSystem.g150};
-    max-width: 140px;
-    width: 100%;
-    padding: 10px;
-    font-weight: 500;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-    box-shadow: rgba(0, 0, 0, 0.07) 3px 3px 3px 0px;
-
-    h2 {
-      color: ${colorSystem.g800};
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-top: 3px;
-    }
-
-    p {
-      font-size: 1rem;
-      font-family: "Radio Canada", sans-serif !important;
-      font-weight: 400;
-    }
-  }
-
-  .starpoint-icon {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    svg {
-      color: ${colorSystem.star};
-      font-size: 1.1rem;
-    }
-  }
-
-  .bookmark-icon {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    svg {
-      color: ${colorSystem.error};
-      font-size: 1rem;
-    }
-  }
-`;
-
-const TapStyle = styled.div`
-  width: 100%;
-  max-width: 900px;
-  margin-top: 60px;
-
-  .period-select {
-    justify-content: flex-end;
-  }
-
-  > div {
-    width: 100%;
-    display: flex;
-    gap: 30px;
-    margin-bottom: 20px;
-  }
-
-  li {
-    padding: 7px;
-    width: 100%;
-    height: 100px;
-    border: 1px solid ${colorSystem.g150};
-    font-weight: 600;
-    color: ${colorSystem.g800};
-    font-size: 0.85rem;
-    list-style: none;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.07) 3px 3px 3px 0px;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: ${colorSystem.g100};
-    }
-  }
-
-  .focused {
-    background-color: ${colorSystem.ceo300};
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: ${colorSystem.ceo300};
-    }
-  }
-
-  p {
-    padding: 0;
-    width: 100%;
-    height: 85%;
-    text-align: center;
-    line-height: 60px;
-    font-weight: 400;
-    font-size: 1.5rem;
-    font-family: "Radio Canada", sans-serif !important;
-  }
-`;
-
-const ListContent = styled.div`
-  max-width: 900px;
-
-  width: 100%;
-  font-size: 2rem;
-  margin-bottom: 30vh;
-  margin-top: 30px;
-
-  > div {
-    width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.07) 3px 3px 3px 0px;
-    border-radius: 12px;
-    border: 1px solid ${colorSystem.g150};
-  }
-`;
+import BookingChart from "../../components/ceo/BookingChart";
+import CancelChart from "../../components/ceo/CancelChart";
+import CeoCategories from "../../components/ceo/CeoCategories";
+import SalesChart from "../../components/ceo/SalesChart";
+import {
+  ChartWrapStyle,
+  ListContent,
+  StateStyle,
+  TapStyle,
+} from "../../styles/ceo/ChartStyles";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const Chart = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [starPointAvg, setStarPointAvg] = useState(0);
   const [heart, setHeart] = useState(0);
   const [bookingData, setBookingData] = useState([]);
+  const [totalBookingData, setTotalBookingData] = useState(0);
   const [revenueData, setRevenueData] = useState([]);
+  const [totalRevenueData, setTotalRevenueData] = useState(0);
   const [cancelData, setCancelData] = useState([]);
+  const [startDayId, setStartDayId] = useState("2024-08-01");
+  const [endDayId, setEndDayId] = useState("2024-08-07");
   const ceoAccessToken = useFetchAccessToken();
 
   // 임시
-  const startDayId = "2024-07-01";
-  const endDayId = "2024-07-15";
+  // const startDayId = "2024-08-01";
+  // const endDayId = "2024-08-07";
+
+  // 이번주 날짜 가져오기
+  const getThisWeek = () => {
+    const now = new Date();
+    const firstDayOfWeek =
+      now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1);
+    const lastDayOfWeek = firstDayOfWeek + 6;
+
+    const start = new Date(now.setDate(firstDayOfWeek));
+    const end = new Date(now.setDate(lastDayOfWeek));
+
+    const formatDate = date => date.toISOString().split("T")[0];
+
+    return {
+      startDayId: formatDate(start),
+      endDayId: formatDate(end),
+    };
+  };
+
+  // 이번 달 날짜 가져오기
+  const getThisMonth = () => {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const formatDate = date => date.toISOString().split("T")[0];
+
+    return {
+      startDayId: formatDate(start),
+      endDayId: formatDate(end),
+    };
+  };
 
   const menuArr = [
     {
       name: "예약",
-      count: `21건`,
+      count: `${totalBookingData}`,
       content: <BookingChart data={bookingData} />,
     },
     {
       name: "매출",
-      count: "520,000원",
+      count: `${totalRevenueData}원`,
       content: <SalesChart data={revenueData} />,
     },
     {
@@ -215,6 +88,18 @@ const Chart = () => {
 
   const selectMenuHandler = index => {
     setCurrentTab(index);
+  };
+
+  const handleWeeklyClick = () => {
+    const { startDayId, endDayId } = getThisWeek();
+    setStartDayId(startDayId);
+    setEndDayId(endDayId);
+  };
+
+  const handleMonthlyClick = () => {
+    const { startDayId, endDayId } = getThisMonth();
+    setStartDayId(startDayId);
+    setEndDayId(endDayId);
   };
 
   useEffect(() => {
@@ -229,6 +114,7 @@ const Chart = () => {
         );
         if (response.code === "SU") {
           setBookingData(response.popularRooms);
+          setTotalBookingData(response.total);
         }
       } catch (error) {
         console.log(error);
@@ -246,6 +132,7 @@ const Chart = () => {
         );
         if (response.code === "SU") {
           setRevenueData(response.revenue);
+          setTotalRevenueData(response.totalPay);
         }
       } catch (error) {
         console.log(error);
@@ -320,11 +207,15 @@ const Chart = () => {
         </div>
         <TapStyle>
           <div className="period-select">
-            <select>
-              <option value="weekly">주간</option>
-              <option value="monthly">월간</option>
-              {/* <option value="custom">사용자 지정</option> */}
-            </select>
+            <span className="period-weekly" onClick={handleWeeklyClick}>
+              주간
+            </span>
+            <div>·</div>
+            <span className="period-monthly" onClick={handleMonthlyClick}>
+              월간
+            </span>
+            <div>·</div>
+            <span className="period-custom">기간설정</span>
           </div>
           <div>
             {menuArr.map((ele, index) => (
