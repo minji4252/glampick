@@ -188,8 +188,7 @@ const CeoBookingDetailModal = ({ isOpen, onClose, detail }) => {
               <div>{moment(detail.checkInDate).format("YYYY.MM.DD")}</div>
             </div>
             <div className="stay-info">
-              <span>1박</span>
-              {/* 얘는 어떻게 처리? */}
+              <span>{detail.period}박</span>
             </div>
             <div className="stay-info">
               <div className="date">체크아웃</div>

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { postSignIn } from "../../apis/userapi";
@@ -318,37 +318,45 @@ const LoginPage = () => {
     // console.log(result.code);
     if (result.code === "SU") {
       console.log(result);
-
-      // 토큰에서 사용자 정보 파싱
-      const payload = JSON.parse(
-        base64.decode(result.accessToken.split(".")[1]),
-      );
-      const signedUser = JSON.parse(payload.signedUser);
-      console.log("signedUser :", signedUser);
-
-      // 사용자 역할을 Recoil 상태에 저장
-      setUserRole(signedUser.role); // userRoleState를 업데이트
-      // 로그인 성공 시 로컬스토리지에 사용자 정보 저장
-      localStorage.setItem("accessToken", result.accessToken);
-      localStorage.setItem("userRole", signedUser.role);
-      // setAccessToken(result.accessToken);
       openModal({ message: "로그인 성공하였습니다!" });
-      // 상태가 변경된 후 로그를 찍어봅니다
       console.log("모달 열기 호출 후 상태:", isModalOpen);
       console.log("모달 메시지:", modalMessage);
-      setTimeout(() => {
-        if (location.state && location.state.fromSignup) {
-          navigate("/");
-        } else {
-          navigate(-1);
-        }
-      }, 1000); // 1초 후에 페이지 이동
+      // 데이터 보관해 둠
+      setSaveResult(result);
     } else {
-      // console.log("로그인 실패");
       setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
     }
     setLoading(false);
-    // navigate("/");
+  };
+
+  // 보관해둔 로그인 정보를 나중에 활용
+  const [saveResult, setSaveResult] = useState(null);
+
+  const loginSuccessModalClose = () => {
+    loginSuccessFn(saveResult);
+    closeModal();
+  };
+
+  const loginSuccessFn = result => {
+    // 토큰에서 사용자 정보 파싱
+    const payload = JSON.parse(base64.decode(result.accessToken.split(".")[1]));
+    const signedUser = JSON.parse(payload.signedUser);
+    console.log("signedUser :", signedUser);
+
+    // 사용자 역할을 Recoil 상태에 저장
+    setUserRole(signedUser.role); // userRoleState를 업데이트
+    // 로그인 성공 시 로컬스토리지에 사용자 정보 저장
+    localStorage.setItem("accessToken", result.accessToken);
+    localStorage.setItem("userRole", signedUser.role);
+    // setAccessToken(result.accessToken);
+
+    setTimeout(() => {
+      if (location.state && location.state.fromSignup) {
+        navigate("/");
+      } else {
+        navigate(-1);
+      }
+    }, 1000); // 1초 후에 페이지 이동
   };
 
   return (
@@ -388,6 +396,7 @@ const LoginPage = () => {
                     setUserPw(e.target.value);
                   }}
                 />
+                <p className="error-message">{errorMessage}</p>
                 <div className="remember-me">
                   <input
                     type="checkbox"
@@ -397,7 +406,6 @@ const LoginPage = () => {
                   />
                   <label htmlFor="rememberMe">이메일 기억하기</label>
                 </div>
-                <p className="error-message">{errorMessage}</p>
                 <div className="login-btn">
                   <MainButton label="로그인" />
                 </div>
@@ -438,7 +446,7 @@ const LoginPage = () => {
         {isModalOpen && (
           <AlertModal
             isOpen={isModalOpen}
-            onClose={closeModal}
+            onClose={loginSuccessModalClose}
             message={modalMessage}
           />
         )}

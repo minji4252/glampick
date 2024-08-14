@@ -10,7 +10,12 @@ export const postOwnerSignin = async ({ ceoEmail, ceoPw }) => {
     console.log(response);
     return response.data;
   } catch (error) {
-    console.log(error);
+    if (axios.isAxiosError(error)) {
+      console.log(error.response?.data);
+      return error.response?.data;
+    } else {
+      console.error("Unexpected error", error);
+    }
   }
 };
 
@@ -52,7 +57,7 @@ export const postOwnerAuthCode = async ({ ceoEmail, authCode }) => {
 // ceo 핸드폰 인증 api 호출
 export const postOwnerSendSms = async ({ phone }) => {
   try {
-    const reqData = `/api/auth/send-sms?ownerPhone=${phone}`;
+    const reqData = `/api/auth/owner/send-sms?ownerPhone=${phone}`;
     const response = await axios.post(reqData, { phone });
     console.log(response);
     return response;
@@ -68,7 +73,7 @@ export const postOwnerSendSms = async ({ phone }) => {
 // ceo 핸드폰 인증코드 확인 api 호출
 export const postOwnerCheckSms = async ({ phone, phoneAuthCode }) => {
   try {
-    const reqData = `/api/auth/check-sms?ownerPhone=${phone}&phoneKey=${phoneAuthCode}`;
+    const reqData = `/api/auth/owner/check-sms?ownerPhone=${phone}&phoneKey=${phoneAuthCode}`;
     const response = await axios.post(reqData, {
       ownerPhone: phone,
       phoneKey: phoneAuthCode,

@@ -134,13 +134,13 @@ const PaymentPage = () => {
     getUser();
   }, [accessToken]);
 
+  // 최종 결제 가격 정보
   useEffect(() => {
     const fetchReservationInfo = async () => {
       // eslint-disable-next-line no-undef
-      const apiUrl = `${process.env.PUBLIC_URL}/api/book/reservation?roomId=${roomId}&personnel=${people}&glampId=${glampId}`;
+      const apiUrl = `${process.env.PUBLIC_URL}/api/book/reservation?roomId=${roomId}&personnel=${people}&glampId=${glampId}&checkInDate=${inDate}&checkOutDate=${outDate}`;
       try {
         const response = await axios.get(apiUrl);
-        // console.log("response : ", response);
         setReservationInfo(response.data);
       } catch (error) {
         console.log(error);
@@ -251,7 +251,7 @@ const PaymentPage = () => {
           });
         } else {
           openModal({
-            message: "결제에 실패하였습니다. 다시 시도해 주세요.",
+            message: "결제에 실패하였습니다. \n 다시 시도해 주세요.",
           });
         }
       },
