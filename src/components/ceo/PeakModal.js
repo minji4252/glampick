@@ -1,13 +1,15 @@
 import styled from "@emotion/styled";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { CeoActionButton, CeoButton } from "./Button";
 import MainCalendar from "../MainCalendar";
 import { colorSystem } from "../../styles/color";
 import { IoClose } from "react-icons/io5";
 import axios from "axios";
+import useModal from "../../hooks/UseModal";
+import { CeoActionButton, CeoButton } from "../common/Button";
+import AlertModal from "../common/AlertModal";
 
 const WrapStyle = styled.div`
   border: 2px solid ${colorSystem.ceo};
@@ -60,7 +62,7 @@ const WrapStyle = styled.div`
     }
   }
 
-  .close-btn {
+  .peak-close-btn {
     background-color: transparent;
     border: 0;
     position: absolute;
@@ -80,22 +82,6 @@ const WrapStyle = styled.div`
     right: 100px;
     background-color: transparent;
     border: 0;
-
-    button {
-      border-color: ${colorSystem.g300};
-
-      &:hover {
-        border: 2px solid ${colorSystem.g400};
-        background-color: ${colorSystem.g300};
-        color: ${colorSystem.g700};
-      }
-
-      &:active {
-        border: 2px solid ${colorSystem.g800};
-        background-color: ${colorSystem.g700};
-        color: ${colorSystem.white};
-      }
-    }
 
     button {
       border-color: ${colorSystem.g300};
@@ -175,8 +161,13 @@ const CeoBoxStyle = styled.div`
 `;
 
 const PeakModal = ({ onClose, ceoAccessToken }) => {
+  useEffect(() => {
+    getPeakData();
+  }, []);
+
   const [selectedDate, setSelectedDate] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const { isModalOpen, modalMessage, openModal, closeModal } = useModal();
 
   const handleDateSelect = date => {
     setSelectedDate(date);
@@ -221,6 +212,13 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
     mode: "onChange",
   });
 
+  // 초기화
+  const handleReset = () => {
+    reset(initState);
+    setSelectedDate([]);
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+
   // 추가 요금 숫자 입력 처리
   const handleOnlyNumber = (e, fieldName) => {
     let value = e.target.value.replace(/[^\d]/g, "");
@@ -231,6 +229,7 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
     trigger(fieldName);
   };
 
+  // 성수기 등록 함수
   const onSubmit = async data => {
     if (selectedDate.length < 2) {
       setError("peakPeriod", {
@@ -265,19 +264,77 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
           },
         },
       );
-      console.log("서버 응답:", response.data);
+      openModal({
+        message: "성수기 설정이 저장되었습니다.",
+        onCheck: closeModal,
+      });
     } catch (error) {
-      console.error("에러 발생:", error);
+      console.log(error);
+      openModal({
+        message: "오류가 발생했습니다. 다시 시도해 주세요.",
+        onCheck: closeModal,
+      });
+    }
+  };
+
+  // 성수기 불러오는 함수
+  const getPeakData = async () => {
+    try {
+      if (!ceoAccessToken) return;
+      //임시
+      const grampId = 2;
+      const response = await axios.get(`/api/owner/room/${grampId}/peak`, {
+        headers: {
+          Authorization: `Bearer ${ceoAccessToken}`,
+        },
+      });
+
+      if (response.data.code === "SU") {
+        const { startPeakDate, endPeakDate, percent } = response.data;
+
+        const startDate = new Date(startPeakDate);
+        const endDate = new Date(endPeakDate);
+
+        setSelectedDate([startDate, endDate]);
+        setValue("peakCost", percent, { shouldValidate: true });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 성수기 초기화 함수
+  const handleDelete = async () => {
+    try {
+      if (!ceoAccessToken) return;
+      // 임시
+      const grampId = 2;
+      const response = await axios.delete(`/api/owner/room/${grampId}/peak`, {
+        headers: {
+          Authorization: `Bearer ${ceoAccessToken}`,
+        },
+      });
+
+      if (response.data.code === "SU") {
+        console.log(response.data.message);
+        openModal({
+          message: "초기화 되었습니다.",
+          onCheck: closeModal,
+        });
+        handleReset();
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   return (
     <WrapStyle>
       <h3>성수기 설정</h3>
-      <button className="close-btn" type="button" onClick={onClose}>
+      <button className="peak-close-btn" type="button" onClick={onClose}>
         <IoClose />
       </button>
-      <button className="reset-btn" type="button">
+      <button className="reset-btn" type="button" onClick={handleDelete}>
         <CeoActionButton label="초기화" />
       </button>
 
@@ -315,10 +372,15 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
         </div>
 
         <div className="submit-btn">
-          <CeoButton label="저장하기" />
+          <CeoButton label="설정하기" />
           <CeoActionButton label="닫기" onClick={onClose} />
         </div>
       </form>
+      <AlertModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        message={modalMessage}
+      />
     </WrapStyle>
   );
 };

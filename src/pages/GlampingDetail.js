@@ -98,6 +98,12 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
           outDate,
           accessToken,
         );
+
+        // 사장님이 탈퇴한 경우 페이지가 보이지 않도록 처리
+        if (data.activateStatus === 0 || data.activateStatus === -1) {
+          navigate("/404");
+          return;
+        }
         setGlampingData(data);
         setRoomMainImage(`${data.glampImage}`);
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);

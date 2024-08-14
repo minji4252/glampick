@@ -7,13 +7,13 @@ import {
   CeoButton,
   DeleteButton,
 } from "../../components/common/Button";
-import PeakModal from "../../components/common/PeakModal";
 import { colorSystem, size } from "../../styles/color";
 import { FaPlus } from "react-icons/fa6";
 import axios from "axios";
 import useFetchCeoAccessToken from "../../utils/CeoAccessToken";
 import CheckModal from "../../components/common/CheckModal";
 import AlertModal from "../../components/common/AlertModal";
+import PeakModal from "../../components/ceo/PeakModal";
 
 const WrapStyle = styled.div`
   .inner {
