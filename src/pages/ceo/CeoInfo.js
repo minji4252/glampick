@@ -15,6 +15,8 @@ import { ceoValidationSchema } from "../../components/validation/ceoValidationSc
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
 import { ErrorMessage, modalMessages } from "./CeoSignup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { ceoInfoValidationSchema } from "../../components/validation/ceoInfoValidationSchema";
 
 const WrapStyle = styled.div`
   .inner {
@@ -144,6 +146,29 @@ const CeoInfoBox = styled.div`
   }
 `;
 
+// 타이머
+export const TimerWrap = styled.div`
+  width: 100%;
+  .timer {
+    margin-top: 5px;
+    margin-left: 5px;
+    color: ${colorSystem.error};
+    font-size: 0.8rem;
+    ${size.mid} {
+      font-size: 0.7rem;
+    }
+  }
+  .time-over {
+    margin-top: 5px;
+    margin-left: 5px;
+    color: ${colorSystem.error};
+    font-size: 0.8rem;
+    ${size.mid} {
+      font-size: 0.7rem;
+    }
+  }
+`;
+
 // 모달 열기 함수
 const handleModalOpen = (code, type, openModal) => {
   const message = modalMessages[type][code] || modalMessages[type].default;
@@ -161,24 +186,33 @@ const CeoInfo = () => {
     defaultValues: {
       ownerEmail: "", // 기본 이메일 (수정 불가)
       ownerName: "", // 기본 이름 (수정 불가)
-      businessNumber: "",
+      businessNumber: "", //기본 사업자등록번호 (수정 불가)
       password: "", // 비밀번호
       confirmPassword: "", // 비밀번호 확인
       phone: "", // 핸드폰 번호
     },
-    mode: "onBlur",
-    validationSchema: ceoValidationSchema,
+    mode: "onChange",
+    resolver: yupResolver(ceoInfoValidationSchema),
   });
 
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
-  // 정보 변경여부 체크
+  // 정보 변경여부 체크 (기존값)
   const [initialValues, setInitialValues] = useState({
     password: "",
     phone: "",
   });
+
+  // 핸드폰 인증을 위한 타이머 변수
+  const [phoneTimer, setPhoneTimer] = useState(0);
+  const [phoneTimerId, setPhoneTimerId] = useState(null);
+
   // 핸드폰 인증코드 발송 여부 확인
   const [isSmsSent, setIsSmsSent] = useState(false);
+  // 사용 가능 핸드폰 확인
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  // 인증코드 확인
+  const [isPhoneAuthCodeVerified, setIsPhoneAuthCodeVerified] = useState(false);
   // 비밀번호 확인 입력창 모달
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   // 회원탈퇴 모달
@@ -236,13 +270,18 @@ const CeoInfo = () => {
 
   // 정보 변경사항 확인
   const hasChanges = () => {
+    // 현재 값
     const currentValues = {
-      password: watch("password"),
-      phone: watch("phone"),
+      password: watch("password") || "",
+      phone: watch("phone") || "",
+      confirmPassword: watch("confirmPassword") || "",
     };
     return (
-      currentValues.password !== initialValues.password ||
-      currentValues.phone !== initialValues.phone
+      // watch로 감시하는 값이 undefined일 경우 빈 문자열로 대체
+      //  실제로 값이 변경되지 않았을 경우 false를 반환
+      currentValues.password !== (initialValues.password || "") ||
+      currentValues.confirmPassword !== (initialValues.confirmPassword || "") ||
+      currentValues.phone !== (initialValues.phone || "")
     );
   };
 
@@ -275,14 +314,43 @@ const CeoInfo = () => {
       const result = await postOwnerSendSms({ phone });
       console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
-      // Sms 발송 성공
-      setIsSmsSent(true);
+      if (result.data.code === "SU") {
+        // Sms 발송 성공
+        setIsSmsSent(true);
+        setPhoneTimer(299);
+      }
     } catch (error) {
       openModal({ message: modalMessages.smsSend.default });
     } finally {
       setLoading(false);
     }
   };
+
+  // 핸드폰 타이머 포맷 함수 (분:초 형식으로 표시)
+  const formatPhoneTimer = () => {
+    const minutes = Math.floor(phoneTimer / 60);
+    const seconds = phoneTimer % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
+  // 핸드폰 인증 타이머 초기화 및 정리
+  useEffect(() => {
+    if (phoneTimer > 0 && !phoneTimerId) {
+      const id = setInterval(() => {
+        setPhoneTimer(prevPhoneTimer => prevPhoneTimer - 1);
+      }, 1000); // 1000밀리초 (1초)마다 실행
+      setPhoneTimerId(id);
+    } else if (phoneTimer === 0 && phoneTimerId) {
+      clearInterval(phoneTimerId);
+      setPhoneTimerId(null);
+    }
+    return () => {
+      if (phoneTimerId) {
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
+    };
+  }, [phoneTimer, phoneTimerId]);
 
   // 핸드폰 인증코드 확인
   const handlePhoneAuthCodeClick = async e => {
@@ -295,8 +363,16 @@ const CeoInfo = () => {
         phoneAuthCode,
       });
       console.log(result);
+      setIsPhoneVerified(true);
+      setIsPhoneAuthCodeVerified(true);
       handleModalOpen(result.data.code, "phoneAuth", openModal);
-      // setIsSmsSent(false);
+      setIsSmsSent(false);
+      setPhoneTimer(0);
+      if (phoneTimerId) {
+        // 타이머 중지
+        clearInterval(phoneTimerId);
+        setPhoneTimerId(null);
+      }
     } catch (error) {
       openModal({ message: modalMessages.phoneAuth.default });
     }
@@ -305,6 +381,7 @@ const CeoInfo = () => {
   // ceo 정보 수정 api
   const patchOwnerInfo = async (password, phone) => {
     try {
+      // URL의 쿼리 스트링 생성
       const params = new URLSearchParams();
       if (password) params.append("ownerPw", password);
       if (phone) params.append("phoneNum", phone);
@@ -332,12 +409,22 @@ const CeoInfo = () => {
 
   // 수정 데이터 전송
   const onSubmit = data => {
-    // 비밀번호가 변경된 경우, 비밀번호 확인 필드도 반드시 채워져야 함
     if (data.password && !data.confirmPassword) {
       openModal({ message: "비밀번호 확인은 필수입니다." });
       return;
     }
+    if (data.password !== data.confirmPassword) {
+      openModal({ message: "비밀번호가 서로 일치하지 않습니다." });
+      return;
+    }
+
     if (hasChanges()) {
+      // 전화번호가 변경된 경우에만 인증 여부를 체크
+      if (data.phone !== initialValues.phone && !isPhoneVerified) {
+        openModal({ message: "핸드폰 인증이 완료되지 않았습니다." });
+        return;
+      }
+      // 변경 사항이 있고 인증이 완료되었으면 정보 수정 API 호출
       patchOwnerInfo(data.password, data.phone);
     } else {
       openModal({ message: "변경된 내용이 없습니다." });
@@ -457,8 +544,21 @@ const CeoInfo = () => {
                 </div>
               </div>
             )}
-            {errors.phoneAuthCode && (
+            {/* {errors.phoneAuthCode && (
               <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
+            )} */}
+            {/* 타이머 */}
+            {isSmsSent && phoneTimer > 0 && (
+              <TimerWrap>
+                <p className="timer">남은 시간: {formatPhoneTimer()}</p>
+              </TimerWrap>
+            )}
+            {isSmsSent && phoneTimer === 0 && (
+              <div>
+                <p className="time-over">
+                  인증 시간이 만료되었습니다. 다시 발송해주세요.
+                </p>
+              </div>
             )}
             <div className="modify-btn">
               <CeoButton label="수정하기" />

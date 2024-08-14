@@ -171,22 +171,22 @@ const BookingDetail = () => {
   const [postPerPage] = useState(6); // 페이지네이션 페이지당 보여질 목록 수
 
   // 토큰정보 불러오기
-  // useEffect(() => {
-  //   const fetchAccessToken = () => {
-  //     try {
-  //       const token = localStorage.getItem("accessToken");
-  //       setLoading(true);
-  //       if (token) {
-  //         setAccessToken(token);
-  //       } else {
-  //         // console.log("엑세스 토큰 없음");
-  //       }
-  //     } catch (error) {
-  //       // console.log("엑세스 토큰 가져오는 중 에러", error);
-  //     }
-  //   };
-  //   fetchAccessToken();
-  // }, []);
+  useEffect(() => {
+    const fetchAccessToken = () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        setLoading(true);
+        if (token) {
+          setAccessToken(token);
+        } else {
+          // console.log("엑세스 토큰 없음");
+        }
+      } catch (error) {
+        // console.log("엑세스 토큰 가져오는 중 에러", error);
+      }
+    };
+    fetchAccessToken();
+  }, []);
 
   useEffect(() => {
     const getUserBook = async () => {

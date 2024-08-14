@@ -5,6 +5,8 @@ import { colorSystem } from "../../styles/color";
 import { ActionButton, DeleteButton } from "./Button";
 import { getCookie } from "../../utils/cookie";
 import { ModalLine } from "../../styles/modalstyle";
+import { useRecoilState } from "recoil";
+import { accessTokenState } from "../../atoms/loginState";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -75,7 +77,7 @@ interface BookingCancelModalProps {
   onClose: () => void;
   onConfirm: () => void;
   reservationId: string;
-  comment: string;
+  comment?: string | undefined;
   onBookingCancelled: (reservationId: string) => void;
 }
 
@@ -87,7 +89,7 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
   comment,
   onBookingCancelled, // 예약 취소 시 호출될 콜백 함수
 }) => {
-  const [accessToken, setAccessToken] = useState<string>("");
+  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   // 예약 취소 성공 여부 상태 추가
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
@@ -106,27 +108,28 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
   }, [isOpen]);
 
   // 토큰 정보 불러오기
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      try {
-        const accessTokenFromCookie = getCookie("access-Token");
-        if (accessTokenFromCookie) {
-          setAccessToken(accessTokenFromCookie);
-        } else {
-          // console.log("쿠키에 access-Token 없음");
-        }
-      } catch (error) {
-        // console.log(error);
-      }
-    };
-    fetchAccessToken();
-  }, []);
+  // useEffect(() => {
+  //   const fetchAccessToken = async () => {
+  //     try {
+  //       const accessTokenFromCookie = getCookie("access-Token");
+  //       if (accessTokenFromCookie) {
+  //         setAccessToken(accessTokenFromCookie);
+  //       } else {
+  //         // console.log("쿠키에 access-Token 없음");
+  //       }
+  //     } catch (error) {
+  //       // console.log(error);
+  //     }
+  //   };
+  //   fetchAccessToken();
+  // }, []);
 
   // 예약 취소 함수
   const handleConfirm = async (e: FormEvent) => {
     console.log("예약취소 확인");
     e.preventDefault();
     if (!accessToken) return;
+
     axios.defaults.withCredentials = true;
 
     try {
@@ -142,6 +145,7 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
           },
         },
       );
+      console.log(response);
       if (response.data.code === "SU") {
         // console.log("예약취소 성공", response);
         setIsSuccess(true); // 성공 상태 업데이트
@@ -161,7 +165,7 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
       // 모달 닫기
       onClose();
       // 페이지 새로 고침
-      window.location.reload();
+      // window.location.reload();
     }
   }, [isSuccess, onClose]);
 

@@ -146,18 +146,39 @@ const ModalContent = styled.div`
   }
 `;
 
-const CeoBookingDetailModal = ({ isOpen, onClose, detail }) => {
+interface CeoBookingDetailModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  detail: {
+    roomName: string;
+    checkInDate: string;
+    checkOutDate: string;
+    period: number;
+    inputName: string;
+    personnel: number;
+    userPhone: string;
+    createdAt: string;
+    payAmount: number;
+    pg: string;
+  } | null;
+}
+
+const CeoBookingDetailModal: React.FC<CeoBookingDetailModalProps> = ({
+  isOpen,
+  onClose,
+  detail,
+}) => {
   if (!isOpen || !detail) return null;
 
   // 배경 클릭 시 모달 닫기 핸들러
-  const handleOverlayClick = e => {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
   // 전화번호에 - 추가
-  const formatPhoneNumber = phoneNumber => {
+  const formatPhoneNumber = (phoneNumber: string) => {
     // 모든 비숫자 문자 제거
     const cleaned = ("" + phoneNumber).replace(/\D/g, "");
     // 전화번호 길이가 맞는 경우만 포맷팅
