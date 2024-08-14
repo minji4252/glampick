@@ -23,11 +23,11 @@ const SearchCard = ({
     console.log("예약하기");
   };
 
+  const SearchCardUrl = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
+
   return (
     <SearchContent key={glampId}>
-      <Link
-        to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
-      >
+      <Link to={SearchCardUrl}>
         <div
           className="search-image"
           style={{
@@ -40,7 +40,9 @@ const SearchCard = ({
       </Link>
       <div className="search-detail">
         <div className="sc-top">
-          <div className="sc-name">{glampName}</div>
+          <Link to={SearchCardUrl}>
+            <div className="sc-name">{glampName}</div>
+          </Link>
           <div className="sc-review">
             <div className="sc-review-top">
               <FaStar />
@@ -53,9 +55,7 @@ const SearchCard = ({
         </div>
         <div className="sc-bottom">
           <div className="sc-price">{formattedPrice} 원 ~</div>
-          <Link
-            to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
-          >
+          <Link to={SearchCardUrl}>
             <MainButton onClick={handleButtonClick} label="예약하기" />
           </Link>
         </div>

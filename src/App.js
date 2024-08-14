@@ -72,8 +72,8 @@ function App() {
     const ceoRole = localStorage.getItem("ownerRole");
 
     // 상태를 업데이트하기 전에 로컬스토리지의 값을 로그로 확인
-    console.log("현재 role:", role);
-    console.log("현재 ceoRole:", ceoRole);
+    // console.log("현재 role:", role);
+    // console.log("현재 ceoRole:", ceoRole);
 
     if (accessToken) {
       // 일반 사용자 로그인

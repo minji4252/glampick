@@ -38,6 +38,7 @@ const MapModal = ({ isOpen, onClose, center, region1 }) => {
     lat: parseFloat(item.lat),
     lng: parseFloat(item.lng),
     price: item.price,
+    glampName: item.glampName,
   }));
 
   return (
@@ -58,8 +59,8 @@ const MapModal = ({ isOpen, onClose, center, region1 }) => {
                 starPoint={item.starPoint}
                 reviewCount={item.reviewCount}
                 price={item.price}
-                inDate={item.inDate}
-                outDate={item.outDate}
+                inDate={item.inDate1}
+                outDate={item.outDate1}
                 people={item.people}
               />
             ))}

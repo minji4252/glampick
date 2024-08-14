@@ -1,7 +1,6 @@
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { MainButton } from "../common/Button";
-import { SearchContent } from "../../styles/SearchPageStyle";
 import { MapCardContent } from "../../styles/MapModalStyle";
 
 const MapCard = ({
@@ -24,11 +23,12 @@ const MapCard = ({
     console.log("예약하기");
   };
 
+  // 아직 링크 연결 안됨
+  const MapCardUrl = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
+
   return (
     <MapCardContent key={glampId}>
-      <Link
-        to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
-      >
+      <Link to={MapCardUrl}>
         <div
           className="map-image"
           style={{
@@ -41,7 +41,9 @@ const MapCard = ({
       </Link>
       <div className="map-detail">
         <div className="map-top">
-          <div className="map-name">{glampName}</div>
+          <Link to={MapCardUrl}>
+            <div className="map-name">{glampName}</div>
+          </Link>
           <div className="map-review">
             <div className="map-review-top">
               <FaStar />
@@ -54,9 +56,7 @@ const MapCard = ({
         </div>
         <div className="map-bottom">
           <div className="map-price">{formattedPrice} 원 ~</div>
-          <Link
-            to={`/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`}
-          >
+          <Link to={MapCardUrl}>
             <MainButton onClick={handleButtonClick} label="예약하기" />
           </Link>
         </div>

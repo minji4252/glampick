@@ -14,7 +14,8 @@ export const GlampingKingStyle = styled.div`
       margin-top: 50px;
       margin-bottom: 100px;
       padding: 0 50px;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       flex-direction: column;
       align-items: flex-start;
       gap: 30px;
