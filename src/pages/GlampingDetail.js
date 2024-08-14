@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { AiOutlineSearch } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
@@ -23,6 +24,7 @@ import fillheart from "../images/icon/heart-fill.png";
 
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
+import SearchCalendar from "../components/search/SearchCalendar";
 import GlampingDetailStyle, {
   InfoGroup,
   OptionItems,
@@ -45,6 +47,7 @@ import GlampingDetailStyle, {
   RoomSelectTitle,
   RoomSoldOutCard,
   RoomTitle,
+  StickyOptionStyle,
   SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
@@ -66,7 +69,8 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const mapElement = useRef(null);
 
   const { glampId } = useParams();
-  const [searchParams] = useSearchParams();
+  // const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // 기본값 설정 함수
   const getDefaultDate = daysToAdd => {
@@ -80,6 +84,9 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const outDate = searchParams.get("outDate") || getDefaultDate(1);
   const people = searchParams.get("people") || 2;
   const navigate = useNavigate();
+
+  // 리모컨 변수
+  const [selectedDate, setSelectedDate] = useState([inDate, outDate]);
 
   // 1. 글램핑디테일페이지 정보 불러오기
   useEffect(() => {
@@ -104,37 +111,72 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
     fetchData();
   }, [glampId, inDate, outDate, accessToken]);
 
-  // 지도 초기화
+  // 네이버 지도 초기화
+  // useEffect(() => {
+  //   if (glampingData && mapElement.current) {
+  //     // eslint-disable-next-line no-undef
+  //     naver.maps.Service.geocode(
+  //       {
+  //         address: glampingData.glampLocation,
+  //       },
+  //       function (status, response) {
+  //         // eslint-disable-next-line no-undef
+  //         if (status !== naver.maps.Service.Status.OK) {
+  //           return console.log("error");
+  //         }
+
+  //         const result = response.v2.addresses[0];
+  //         // eslint-disable-next-line no-undef
+  //         const latLng = new naver.maps.LatLng(result.y, result.x);
+
+  //         // eslint-disable-next-line no-undef
+  //         const map = new naver.maps.Map(mapElement.current, {
+  //           center: latLng,
+  //           zoom: 10,
+  //         });
+
+  //         // eslint-disable-next-line no-undef
+  //         new naver.maps.Marker({
+  //           position: latLng,
+  //           map: map,
+  //         });
+  //       },
+  //     );
+  //   }
+  // }, [glampingData]);
+
+  // 카카오지도 초기화
   useEffect(() => {
     if (glampingData && mapElement.current) {
-      // eslint-disable-next-line no-undef
-      naver.maps.Service.geocode(
-        {
-          address: glampingData.glampLocation,
-        },
-        function (status, response) {
-          // eslint-disable-next-line no-undef
-          if (status !== naver.maps.Service.Status.OK) {
-            return console.log("error");
-          }
+      const script = document.createElement("script");
+      script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=26916ed03c17b9a581f507ef46581291&autoload=false`;
+      script.onload = () => {
+        window.kakao.maps.load(() => {
+          const { kakao } = window;
+          const geocoder = new kakao.maps.services.Geocoder();
+          geocoder.addressSearch(
+            glampingData.glampLocation,
+            (result, status) => {
+              if (status === kakao.maps.services.Status.OK) {
+                const { x, y } = result[0];
+                const latLng = new kakao.maps.LatLng(y, x);
 
-          const result = response.v2.addresses[0];
-          // eslint-disable-next-line no-undef
-          const latLng = new naver.maps.LatLng(result.y, result.x);
-
-          // eslint-disable-next-line no-undef
-          const map = new naver.maps.Map(mapElement.current, {
-            center: latLng,
-            zoom: 10,
-          });
-
-          // eslint-disable-next-line no-undef
-          new naver.maps.Marker({
-            position: latLng,
-            map: map,
-          });
-        },
-      );
+                const map = new kakao.maps.Map(mapElement.current, {
+                  center: latLng,
+                  level: 3,
+                });
+                new kakao.maps.Marker({
+                  position: latLng,
+                  map: map,
+                });
+              } else {
+                console.error("주소 검색 실패", status);
+              }
+            },
+          );
+        });
+      };
+      document.head.appendChild(script);
     }
   }, [glampingData]);
 
@@ -199,6 +241,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             checkOutTime: room.checkOutTime,
             roomName: room.roomName,
             roomMainImage: roomMainImage,
+            roomPrice: room.roomPrice,
           },
         },
       );
@@ -298,6 +341,13 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
     });
   };
 
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -385,6 +435,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
 
         <RoomSelect ref={roomSelectRef}>
           <UnderLine />
+
           <RoomSelectTitle>
             <h3>객실선택</h3>
           </RoomSelectTitle>
@@ -452,7 +503,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
                       <span>객실정보</span>
                       <p>
                         기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}
-                        인 (유료)
+                        {/* 임시 */}인 (유료), 1인당 추가 요금 10000원
                       </p>
                     </div>
                     <div>
@@ -495,11 +546,11 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             <h3>숙소 이용정보</h3>
             <InfoGroup>
               <div className="info-item">
-                <span>기본정보</span>
+                <span>[기본정보]</span>
                 <h4> {infoBasic}</h4>
               </div>
-              <div className="info-item">
-                <span>유의사항</span>
+              <div className="info-item info-notice">
+                <span>[유의사항]</span>
                 <h4>{infoNotice}</h4>
               </div>
             </InfoGroup>
@@ -537,6 +588,40 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
           message={modalMessage}
         />
       )}
+      <StickyOptionStyle>
+        <div className="sticky-date">
+          <label htmlFor="date">날짜</label>
+          <SearchCalendar
+            selectedDate={selectedDate}
+            setSelectedDate={dates => {
+              setSelectedDate(dates);
+              setSearchParams({
+                ...Object.fromEntries(searchParams.entries()),
+                inDate: formatDate(new Date(dates[0])),
+                outDate: formatDate(new Date(dates[1])),
+              });
+            }}
+          />
+        </div>
+        <div className="sticky-people">
+          <label htmlFor="member">인원</label>
+          <div className="search-member">
+            <input
+              type="number"
+              min="2"
+              max="6"
+              value={people}
+              onChange={e => {
+                setSearchParams({
+                  ...Object.fromEntries(searchParams.entries()),
+                  people: e.target.value,
+                });
+              }}
+            />
+          </div>
+        </div>
+        <AiOutlineSearch />
+      </StickyOptionStyle>
     </GlampingDetailStyle>
   );
 };

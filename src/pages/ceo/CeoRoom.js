@@ -10,7 +10,8 @@ import CeoCategories from "../../components/ceo/CeoCategories";
 import { CeoActionButton, CeoButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import AlertModal from "../../components/common/AlertModal";
 
 const WrapStyle = styled.div`
   .inner {
@@ -285,6 +286,10 @@ const CeoRoom = () => {
   const [roomImg, setRoomImg] = useState([]);
   const [service, setService] = useState([]);
   const ceoAccessToken = useFetchAccessToken();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const navigate = useNavigate();
+
   const isEditMode = location.pathname.includes("/edit/");
   const SERVICE_MAPPING = {
     수영장: 1,
@@ -360,14 +365,16 @@ const CeoRoom = () => {
   // 이미지 업로드
   const handleImageUpload = e => {
     const files = Array.from(e.target.files);
-    // 이미지가 현재 배열에 있는 이미지 개수를 더해 3장 이하로 제한
     if (roomImg.length + files.length > maxImageCount) {
       alert(`이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`);
       return;
     }
     const newImages = [
       ...roomImg,
-      ...files.slice(0, maxImageCount - roomImg.length),
+      ...files.slice(0, maxImageCount - roomImg.length).map(file => ({
+        file,
+        url: URL.createObjectURL(file),
+      })),
     ];
     setRoomImg(newImages);
     setUploadedImageCount(newImages.length);
@@ -386,6 +393,11 @@ const CeoRoom = () => {
     setValue("roomImg", updatedImages, { shouldValidate: true });
     trigger("roomImg");
   };
+
+  // 이미지 상태 업데이트
+  useEffect(() => {
+    setUploadedImageCount(roomImg.length);
+  }, [roomImg]);
 
   // -----------------------------------------------------------------------------
 
@@ -409,10 +421,10 @@ const CeoRoom = () => {
         },
       });
       const data = response.data;
+
       setValue("roomName", data.roomName);
-      // 금액 임시,추후 수정
-      setValue("weekdayPrice", data.price);
-      setValue("weekendPrice", data.price);
+      setValue("weekdayPrice", data.weekdayPrice);
+      setValue("weekendPrice", data.weekendPrice);
       setValue("peopleNum", data.peopleNum);
       setValue("peopleMax", data.peopleMax);
       setValue("inTime", data.inTime.split(":")[0]);
@@ -423,6 +435,9 @@ const CeoRoom = () => {
         "service",
         data.service.map(code => reverseServiceMapping[code] || ""),
       );
+
+      setRoomImg(data.roomImgName.map(url => ({ url })));
+      setIsImageUploaded(data.roomImgName.length > 0);
     } catch (error) {
       console.log(error);
       throw error;
@@ -468,8 +483,6 @@ const CeoRoom = () => {
         roomName: data.roomName,
         weekdayPrice: data.weekdayPrice,
         weekendPrice: data.weekendPrice,
-        // 임시
-        price: data.weekendPrice,
         peopleNum: data.peopleNum,
         peopleMax: data.peopleMax,
         inTime: `${data.inTime}:00:00`,
@@ -479,7 +492,9 @@ const CeoRoom = () => {
     );
 
     roomImg.forEach(image => {
-      formData.append("roomImg", image, image.name);
+      if (image.file) {
+        formData.append("roomImg", image.file, image.file.name);
+      }
     });
 
     try {
@@ -498,9 +513,17 @@ const CeoRoom = () => {
         },
       );
       console.log("서버 응답:", response.data);
+      setModalMessage("등록이 완료되었습니다.");
+      setIsModalOpen(true);
     } catch (error) {
       console.error("에러 발생:", error);
     }
+  };
+
+  // 객실 등록 완료시
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    navigate("/ceorooms");
   };
 
   // -----------------------------------------------------------------------------
@@ -566,7 +589,10 @@ const CeoRoom = () => {
               <div className="uploaded-images">
                 {roomImg.map((image, index) => (
                   <div key={index}>
-                    <img src={URL.createObjectURL(image)} alt="uploaded" />
+                    <img
+                      src={image.url || URL.createObjectURL(image.file)}
+                      alt="uploaded"
+                    />
                     <button
                       type="button"
                       className="delete-image"
@@ -747,6 +773,11 @@ const CeoRoom = () => {
             )}
           </div>
         </form>
+        <AlertModal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          message={modalMessage}
+        />
       </div>
     </WrapStyle>
   );

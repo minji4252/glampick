@@ -84,7 +84,7 @@ export const PayRoomContent = styled.div`
       width: 50px;
     }
 
-    h4 {
+    h5 {
       font-weight: 500;
       letter-spacing: 0.3px;
     }
