@@ -97,7 +97,7 @@ const CloseButton = styled.button`
   top: 5px;
 `;
 
-const AdminExitModal = ({ isOpen, onClose, ownerId }) => {
+const AdminExitModal = ({ isOpen, onClose, ownerId, onApproval }) => {
   const [adminAccessToken, setAdminAccessToken] = useRecoilState(
     adminAccessTokenState,
   );
@@ -180,6 +180,7 @@ const AdminExitModal = ({ isOpen, onClose, ownerId }) => {
 
   const handleConfirmClose = () => {
     setIsAlertModalOpen(false);
+    onApproval();
     onClose();
   };
 
@@ -193,7 +194,7 @@ const AdminExitModal = ({ isOpen, onClose, ownerId }) => {
           <CloseButton onClick={onClose}>×</CloseButton>
           <div className="signup-m-inner">
             <div className="m-inner-title">
-              <h2>회원 가입 상세 정보</h2>
+              <h2>사장님 상세 정보</h2>
             </div>
             <div className="m-inner-content">
               <div className="m-inner-inner">

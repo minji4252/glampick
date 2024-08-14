@@ -6,12 +6,21 @@ import { adminAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import { getAdminSignupList } from "../../apis/adminapi";
 
-const AdminSignup = () => {
-  const [adminAccessToken, setAdminAccessToken] = useRecoilState(
+interface SignupListItem {
+  ownerId: number | any;
+  ownerName: string;
+}
+
+interface ApiResponse {
+  list: SignupListItem[];
+}
+
+const AdminSignup: React.FC = () => {
+  const [adminAccessToken, setAdminAccessToken] = useRecoilState<string | null>(
     adminAccessTokenState,
   );
   // 가입 사장님 리스트
-  const [signupList, setSignupList] = useState([]);
+  const [signupList, setSignupList] = useState<SignupListItem[]>([]);
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -52,6 +61,18 @@ const AdminSignup = () => {
     }
   }, [adminAccessToken]);
 
+  // 승인/반려 후 리스트 갱신?
+  const refreshSignupList = async () => {
+    try {
+      if (adminAccessToken) {
+        const list = await getAdminSignupList(adminAccessToken);
+        setSignupList(list);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
@@ -65,6 +86,7 @@ const AdminSignup = () => {
                 key={item.ownerId}
                 ownerName={item.ownerName}
                 ownerId={item.ownerId}
+                onApproval={refreshSignupList}
               />
             ))
           ) : (

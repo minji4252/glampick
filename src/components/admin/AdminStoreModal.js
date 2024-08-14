@@ -98,10 +98,19 @@ const AdminStoreModal = ({ isOpen, onClose, glampId }) => {
       <div className="modal-header">{glampInfo.glampName}</div>
       <div className="modal-body">
         <p>
-          <strong>사장님 이름:</strong> {glampInfo.ownerName}
+          <strong>글램핑장 이름:</strong> {glampInfo.glampName}
         </p>
         <p>
-          <strong>사업자등록번호:</strong> {glampInfo.businessNumber}
+          <strong>전화번호: </strong> {glampInfo.glampCall}
+        </p>
+        <p>
+          <strong>지역:</strong> {glampInfo.region}
+        </p>
+        <p>
+          <strong>주소:</strong> {glampInfo.glampLocation}
+        </p>
+        <p>
+          <strong>금액:</strong> {glampInfo.extraCharge}
         </p>
         <p>
           <strong>지역:</strong> {glampInfo.region}
