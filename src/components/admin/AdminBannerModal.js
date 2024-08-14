@@ -186,9 +186,9 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
         setBannerImage(null);
         setPreviewImage(null);
         setFileName("이미지 사이즈: 950x200");
+        setAlertMessage("배너가 추가되었습니다.");
         onClose();
         // 성공 메시지 설정 및 모달 열기
-        setAlertMessage("배너가 추가되었습니다.");
       } else {
         const errorData = await response.json();
         const errorMessage = errorData.message || "파일 업로드에 실패했습니다.";

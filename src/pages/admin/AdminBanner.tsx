@@ -54,8 +54,6 @@ const AdminBanner: React.FC = () => {
     } catch (error) {
       console.error("배너 데이터 겟 오류: ", error);
     }
-    // 자동 갱신 안됨 수정
-    // getBanners();
   };
 
   useEffect(() => {
@@ -71,6 +69,13 @@ const AdminBanner: React.FC = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    refreshBanners();
+  };
+
+  const refreshBanners = async () => {
+    if (adminAccessToken) {
+      await getBanners();
+    }
   };
 
   // 배너 삭제

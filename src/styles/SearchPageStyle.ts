@@ -485,6 +485,7 @@ export const SearchContent = styled.div`
         font-size: 22px;
         margin-bottom: 10px;
         font-weight: 600;
+        display: inline-flex;
       }
       .sc-review {
         display: flex;

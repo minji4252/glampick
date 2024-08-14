@@ -18,7 +18,7 @@ const SearchMapStyle = styled.div`
   .label {
     position: absolute;
     bottom: 70px;
-    left: -35px;
+    left: -30px;
     padding: 5px;
     background-color: white;
     border: 1px solid ${colorSystem.primary};
@@ -30,35 +30,33 @@ const SearchMapStyle = styled.div`
     text-align: center;
     white-space: nowrap;
     cursor: pointer;
+    z-index: 1;
   }
 
   .map-card {
     display: none;
     position: absolute;
-    top: -30px;
+    top: -35px;
     background-color: white;
     border: 1px solid ${colorSystem.ceo};
     border-radius: 10px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    padding: 10px;
+    padding: 7px;
     font-size: 14px;
     font-weight: 500;
     color: ${colorSystem.ceo};
     white-space: nowrap;
-    z-index: 1000;
-    max-width: 200px;
+    z-index: 200;
     transform: translate(-50%, -100%);
   }
 
   .label:hover + .map-card {
     display: block;
-    z-index: 1000;
   }
 `;
 
 const SearchMap = ({ center, region, region1, markers = [] }) => {
   const mapContainer = useRef(null);
-  const defaultCenter = { lat: 36.1398393, lng: 128.1135947 };
 
   // all(전국)이면 줌12, 아니면 10
   const zoomLevel = region === "all" || region1 === "all" ? 12 : 10;
@@ -88,14 +86,13 @@ const SearchMap = ({ center, region, region1, markers = [] }) => {
       // CustomOverlay에 필요한 HTML
       const content = `
         <div class="label">${formattedPrice(marker.price)}</div>
-        <div class="map-card">카드 띄우기</div>
-        
-      `;
+        <div class="map-card">${marker.glampName}</div>
+        `;
 
       const customOverlay = new window.kakao.maps.CustomOverlay({
         position: position,
         content: content,
-        zIndex: 1,
+        zIndex: 200,
       });
 
       customOverlay.setMap(map);

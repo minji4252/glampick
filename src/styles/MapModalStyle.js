@@ -73,6 +73,10 @@ export const MapCardContent = styled.div`
   padding-right: 35px;
   border-top: 1px solid;
   border-color: ${colorSystem.g200};
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   :last-child {
     border-bottom: none;
   }
@@ -98,6 +102,7 @@ export const MapCardContent = styled.div`
         font-size: 20px;
         margin-bottom: 10px;
         font-weight: 600;
+        display: inline-flex;
       }
       .map-review {
         display: flex;

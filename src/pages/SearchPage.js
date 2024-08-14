@@ -68,8 +68,6 @@ const SearchPage = () => {
   const filter1 = searchParams.get("filter"); // 필터
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState([today, tomorrow]);
-  // const [mapCenter, setMapCenter] = useState({ lat: 33.5563, lng: 126.79581 }); // 기본 좌표
-  // const [mapMarkers, setMapMarkers] = useState([]); // 기본 마커 데이터는 빈 배열
   // 지도 모달
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
 

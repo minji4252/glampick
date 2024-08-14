@@ -111,18 +111,9 @@ const ArticleContent = styled.div`
     }
   }
 `;
+// 지역명 한글로
 
-interface FavoriteCardProps {
-  reviewCount: number;
-  price: string;
-  starPoint: number;
-  glampImage?: string;
-  glampLocation: string;
-  glampName: string;
-  glampId: string;
-}
-
-export const FavoriteCard: React.FC<FavoriteCardProps> = ({
+export const FavoriteCard = ({
   reviewCount,
   price,
   starPoint,
@@ -131,13 +122,27 @@ export const FavoriteCard: React.FC<FavoriteCardProps> = ({
   glampName,
   glampId,
 }) => {
+  const regionNames = {
+    all: "전국",
+    seoul: "서울/경기",
+    gangwon: "강원",
+    chungbuk: "충북",
+    chungnam: "충남",
+    gyeongbuk: "경북",
+    gyeongnam: "경남",
+    jeonbuk: "전북",
+    jeonnam: "전남",
+    jeju: "제주",
+  };
+
   return (
     <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">
         <div className="article-image">
           <div className="article-place">
             <MdPlace />
-            {glampLocation}
+            {/* {glampLocation} */}
+            {regionNames[glampLocation] || ""}
           </div>
         </div>
       </Link>

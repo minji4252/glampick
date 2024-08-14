@@ -82,6 +82,18 @@ const AdminStore = () => {
     setSelectedStore(null);
   };
 
+  // 승인/반려 후 리스트 갱신?
+  const refreshSignupList = async () => {
+    try {
+      if (adminAccessToken) {
+        const list = await getAdminStoreList(adminAccessToken);
+        setStoreList(list);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <GlampingKingStyle>
       <AdminHeader>글램픽 관리자 페이지</AdminHeader>
@@ -93,11 +105,13 @@ const AdminStore = () => {
             storeList.map(item => (
               <AdminStoreCard
                 key={item.glampId}
+                glampId={item.glampId}
                 region={regionNames[item.region] || ""}
                 glampName={item.glampName}
                 ownerName={item.ownerName}
                 businessNumber={item.businessNumber}
                 onClick={handleCardClick}
+                onApproval={refreshSignupList}
               />
             ))
           ) : (

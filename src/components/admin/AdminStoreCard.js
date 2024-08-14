@@ -52,6 +52,7 @@ const AdminStoreCard = ({
   businessNumber,
   glampName,
   region,
+  onApproval,
 }) => {
   // 모달 열 닫
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,6 +63,7 @@ const AdminStoreCard = ({
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
   return (
     <>
       <AdminStoreCardStyle>
@@ -83,7 +85,8 @@ const AdminStoreCard = ({
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         glampId={glampId}
-      />{" "}
+        onApproval={onApproval}
+      />
     </>
   );
 };
