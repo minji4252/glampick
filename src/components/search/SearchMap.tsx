@@ -44,7 +44,42 @@ const SearchMapStyle = styled.div`
   }
 `;
 
-const SearchMap = ({
+// 타입 스크립트 카카오 오류
+declare global {
+  interface Window {
+    kakao: any;
+    handlePriceLabelClick?: (
+      lat: number,
+      lng: number,
+      glampId: string,
+      glampName: string,
+    ) => void;
+    handleInfoWindowClick?: (glampId: string) => void;
+  }
+}
+
+interface Marker {
+  lat: number;
+  lng: number;
+  glampId: string;
+  glampName: string;
+  price: number;
+}
+
+interface SearchMapProps {
+  center: {
+    lat: number;
+    lng: number;
+  };
+  region: string;
+  region1: string;
+  markers: Marker[];
+  inDate: string;
+  outDate: string;
+  people: number;
+}
+
+const SearchMap: React.FC<SearchMapProps> = ({
   center,
   region,
   region1,
@@ -53,7 +88,7 @@ const SearchMap = ({
   outDate,
   people,
 }) => {
-  const mapContainer = useRef(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
 
   const zoomLevel = region === "all" || region1 === "all" ? 12 : 10;
 
@@ -96,7 +131,16 @@ const SearchMap = ({
     });
 
     // 가격 클릭하면 글램핑장 이름 뜨기
-    window.handlePriceLabelClick = (lat, lng, glampId, glampName) => {
+    window.handlePriceLabelClick = (
+      lat: number,
+      lng: number,
+      glampId: string,
+      glampName: string,
+    ) => {
+      console.log("Lat:", lat);
+      console.log("Lng:", lng);
+      console.log("GlampId:", glampId);
+      console.log("GlampName:", glampName);
       const position = new window.kakao.maps.LatLng(lat, lng);
       const content = `
         <div class="custom-overlay" onclick="handleInfoWindowClick('${glampId}')">
@@ -115,7 +159,7 @@ const SearchMap = ({
     };
 
     // 글램핑장 이름 클릭 시 페이지 이동
-    window.handleInfoWindowClick = glampId => {
+    window.handleInfoWindowClick = (glampId: string) => {
       const url = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
       window.location.href = url;
     };
@@ -124,13 +168,13 @@ const SearchMap = ({
       if (mapContainer.current) {
         mapContainer.current.innerHTML = "";
       }
-      window.handlePriceLabelClick = null;
-      window.handleInfoWindowClick = null;
+      window.handlePriceLabelClick = undefined;
+      window.handleInfoWindowClick = undefined;
     };
   }, [center, zoomLevel, markers, inDate, outDate, people]);
 
-  // 가격 포맷팅
-  const formattedPrice = price => {
+  // 가격 단위
+  const formattedPrice = (price: number) => {
     return Number(price).toLocaleString("ko-KR");
   };
 
