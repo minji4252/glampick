@@ -383,11 +383,9 @@ const SearchPage = () => {
               )}
             </SearchLeft>
             <SearchRight>
-              {/* <SearchMap center={mapCenter} markers={mapMarkers} /> */}
               <MapThumbnail>
                 <MapButton onClick={handleMapButtonClick}>지도 보기</MapButton>
               </MapThumbnail>
-
               <SearchFilter>
                 <div className="search-filter">
                   <div
@@ -445,6 +443,11 @@ const SearchPage = () => {
         center={currentCenter}
         region={region}
         region1={region1}
+        inDate={inDate}
+        outDate={outDate}
+        inDate1={inDate1}
+        outDate1={outDate1}
+        people={people}
       />
       <SearchMap center={currentCenter} region={region} region1={region1} />
     </SearchPageStyle>

@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import styled from "@emotion/styled";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
-import markerImage from "../../images/icon/location-icon.png";
 import { colorSystem } from "../../styles/color";
 
 const SearchMapStyle = styled.div`
@@ -15,7 +13,7 @@ const SearchMapStyle = styled.div`
     max-width: 900px;
   }
 
-  .label {
+  .price-label {
     position: absolute;
     bottom: 70px;
     left: -30px;
@@ -33,32 +31,30 @@ const SearchMapStyle = styled.div`
     z-index: 1;
   }
 
-  .map-card {
-    display: none;
-    position: absolute;
-    top: -35px;
-    background-color: white;
-    border: 1px solid ${colorSystem.ceo};
-    border-radius: 10px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    padding: 7px;
+  .custom-overlay {
     font-size: 14px;
     font-weight: 500;
     color: ${colorSystem.ceo};
-    white-space: nowrap;
-    z-index: 200;
-    transform: translate(-50%, -100%);
-  }
-
-  .label:hover + .map-card {
-    display: block;
+    padding: 8px;
+    border-radius: 8px;
+    background-color: ${colorSystem.background};
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    border: 1px solid ${colorSystem.ceo};
   }
 `;
 
-const SearchMap = ({ center, region, region1, markers = [] }) => {
+const SearchMap = ({
+  center,
+  region,
+  region1,
+  markers = [],
+  inDate,
+  outDate,
+  people,
+}) => {
   const mapContainer = useRef(null);
 
-  // all(전국)이면 줌12, 아니면 10
   const zoomLevel = region === "all" || region1 === "all" ? 12 : 10;
 
   useEffect(() => {
@@ -83,29 +79,57 @@ const SearchMap = ({ center, region, region1, markers = [] }) => {
     markers.forEach(marker => {
       const position = new window.kakao.maps.LatLng(marker.lat, marker.lng);
 
-      // CustomOverlay에 필요한 HTML
+      // 가격 뜨기
+      const priceLabel = `
+        <div class="price-label" onclick="handlePriceLabelClick('${marker.lat}', '${marker.lng}', '${marker.glampId}', '${marker.glampName}')">
+          ${formattedPrice(marker.price)}
+        </div>
+      `;
+
+      const priceOverlay = new window.kakao.maps.CustomOverlay({
+        position: position,
+        content: priceLabel,
+        zIndex: 200,
+      });
+
+      priceOverlay.setMap(map);
+    });
+
+    // 가격 클릭하면 글램핑장 이름 뜨기
+    window.handlePriceLabelClick = (lat, lng, glampId, glampName) => {
+      const position = new window.kakao.maps.LatLng(lat, lng);
       const content = `
-        <div class="label">${formattedPrice(marker.price)}</div>
-        <div class="map-card">${marker.glampName}</div>
-        `;
+        <div class="custom-overlay" onclick="handleInfoWindowClick('${glampId}')">
+          ${glampName}
+        </div>
+      `;
 
       const customOverlay = new window.kakao.maps.CustomOverlay({
         position: position,
         content: content,
-        zIndex: 200,
+        yAnchor: 1.9,
+        zIndex: 1000,
       });
 
       customOverlay.setMap(map);
-    });
+    };
+
+    // 글램핑장 이름 클릭 시 페이지 이동
+    window.handleInfoWindowClick = glampId => {
+      const url = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
+      window.location.href = url;
+    };
 
     return () => {
       if (mapContainer.current) {
         mapContainer.current.innerHTML = "";
       }
+      window.handlePriceLabelClick = null;
+      window.handleInfoWindowClick = null;
     };
-  }, [center, zoomLevel, markers]);
+  }, [center, zoomLevel, markers, inDate, outDate, people]);
 
-  // 가격 단위
+  // 가격 포맷팅
   const formattedPrice = price => {
     return Number(price).toLocaleString("ko-KR");
   };

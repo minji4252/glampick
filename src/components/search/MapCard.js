@@ -23,7 +23,6 @@ const MapCard = ({
     console.log("예약하기");
   };
 
-  // 아직 링크 연결 안됨
   const MapCardUrl = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
 
   return (
