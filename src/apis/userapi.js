@@ -128,17 +128,17 @@ export const postSignUp = async ({
 
 // sns 회원가입 api
 export const postSocailSignUp = async ({
-  userId,
+  providerId,
   userName,
   userPhone,
-  userNickName,
+  userNickname,
 }) => {
   try {
     const response = await axios.post(`/api/auth/social/sign-up`, {
-      userId: userId,
+      providerId: providerId,
       userName: userName,
       userPhone: userPhone,
-      userNickName: userNickName,
+      userNickname: userNickname,
     });
     console.log("회원가입 전송데이터:", response);
     return response;

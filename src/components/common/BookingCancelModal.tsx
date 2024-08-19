@@ -157,24 +157,6 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
     };
   }, [isOpen]);
 
-  // 토큰 정보 불러오기
-  // useEffect(() => {
-  //   const fetchAccessToken = async () => {
-  //     try {
-  //       const accessTokenFromCookie = getCookie("access-Token");
-  //       if (accessTokenFromCookie) {
-  //         setAccessToken(accessTokenFromCookie);
-  //       } else {
-  //         // console.log("쿠키에 access-Token 없음");
-  //       }
-  //     } catch (error) {
-  //       // console.log(error);
-  //     }
-  //   };
-
-  //   fetchAccessToken();
-  // }, []);
-
   // 예약 취소 함수
   const handleConfirm = async (e: FormEvent) => {
     console.log("예약취소 확인");
@@ -198,7 +180,7 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
       );
       console.log(response);
       if (response.data.code === "SU") {
-        // console.log("예약취소 성공", response);
+        console.log("예약취소 성공", response);
         setIsSuccess(true); // 성공 상태 업데이트
         onConfirm();
         onBookingCancelled(reservationId, comment); // 예약 취소 시 호출

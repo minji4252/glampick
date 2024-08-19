@@ -278,8 +278,13 @@ const LoginPage = () => {
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
+  const [redirectUrl, setRedirectUrl] = useState("");
 
-  const kakaoLogin = getKakaoLoginLink();
+  useEffect(() => {
+    const host = window.location.origin;
+    setRedirectUrl(`${host}/auth/kakao/callback`); // 리디렉션 URI 설정
+  }, []);
+  // const kakaoLogin = getKakaoLoginLink();
 
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
@@ -430,9 +435,11 @@ const LoginPage = () => {
                 <p>sns 로그인</p>
                 <ul className="sns-login-list">
                   <li className="sns-login-item">
-                    <Link to={kakaoLogin}>
+                    <a
+                      href={`http://localhost:3000//oauth2/authorization/kakao?redirect_uri=http://localhost:3000/oauth/redirect`}
+                    >
                       <div className="kakao-icon" />
-                    </Link>
+                    </a>
                   </li>
                   <li className="sns-login-item">
                     <a href="#" className="sns-login-link">

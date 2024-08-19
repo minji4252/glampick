@@ -503,12 +503,21 @@ const CeoSignup = () => {
       if (response.data.code === "SU") {
         openModal({
           message:
-            "회원가입에 성공하였습니다. \n 로그인은 관리자 승인 후 처리됩니다.",
-          onClose: () => navigate("/ceologin"), // 모달 닫힘 후 페이지 이동
+            "회원가입에 성공하였습니다! \n 로그인은 관리자 승인 후 처리됩니다.",
+        });
+        setTimeout(() => {
+          navigate("/ceologin", { state: { fromSignup: true } });
+        }, 2000); // 1초 후에 페이지 이동
+      } else {
+        openModal({
+          message: "회원가입에 실패하였습니다/ \n 다시 시도해주세요.",
         });
       }
       console.log(response);
     } catch (error) {
+      openModal({
+        message: "회원가입에 실패하였습니다/ \n 다시 시도해주세요.",
+      });
       console.error("회원가입 실패:", error);
     }
   };

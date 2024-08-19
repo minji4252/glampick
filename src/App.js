@@ -7,7 +7,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import "./styles/color";
 import "../src/styles/common.css";
 import "../src/styles/reset.css";
@@ -111,14 +111,37 @@ function App() {
     navigate("/login");
   };
 
-  // 로그인된 상태에서 로그인 및 회원가입 페이지로 접근 시 리다이렉트 처리
   const RedirectIfLoggedIn = ({ children, forUser }) => {
     const location = useLocation();
-    if (isLogin || isCeoLogin) {
-      if ((isLogin && forUser) || (isCeoLogin && !forUser)) {
-        return <Navigate to="/" state={{ from: location }} />;
-      }
+    const isLogin = useRecoilValue(isLoginState);
+    const isCeoLogin = useRecoilValue(isCeoLoginState);
+
+    const userPages = ["/bookingdetail", "/myreview", "/favorite", "/userinfo"];
+    const ceoPages = [
+      "/ceoglamping",
+      "/ceorooms",
+      "/ceobooking",
+      "/ceoreview",
+      "/chart",
+      "/ceoinfo",
+    ];
+
+    // 현재 페이지가 사용자 페이지인지 사장님 페이지인지 확인
+    const isUserPage = userPages.some(page =>
+      location.pathname.startsWith(page),
+    );
+    const isCeoPage = ceoPages.some(page => location.pathname.startsWith(page));
+
+    // 로그인 상태에 따라 리다이렉트 처리
+    if (isLogin && !forUser && isCeoPage) {
+      // 사장님 페이지에 접근하려는 일반 사용자
+      return <Navigate to="/" replace />;
     }
+    if (isCeoLogin && forUser && isUserPage) {
+      // 사용자 페이지에 접근하려는 사장님
+      return <Navigate to="/" replace />;
+    }
+
     return children;
   };
 
@@ -185,33 +208,41 @@ function App() {
         <Route
           path="/bookingdetail"
           element={
-            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
-              <BookingDetail />
-            </ProtectedRoute>
+            <RedirectIfLoggedIn forUser={true}>
+              <ProtectedRoute allowedRoles={["ROLE_USER"]} isCeoPage={false}>
+                <BookingDetail />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
           }
         />
         <Route
           path="/myreview"
           element={
-            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
-              <MyReview />
-            </ProtectedRoute>
+            <RedirectIfLoggedIn forUser={true}>
+              <ProtectedRoute allowedRoles={["ROLE_USER"]} isCeoPage={false}>
+                <MyReview />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
           }
         />
         <Route
           path="/favorite"
           element={
-            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
-              <Favorite />
-            </ProtectedRoute>
+            <RedirectIfLoggedIn forUser={true}>
+              <ProtectedRoute allowedRoles={["ROLE_USER"]} isCeoPage={false}>
+                <Favorite />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
           }
         />
         <Route
           path="/userinfo"
           element={
-            <ProtectedRoute allowedRoles={[`ROLE_USER`]}>
-              <UserInfo />
-            </ProtectedRoute>
+            <RedirectIfLoggedIn forUser={true}>
+              <ProtectedRoute allowedRoles={["ROLE_USER"]} isCeoPage={false}>
+                <UserInfo />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
           }
         />
 
@@ -234,14 +265,76 @@ function App() {
         />
 
         {/* 사장님 페이지 */}
-        <Route path="/ceoglamping" element={<CeoGlamping />} />
-        <Route path="/ceorooms" element={<CeoRooms />} />
-        <Route path="/ceoroom/new" element={<CeoRoom />} />
-        <Route path="/ceoroom/edit/:roomId" element={<CeoRoom />} />
-        <Route path="/ceobooking" element={<CeoBooking />} />
-        <Route path="/ceoreview" element={<CeoReview />} />
-        <Route path="/chart" element={<Chart />} />
-        <Route path="/ceoinfo" element={<CeoInfo />} />
+        <Route
+          path="/ceoglamping"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <CeoGlamping />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/ceorooms"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <CeoRooms />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/ceoroom/edit/:roomId"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <CeoRoom />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/ceobooking"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <CeoBooking />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/ceoreview"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <CeoReview />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/chart"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <Chart />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
+        <Route
+          path="/ceoinfo"
+          element={
+            <RedirectIfLoggedIn forUser={false}>
+              <ProtectedRoute allowedRoles={["ROLE_OWNER"]} isCeoPage={true}>
+                <CeoInfo />
+              </ProtectedRoute>
+            </RedirectIfLoggedIn>
+          }
+        />
 
         {/* 관리자 페이지 */}
         <Route path="/glampingking" element={<GlampingKing />} />
