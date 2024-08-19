@@ -1,26 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { ResponsiveBar } from "@nivo/bar";
 
-const SalesChart = ({ data }) => {
+// 날짜 변환 0000-00-00 -> 00-00
+const formatDate = date => {
+  const dateParts = date.split("-");
+  return `${dateParts[1]}-${dateParts[2]}`;
+};
+
+// 날짜별 데이터 집계 함수
+const aggregateDataByDate = data => {
+  const dates = {};
+
+  data.forEach(item => {
+    const date = formatDate(item.times);
+    if (!dates[date]) {
+      dates[date] = {};
+    }
+
+    dates[date][item.roomName] =
+      (dates[date][item.roomName] || 0) + parseFloat(item.pay);
+  });
+
+  return Object.keys(dates).map(date => ({
+    country: date,
+    ...dates[date],
+  }));
+};
+
+// 주차별 데이터 집계 함수
+const aggregateDataByWeek = data => {
+  const weeks = {};
+
+  data.forEach(item => {
+    const date = new Date(item.times);
+    const week = Math.ceil(date.getDate() / 7);
+    const key = `${week}주차`;
+
+    if (!weeks[key]) {
+      weeks[key] = {};
+    }
+
+    weeks[key][item.roomName] =
+      (weeks[key][item.roomName] || 0) + parseFloat(item.pay);
+  });
+
+  const sortedWeeks = Object.keys(weeks).sort((a, b) => {
+    const weekA = parseInt(a, 10);
+    const weekB = parseInt(b, 10);
+    return weekA - weekB;
+  });
+
+  return sortedWeeks.map(week => ({
+    country: week,
+    ...weeks[week],
+  }));
+};
+
+const SalesChart = ({ data, isWeekly }) => {
   const [chartData, setChartData] = useState([]);
 
-  console.log("data", data);
   useEffect(() => {
-    const transformedData = data?.reduce((acc, curr) => {
-      const { times, pay, roomName } = curr;
-      const existingEntry = acc.find(entry => entry.country === times);
-
-      if (existingEntry) {
-        existingEntry[roomName] = parseFloat(pay) || 0;
-      } else {
-        acc.push({ country: times, [roomName]: parseFloat(pay) || 0 });
-      }
-
-      return acc;
-    }, []);
+    console.log("매출 isWeekly", isWeekly);
+    const transformedData = isWeekly
+      ? aggregateDataByDate(data)
+      : aggregateDataByWeek(data);
 
     setChartData(transformedData);
-  }, [data]);
+  }, [data, isWeekly]);
 
   return (
     <div style={{ width: "100%", height: 450 }}>
@@ -43,7 +89,7 @@ const SalesChart = ({ data }) => {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: "날짜",
+          legend: "기간",
           legendPosition: "middle",
           legendOffset: 32,
         }}

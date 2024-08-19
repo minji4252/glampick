@@ -26,6 +26,7 @@ import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
 import SearchCalendar from "../components/search/SearchCalendar";
 import GlampingDetailStyle, {
+  GlampingDetailLoading,
   InfoGroup,
   OptionItems,
   ReviewSwiper,
@@ -51,6 +52,7 @@ import GlampingDetailStyle, {
   SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
+import LoadingNobg from "../components/common/LoadingNobg";
 
 const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const [glampingData, setGlampingData] = useState(null);
@@ -62,6 +64,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const [modalType, setModalType] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [visibleRoomsCount, setVisibleRoomsCount] = useState(5);
   const roomSelectRef = useRef(null);
@@ -109,6 +112,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
         const roomImageUrls = data.roomItems.map(room => `${room.pic}`);
         setRoomImages(roomImageUrls);
         setIsLiked(data.isFav === 1);
+        setIsDataLoaded(true);
       } catch (error) {
         console.log(error);
       }
@@ -289,7 +293,13 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
     }
   };
 
-  if (!glampingData) return null;
+  if (!isDataLoaded) {
+    return (
+      <GlampingDetailLoading>
+        <LoadingNobg />
+      </GlampingDetailLoading>
+    );
+  }
 
   const {
     glampName,

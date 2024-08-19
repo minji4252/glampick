@@ -24,6 +24,7 @@ const PaymentCard = ({
   formatRoomPrice,
   formatExtraPrice,
   formatPayAmount,
+  stayDuration,
 }) => {
   const formatTime = time => {
     const [hours, minutes] = time.split(":");
@@ -86,7 +87,9 @@ const PaymentCard = ({
           <PriceInfo>
             <h3>결제정보</h3>
             <div className="price-item payment-item">
-              <p>총 3박 4일 일정</p>
+              <p>
+                총 {stayDuration}박 {stayDuration + 1}일 일정
+              </p>
             </div>
             <div className="price-item">
               <p>객실 가격</p>
