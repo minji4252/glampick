@@ -59,25 +59,22 @@ const MainPage: React.FC<MainPageProps> = ({
   const [selectedWord, setSelectedWord] = useState<string>(""); // 검색어
   const navigate = useNavigate();
 
-  // // 로그아웃
-  // const handleLogout = () => {
-  //   // 로컬스토리지에서 토큰 삭제
-  //   localStorage.removeItem("accessToken");
-  //   // setIsLogin(false);
-  //   navigate("/");
-  // };
+  // 검색 결과 (우리나라 날짜로)
+  const formatDateLocal = (date: Date | undefined) => {
+    if (!date) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-  // 검색 결과
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const formatDate = (date: Date | undefined) =>
-      date ? date.toISOString().slice(0, 10) : "";
-
     const queryParams = new URLSearchParams({
       region: selectedPlace,
-      inDate: formatDate(selectedDate[0]),
-      outDate: formatDate(selectedDate[1]),
+      inDate: formatDateLocal(selectedDate[0]),
+      outDate: formatDateLocal(selectedDate[1]),
       people: selectedMember.toString(),
       searchWord: selectedWord,
     });

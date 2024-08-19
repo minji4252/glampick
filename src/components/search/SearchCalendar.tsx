@@ -82,8 +82,19 @@ const SearchDate = styled.div`
   }
 `;
 
-const SearchCalendar = ({ selectedDate, setSelectedDate }) => {
-  const [dateRange, setDateRange] = useState([null, null]);
+interface SearchCalendarProps {
+  selectedDate: [Date | null, Date | null];
+  setSelectedDate: (dates: [Date | null, Date | null]) => void;
+}
+
+const SearchCalendar: React.FC<SearchCalendarProps> = ({
+  selectedDate,
+  setSelectedDate,
+}) => {
+  const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
+    null,
+    null,
+  ]);
 
   useEffect(() => {
     if (selectedDate && selectedDate[0] && selectedDate[1]) {
@@ -91,17 +102,22 @@ const SearchCalendar = ({ selectedDate, setSelectedDate }) => {
     }
   }, [selectedDate]);
 
-  const handleChange = update => {
-    setDateRange(update);
-    setSelectedDate(update);
+  const handleChange = (update: [Date | null, Date | null] | null) => {
+    if (update) {
+      setDateRange(update);
+      setSelectedDate(update);
+    } else {
+      setDateRange([null, null]);
+      setSelectedDate([null, null]);
+    }
   };
 
   return (
     <SearchDate>
       <DatePicker
         selectsRange={true}
-        startDate={dateRange[0]}
-        endDate={dateRange[1]}
+        startDate={dateRange[0] || undefined}
+        endDate={dateRange[1] || undefined}
         onChange={handleChange}
         isClearable={true}
         locale={ko}

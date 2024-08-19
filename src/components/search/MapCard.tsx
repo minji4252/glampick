@@ -3,7 +3,19 @@ import { Link } from "react-router-dom";
 import { MainButton } from "../common/Button";
 import { MapCardContent } from "../../styles/MapModalStyle";
 
-const MapCard = ({
+interface MapCardProps {
+  glampId: string;
+  glampName: string;
+  glampPic: string;
+  starPoint: number;
+  reviewCount: number;
+  price: number;
+  inDate: string;
+  outDate: string;
+  people: number;
+}
+
+const MapCard: React.FC<MapCardProps> = ({
   glampId,
   glampName,
   glampPic,
@@ -19,11 +31,10 @@ const MapCard = ({
   const formattedStarPoint = Number(starPoint).toFixed(1);
 
   // 예약 버튼
-  const handleButtonClick = () => {
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("예약하기");
   };
 
-  // 아직 링크 연결 안됨
   const MapCardUrl = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
 
   return (
