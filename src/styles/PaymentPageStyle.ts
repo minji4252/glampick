@@ -44,6 +44,12 @@ export const WrapStyle = styled.div`
       ${colorSystem.primary} no-repeat center;
     border: none;
   }
+
+  .payment-loading {
+    div {
+      position: static;
+    }
+  }
 `;
 
 export const InfoStyle = styled.div`

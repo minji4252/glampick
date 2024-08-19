@@ -1,5 +1,5 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa6";
 import {
@@ -18,6 +18,7 @@ import {
   TapStyle,
 } from "../../styles/ceo/ChartStyles";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
+import SearchCalendar from "../../components/search/SearchCalendar";
 
 const Chart = () => {
   const [currentTab, setCurrentTab] = useState(0);
@@ -30,11 +31,10 @@ const Chart = () => {
   const [cancelData, setCancelData] = useState([]);
   const [startDayId, setStartDayId] = useState("2024-08-01");
   const [endDayId, setEndDayId] = useState("2024-08-07");
+  const [isWeekly, setIsWeekly] = useState(true);
   const ceoAccessToken = useFetchAccessToken();
-
-  // 임시
-  // const startDayId = "2024-08-01";
-  // const endDayId = "2024-08-07";
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [selectedDate, setSelectedDate] = useState([null, null]);
 
   // 이번주 날짜 가져오기
   const getThisWeek = () => {
@@ -68,16 +68,35 @@ const Chart = () => {
     };
   };
 
+  // 기간 설정 클릭시
+  const handleCustomClick = () => {
+    setShowCalendar(prevState => !prevState);
+  };
+
+  const handleWeeklyClick = () => {
+    const { startDayId, endDayId } = getThisWeek();
+    setStartDayId(startDayId);
+    setEndDayId(endDayId);
+    setIsWeekly(true);
+  };
+
+  const handleMonthlyClick = () => {
+    const { startDayId, endDayId } = getThisMonth();
+    setStartDayId(startDayId);
+    setEndDayId(endDayId);
+    setIsWeekly(false);
+  };
+
   const menuArr = [
     {
       name: "예약",
-      count: `${totalBookingData}`,
-      content: <BookingChart data={bookingData} />,
+      count: `${totalBookingData ?? 0}`,
+      content: <BookingChart data={bookingData} isWeekly={isWeekly} />,
     },
     {
       name: "매출",
-      count: `${totalRevenueData}원`,
-      content: <SalesChart data={revenueData} />,
+      count: `${(totalRevenueData ?? 0).toLocaleString()}원`,
+      content: <SalesChart data={revenueData} isWeekly={isWeekly} />,
     },
     {
       name: "취소율",
@@ -88,18 +107,6 @@ const Chart = () => {
 
   const selectMenuHandler = index => {
     setCurrentTab(index);
-  };
-
-  const handleWeeklyClick = () => {
-    const { startDayId, endDayId } = getThisWeek();
-    setStartDayId(startDayId);
-    setEndDayId(endDayId);
-  };
-
-  const handleMonthlyClick = () => {
-    const { startDayId, endDayId } = getThisMonth();
-    setStartDayId(startDayId);
-    setEndDayId(endDayId);
   };
 
   useEffect(() => {
@@ -138,7 +145,7 @@ const Chart = () => {
         console.log(error);
       }
     };
-    //  취소율
+    // 취소율
     const fetchCancelData = async () => {
       try {
         if (!ceoAccessToken) return;
@@ -215,7 +222,15 @@ const Chart = () => {
               월간
             </span>
             <div>·</div>
-            <span className="period-custom">기간설정</span>
+            <span className="period-custom" onClick={handleCustomClick}>
+              기간설정
+            </span>
+            {showCalendar && (
+              <SearchCalendar
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+              />
+            )}
           </div>
           <div>
             {menuArr.map((ele, index) => (

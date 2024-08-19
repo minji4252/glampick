@@ -414,6 +414,7 @@ const CeoRoom = () => {
   //객실 정보 불러오기
   const getRoomDetails = async (roomId, ceoAccessToken) => {
     try {
+      console.log("보낼 데이터:", { roomId, ceoAccessToken });
       // 글램핑장 id임시
       const response = await axios.get(`/api/owner/room/2/${roomId}`, {
         headers: {
@@ -471,37 +472,55 @@ const CeoRoom = () => {
     }
   }, [errors.roomImg]);
 
-  //Post 함수
-  const onSubmit = async data => {
+  // 수정 함수
+  const modifyRoomDetails = async (roomId, data, ceoAccessToken) => {
     const formData = new FormData();
 
-    formData.append(
-      "req",
-      JSON.stringify({
-        // 임시
-        glampId: 2,
-        roomName: data.roomName,
-        weekdayPrice: data.weekdayPrice,
-        weekendPrice: data.weekendPrice,
-        peopleNum: data.peopleNum,
-        peopleMax: data.peopleMax,
-        inTime: `${data.inTime}:00:00`,
-        outTime: `${data.outTime}:00:00`,
-        service: data.service.map(code => SERVICE_MAPPING[code] || code),
-      }),
-    );
-
-    roomImg.forEach(image => {
+    //추가된 이미지
+    data.roomImg.forEach(image => {
       if (image.file) {
-        formData.append("roomImg", image.file, image.file.name);
+        formData.append("addImg", image.file, image.file.name);
       }
     });
 
+    // 기존 이미지 삭제 처리 (삭제할 이미지의 ID를 서버에서 제공하는 것으로 가정)
+    const removeImgIds = []; // 여기에 삭제할 이미지의 ID 배열을 추가하세요
+    formData.append(
+      "req",
+      JSON.stringify({
+        requestDto: {
+          glampId: 2, // 임시 글램핑장 ID
+          roomName: data.roomName,
+          weekdayPrice: data.weekdayPrice,
+          weekendPrice: data.weekendPrice,
+          peopleNum: data.peopleNum,
+          peopleMax: data.peopleMax,
+          inTime: `${data.inTime}:00:00`,
+          outTime: `${data.outTime}:00:00`,
+          service: data.service.map(code => SERVICE_MAPPING[code] || code),
+        },
+        roomId: roomId,
+        removeImg: removeImgIds,
+      }),
+    );
+
     try {
       if (!ceoAccessToken) return;
-      console.log("전송 데이터:", formData);
+      console.log("수정 데이터:", formData);
 
-      const response = await axios.post(
+      const logFileDetails = formData => {
+        for (let [key, value] of formData.entries()) {
+          if (value instanceof File) {
+            console.log(`File - ${key}: ${value.name} (${value.size} bytes)`);
+          } else {
+            console.log(`${key}: ${value}`);
+          }
+        }
+      };
+
+      logFileDetails(formData);
+
+      const response = await axios.put(
         // eslint-disable-next-line no-undef
         `${process.env.PUBLIC_URL}/api/owner/room`,
         formData,
@@ -513,10 +532,62 @@ const CeoRoom = () => {
         },
       );
       console.log("서버 응답:", response.data);
-      setModalMessage("등록이 완료되었습니다.");
+      setModalMessage("수정이 완료되었습니다.");
       setIsModalOpen(true);
     } catch (error) {
       console.error("에러 발생:", error);
+    }
+  };
+
+  //Post 함수
+  const onSubmit = async data => {
+    if (isEditMode) {
+      await modifyRoomDetails(roomId, data, ceoAccessToken);
+    } else {
+      const formData = new FormData();
+      formData.append(
+        "req",
+        JSON.stringify({
+          // 임시
+          glampId: 2,
+          roomName: data.roomName,
+          weekdayPrice: data.weekdayPrice,
+          weekendPrice: data.weekendPrice,
+          peopleNum: data.peopleNum,
+          peopleMax: data.peopleMax,
+          inTime: `${data.inTime}:00:00`,
+          outTime: `${data.outTime}:00:00`,
+          service: data.service.map(code => SERVICE_MAPPING[code] || code),
+        }),
+      );
+
+      roomImg.forEach(image => {
+        if (image.file) {
+          formData.append("roomImg", image.file, image.file.name);
+        }
+      });
+
+      try {
+        if (!ceoAccessToken) return;
+        console.log("전송 데이터:", formData);
+
+        const response = await axios.post(
+          // eslint-disable-next-line no-undef
+          `${process.env.PUBLIC_URL}/api/owner/room`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${ceoAccessToken}`,
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+        console.log("서버 응답:", response.data);
+        setModalMessage("등록이 완료되었습니다.");
+        setIsModalOpen(true);
+      } catch (error) {
+        console.error("에러 발생:", error);
+      }
     }
   };
 

@@ -15,6 +15,7 @@ import { MainButton } from "../components/common/Button";
 import TermsModal from "../components/common/TermsModal";
 import useModal from "../hooks/UseModal";
 import kakaopay from "../images/kakaopay.png";
+
 import {
   InfoStyle,
   InputGroup,
@@ -27,6 +28,7 @@ import {
   UnderLine,
   WrapStyle,
 } from "../styles/PaymentPageStyle";
+import LoadingNobg from "../components/common/LoadingNobg";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
@@ -38,6 +40,8 @@ const PaymentPage = () => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [sameAsOrderer, setSameAsOrderer] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [stayDuration, setStayDuration] = useState(0);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [reservationInfo, setReservationInfo] = useState({
     roomPrice: 0,
@@ -141,7 +145,12 @@ const PaymentPage = () => {
       const apiUrl = `${process.env.PUBLIC_URL}/api/book/reservation?roomId=${roomId}&personnel=${people}&glampId=${glampId}&checkInDate=${inDate}&checkOutDate=${outDate}`;
       try {
         const response = await axios.get(apiUrl);
+        console.log("ddd", response);
         setReservationInfo(response.data);
+        // 몇박 며칠인지 계산
+        const duration = response.data.roomPrice.length;
+        setStayDuration(duration);
+        setIsDataLoaded(true);
       } catch (error) {
         console.log(error);
       }
@@ -150,15 +159,19 @@ const PaymentPage = () => {
     fetchReservationInfo();
   }, [glampId, roomId]);
 
-  const formatRoomPrice = Number(reservationInfo.roomPrice).toLocaleString(
-    "ko-KR",
-  );
-  const formatExtraPrice = Number(
-    reservationInfo.extraChargePrice,
-  ).toLocaleString("ko-KR");
-  const formatPayAmount = Number(reservationInfo.payAmount).toLocaleString(
-    "ko-KR",
-  );
+  const formatRoomPrice = Array.isArray(reservationInfo.roomPrice)
+    ? reservationInfo.roomPrice
+        .reduce((acc, curr) => acc + curr, 0)
+        .toLocaleString("ko-KR")
+    : "0";
+
+  const formatExtraPrice = Number(reservationInfo.extraChargePrice)
+    ? Number(reservationInfo.extraChargePrice).toLocaleString("ko-KR")
+    : "0";
+
+  const formatPayAmount = Number(reservationInfo.payAmount)
+    ? Number(reservationInfo.payAmount).toLocaleString("ko-KR")
+    : "0";
 
   const formatPhone = phoneNumber => {
     return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
@@ -247,6 +260,7 @@ const PaymentPage = () => {
               formatRoomPrice,
               formatExtraPrice,
               formatPayAmount,
+              stayDuration,
             },
           });
         } else {
@@ -311,16 +325,18 @@ const PaymentPage = () => {
   return (
     <WrapStyle>
       <div className="inner">
-        <InfoStyle>
-          <div className="payment-title">
-            <button onClick={onClickBtn}>
-              <FaArrowLeft />
-            </button>
-            <h1>예약 및 결제</h1>
-          </div>
-          <div className="payment-room-info">
-            <h2>픽한 글램핑</h2>
-            <PaymentCard
+        {isDataLoaded ? (
+          <>
+            <InfoStyle>
+              <div className="payment-title">
+                <button onClick={onClickBtn}>
+                  <FaArrowLeft />
+                </button>
+                <h1>예약 및 결제</h1>
+              </div>
+              <div className="payment-room-info">
+                <h2>픽한 글램핑</h2>
+                {/* <PaymentCard
               glampName={glampName}
               inDate={inDate}
               outDate={outDate}
@@ -333,82 +349,99 @@ const PaymentPage = () => {
               formatRoomPrice={formatRoomPrice}
               formatExtraPrice={formatExtraPrice}
               formatPayAmount={formatPayAmount}
-            />
-          </div>
-        </InfoStyle>
-        <PaymentFormStyle onSubmit={handleSubmit}>
-          <ReservationInfo>
-            <h2>예약자 정보</h2>
-            <InputGroup>
-              <ReservationInput>
-                <div>
-                  <label htmlFor="name">예약자 이름</label>
+              stayDuration={stayDuration}
+            /> */}
 
-                  <div className="agree-box">
-                    <label htmlFor="sameAsOrderer" className="check-label">
-                      <input
-                        type="checkbox"
-                        id="sameAsOrderer"
-                        checked={sameAsOrderer}
-                        onChange={handleSameAsOrdererChange}
-                      />
-                      <span className="checkbox-icon" />
-                      <span>회원 정보와 동일</span>
-                    </label>
-                  </div>
-                </div>
-
-                <input
-                  type="text"
-                  id="name"
-                  className="name-input"
-                  autoComplete="off"
-                  placeholder="이름을 입력하세요"
-                  value={userName}
-                  onChange={e => {
-                    setUserName(e.target.value);
-                    setNameValid(namePattern.test(e.target.value));
-                  }}
+                <PaymentCard
+                  glampName={glampName}
+                  inDate={inDate}
+                  outDate={outDate}
+                  checkInTime={checkInTime}
+                  checkOutTime={checkOutTime}
+                  people={people}
+                  roomName={roomName}
+                  roomPrice={roomPrice}
+                  roomMainImage={roomMainImage}
+                  formatRoomPrice={formatRoomPrice}
+                  formatExtraPrice={formatExtraPrice}
+                  formatPayAmount={formatPayAmount}
+                  stayDuration={stayDuration}
                 />
-                {!nameValid && (
-                  <p className="error-message">
-                    이름이 형식에 맞지 않습니다 (1~10자 사이 한글만 가능)
-                  </p>
-                )}
-              </ReservationInput>
-              <ReservationInput>
-                <label htmlFor="cellphone">휴대폰 번호</label>
-                <input
-                  className="cellphone"
-                  type="tel"
-                  id="cellphone"
-                  autoComplete="off"
-                  value={formatPhone(userInfo.userPhone)}
-                  readOnly
-                />
-                <p>휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다</p>
-              </ReservationInput>
-            </InputGroup>
-          </ReservationInfo>
-          <UnderLine />
-          <PaymentMethod>
-            <h2>결제 수단</h2>
-            <PaymentTypeList>
-              <div
-                className={`payment-type ${selectedPayment === "kakao" ? "kakao active" : "kakao"}`}
-                onClick={() => handlePaymentClick("kakao")}
-              >
-                <img alt="kakaopay" src={kakaopay} />
               </div>
-              {/* <div
+            </InfoStyle>
+            <PaymentFormStyle onSubmit={handleSubmit}>
+              <ReservationInfo>
+                <h2>예약자 정보</h2>
+                <InputGroup>
+                  <ReservationInput>
+                    <div>
+                      <label htmlFor="name">예약자 이름</label>
+
+                      <div className="agree-box">
+                        <label htmlFor="sameAsOrderer" className="check-label">
+                          <input
+                            type="checkbox"
+                            id="sameAsOrderer"
+                            checked={sameAsOrderer}
+                            onChange={handleSameAsOrdererChange}
+                          />
+                          <span className="checkbox-icon" />
+                          <span>회원 정보와 동일</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <input
+                      type="text"
+                      id="name"
+                      className="name-input"
+                      autoComplete="off"
+                      placeholder="이름을 입력하세요"
+                      value={userName}
+                      onChange={e => {
+                        setUserName(e.target.value);
+                        setNameValid(namePattern.test(e.target.value));
+                      }}
+                    />
+                    {!nameValid && (
+                      <p className="error-message">
+                        이름이 형식에 맞지 않습니다 (1~10자 사이 한글만 가능)
+                      </p>
+                    )}
+                  </ReservationInput>
+                  <ReservationInput>
+                    <label htmlFor="cellphone">휴대폰 번호</label>
+                    <input
+                      className="cellphone"
+                      type="tel"
+                      id="cellphone"
+                      autoComplete="off"
+                      value={formatPhone(userInfo.userPhone)}
+                      readOnly
+                    />
+                    <p>휴대폰 번호는 숙소에 제공되는 목적으로 수집됩니다</p>
+                  </ReservationInput>
+                </InputGroup>
+              </ReservationInfo>
+              <UnderLine />
+              <PaymentMethod>
+                <h2>결제 수단</h2>
+                <PaymentTypeList>
+                  <div
+                    className={`payment-type ${selectedPayment === "kakao" ? "kakao active" : "kakao"}`}
+                    onClick={() => handlePaymentClick("kakao")}
+                  >
+                    <img alt="kakaopay" src={kakaopay} />
+                  </div>
+                  {/* <div
                 className={`payment-type ${selectedPayment === "toss" ? "toss active" : "toss"}`}
                 onClick={() => handlePaymentClick("toss")}
               >
                 <div className="toss-img" />
                 <img alt="tosspay" src={tosspay} />
               </div> */}
-            </PaymentTypeList>
-            {/* <div className="next-check">
+                </PaymentTypeList>
+                {/* <div className="next-check">
               <label htmlFor="check1" className="check-label">
                 <input
                   type="checkbox"
@@ -420,42 +453,48 @@ const PaymentPage = () => {
                 <p>이 결제 수단을 다음에도 사용</p>
               </label>
             </div> */}
-          </PaymentMethod>
+              </PaymentMethod>
 
-          <PayButton>
-            <div className="agree-box">
-              <label htmlFor="agreeToTerms" className="check-label">
-                <input
-                  type="checkbox"
-                  id="agreeToTerms"
-                  checked={agreeToTerms}
-                  onChange={e => setAgreeToTerms(e.target.checked)}
-                />
-                <span className="checkbox-icon" />
-                <span>이용약관 동의</span>
-                <p
-                  onClick={() => {
-                    setIsTermsModalOpen(true);
+              <PayButton>
+                <div className="agree-box">
+                  <label htmlFor="agreeToTerms" className="check-label">
+                    <input
+                      type="checkbox"
+                      id="agreeToTerms"
+                      checked={agreeToTerms}
+                      onChange={e => setAgreeToTerms(e.target.checked)}
+                    />
+                    <span className="checkbox-icon" />
+                    <span>이용약관 동의</span>
+                    <p
+                      onClick={() => {
+                        setIsTermsModalOpen(true);
+                      }}
+                    >
+                      약관보기 &gt;
+                    </p>
+                    <TermsModal
+                      isOpen={isTermsModalOpen}
+                      onClose={() => setIsTermsModalOpen(false)}
+                      title="숙소 이용규칙 및 취소/환불규정 동의"
+                      content={TERMS_TEXT}
+                    />
+                  </label>
+                </div>
+                <MainButton
+                  label={`${formatPayAmount}원 결제하기`}
+                  onClick={e => {
+                    handleSubmit(e);
                   }}
-                >
-                  약관보기 &gt;
-                </p>
-                <TermsModal
-                  isOpen={isTermsModalOpen}
-                  onClose={() => setIsTermsModalOpen(false)}
-                  title="숙소 이용규칙 및 취소/환불규정 동의"
-                  content={TERMS_TEXT}
                 />
-              </label>
-            </div>
-            <MainButton
-              label={`${formatPayAmount}원 결제하기`}
-              onClick={e => {
-                handleSubmit(e);
-              }}
-            />
-          </PayButton>
-        </PaymentFormStyle>
+              </PayButton>
+            </PaymentFormStyle>
+          </>
+        ) : (
+          <div className="payment-loading">
+            <LoadingNobg />
+          </div>
+        )}
       </div>
       <AlertModal
         isOpen={isModalOpen}

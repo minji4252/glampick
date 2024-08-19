@@ -123,6 +123,7 @@ const PaymentDone = () => {
   const formatRoomPrice = location.state.formatRoomPrice;
   const formatExtraPrice = location.state.formatExtraPrice;
   const formatPayAmount = location.state.formatPayAmount;
+  const stayDuration = location.state.stayDuration;
 
   return (
     <WrapStyle>
@@ -153,6 +154,7 @@ const PaymentDone = () => {
               formatRoomPrice={formatRoomPrice}
               formatExtraPrice={formatExtraPrice}
               formatPayAmount={formatPayAmount}
+              stayDuration={stayDuration}
             />
           </div>
           <ButtonGroup>
