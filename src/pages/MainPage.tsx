@@ -23,10 +23,23 @@ import "../styles/common.css";
 import "../styles/reset.css";
 import MainBanner from "../components/MainBanner";
 
+const regionNames = {
+  all: "전국",
+  seoul: "서울/경기",
+  gangwon: "강원",
+  chungbuk: "충북",
+  chungnam: "충남",
+  gyeongbuk: "경북",
+  gyeongnam: "경남",
+  jeonbuk: "전북",
+  jeonnam: "전남",
+  jeju: "제주",
+} as const;
+
 interface GlampingData {
-  glampId: number;
+  glampId: string;
   glampingName: string;
-  region: string;
+  region: keyof typeof regionNames;
   starPoint: number;
   reviewCount: number;
   price: number;

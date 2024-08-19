@@ -114,6 +114,7 @@ const NoReviewsStyle = styled.div`
 `;
 
 const CeoReview = () => {
+  const [canWriteReview, setCanWriteReview] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
@@ -251,6 +252,7 @@ const CeoReview = () => {
                   starPoint={review.starPoint}
                   reviewImages={review.reviewImages}
                   userProfileImage={review.userProfileImage}
+                  setCanWriteReview={setCanWriteReview}
                 />
               ))
             ) : (

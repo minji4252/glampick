@@ -55,6 +55,7 @@ const MapModal = ({
     lng: parseFloat(item.lng),
     price: item.price,
     glampName: item.glampName,
+    glampId: item.glampId,
   }));
 
   return (
