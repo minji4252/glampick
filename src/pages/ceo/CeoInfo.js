@@ -186,7 +186,7 @@ const CeoInfo = () => {
     defaultValues: {
       ownerEmail: "", // 기본 이메일 (수정 불가)
       ownerName: "", // 기본 이름 (수정 불가)
-      businessNumber: "", //기본 사업자등록번호 (수정 불가)
+      businessNumber: "", // 기본 사업자등록번호 (수정 불가)
       password: "", // 비밀번호
       confirmPassword: "", // 비밀번호 확인
       phone: "", // 핸드폰 번호
@@ -197,7 +197,7 @@ const CeoInfo = () => {
 
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
-  // 정보 변경여부 체크 (기존값)
+  // 사용자 정보 변경여부 체크 (기존값)
   const [initialValues, setInitialValues] = useState({
     password: "",
     phone: "",
@@ -221,6 +221,9 @@ const CeoInfo = () => {
   const [loading, setLoading] = useState(false);
   // 정보 업데이트 완료 후
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  // 핸드폰 번호 상태
+  const [phone, setPhone] = useState("");
+
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
@@ -249,15 +252,16 @@ const CeoInfo = () => {
             Authorization: `Bearer ${ceoAccessToken}`,
           },
         });
-        const { ownerEmail, ownerName, businessNumber, phone } = response.data;
+        const { ownerEmail, ownerName, businessNumber, ownerPhone } =
+          response.data;
 
         setValue("ownerEmail", ownerEmail);
         setValue("ownerName", ownerName);
         setValue("businessNumber", businessNumber);
-        setValue("phone", phone);
+        setValue("phone", ownerPhone);
         setInitialValues({
           password: "",
-          phone: phone,
+          phone: ownerPhone,
         });
 
         console.log(response);
@@ -268,13 +272,19 @@ const CeoInfo = () => {
     getOwnerInfo();
   }, [ceoAccessToken, setValue]);
 
+  // 핸드폰 번호 상태 업데이트
+  useEffect(() => {
+    const phoneValue = watch("phone");
+    setPhone(phoneValue);
+  }, [watch("phone")]);
+
   // 정보 변경사항 확인
   const hasChanges = () => {
     // 현재 값
     const currentValues = {
       password: watch("password") || "",
-      phone: watch("phone") || "",
       confirmPassword: watch("confirmPassword") || "",
+      phone: watch("phone") || "",
     };
     return (
       // watch로 감시하는 값이 undefined일 경우 빈 문자열로 대체
@@ -408,7 +418,7 @@ const CeoInfo = () => {
   };
 
   // 수정 데이터 전송
-  const onSubmit = data => {
+  const onSubmit = async data => {
     if (data.password && !data.confirmPassword) {
       openModal({ message: "비밀번호 확인은 필수입니다." });
       return;
@@ -424,8 +434,17 @@ const CeoInfo = () => {
         openModal({ message: "핸드폰 인증이 완료되지 않았습니다." });
         return;
       }
+
+      // 로딩 상태 시작
+      setLoading(true);
+
       // 변경 사항이 있고 인증이 완료되었으면 정보 수정 API 호출
-      patchOwnerInfo(data.password, data.phone);
+      await patchOwnerInfo(data.password, data.phone);
+
+      // 로딩 상태 종료 후 필드 초기화
+      setLoading(false);
+      setValue("password", "");
+      setValue("confirmPassword", "");
     } else {
       openModal({ message: "변경된 내용이 없습니다." });
     }
@@ -505,11 +524,14 @@ const CeoInfo = () => {
               <div className="input-group">
                 <input
                   type="text"
+                  value={phone}
                   placeholder="휴대폰번호를 정확히 입력해주세요"
                   {...register("phone")}
                   onChange={e => {
                     handleChangePhone(e);
                   }}
+                  disabled={isPhoneVerified}
+                  // 인증완료 시 비활성화
                 />
                 <div className="auth-code-btn">
                   <CeoButton

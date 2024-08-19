@@ -3,7 +3,7 @@ import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import CeoBookingDetail from "../../components/ceo/CeoBookingDetail";
 import BookingCalendar from "../../components/calendar/BookingCalendar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { ceoAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
@@ -145,6 +145,13 @@ const CeoBooking = () => {
       console.error("Error fetching booking details:", error);
     }
   };
+
+  useEffect(() => {
+    // 오늘 날짜로 초기 설정 및 API 호출
+    const today = moment().toDate();
+    setSelectedDate(today);
+    handleDateSelect(today);
+  }, []);
 
   return (
     <WrapStyle>

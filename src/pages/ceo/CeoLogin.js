@@ -43,6 +43,11 @@ const CeoLogin = () => {
     console.log("CeoRole 상태 변경 감지 ", ceoRole);
   }, [ceoRole]);
 
+  // 페이지 로드 시 에러 메시지 초기화
+  useEffect(() => {
+    setErrorMessage("");
+  }, [setErrorMessage]);
+
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
     const savedEmail = localStorage.getItem("savedEmail");

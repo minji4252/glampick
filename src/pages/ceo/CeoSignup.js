@@ -17,6 +17,7 @@ import { ceoValidationSchema } from "../../components/validation/ceoValidationSc
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
 import { TimerWrap } from "./CeoInfo";
+import { useNavigate } from "react-router-dom";
 
 const CeoSignUpStyle = styled.div`
   position: relative;
@@ -124,7 +125,7 @@ const initState = {
   password: "",
   name: "",
   businessNumber: "",
-  // businessRegistrationImg: "",
+  file: "",
   phone: "",
 };
 
@@ -149,7 +150,7 @@ export const modalMessages = {
     ERROR: "사업자등록번호 확인에 실패하였습니다. \n 다시 시도해주세요.",
   },
   smsSend: {
-    SU: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+    SU: "인증코드가 발송되었습니다. \n 문자메세지를 확인해주세요",
     DT: "중복된 전화번호 입니다.",
     IPH: "전화번호 형식이 올바르지 않습니다.",
     default: "문자 발송에 실패하였습니다. \n 다시 시도해주세요.",
@@ -191,24 +192,26 @@ const CeoSignup = () => {
   });
   // 메일발송 여부 확인
   const [isEmailSent, setIsEmailSent] = useState(false);
-  // 사업자번호 인증 확인
-  const [isBusinessNumberCheck, setIsBuisnessNumberCheck] = useState(false);
-  // 핸드폰 발송 여부 확인
-  const [isSmsSent, setIsSmsSent] = useState(false);
-
   // 이메일 인증을 위한 타이머 변수
   const [emailTimer, setEmailTimer] = useState(0);
   const [emailTimerId, setEmailTimerId] = useState(null);
-
-  // 핸드폰 인증을 위한 타이머 변수
-  const [phoneTimer, setPhoneTimer] = useState(0);
-  const [phoneTimerId, setPhoneTimerId] = useState(null);
-
   // 인증 완료 여부 상태 추가
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [isAuthCodeVerified, setIsAuthCodeVerified] = useState(false);
+
+  // 사업자번호 인증 확인
+  const [isBusinessNumberCheck, setIsBuisnessNumberCheck] = useState(false);
   const [isBusinessNumberVerified, setIsBuisnessNumberVerified] =
     useState(false);
+  // 파일 상태 추가
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  // 핸드폰 발송 여부 확인
+  const [isSmsSent, setIsSmsSent] = useState(false);
+  // 핸드폰 인증을 위한 타이머 변수
+  const [phoneTimer, setPhoneTimer] = useState(0);
+  const [phoneTimerId, setPhoneTimerId] = useState(null);
+  // 인증 완료 여부 상태 추가
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isPhoneAuthCodeVerified, setIsPhoneAuthCodeVerified] = useState(false);
 
@@ -216,29 +219,7 @@ const CeoSignup = () => {
   const [loading, setLoading] = useState(false);
   // 모달
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
-
-  // 이메일 발송 로직
-  const handlEmailClick = async e => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const email = watch("ceoEmail");
-      const result = await postOwnerMailSend({ ceoEmail: email });
-      console.log(result);
-      handleModalOpen(result.data.code, "mailSend", openModal);
-      if (result.data.code === "SU") {
-        // 메일 발송 성공
-        setIsEmailSent(true);
-        setEmailTimer(299);
-      } else {
-        setIsEmailSent(false);
-      }
-    } catch (error) {
-      openModal({ message: modalMessages.mailSend.default });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const navigate = useNavigate();
 
   // 메일 인증 타이머 초기화 및 정리
   useEffect(() => {
@@ -266,26 +247,55 @@ const CeoSignup = () => {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
-  // 이메일 인증코드 확인
+  // 이메일 인증코드 발송
+  const handlEmailClick = async e => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const email = watch("ceoEmail");
+      const result = await postOwnerMailSend({ ceoEmail: email });
+      console.log(result);
+      handleModalOpen(result.data.code, "mailSend", openModal);
+      if (result.data.code === "SU") {
+        // 메일 발송 성공
+        setIsEmailSent(true);
+        setEmailTimer(299);
+      } else {
+        setIsEmailSent(false);
+      }
+    } catch (error) {
+      openModal({ message: modalMessages.mailSend.default });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 이메일 인증코드 확인 함수
   const handleEmailAuthCodeClick = async e => {
     e.preventDefault();
     const email = watch("ceoEmail");
     const authCode = watch("emailAuthCode");
+
     try {
       const result = await postOwnerAuthCode({ ceoEmail: email, authCode });
       console.log(result);
-      setIsEmailVerified(true);
-      setIsAuthCodeVerified(true);
-      handleModalOpen(result.data.code, "emailAuth", openModal);
-      setIsEmailSent(false);
-      setEmailTimer(0);
-      if (emailTimerId) {
-        // 타이머 중지
-        clearInterval(emailTimerId);
-        setEmailTimerId(null);
+
+      if (result.data.code === "SU") {
+        // 인증이 성공한 경우에만 처리
+        setIsEmailVerified(true); // 이메일 인증 완료
+        setIsAuthCodeVerified(true); // 이메일 인증 코드 확인 완료
+        handleModalOpen(result.data.code, "emailAuth", openModal);
+        setIsEmailSent(false);
+        setEmailTimer(0);
+
+        if (emailTimerId) {
+          clearInterval(emailTimerId);
+          setEmailTimerId(null);
+        }
       } else {
-        // 이메일 인증 실패 시 상태 업데이트 방지
+        // 인증이 실패한 경우에는 타이머를 유지
         setIsAuthCodeVerified(false);
+        handleModalOpen(result.data.code, "emailAuth", openModal);
       }
     } catch (error) {
       openModal({ message: modalMessages.emailAuth.default });
@@ -340,26 +350,15 @@ const CeoSignup = () => {
     }
   };
 
-  // 핸드폰 인증코드 발송
-  const handlPhoneClick = async e => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const phone = watch("phone");
-      const result = await postOwnerSendSms({ phone });
-      console.log(result);
-      handleModalOpen(result.data.code, "smsSend", openModal);
-      if (result.data.code === "SU") {
-        // Sms 발송 성공
-        setIsSmsSent(true);
-        setPhoneTimer(299);
-      } else {
-        setIsSmsSent(false);
-      }
-    } catch (error) {
-      openModal({ message: modalMessages.smsSend.default });
-    } finally {
-      setLoading(false);
+  // 사업자등록증 업로드
+  const handleImageUpload = e => {
+    const file = e.target.files[0];
+    if (file) {
+      console.log("선택된 파일:", file);
+      setSelectedFile(file); // 선택된 파일을 상태에 저장
+    } else {
+      console.log("파일이 선택되지 않았습니다.");
+      setSelectedFile(null);
     }
   };
 
@@ -389,26 +388,30 @@ const CeoSignup = () => {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
-  // 핸드폰 인증 타이머 초기화 및 정리
-  useEffect(() => {
-    if (phoneTimer > 0 && !phoneTimerId) {
-      const id = setInterval(() => {
-        setPhoneTimer(prevPhoneTimer => prevPhoneTimer - 1);
-      }, 1000); // 1000밀리초 (1초)마다 실행
-      setPhoneTimerId(id);
-    } else if (phoneTimer === 0 && phoneTimerId) {
-      clearInterval(phoneTimerId);
-      setPhoneTimerId(null);
-    }
-    return () => {
-      if (phoneTimerId) {
-        clearInterval(phoneTimerId);
-        setPhoneTimerId(null);
+  // 휴대폰 인증코드 발송
+  const handlPhoneClick = async e => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const phone = watch("phone");
+      const result = await postOwnerSendSms({ phone });
+      console.log(result);
+      handleModalOpen(result.data.code, "smsSend", openModal);
+      if (result.data.code === "SU") {
+        // Sms 발송 성공
+        setIsSmsSent(true);
+        setPhoneTimer(299);
+      } else {
+        setIsSmsSent(false);
       }
-    };
-  }, [phoneTimer, phoneTimerId]);
+    } catch (error) {
+      openModal({ message: modalMessages.smsSend.default });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // 휴대폰 인증코드 확인 로직
+  // 휴대폰 인증코드 확인
   const handlePhoneAuthCodeClick = async e => {
     e.preventDefault();
     const phone = watch("phone");
@@ -419,18 +422,19 @@ const CeoSignup = () => {
         phoneAuthCode,
       });
       console.log(result);
-      handleModalOpen(result.data.code, "phoneAuth", openModal);
+
       if (result.data.code === "SU") {
-        // Sms 발송 성공
+        // 인증이 성공한 경우에만 처리
         setIsPhoneVerified(true);
         setIsPhoneAuthCodeVerified(true);
-      }
-      setIsSmsSent(false);
-      setPhoneTimer(0);
-      if (phoneTimerId) {
-        // 타이머 중지
-        clearInterval(phoneTimerId);
-        setPhoneTimerId(null);
+        handleModalOpen(result.data.code, "phoneAuth", openModal);
+        setIsSmsSent(false);
+        setPhoneTimer(0);
+        if (phoneTimerId) {
+          // 타이머 중지
+          clearInterval(phoneTimerId);
+          setPhoneTimerId(null);
+        }
       } else {
         // 핸드폰 인증 실패 시 상태 업데이트 방지
         setIsPhoneAuthCodeVerified(false);
@@ -440,36 +444,40 @@ const CeoSignup = () => {
     }
   };
 
-  // 전화번호 자동 변경
-  const handleChangePhone = e => {
-    const phoneNumber = formatPhoneNumber(e.target.value);
-    // console.log(phoneNumber);
-    setValue("phone", phoneNumber);
-  };
+  // // 전화번호 자동 변경
+  // const handleChangePhone = e => {
+  //   const phoneNumber = formatPhoneNumber(e.target.value);
+  //   // console.log(phoneNumber);
+  //   setValue("phone", phoneNumber);
+  // };
 
-  // 전화번호 형식
-  const formatPhoneNumber = value => {
-    if (!value) return value;
-    const phoneNumber = value.replace(/[^\d]/g, "");
-    const phoneNumberLength = phoneNumber.length;
-    if (phoneNumberLength < 4) return phoneNumber;
-    if (phoneNumberLength < 8) {
-      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
-    }
-    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
-  };
+  // // 전화번호 형식
+  // const formatPhoneNumber = value => {
+  //   if (!value) return value;
+  //   const phoneNumber = value.replace(/[^\d]/g, "");
+  //   const phoneNumberLength = phoneNumber.length;
+  //   if (phoneNumberLength < 4) return phoneNumber;
+  //   if (phoneNumberLength < 8) {
+  //     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+  //   }
+  //   return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  // };
 
   const onSubmit = async data => {
-    // 회원가입시 확인 사항
-    // 모든값 입력 (이건 스키마에서 확인)
-    // 이메일 인증여부 체크
-    if (!isEmailSent) {
-      openModal({ message: "이메일을 인증해주세요." });
+    console.log("이메일 인증 상태:", isEmailSent);
+    console.log("이메일 인증코드 확인 상태:", isAuthCodeVerified);
+    console.log("사업자등록번호 체크 상태:", isBusinessNumberCheck);
+    console.log("선택된 파일:", selectedFile);
+    console.log("휴대폰 인증 상태:", isSmsSent);
+    console.log("휴대폰 인증코드 확인 상태:", isPhoneAuthCodeVerified);
+    // 사업자등록증 첨부 체크
+    if (!selectedFile) {
+      openModal({ message: "사업자등록증을 첨부해주세요." });
       return;
     }
-    // 이메일 인증코드 확인 체크
-    if (!isAuthCodeVerified) {
-      openModal({ message: "이메일 인증코드를 확인해주세요." });
+    // 이메일 인증여부 체크
+    if (!isEmailVerified || !isAuthCodeVerified) {
+      openModal({ message: "이메일 인증을 완료해주세요." });
       return;
     }
     // 사업자등록번호 체크
@@ -478,18 +486,27 @@ const CeoSignup = () => {
       return;
     }
     // 핸드폰 인증여부 체크
-    if (!isSmsSent) {
-      openModal({ message: "휴대폰을 인증해주세요." });
-      return;
-    }
-    // 핸드폰 인증코드 확인 체크
-    if (!isPhoneAuthCodeVerified) {
-      openModal({ message: "휴대폰 인증코드를 확인해주세요." });
+    if (!isPhoneVerified || !isPhoneAuthCodeVerified) {
+      openModal({ message: "휴대폰 인증을 완료해주세요." });
       return;
     }
     console.log("전송시 데이터 ", data);
     try {
-      const response = await postOwnerSignUp(data);
+      const response = await postOwnerSignUp({
+        file: selectedFile, // 상태에서 파일 가져오기
+        businessNumber: data.businessNumber,
+        ceoEmail: data.ceoEmail,
+        password: data.password,
+        name: data.name,
+        phone: data.phone,
+      });
+      if (response.data.code === "SU") {
+        openModal({
+          message:
+            "회원가입에 성공하였습니다. \n 로그인은 관리자 승인 후 처리됩니다.",
+          onClose: () => navigate("/ceologin"), // 모달 닫힘 후 페이지 이동
+        });
+      }
       console.log(response);
     } catch (error) {
       console.error("회원가입 실패:", error);
@@ -510,6 +527,7 @@ const CeoSignup = () => {
                   type="email"
                   placeholder="glampickceo@good.kr"
                   {...register("ceoEmail")}
+                  disabled={isEmailVerified} // 인증 완료 시 비활성화
                 />
                 <div className="form-button">
                   <CeoButton
@@ -620,9 +638,13 @@ const CeoSignup = () => {
               <label htmlFor="businessRegistrationImg">사업자등록증 첨부</label>
               <input
                 type="file"
+                accept="image/*" // 이미지 형식만 가능
                 {...register("businessRegistrationImg", {
                   required: "사업자등록증 첨부는 필수 항목입니다.",
                 })}
+                onChange={e => {
+                  handleImageUpload(e);
+                }}
               />
             </div>
             {errors.businessRegistrationImg && (
@@ -637,9 +659,10 @@ const CeoSignup = () => {
                   type="text"
                   placeholder="휴대폰번호를 정확히 입력해주세요"
                   {...register("phone")}
-                  onChange={e => {
-                    handleChangePhone(e);
-                  }}
+                  disabled={isPhoneVerified} // 인증 완료 시 비활성화
+                  // onChange={e => {
+                  //   handleChangePhone(e);
+                  // }}
                 />
                 <div className="form-button">
                   <CeoButton
@@ -672,9 +695,9 @@ const CeoSignup = () => {
                 </div>
               </div>
             </div>
-            {errors.phoneAuthCode && (
+            {/* {errors.phoneAuthCode && (
               <ErrorMessage>{errors.phoneAuthCode.message}</ErrorMessage>
-            )}
+            )} */}
             {/* 타이머 */}
             {isSmsSent && phoneTimer > 0 && (
               <TimerWrap>

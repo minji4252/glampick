@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import {
   ceoRoleState,
@@ -7,6 +6,8 @@ import {
   isLoginState,
   userRoleState,
 } from "../atoms/loginState";
+import { Navigate } from "react-router-dom";
+
 interface ProtectedRouteProps {
   allowedRoles: string[];
   children: React.ReactNode;

@@ -61,7 +61,6 @@ function App() {
   const [isCeoLogin, setIsCeoLogin] = useRecoilState(isCeoLoginState);
   const [ceoRole, setCeoRole] = useRecoilState(ceoRoleState);
 
-  const locationNow = useLocation();
   const navigate = useNavigate();
 
   // 페이지 이동할 때마다 로그인 및 사용자 유형 확인
@@ -93,7 +92,7 @@ function App() {
       setIsCeoLogin(false);
       setCeoRole(null);
     }
-  }, [locationNow]);
+  }, [navigate]);
 
   // 로그아웃
   const handleLogout = async () => {

@@ -89,19 +89,34 @@ export const postOwnerCheckSms = async ({ phone, phoneAuthCode }) => {
 
 // ceo 회원가입 api 호출
 export const postOwnerSignUp = async ({
+  file,
   businessNumber,
   ceoEmail,
   password,
   name,
   phone,
 }) => {
+  console.log("파일:", file);
   try {
-    const response = await axios.post(`/api/auth/owner/sign-up`, {
-      businessNumber: businessNumber,
-      ownerEmail: ceoEmail,
-      ownerPw: password,
-      ownerName: name,
-      ownerPhone: phone,
+    // FormData 객체 생성
+    const formData = new FormData();
+    // FormData에 텍스트 필드 추가
+    formData.append(
+      "dto",
+      JSON.stringify({
+        businessNumber: businessNumber,
+        ownerEmail: ceoEmail,
+        ownerPw: password,
+        ownerName: name,
+        ownerPhone: phone,
+      }),
+    );
+    // FormData에 파일 추가
+    formData.append("file", file);
+    const response = await axios.post(`/api/auth/owner/sign-up`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     console.log(response);
     return response;
