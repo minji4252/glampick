@@ -202,6 +202,7 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
   const handleCloseBookCancelModdal = () => {
     setIsCancelModalOpen(false);
   };
+
   // 후기작성 모달
   const handleOpenCreateReviewModal = () => {
     setIsReviewModalOpen(true);
@@ -209,6 +210,7 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
   const handleCloseCreateReviewModal = () => {
     setIsReviewModalOpen(false);
   };
+
   // 예약 취소 성공 시 모달 닫기 및 comment 업데이트
   const handleBookingCancelSuccess = (updatedComment?: string) => {
     setIsCancelModalOpen(false);
@@ -219,6 +221,7 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
       onBookingCancelled(booking); // 부모 컴포넌트로 변경 사항 알림
     }
   };
+
   // 후기작성 버튼 표시여부
   const [canWriteReview, setCanWriteReview] = useState(0);
   // booking.status === 1 && !reviewWritten;
