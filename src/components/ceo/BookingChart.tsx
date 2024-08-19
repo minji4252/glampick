@@ -9,9 +9,10 @@ interface BookingDataItem {
 interface BookingChartProps {
   data: BookingDataItem[];
   isWeekly: boolean;
+  period: string;
 }
 
-// 날짜 변환 0000-00-00 -> 00-00
+// 날짜 형식 변환 0000-00-00 -> 00-00
 const formatDate = (date: string): string => {
   const dateParts = date.split("-");
   return `${dateParts[1]}-${dateParts[2]}`;
@@ -20,42 +21,63 @@ const formatDate = (date: string): string => {
 // 주차별 데이터 집계 함수
 const aggregateDataByWeek = (data: BookingDataItem[]): BookingDataItem[] => {
   const weeks: { [key: number]: number } = {};
-
   data.forEach(item => {
     const date = new Date(item.checkInDate);
     const week = Math.ceil(date.getDate() / 7);
-
     if (!weeks[week]) {
       weeks[week] = 0;
     }
-
     weeks[week] += Number(item.reservationCount);
   });
-
-  return Object.keys(weeks).map(week => {
-    const weekNumber = Number(week);
-    return {
-      checkInDate: `${weekNumber}주차`,
-      reservationCount: weeks[weekNumber].toString(),
-    };
-  });
+  return Object.keys(weeks).map(week => ({
+    checkInDate: `${week}주차`,
+    reservationCount: weeks[Number(week)].toString(),
+  }));
 };
 
-const BookingChart: React.FC<BookingChartProps> = ({ data, isWeekly }) => {
-  console.log("예약수isWeekly", isWeekly);
+// 월별 데이터 집계 함수
+const aggregateDataByMonth = (data: BookingDataItem[]): BookingDataItem[] => {
+  const months: { [key: string]: number } = {};
+  data.forEach(item => {
+    const date = new Date(item.checkInDate);
+    const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
+    if (!months[month]) {
+      months[month] = 0;
+    }
+    months[month] += Number(item.reservationCount);
+  });
+  return Object.keys(months).map(month => ({
+    checkInDate: month,
+    reservationCount: months[month].toString(),
+  }));
+};
+
+const BookingChart: React.FC<BookingChartProps> = ({ data, period }) => {
+  console.log("현재 기간은", period);
   const chartData = [
     {
       id: "예약 수",
       color: "#f49998",
-      data: isWeekly
-        ? data.map(item => ({
-            x: formatDate(item.checkInDate),
-            y: Number(item.reservationCount),
-          }))
-        : aggregateDataByWeek(data).map(item => ({
-            x: item.checkInDate,
-            y: Number(item.reservationCount),
-          })),
+      data:
+        period === "daily"
+          ? data.map(item => ({
+              x: formatDate(item.checkInDate),
+              y: Number(item.reservationCount),
+            }))
+          : period === "weekly"
+            ? aggregateDataByWeek(data).map(item => ({
+                x: item.checkInDate,
+                y: Number(item.reservationCount),
+              }))
+            : period === "monthly"
+              ? aggregateDataByMonth(data).map(item => ({
+                  x: item.checkInDate,
+                  y: Number(item.reservationCount),
+                }))
+              : data.map(item => ({
+                  x: formatDate(item.checkInDate),
+                  y: Number(item.reservationCount),
+                })),
     },
   ];
 
@@ -90,7 +112,6 @@ const BookingChart: React.FC<BookingChartProps> = ({ data, isWeekly }) => {
           legend: "날짜",
           legendOffset: 36,
           legendPosition: "middle",
-          truncateTickAt: 0,
         }}
         axisLeft={{
           tickSize: 5,
@@ -99,7 +120,6 @@ const BookingChart: React.FC<BookingChartProps> = ({ data, isWeekly }) => {
           legend: "예약 수",
           legendOffset: -40,
           legendPosition: "middle",
-          truncateTickAt: 0,
         }}
         enableGridX={false}
         colors={["#f49998"]}

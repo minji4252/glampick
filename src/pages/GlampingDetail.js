@@ -617,6 +617,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
                 outDate: formatDate(new Date(dates[1])),
               });
             }}
+            minDate={new Date()}
           />
         </div>
         <div className="sticky-people">

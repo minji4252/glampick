@@ -281,6 +281,7 @@ const SearchPage = () => {
                 <SearchCalendar
                   selectedDate={selectedDate}
                   setSelectedDate={setSelectedDate}
+                  minDate={new Date()}
                 />
                 <button onClick={handleApplyDate} className="date-select">
                   선택
