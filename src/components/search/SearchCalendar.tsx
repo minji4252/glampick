@@ -85,11 +85,13 @@ const SearchDate = styled.div`
 interface SearchCalendarProps {
   selectedDate: [Date | null, Date | null];
   setSelectedDate: (dates: [Date | null, Date | null]) => void;
+  minDate?: Date;
 }
 
 const SearchCalendar: React.FC<SearchCalendarProps> = ({
   selectedDate,
   setSelectedDate,
+  minDate,
 }) => {
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
@@ -123,7 +125,7 @@ const SearchCalendar: React.FC<SearchCalendarProps> = ({
         locale={ko}
         dateFormat="yyyy-MM-dd"
         placeholderText="날짜를 선택하세요"
-        minDate={new Date()} // 지난 날짜 선택 못하게
+        minDate={minDate}
         className="datepicker-custom"
       />
     </SearchDate>

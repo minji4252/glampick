@@ -1,18 +1,74 @@
 import React, { useEffect, useState } from "react";
 import { ResponsiveBar } from "@nivo/bar";
 
-// 날짜 변환 0000-00-00 -> 00-00
-const formatDate = date => {
+interface SalesDataItem {
+  times: string;
+  roomName: string;
+  pay: string;
+}
+
+interface SalesChartProps {
+  data: SalesDataItem[];
+  period: string;
+}
+
+// 날짜 형식 변환 0000-00-00 -> 00-00
+const formatDate = (date: string): string => {
   const dateParts = date.split("-");
   return `${dateParts[1]}-${dateParts[2]}`;
 };
 
+// 주차별 데이터 집계 함수
+const aggregateDataByWeek = (data: SalesDataItem[]): any[] => {
+  const weeks: { [key: string]: { [roomName: string]: number } } = {};
+
+  data.forEach(item => {
+    const date = new Date(item.times);
+    const week = `${Math.ceil(date.getDate() / 7)}주차`;
+
+    if (!weeks[week]) {
+      weeks[week] = {};
+    }
+
+    weeks[week][item.roomName] =
+      (weeks[week][item.roomName] || 0) + parseFloat(item.pay);
+  });
+
+  return Object.keys(weeks).map(week => ({
+    country: week,
+    ...weeks[week],
+  }));
+};
+
+// 월별 데이터 집계 함수
+const aggregateDataByMonth = (data: SalesDataItem[]): any[] => {
+  const months: { [key: string]: { [roomName: string]: number } } = {};
+
+  data.forEach(item => {
+    const date = new Date(item.times);
+    const month = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
+    if (!months[month]) {
+      months[month] = {};
+    }
+
+    months[month][item.roomName] =
+      (months[month][item.roomName] || 0) + parseFloat(item.pay);
+  });
+
+  return Object.keys(months).map(month => ({
+    country: month,
+    ...months[month],
+  }));
+};
+
 // 날짜별 데이터 집계 함수
-const aggregateDataByDate = data => {
-  const dates = {};
+const aggregateDataByDate = (data: SalesDataItem[]): any[] => {
+  const dates: { [key: string]: { [roomName: string]: number } } = {};
 
   data.forEach(item => {
     const date = formatDate(item.times);
+
     if (!dates[date]) {
       dates[date] = {};
     }
@@ -27,52 +83,28 @@ const aggregateDataByDate = data => {
   }));
 };
 
-// 주차별 데이터 집계 함수
-const aggregateDataByWeek = data => {
-  const weeks = {};
-
-  data.forEach(item => {
-    const date = new Date(item.times);
-    const week = Math.ceil(date.getDate() / 7);
-    const key = `${week}주차`;
-
-    if (!weeks[key]) {
-      weeks[key] = {};
-    }
-
-    weeks[key][item.roomName] =
-      (weeks[key][item.roomName] || 0) + parseFloat(item.pay);
-  });
-
-  const sortedWeeks = Object.keys(weeks).sort((a, b) => {
-    const weekA = parseInt(a, 10);
-    const weekB = parseInt(b, 10);
-    return weekA - weekB;
-  });
-
-  return sortedWeeks.map(week => ({
-    country: week,
-    ...weeks[week],
-  }));
-};
-
-const SalesChart = ({ data, isWeekly }) => {
-  const [chartData, setChartData] = useState([]);
+const SalesChart: React.FC<SalesChartProps> = ({ data, period }) => {
+  const [chartData, setChartData] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log("매출 isWeekly", isWeekly);
-    const transformedData = isWeekly
-      ? aggregateDataByDate(data)
-      : aggregateDataByWeek(data);
+    let transformedData: SalesDataItem[] = [];
+
+    if (period === "daily") {
+      transformedData = aggregateDataByDate(data);
+    } else if (period === "weekly") {
+      transformedData = aggregateDataByWeek(data);
+    } else if (period === "monthly") {
+      transformedData = aggregateDataByMonth(data);
+    }
 
     setChartData(transformedData);
-  }, [data, isWeekly]);
+  }, [data, period]);
 
   return (
     <div style={{ width: "100%", height: 450 }}>
       <ResponsiveBar
         data={chartData}
-        keys={Array.from(new Set(data?.map(item => item.roomName)))}
+        keys={Array.from(new Set(data.map(item => item.roomName)))}
         indexBy="country"
         margin={{ top: 50, right: 150, bottom: 50, left: 60 }}
         padding={0.7}

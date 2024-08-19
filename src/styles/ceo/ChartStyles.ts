@@ -35,6 +35,12 @@ export const ChartWrapStyle = styled.div`
   }
 `;
 
+export const ChartLoading = styled.div`
+  div {
+    position: static !important;
+  }
+`;
+
 export const StateStyle = styled.div`
   width: 100%;
   display: flex;
@@ -49,6 +55,8 @@ export const StateStyle = styled.div`
 
   > div {
     border: 1px solid ${colorSystem.g150};
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.07) 3px 3px 3px 0px;
     max-width: 140px;
     width: 100%;
     padding: 10px;
@@ -57,8 +65,6 @@ export const StateStyle = styled.div`
     gap: 10px;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    box-shadow: rgba(0, 0, 0, 0.07) 3px 3px 3px 0px;
 
     h2 {
       color: ${colorSystem.g800};
@@ -100,7 +106,7 @@ export const StateStyle = styled.div`
 export const TapStyle = styled.div`
   width: 100%;
   max-width: 900px;
-  margin-top: 60px;
+  margin-top: 30px;
 
   .period-select {
     justify-content: flex-end;
@@ -109,9 +115,15 @@ export const TapStyle = styled.div`
     span {
       cursor: pointer;
       &:hover {
-        color: ${colorSystem.ceo700};
+        color: ${colorSystem.ceo300};
       }
     }
+  }
+
+  .period-select span.active {
+    color: ${colorSystem.ceo};
+    font-weight: 700;
+    font-size: 1rem;
   }
 
   > div {
@@ -158,6 +170,26 @@ export const TapStyle = styled.div`
     font-weight: 400;
     font-size: 1.5rem;
     font-family: "Radio Canada", sans-serif !important;
+  }
+`;
+
+export const ChartCalendarStyle = styled.div<{ show: boolean }>`
+  opacity: ${({ show }) => (show ? 1 : 0)};
+  pointer-events: ${({ show }) => (show ? "auto" : "none")};
+  justify-content: flex-end;
+  margin-bottom: 15px !important;
+
+  .datepicker-custom {
+    border: 1px solid ${colorSystem.g150};
+    border-radius: 12px;
+    box-shadow: rgba(0, 0, 0, 0.07) 3px 3px 3px 0px;
+    font-size: 0.8rem !important;
+    width: 190px !important;
+    text-align: center;
+    padding: 0 !important;
+    font-family: "Radio Canada", sans-serif !important;
+    font-weight: 400;
+    color: ${colorSystem.black};
   }
 `;
 
