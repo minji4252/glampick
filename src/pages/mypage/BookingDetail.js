@@ -239,11 +239,15 @@ const BookingDetail = () => {
   };
 
   // 예약이 취소될 때 BookingDetail 컴포넌트의 상태를 업데이트
-  const handleBookingCancelled = reservationId => {
+  const handleBookingCancelled = cancelledBooking => {
+    // 이용 예정 목록에서 예약 취소된 항목을 제거
     setUpcomingBookings(prevBookings =>
-      prevBookings.filter(booking => booking.reservationId !== reservationId),
+      prevBookings.filter(
+        booking => booking.reservationId !== cancelledBooking.reservationId,
+      ),
     );
-    setCancelledBookings(prevBookings => [...prevBookings, reservationId]);
+    // 취소된 예약을 취소 목록에 추가
+    setCancelledBookings(prevBookings => [...prevBookings, cancelledBooking]);
   };
 
   // 현재 보여줄 예약 목록
@@ -299,6 +303,7 @@ const BookingDetail = () => {
                     booking={booking}
                     upcoming={true}
                     glampId={booking.glampId}
+                    onBookingCancelled={handleBookingCancelled}
                   />
                 </div>
               ))

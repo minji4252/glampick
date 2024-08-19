@@ -97,6 +97,11 @@ const CeoWithdrawModal: React.FC<CeoWithdrawModalProps> = ({
         if (error.response?.data.code === "CD") {
           setResultMessage(error.response.data.message);
         }
+        if (error.response?.data.code === "DBE") {
+          setResultMessage(
+            "서버오류로 탈퇴에 실패하였습니다 \n 관리자에게 문의주세요",
+          );
+        }
       } else {
         setResultMessage("탈퇴처리 실패 자세한 사항은 관리자에게 문의주세요");
       }

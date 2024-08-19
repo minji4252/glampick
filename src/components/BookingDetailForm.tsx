@@ -154,6 +154,7 @@ interface BookingDetailFormProps {
   isCompleted?: boolean;
   isCancelled?: boolean;
   glampId: number;
+  onBookingCancelled?: (booking: Booking) => void; // 예약 취소 시 호출되는 콜백 추가
 }
 
 export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
@@ -162,6 +163,7 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
   isCompleted,
   isCancelled,
   glampId,
+  onBookingCancelled,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState<boolean>(false);
@@ -172,6 +174,7 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
     setRoomMainImage("pic/glamping/1/glamp/glamping1.jpg");
     setReviewWritten(booking.reviewWritten);
   }, [booking]);
+
   // 한국어 locale 설정
   moment.locale("ko");
 
@@ -192,7 +195,6 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
     return `${hours}:${minutes}`;
   };
 
-  // 예약날짜 형태 변환
   // 예약취소 모달
   const handleOpenBookCancelModdal = () => {
     setIsCancelModalOpen(true);
@@ -207,12 +209,16 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
   const handleCloseCreateReviewModal = () => {
     setIsReviewModalOpen(false);
   };
-  // 예약 취소 성공 시 모달 닫기
-  const handleBookingCancelSuccess = () => {
+  // 예약 취소 성공 시 모달 닫기 및 comment 업데이트
+  const handleBookingCancelSuccess = (updatedComment?: string) => {
     setIsCancelModalOpen(false);
-  };
-  if (!booking) return null;
+    booking.comment = updatedComment || ""; // `booking` 객체의 comment 필드를 직접 수정
+    booking.status = 2; // 상태 업데이트
 
+    if (onBookingCancelled) {
+      onBookingCancelled(booking); // 부모 컴포넌트로 변경 사항 알림
+    }
+  };
   // 후기작성 버튼 표시여부
   const [canWriteReview, setCanWriteReview] = useState(0);
   // booking.status === 1 && !reviewWritten;
@@ -299,7 +305,7 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
         onClose={() => {
           handleCloseBookCancelModdal();
         }}
-        onConfirm={handleBookingCancelSuccess} // 예약 취소 성공 시 모달 닫기
+        onConfirm={handleBookingCancelSuccess} // 취소 성공 시 콜백 호출
         comment={booking.comment}
         reservationId={booking.reservationId}
         onBookingCancelled={() => {

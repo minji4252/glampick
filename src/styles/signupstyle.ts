@@ -1,6 +1,10 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "./color";
 
+interface TabProps {
+  active: boolean;
+}
+
 export const WrapStyle = styled.div`
   position: relative;
 
@@ -141,7 +145,7 @@ export const Tabs = styled.div`
   border-bottom: 1px solid #355179;
 `;
 
-export const Tab = styled.button`
+export const Tab = styled.button<TabProps>`
   flex: 1; // 각 탭을 균등하게 배치
   font-size: 1rem;
   padding: 10px 0;

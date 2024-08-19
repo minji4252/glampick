@@ -22,7 +22,7 @@ export const isLoginState = atom<boolean>({
 
 export const accessTokenState = atom<string | null>({
   key: "accessTokenState",
-  default: "",
+  default: null,
 });
 
 // userRole 상태
@@ -55,7 +55,7 @@ export const isCeoLoginState = atom({
 
 export const ceoAccessTokenState = atom<string | null>({
   key: "ceoAccessTokenState",
-  default: "",
+  default: null,
 });
 
 // ceoRole 상태

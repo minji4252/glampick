@@ -283,12 +283,18 @@ const LoginPage = () => {
 
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
+    console.log("user_role:", userRole);
     const savedEmail = localStorage.getItem("savedEmail");
     if (savedEmail) {
       setUserEmail(savedEmail);
       setRememberMe(true); // 로컬 스토리지에서 이메일을 불러오면 체크박스를 선택된 상태로 설정
     }
   }, []);
+
+  // 페이지 로드 시 에러 메시지 초기화
+  useEffect(() => {
+    setErrorMessage("");
+  }, [setErrorMessage]);
 
   // 이메일 저장
   const handleRememberMeChange = () => {
