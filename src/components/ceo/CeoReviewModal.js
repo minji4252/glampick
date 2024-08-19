@@ -120,13 +120,7 @@ const CeoReviewModal = ({
       setCanWriteReview(true);
       onClose();
     } catch (error) {
-      if (error.response) {
-        console.error("서버 에러: ", error.response.data);
-      } else if (error.request) {
-        console.error("요청 에러: ", error.request);
-      } else {
-        console.error("에러 이유: ", error.message);
-      }
+      console.error(error);
     }
   };
   if (!isOpen) return null;

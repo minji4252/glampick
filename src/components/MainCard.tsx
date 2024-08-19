@@ -1,11 +1,34 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { MdPlace } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { ArticleContent, MainArticle } from "../styles/MainPageStyle";
 import { MainButton } from "./common/Button";
 
-const MainCard = ({
+interface MainCardProps {
+  glampId: string;
+  glampingName: string;
+  region: keyof typeof regionNames;
+  starPoint: number;
+  reviewCount: number;
+  price: number;
+  glampingImg: string;
+}
+
+const regionNames = {
+  all: "전국",
+  seoul: "서울/경기",
+  gangwon: "강원",
+  chungbuk: "충북",
+  chungnam: "충남",
+  gyeongbuk: "경북",
+  gyeongnam: "경남",
+  jeonbuk: "전북",
+  jeonnam: "전남",
+  jeju: "제주",
+} as const;
+
+const MainCard: FC<MainCardProps> = ({
   glampId,
   glampingName,
   region,
@@ -17,19 +40,6 @@ const MainCard = ({
   // 가격, 리뷰 단위 수정
   const formattedPrice = Number(price).toLocaleString("ko-KR");
   const formattedStarPoint = Number(starPoint).toFixed(1);
-
-  const regionNames = {
-    all: "전국",
-    seoul: "서울/경기",
-    gangwon: "강원",
-    chungbuk: "충북",
-    chungnam: "충남",
-    gyeongbuk: "경북",
-    gyeongnam: "경남",
-    jeonbuk: "전북",
-    jeonnam: "전남",
-    jeju: "제주",
-  };
 
   return (
     <MainArticle key={glampId}>

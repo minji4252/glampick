@@ -45,7 +45,17 @@ const AdminStoreCardStyle = styled.div`
   }
 `;
 
-const AdminStoreCard = ({
+interface AdminStoreCardProps {
+  ownerId: string;
+  glampId: number;
+  ownerName: string;
+  businessNumber: string;
+  glampName: string;
+  region: string;
+  onApproval: (glampId: number) => void;
+}
+
+const AdminStoreCard: React.FC<AdminStoreCardProps> = ({
   ownerId,
   glampId,
   ownerName,
@@ -55,7 +65,7 @@ const AdminStoreCard = ({
   onApproval,
 }) => {
   // 모달 열 닫
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
