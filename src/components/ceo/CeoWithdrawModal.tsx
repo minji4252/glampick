@@ -78,12 +78,15 @@ const CeoWithdrawModal: React.FC<CeoWithdrawModalProps> = ({
       console.log(response);
       if (response.data.code === "SU") {
         console.log("회원 탈퇴 처리완료", response);
-        setResultMessage("회원 탈퇴가 완료되었습니다."); // Alert 모달 열기
-        localStorage.removeItem("ceoAccessToken");
-        localStorage.removeItem("ceoRole");
-        setIsCeoLogin(false);
-        setCeoRole(null);
-        navigate("/");
+        setResultMessage("탈퇴 신청이 완료되었습니다.");
+        setTimeout(() => {
+          localStorage.removeItem("ceoAccessToken");
+          localStorage.removeItem("ownerRole");
+          localStorage.removeItem("savedEmail");
+          setIsCeoLogin(false);
+          setCeoRole(null);
+          navigate("/ceologin");
+        }, 2000); // 3초 지연
       } else if (response.data.code === "CD") {
         setResultMessage("현재 예약된 내역이 존재하므로 \n 탈퇴가 불가합니다.");
       } else {
