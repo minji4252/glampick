@@ -1,14 +1,41 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from "react";
 import axios from "axios";
 import useFetchCeoAccessToken from "../utils/CeoAccessToken";
 
-const CeoContext = createContext();
+interface CeoInfo {
+  ownerEmail: string;
+  ownerName: string;
+}
+
+interface CeoContextType {
+  ceoInfo: CeoInfo;
+  setCeoInfo: React.Dispatch<React.SetStateAction<CeoInfo>>;
+}
+
+const defaultCeoContextValue: CeoContextType = {
+  ceoInfo: {
+    ownerEmail: "",
+    ownerName: "",
+  },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setCeoInfo: () => {},
+};
+
+const CeoContext = createContext<CeoContextType>(defaultCeoContextValue);
 
 export const useCeo = () => useContext(CeoContext);
 
-export const CeoProvider = ({ children }) => {
+export const CeoProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const ceoAccessToken = useFetchCeoAccessToken();
-  const [ceoInfo, setCeoInfo] = useState({
+  const [ceoInfo, setCeoInfo] = useState<CeoInfo>({
     ownerEmail: "",
     ownerName: "",
   });

@@ -38,6 +38,7 @@ const MapModal = ({
         .then(response => {
           const { mapList } = response.data;
           setSearchData(mapList);
+          console.log("mapList", mapList);
           setIsLoading(false);
         })
         .catch(error => {
@@ -56,6 +57,7 @@ const MapModal = ({
     price: item.price,
     glampName: item.glampName,
     glampId: item.glampId,
+    location: item.location,
   }));
 
   return (

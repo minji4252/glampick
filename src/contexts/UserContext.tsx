@@ -1,14 +1,41 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import useFetchAccessToken from "../utils/UserAccessToken";
 
-const UserContext = createContext();
+interface UserInfo {
+  userEmail: string;
+  userNickname: string;
+}
+
+interface UserContextType {
+  userInfo: UserInfo;
+  setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>;
+}
+
+const defaultUserContextValue: UserContextType = {
+  userInfo: {
+    userEmail: "",
+    userNickname: "",
+  },
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setUserInfo: () => {},
+};
+
+const UserContext = createContext<UserContextType>(defaultUserContextValue);
 
 export const useUser = () => useContext(UserContext);
 
-export const UserProvider = ({ children }) => {
+export const UserProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const accessToken = useFetchAccessToken();
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     userEmail: "",
     userNickname: "",
   });

@@ -1,9 +1,15 @@
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 
+declare global {
+  interface Window {
+    IMP: any;
+  }
+}
+
 //카카오페이
-export const kakaopayMethod = (amount, buyerName) => {
-  var IMP = window.IMP;
+export const kakaopayMethod = (amount: number, buyerName: string): void => {
+  const IMP = window.IMP;
   IMP.init("imp10657444");
   IMP.request_pay(
     {
@@ -14,15 +20,22 @@ export const kakaopayMethod = (amount, buyerName) => {
       amount: amount,
       buyer_name: buyerName,
     },
-    function (data) {
-      let msg;
+    (data: {
+      success: boolean;
+      merchant_uid: string;
+      paid_amount: number;
+      buyer_name: string;
+      buyer_email: string;
+      error_msg: string;
+    }) => {
+      let msg: string;
       if (data.success) {
         msg = "결제 완료";
         msg += "// 결제 수단 : Kakao";
         msg += "// 상점 거래ID : " + data.merchant_uid;
         msg += "// 결제 금액 : " + data.paid_amount;
         msg += "// 구매자 이름 : " + data.buyer_name;
-        // console.log("msg", msg);
+
         axios
           .post("/api/order/", {
             ID: data.buyer_email,

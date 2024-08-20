@@ -13,6 +13,8 @@ import { colorSystem, size } from "../../styles/color";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
 import AlertModal from "../../components/common/AlertModal";
 import useModal from "../../hooks/UseModal";
+import { useGlamping } from "../../contexts/GlampingContext";
+import LoadingNobg from "../../components/common/LoadingNobg";
 
 const WrapStyle = styled.div`
   .inner {
@@ -58,16 +60,54 @@ const WrapStyle = styled.div`
     }
   }
 `;
+
+const CeoGlampingLoading = styled.div`
+  div {
+    position: static !important;
+  }
+`;
+
 const WaitingStyle = styled.div`
-  font-size: 2rem;
-  text-align: center;
   margin: 20vh 0 50vh 0;
-  padding: 100px;
+  padding: 30px;
   border-radius: 20px;
-  border: 2px solid ${colorSystem.g900};
-  color: ${colorSystem.g900};
-  width: 80%;
-  height: 300px;
+  border: 2px solid ${colorSystem.g200};
+  color: ${colorSystem.g800};
+  width: 60%;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  .under-line {
+    width: 100%;
+    height: 3px;
+    background-color: ${colorSystem.ceo};
+    margin-top: 15px;
+    margin-bottom: 40px;
+  }
+
+  .waiting-text {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  p {
+    font-size: 1.2rem;
+    line-height: 2rem;
+  }
+
+  h4 {
+    font-size: 1rem;
+  }
+
+  span {
+    color: ${colorSystem.ceo700};
+    font-weight: 600;
+  }
 `;
 
 const CeoBoxStyle = styled.div`
@@ -234,11 +274,13 @@ const ImageUploadStyle = styled.div`
 `;
 
 const CeoGlamping = () => {
+  const { glampId, setGlampId } = useGlamping();
   const [glampImg, setGlampImg] = useState([]);
   const ceoAccessToken = useFetchAccessToken();
   const [isSubmit, setIsSubmit] = useState(false);
   const [glampingData, setGlampingData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { isModalOpen, modalMessage, openModal, closeModal } = useModal();
 
   // 글램핑 정보 가져오는 함수
@@ -253,7 +295,7 @@ const CeoGlamping = () => {
       });
 
       setGlampingData(response.data);
-      console.log("Fetched data:", response.data);
+      setGlampId(response.data.glampId);
 
       // 1. state값이 true면 수정모드
       if (response.data.state) {
@@ -279,6 +321,8 @@ const CeoGlamping = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -434,41 +478,35 @@ const CeoGlamping = () => {
     trigger(fieldName);
   };
 
-  //Post 함수
-  const onSubmit = async data => {
-    const formData = new FormData();
-
-    formData.append(
-      "req",
-      JSON.stringify({
-        glampName: data.glampName,
-        region: data.region,
-        intro: data.intro,
-        basic: data.basic,
-        notice: data.notice,
-        glampLocation: data.glampLocation,
-        glampCall: data.glampCall,
-        traffic: data.traffic,
-        extraCharge: data.extraCharge,
-      }),
-    );
-
-    glampImg.forEach(image => {
-      formData.append("glampImg", image, image.name);
-    });
-
+  // 글램핑장 수정 함수
+  const updateGlamping = async data => {
     try {
       if (!ceoAccessToken) return;
-      console.log("전송 데이터:", formData);
 
-      const response = await axios.post(`/api/owner/glamping`, formData, {
+      const formData = new FormData();
+
+      formData.append(
+        "requestDto",
+        JSON.stringify({
+          glampName: data.glampName,
+          glampCall: data.glampCall,
+          glampLocation: data.glampLocation,
+          region: data.region,
+          extraCharge: data.extraCharge,
+          intro: data.intro,
+          basic: data.basic,
+          notice: data.notice,
+          traffic: data.traffic,
+        }),
+      );
+      formData.append("glampId", glampId);
+
+      const response = await axios.put(`/api/owner/glamping`, formData, {
         headers: {
           Authorization: `Bearer ${ceoAccessToken}`,
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       });
-
-      console.log("response.data.code", response.data.code);
 
       if (response.data.code === "SU") {
         openModal({
@@ -489,9 +527,74 @@ const CeoGlamping = () => {
         }
       } else {
         openModal({
-          message: "처리 실패 자세한 사항은 관리자에게 문의주세요",
+          message: "처리 실패. 자세한 사항은 관리자에게 문의해주세요.",
           onCheck: closeModal,
         });
+      }
+    }
+  };
+
+  //Post 함수
+  const onSubmit = async data => {
+    if (isEditMode) {
+      await updateGlamping(data);
+    } else {
+      const formData = new FormData();
+
+      formData.append(
+        "req",
+        JSON.stringify({
+          glampName: data.glampName,
+          region: data.region,
+          intro: data.intro,
+          basic: data.basic,
+          notice: data.notice,
+          glampLocation: data.glampLocation,
+          glampCall: data.glampCall,
+          traffic: data.traffic,
+          extraCharge: data.extraCharge,
+        }),
+      );
+
+      glampImg.forEach(image => {
+        formData.append("glampImg", image, image.name);
+      });
+
+      try {
+        if (!ceoAccessToken) return;
+        console.log("전송 데이터:", formData);
+
+        const response = await axios.post(`/api/owner/glamping`, formData, {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log("서버 응답:", response.data);
+
+        if (response.data.code === "SU") {
+          openModal({
+            message: response.data.message,
+            onCheck: closeModal,
+          });
+          setIsSubmit(true);
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.response?.data.code === "AH") {
+            openModal({
+              message: error.response.data.message,
+              onCheck: closeModal,
+            });
+            setIsSubmit(true);
+          }
+        } else {
+          openModal({
+            message: "처리 실패. 자세한 사항은 관리자에게 문의해주세요.",
+            onCheck: closeModal,
+          });
+        }
       }
     }
   };
@@ -511,189 +614,218 @@ const CeoGlamping = () => {
     <WrapStyle>
       <CeoCategories />
       <div className="inner">
-        {isSubmit ? (
-          <WaitingStyle>승인심사중입니다</WaitingStyle>
+        {loading ? (
+          <CeoGlampingLoading>
+            <LoadingNobg />
+          </CeoGlampingLoading>
         ) : (
           <>
-            <h3>{isEditMode ? "글램핑장 수정" : "글램핑장 등록"}</h3>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              {/* 글램핑장 이름 */}
-              <CeoBoxStyle>
-                <label htmlFor="glampName">글램핑장 이름</label>
-                <input
-                  type="text"
-                  id="glampName"
-                  autoComplete="off"
-                  {...register("glampName")}
-                  placeholder="글램핑장 이름"
-                />
-                {errors.glampName && <span>{errors.glampName.message}</span>}
-              </CeoBoxStyle>
+            {isSubmit ? (
+              <WaitingStyle>
+                <h1>관리자 승인 대기 중</h1>
+                <div className="under-line" />
+                <div className="waiting-text">
+                  <p>
+                    현재 회원님이 신청하신 글램핑장은
+                    <span> 승인 대기 상태 </span>
+                    입니다 <br /> 승인 결과와 관련한 사항은 메일을 통해
+                    안내드리겠습니다
+                    <br />
+                    <br />
+                    <h4>
+                      관련 문의 : <span> glamp99@gmail.com</span>
+                    </h4>
+                  </p>
+                </div>
+              </WaitingStyle>
+            ) : (
+              <>
+                <h3>{isEditMode ? "글램핑장 수정" : "글램핑장 등록"}</h3>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  {/* 글램핑장 이름 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="glampName">글램핑장 이름</label>
+                    <input
+                      type="text"
+                      id="glampName"
+                      autoComplete="off"
+                      {...register("glampName")}
+                      placeholder="글램핑장 이름"
+                    />
+                    {errors.glampName && (
+                      <span>{errors.glampName.message}</span>
+                    )}
+                  </CeoBoxStyle>
 
-              {/* 글램핑장 사진 */}
-              <CeoBoxStyle className="glamp-img-box">
-                <label className="glamp-img-label">글램핑장 사진</label>
-                <h4>대표사진 1장을 등록해주세요</h4>
-                <ImageUploadStyle isImageUploaded={isImageUploaded}>
-                  <label htmlFor="imageUpload" className="upload-label">
-                    <FaCamera className="camera-img" />
-                    <div className="image-upload-info">
-                      <p>
-                        {uploadedImageCount}/{maxImageCount}
-                      </p>
-                    </div>
-                  </label>
-                  <div className="default-image" />
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageUpload}
-                  />
-                  <div className="uploaded-images">
-                    {glampImg.map((image, index) => (
-                      <div key={index} className="uploaded-image">
-                        <img
-                          src={
-                            typeof image === "string"
-                              ? image
-                              : URL.createObjectURL(image)
-                          }
-                          alt="uploaded"
-                        />
-                        <button
-                          type="button"
-                          className="delete-image"
-                          onClick={() => handleImageDelete(index)}
-                        >
-                          <FiMinusCircle />
-                        </button>
+                  {/* 글램핑장 사진 */}
+                  <CeoBoxStyle className="glamp-img-box">
+                    <label className="glamp-img-label">글램핑장 사진</label>
+                    <h4>대표사진 1장을 등록해주세요</h4>
+                    <ImageUploadStyle isImageUploaded={isImageUploaded}>
+                      <label htmlFor="imageUpload" className="upload-label">
+                        <FaCamera className="camera-img" />
+                        <div className="image-upload-info">
+                          <p>
+                            {uploadedImageCount}/{maxImageCount}
+                          </p>
+                        </div>
+                      </label>
+                      <div className="default-image" />
+                      <input
+                        type="file"
+                        id="imageUpload"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                      />
+                      <div className="uploaded-images">
+                        {glampImg.map((image, index) => (
+                          <div key={index} className="uploaded-image">
+                            <img
+                              src={
+                                typeof image === "string"
+                                  ? image
+                                  : URL.createObjectURL(image)
+                              }
+                              alt="uploaded"
+                            />
+                            <button
+                              type="button"
+                              className="delete-image"
+                              onClick={() => handleImageDelete(index)}
+                            >
+                              <FiMinusCircle />
+                            </button>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </ImageUploadStyle>
+                    {errors.glampImg && <span>{errors.glampImg.message}</span>}
+                  </CeoBoxStyle>
+
+                  {/* 글램핑장 지역 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="region">글램핑장 지역</label>
+                    <select id="region" {...register("region")}>
+                      <option value="seoul">서울/경기</option>
+                      <option value="gangwon">강원</option>
+                      <option value="chungbuk">충북</option>
+                      <option value="chungnam">충남</option>
+                      <option value="gyeongbuk">경북</option>
+                      <option value="gyeongnam">경남</option>
+                      <option value="jeonbuk">전북</option>
+                      <option value="jeonnam">전남</option>
+                      <option value="jeju">제주</option>
+                    </select>
+                    {errors.region && <span>{errors.region.message}</span>}
+                  </CeoBoxStyle>
+
+                  {/* 글램핑장 주소 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="glampLocation">글램핑장 주소</label>
+                    <div className="glamp-address-div">
+                      <input
+                        type="text"
+                        id="glampLocation"
+                        {...register("glampLocation")}
+                        onClick={handleClick}
+                      />
+                      <CeoButton label="주소검색" onClick={handleClick} />
+                    </div>
+                    {errors.glampLocation && (
+                      <span>{errors.glampLocation.message}</span>
+                    )}
+                  </CeoBoxStyle>
+
+                  {/* 글램핑장 연락처 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="glampCall">글램핑장 연락처</label>
+                    <input
+                      type="text"
+                      id="glampCall"
+                      autoComplete="off"
+                      {...register("glampCall")}
+                      onChange={e => handleOnlyNumber(e, "glampCall")}
+                    />
+                    {errors.glampCall && (
+                      <span>{errors.glampCall.message}</span>
+                    )}
+                  </CeoBoxStyle>
+
+                  {/* 숙소 소개 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="intro">숙소 소개</label>
+                    <textarea
+                      id="intro"
+                      {...register("intro")}
+                      placeholder="바다앞에 위치한 글램핑장 입니다"
+                    />
+                    {errors.intro && <span>{errors.intro.message}</span>}
+                  </CeoBoxStyle>
+
+                  {/* 숙소 기본정보 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="basic">숙소 기본정보</label>
+                    <textarea
+                      id="basic"
+                      {...register("basic")}
+                      placeholder="전 객실 금연"
+                    />
+                    {errors.basic && <span>{errors.basic.message}</span>}
+                  </CeoBoxStyle>
+
+                  {/* 숙소 유의사항 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="notice">숙소 유의사항</label>
+                    <textarea
+                      id="notice"
+                      {...register("notice")}
+                      placeholder="화기 사용 금지"
+                    />
+                    {errors.notice && <span>{errors.notice.message}</span>}
+                  </CeoBoxStyle>
+
+                  {/* 주변 관광지 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="traffic">주변 관광지</label>
+                    <textarea
+                      placeholder="해수욕장 도보 3분"
+                      id="traffic"
+                      {...register("traffic")}
+                    />
+                    {errors.traffic && <span>{errors.traffic.message}</span>}
+                  </CeoBoxStyle>
+
+                  {/* 1인 추가 요금 */}
+                  <CeoBoxStyle>
+                    <label htmlFor="extraCharge">1인 추가 요금</label>
+                    <div className="cost-group">
+                      <input
+                        className="cost-input"
+                        type="text"
+                        id="extraCharge"
+                        autoComplete="off"
+                        {...register("extraCharge")}
+                        onChange={e => handleOnlyNumber(e, "extraCharge")}
+                        placeholder="10000"
+                      />
+                      <p>원</p>
+                    </div>
+                    {errors.extraCharge && (
+                      <span>{errors.extraCharge.message}</span>
+                    )}
+                  </CeoBoxStyle>
+
+                  <div className="submit-btn">
+                    <CeoButton label={isEditMode ? "수정하기" : "승인 요청"} />
                   </div>
-                </ImageUploadStyle>
-                {errors.glampImg && <span>{errors.glampImg.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 글램핑장 지역 */}
-              <CeoBoxStyle>
-                <label htmlFor="region">글램핑장 지역</label>
-                <select id="region" {...register("region")}>
-                  <option value="seoul">서울/경기</option>
-                  <option value="gangwon">강원</option>
-                  <option value="chungbuk">충북</option>
-                  <option value="chungnam">충남</option>
-                  <option value="gyeongbuk">경북</option>
-                  <option value="gyeongnam">경남</option>
-                  <option value="jeonbuk">전북</option>
-                  <option value="jeonnam">전남</option>
-                  <option value="jeju">제주</option>
-                </select>
-                {errors.region && <span>{errors.region.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 글램핑장 주소 */}
-              <CeoBoxStyle>
-                <label htmlFor="glampLocation">글램핑장 주소</label>
-                <div className="glamp-address-div">
-                  <input
-                    type="text"
-                    id="glampLocation"
-                    {...register("glampLocation")}
-                    onClick={handleClick}
-                  />
-                  <CeoButton label="주소검색" onClick={handleClick} />
-                </div>
-                {errors.glampLocation && (
-                  <span>{errors.glampLocation.message}</span>
-                )}
-              </CeoBoxStyle>
-
-              {/* 글램핑장 연락처 */}
-              <CeoBoxStyle>
-                <label htmlFor="glampCall">글램핑장 연락처</label>
-                <input
-                  type="text"
-                  id="glampCall"
-                  autoComplete="off"
-                  {...register("glampCall")}
-                  onChange={e => handleOnlyNumber(e, "glampCall")}
-                />
-                {errors.glampCall && <span>{errors.glampCall.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 숙소 소개 */}
-              <CeoBoxStyle>
-                <label htmlFor="intro">숙소 소개</label>
-                <textarea
-                  id="intro"
-                  {...register("intro")}
-                  placeholder="바다앞에 위치한 글램핑장 입니다"
-                />
-                {errors.intro && <span>{errors.intro.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 숙소 기본정보 */}
-              <CeoBoxStyle>
-                <label htmlFor="basic">숙소 기본정보</label>
-                <textarea
-                  id="basic"
-                  {...register("basic")}
-                  placeholder="전 객실 금연"
-                />
-                {errors.basic && <span>{errors.basic.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 숙소 유의사항 */}
-              <CeoBoxStyle>
-                <label htmlFor="notice">숙소 유의사항</label>
-                <textarea
-                  id="notice"
-                  {...register("notice")}
-                  placeholder="화기 사용 금지"
-                />
-                {errors.notice && <span>{errors.notice.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 주변 관광지 */}
-              <CeoBoxStyle>
-                <label htmlFor="traffic">주변 관광지</label>
-                <textarea
-                  placeholder="해수욕장 도보 3분"
-                  id="traffic"
-                  {...register("traffic")}
-                />
-                {errors.traffic && <span>{errors.traffic.message}</span>}
-              </CeoBoxStyle>
-
-              {/* 1인 추가 요금 */}
-              <CeoBoxStyle>
-                <label htmlFor="extraCharge">1인 추가 요금</label>
-                <div className="cost-group">
-                  <input
-                    className="cost-input"
-                    type="text"
-                    id="extraCharge"
-                    autoComplete="off"
-                    {...register("extraCharge")}
-                    onChange={e => handleOnlyNumber(e, "extraCharge")}
-                    placeholder="10000"
-                  />
-                  <p>원</p>
-                </div>
-                {errors.extraCharge && (
-                  <span>{errors.extraCharge.message}</span>
-                )}
-              </CeoBoxStyle>
-
-              <div className="submit-btn">
-                <CeoButton label={isEditMode ? "수정하기" : "승인 요청"} />
-              </div>
-            </form>
+                </form>
+              </>
+            )}
           </>
         )}
       </div>
+
       <AlertModal
         isOpen={isModalOpen}
         onClose={closeModal}

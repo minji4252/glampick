@@ -245,6 +245,7 @@ const SearchPage = () => {
 
   // 현재 지역 좌표
   const currentCenter = regionCoordinates[region1];
+  console.log("currentCenter", currentCenter);
 
   return (
     <SearchPageStyle>
