@@ -25,10 +25,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // 기본 로그인 상태와 역할 확인
   const isUserAuthorized = isLogin && allowedRoles.includes(userRole || "");
-  console.log("유저 권한 확인:", isUserAuthorized);
+  // console.log("유저 권한 확인:", isUserAuthorized);
   // CEO 로그인 상태와 역할 확인
   const isCeoAuthorized = isCeoLogin && allowedRoles.includes(ceoRole || "");
-  console.log("사장님 권한 확인:", isCeoAuthorized);
+  // console.log("사장님 권한 확인:", isCeoAuthorized);
 
   // 사장님 페이지 접근 여부
   if (isCeoPage) {

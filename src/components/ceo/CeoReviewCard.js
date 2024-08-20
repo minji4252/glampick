@@ -5,160 +5,49 @@ import { colorSystem } from "../../styles/color";
 import { MainButton } from "../common/Button";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import defaultProfile from "../../images/icon/default-img.png";
 import CeoReviewModal from "./CeoReviewModal";
-
-const ReviewCardStyle = styled.div`
-  display: flex;
-  margin-bottom: 40px;
-
-  .review-card-right {
-    max-width: 800px;
-    width: 100%;
-  }
-
-  .review-card-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 50px;
-
-    div {
-      border-radius: 100%;
-      width: 65px;
-      height: 65px;
-    }
-
-    span {
-      margin-top: 10px;
-      font-weight: 600;
-    }
-  }
-
-  h5 {
-    display: none;
-    font-weight: 600;
-  }
-`;
-const UserSection = styled.div`
-  .review-title {
-    max-width: 570px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    > div {
-      display: flex;
-      gap: 10px;
-    }
-
-    span {
-      letter-spacing: 1.5px;
-    }
-
-    button {
-      height: 25px;
-      display: none;
-    }
-  }
-  .review-score {
-    display: flex;
-    gap: 3px;
-    color: ${colorSystem.star};
-  }
-
-  .review-content {
-    font-size: 1rem;
-
-    .review-glamp-name {
-      cursor: pointer;
-      padding: 5px;
-      width: fit-content;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      &:hover {
-        color: ${colorSystem.p300};
-      }
-    }
-
-    span {
-      font-weight: 600;
-    }
-
-    p,
-    textarea {
-      margin-top: 15px;
-      max-width: 570px;
-      line-height: 1.5rem;
-      font-size: 0.9rem;
-    }
-
-    button {
-      margin-top: 15px;
-      height: 35px;
-      font-size: 0.9rem;
-    }
-  }
-`;
-
-const ReviewImage = styled.div`
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-
-  > div {
-    max-width: 180px;
-    width: 100%;
-    height: 200px;
-    border-radius: 25px;
-    background-size: cover;
-  }
-
-  @media all and (min-width: 768px) and (max-width: 850px) {
-    .review-card-img2,
-    .review-card-img3 {
-      display: none;
-    }
-
-    .review-card-img1 {
-      width: 100%;
-      max-width: 370px;
-      background-size: cover;
-    }
-  }
-
-  @media all and (max-width: 540px) {
-    .review-card-img2,
-    .review-card-img3 {
-      display: none;
-    }
-
-    .review-card-img1 {
-      width: 100%;
-      max-width: 370px;
-      background-size: cover;
-    }
-  }
-`;
+import defaultProfile from "../../images/icon/default-img.png";
+import {
+  ReviewCardStyle,
+  ReviewImage,
+  UnderLine,
+  UserSection,
+} from "../../styles/ceo/CeoReviewStyle";
 
 const OwnerSection = styled.div`
   width: 100%;
   margin-top: 20px;
+  background-color: ${props =>
+    props.hasOwnerReview ? colorSystem.beige : colorSystem.white};
+  padding: ${props => (props.hasOwnerReview ? "25px" : "0px")};
+  border-radius: 20px;
+
+  .owner-title {
+    display: flex;
+    justify-content: space-between;
+  }
 
   h4 {
     font-weight: 700;
     color: ${colorSystem.g800};
     font-size: 0.9rem;
   }
-`;
 
-const UnderLine = styled.div`
-  width: 95%;
-  height: 1px;
-  border-bottom: 1px solid ${colorSystem.g200};
-  margin-bottom: 40px;
+  .owner-content {
+    margin-top: 15px;
+    padding-left: 20px;
+    line-height: 1.4rem;
+    font-weight: 500;
+    color: ${colorSystem.g900};
+
+    > p {
+      width: 70%;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+  }
 `;
 
 const CeoReviewCard = ({
@@ -174,16 +63,15 @@ const CeoReviewCard = ({
   reviewImages,
   userProfileImage,
   setCanWriteReview,
+  onApproval,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   // 후기 작성 모달
   const handleOpenCreateReviewModal = () => {
-    console.log("모달 열기");
     setIsReviewModalOpen(true);
   };
   const handleCloseCreateReviewModal = () => {
-    // console.log("모달 닫기");
     setIsReviewModalOpen(false);
   };
 
@@ -261,15 +149,24 @@ const CeoReviewCard = ({
               <p>{userReviewContent}</p>
             </div>
           </UserSection>
-          <OwnerSection>
-            <div className="review-btn">
-              <MainButton
-                label="답변 작성하기"
-                onClick={() => {
-                  handleOpenCreateReviewModal();
-                }}
-              />
-            </div>
+          <OwnerSection hasOwnerReview={!!ownerReviewContent}>
+            {ownerReviewContent ? (
+              <>
+                <div className="owner-title">
+                  <h4>숙소 답변</h4>
+                </div>
+                <div className="owner-content">
+                  <p>{ownerReviewContent}</p>
+                </div>
+              </>
+            ) : (
+              <div className="review-btn">
+                <MainButton
+                  label="답변 작성하기"
+                  onClick={handleOpenCreateReviewModal}
+                />
+              </div>
+            )}
           </OwnerSection>
         </div>
         <CeoReviewModal
@@ -278,6 +175,7 @@ const CeoReviewCard = ({
           glampId={glampId}
           reviewId={reviewId}
           setCanWriteReview={setCanWriteReview}
+          onApproval={onApproval}
         />
       </ReviewCardStyle>
       <UnderLine />

@@ -10,173 +10,23 @@ import { useRecoilState } from "recoil";
 import axios from "axios";
 import ListPagination from "../../components/common/ListPagination";
 import CeoReviewCard from "../../components/ceo/CeoReviewCard";
-
-const WrapStyle = styled.div`
-  .inner {
-    flex-direction: column;
-  }
-  h3 {
-    width: 100%;
-    margin-top: 50px;
-    margin-left: 120px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: ${colorSystem.g900};
-  }
-
-  @media all and (max-width: 1910px) {
-    display: flex;
-    .inner {
-      margin-left: 82px;
-    }
-  }
-
-  ${size.mid} {
-    flex-direction: column;
-    h3 {
-      margin-top: 250px;
-    }
-  }
-
-  /* .tabs {
-    height: 1000px;
-  } */
-
-  /* 탭 메뉴 */
-  .tabs {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-left: 110px;
-    margin-top: 20px;
-    font-size: 1rem;
-    color: ${colorSystem.g900};
-    font-weight: 600;
-    margin-top: 20px;
-  }
-
-  .tab {
-    padding: 10px 5px;
-    margin: 0px 10px;
-    cursor: pointer;
-    &.active {
-      font-weight: 600;
-      color: ${colorSystem.ceo};
-      border-bottom: 2px solid ${colorSystem.ceo};
-    }
-  }
-
-  .container {
-    /* 임시 높이 */
-    /* height: 500px; */
-    display: grid;
-    gap: 50px;
-    width: 90%;
-    margin-top: 40px;
-    margin-bottom: 60px;
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-    }
-  }
-`;
-const NoReviewsStyle = styled.div`
-  width: 70%;
-  background-color: ${colorSystem.background};
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  margin-bottom: 250px;
-  letter-spacing: 2px;
-
-  .no-review-img {
-    background: url(${emptyImg}) no-repeat center;
-    background-size: cover;
-    width: 50px;
-    height: 50px;
-    margin-top: 100px;
-  }
-
-  h4 {
-    font-size: 1.1rem;
-    margin-top: 20px;
-  }
-
-  p {
-    margin-bottom: 100px;
-  }
-`;
-
-const NotContentStyle = styled.div`
-  /* width: 150%; */
-  background-color: ${colorSystem.background};
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  font-weight: 600;
-  /* margin-top: 65px; */
-  margin-bottom: 250px;
-  letter-spacing: 2px;
-  padding-bottom: 50px;
-  .logo-img {
-    background: url(${notBookingImg}) no-repeat center;
-    background-size: cover;
-    width: 150px;
-    height: 100px;
-    margin-top: 100px;
-  }
-
-  a {
-    max-width: 180px;
-    width: 100%;
-  }
-
-  h4 {
-    font-size: 1.1rem;
-    margin-top: 10px;
-  }
-  .room-search-btn {
-    margin-top: 40px;
-    margin-bottom: 60px;
-    position: relative;
-    button {
-      width: 100%;
-      height: 40px;
-      text-align: left;
-      -webkit-justify-content: left;
-    }
-    svg {
-      width: 38px;
-      height: 38px;
-      color: ${colorSystem.white};
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      right: 10%;
-      pointer-events: none;
-    }
-  }
-`;
+import {
+  NoReviewsStyle,
+  NotContentStyle,
+  WrapStyle,
+} from "../../styles/ceo/CeoReviewStyle";
 
 interface Review {
-  reviewId: string;
+  reviewId: number;
   userNickName: string;
   glampName: string;
-  glampId: string;
+  glampId: number;
   roomName: string;
-  createdAt: string;
+  createdAt: string; // 날짜 문자열 형식
   userReviewContent: string;
   ownerReviewContent: string;
   starPoint: number;
-  reviewImages: string[];
+  reviewImages: string[]; // 이미지 URL 배열
   userProfileImage: string;
 }
 
@@ -184,7 +34,7 @@ interface SearchResults {
   totalReviewCount: number;
 }
 
-const CeoReview: React.FC = () => {
+const CeoReview = () => {
   const [canWriteReview, setCanWriteReview] = useState<boolean>(false);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [ceoAccessToken, setCeoAccessToken] = useRecoilState<string | null>(
@@ -192,9 +42,6 @@ const CeoReview: React.FC = () => {
   );
 
   const [activeTab, setActiveTab] = useState<string>("allreview");
-  const [allReviews, setAllReviews] = useState([]);
-  const [nocommentReviews, setNocommentReviews] = useState([]);
-
   const [searchResults, setSearchResults] = useState<SearchResults>({
     totalReviewCount: 0,
   });
@@ -220,36 +67,32 @@ const CeoReview: React.FC = () => {
     fetchCeoAccessToken();
   }, [setCeoAccessToken]);
 
+  const refreshReviewList = async () => {
+    try {
+      if (!ceoAccessToken) return;
+      const typeNum = activeTab === "allreview" ? 0 : 1;
+      const response = await axios.get(
+        `/api/owner/review?typeNum=${typeNum}&page=${currentPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+          },
+        },
+      );
+      setReviews(response.data.reviewListItems);
+      setSearchResults({ totalReviewCount: response.data.totalReviewsCount });
+    } catch (error) {
+      console.error("리뷰 리스트 갱신 오류:", error);
+    }
+  };
+  useEffect(() => {
+    refreshReviewList();
+  }, [ceoAccessToken, currentPage, activeTab]);
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
-    // setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
+    setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
   };
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        if (!ceoAccessToken) return;
-        axios.defaults.withCredentials = true;
-
-        const typeNum = activeTab === "allreview" ? 0 : 1;
-        const response = await axios.get(
-          `/api/owner/review?typeNum=${typeNum}&page=${currentPage}`,
-          {
-            headers: {
-              Authorization: `Bearer ${ceoAccessToken}`,
-            },
-          },
-        );
-        console.log(response.data.reviewListItems);
-        setReviews(response.data.reviewListItems);
-        setSearchResults({ totalReviewCount: response.data.totalReviewsCount });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchReviews();
-  }, [ceoAccessToken, currentPage, activeTab]);
 
   // 페이지 개수 계산
   const totalPages = Math.ceil(searchResults.totalReviewCount / postPerPage);
@@ -283,7 +126,7 @@ const CeoReview: React.FC = () => {
           <div className="container">
             {reviews?.length > 0 ? (
               reviews.map((review, index) => (
-                <ReviewCard
+                <CeoReviewCard
                   key={index}
                   reviewId={review.reviewId}
                   userNickName={review.userNickName}
@@ -296,6 +139,8 @@ const CeoReview: React.FC = () => {
                   starPoint={review.starPoint}
                   reviewImages={review.reviewImages}
                   userProfileImage={review.userProfileImage}
+                  setCanWriteReview={setCanWriteReview}
+                  onApproval={refreshReviewList}
                 />
               ))
             ) : (
@@ -326,6 +171,7 @@ const CeoReview: React.FC = () => {
                   reviewImages={review.reviewImages}
                   userProfileImage={review.userProfileImage}
                   setCanWriteReview={setCanWriteReview}
+                  onApproval={refreshReviewList}
                 />
               ))
             ) : (

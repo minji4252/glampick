@@ -20,7 +20,7 @@ const SearchCard = ({
 
   // 예약 버튼
   const handleButtonClick = () => {
-    console.log("예약하기");
+    // console.log("예약하기");
   };
 
   const SearchCardUrl = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;
