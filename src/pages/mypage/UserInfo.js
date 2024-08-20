@@ -361,7 +361,7 @@ const UserInfo = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        // console.log(response);
+        console.log(response);
         setUserInfo({
           userProfileImage: response.data.userProfileImage,
           userEmail: response.data.userEmail,

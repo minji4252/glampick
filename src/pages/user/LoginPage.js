@@ -23,6 +23,7 @@ import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
 import base64 from "base-64";
 import { getKakaoLoginLink } from "../../apis/kkoapi";
+import { RiKakaoTalkFill } from "react-icons/ri";
 
 export const WrapStyle = styled.div`
   position: relative;
@@ -155,7 +156,7 @@ export const WrapStyle = styled.div`
   }
 
   .sns-login {
-    width: 60%;
+    width: 80%;
     margin: 0 auto;
     ${size.mid} {
       margin: 0 auto;
@@ -184,6 +185,7 @@ export const WrapStyle = styled.div`
   }
 
   .sns-login-list {
+    width: 100%;
     display: flex;
     margin-top: 24px;
     gap: 30px;
@@ -194,14 +196,25 @@ export const WrapStyle = styled.div`
     }
   }
   .sns-login-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fbe400;
+    width: 100%;
+    height: 50px;
+    font-size: 1.2rem;
+    border-radius: 20px;
+    margin-top: 15px;
   }
   .sns-login-link {
   }
 
   // sns 로그인 아이콘
   .kakao-icon {
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
     background: url(${KakaoIcon}) no-repeat center;
     background-size: contain;
     ${size.mid} {
@@ -209,7 +222,7 @@ export const WrapStyle = styled.div`
       height: 42px;
     }
   }
-  .naver-icon {
+  /* .naver-icon {
     width: 48px;
     height: 48px;
     background: url(${NaverIcon}) no-repeat center;
@@ -218,7 +231,7 @@ export const WrapStyle = styled.div`
       width: 42px;
       height: 42px;
     }
-  }
+  } */
 
   /* 이메일 기억하기 */
   .remember-me {
@@ -282,7 +295,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     const host = window.location.origin;
-    setRedirectUrl(`${host}/auth/kakao/callback`); // 리디렉션 URI 설정
+    setRedirectUrl(`${host}/auth/redirect`); // 리디렉션 URI 설정
   }, []);
   // const kakaoLogin = getKakaoLoginLink();
 
@@ -433,20 +446,21 @@ const LoginPage = () => {
               </div>
               <div className="sns-login">
                 <p>sns 로그인</p>
-                <ul className="sns-login-list">
-                  <li className="sns-login-item">
-                    <a
-                      href={`http://localhost:3000//oauth2/authorization/kakao?redirect_uri=http://localhost:3000/oauth/redirect`}
-                    >
-                      <div className="kakao-icon" />
-                    </a>
-                  </li>
-                  <li className="sns-login-item">
+                <div className="sns-login-item">
+                  <a
+                    href={`http://112.222.157.156:5124/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/sns-signup`}
+                  >
+                    <div className="kakao" />
+                    <RiKakaoTalkFill className="kakaoicon" />
+                    카카오로그인
+                  </a>
+                </div>
+                {/* <li className="sns-login-item">
                     <a href="#" className="sns-login-link">
                       <div className="naver-icon" />
                     </a>
-                  </li>
-                </ul>
+                  </li> */}
+                {/* </ul> */}
               </div>
               <div className="ceo-login">
                 <Link to="/ceologin" className="ceo-login-btn">

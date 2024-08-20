@@ -59,11 +59,11 @@ const SignupPage = () => {
 
   // 이메일 인증을 위한 타이머 변수
   const [emailTimer, setEmailTimer] = useState(0);
-  const [emailTimerId, setEmailTimerId] = useState(null);
+  const [emailTimerId, setEmailTimerId] = useState<NodeJS.Timer | null>(null);
 
   // 핸드폰 인증을 위한 타이머 변수
   const [phoneTimer, setPhoneTimer] = useState(0);
-  const [phoneTimerId, setPhoneTimerId] = useState(null);
+  const [phoneTimerId, setPhoneTimerId] = useState<NodeJS.Timer | null>(null);
 
   // 인증 완료 여부 상태 추가
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -224,7 +224,7 @@ const SignupPage = () => {
 주소: 대구광역시 중구 중앙대로 394 제일빌딩 5F`;
 
   // 약관보기 모달
-  const openTermsModal = modalType => {
+  const openTermsModal = (modalType: any) => {
     setSelectedModal(modalType);
     setIsModalOpen(true);
   };
@@ -272,7 +272,9 @@ const SignupPage = () => {
   }, [phoneTimer, phoneTimerId]);
 
   // 메일 인증시 처리할 함수
-  const handlEmailSubmit = async e => {
+  const handlEmailSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
     setLoading(true);
     const result = await postMailSend({ userEmail });
@@ -307,7 +309,9 @@ const SignupPage = () => {
   };
 
   // 인증코드 확인 시 처리할 함수
-  const handleAuthCodeSubmit = async e => {
+  const handleAuthCodeSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
     const result = await postAuthCode({ userEmail, authCode });
     // console.log(result.data);
@@ -347,7 +351,9 @@ const SignupPage = () => {
   };
 
   // 핸드폰 인증시 처리할 함수
-  const handleSmsSubmit = async e => {
+  const handleSmsSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
     setLoading(true);
     const result = await postSendSms({ userPhone });
@@ -376,7 +382,9 @@ const SignupPage = () => {
   };
 
   // 핸드폰 인증코드 처리할 함수
-  const handleAuthNumberSubmit = async e => {
+  const handleAuthNumberSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
 
     const result = await postCheckSms({ userPhone, authNumber });
@@ -413,7 +421,7 @@ const SignupPage = () => {
   };
 
   // 약관 전체동의 체크박스 핸들러
-  const handleAgreeAllChange = e => {
+  const handleAgreeAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
     setIsAgreeAllChecked(isChecked);
     setCheckboxes({
@@ -424,7 +432,7 @@ const SignupPage = () => {
   };
 
   // 약관 개별동의 체크박스 핸들러
-  const handleCheckboxChange = e => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
     const updateCheckboxes = {
       ...checkboxes,
@@ -435,7 +443,7 @@ const SignupPage = () => {
   };
 
   // 회원가입시 처리할 함수
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // 입력창이 비어있을 경우 체크
@@ -619,7 +627,7 @@ const SignupPage = () => {
                       <input
                         type="text"
                         id="auth-code"
-                        maxLength="6"
+                        maxLength={6}
                         pattern="\d{6}"
                         placeholder="인증코드를 입력해주세요"
                         value={authCode}
@@ -784,7 +792,7 @@ const SignupPage = () => {
                       <input
                         type="text"
                         id="auth-number"
-                        maxLength="6"
+                        maxLength={6}
                         pattern="\d{6}"
                         placeholder="인증번호를 입력해주세요"
                         value={authNumber}
@@ -943,9 +951,9 @@ const SignupPage = () => {
                 <div className="sign-button">
                   <MainButton
                     label="회원가입"
-                    onClick={e => {
-                      handleSubmit(e);
-                    }}
+                    // onClick={e => {
+                    //   handleSubmit(e);
+                    // }}
                   />
                 </div>
               </form>

@@ -16,6 +16,18 @@ export const userValidationSchema = yup.object().shape({
       "닉네임은 대소문자, 한글, 숫자만 가능합니다.",
     )
     .required("닉네임은 필수 항목입니다."),
+  userPw: yup
+    .string()
+    .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
+    .matches(
+      /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+      "비밀번호는 영어, 숫자, 특수문자를 포함해야 합니다.",
+    )
+    .required("비밀번호는 필수 항목입니다."),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("userPw")], "비밀번호가 일치하지 않습니다.")
+    .required("비밀번호 확인은 필수 항목입니다."),
   userPhone: yup
     .string()
     .matches(

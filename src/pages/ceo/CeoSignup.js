@@ -444,24 +444,24 @@ const CeoSignup = () => {
     }
   };
 
-  // // 전화번호 자동 변경
-  // const handleChangePhone = e => {
-  //   const phoneNumber = formatPhoneNumber(e.target.value);
-  //   // console.log(phoneNumber);
-  //   setValue("phone", phoneNumber);
-  // };
+  // 전화번호 자동 변경
+  const handleChangePhone = e => {
+    const phoneNumber = formatPhoneNumber(e.target.value);
+    // console.log(phoneNumber);
+    setValue("phone", phoneNumber);
+  };
 
-  // // 전화번호 형식
-  // const formatPhoneNumber = value => {
-  //   if (!value) return value;
-  //   const phoneNumber = value.replace(/[^\d]/g, "");
-  //   const phoneNumberLength = phoneNumber.length;
-  //   if (phoneNumberLength < 4) return phoneNumber;
-  //   if (phoneNumberLength < 8) {
-  //     return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
-  //   }
-  //   return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
-  // };
+  // 전화번호 형식
+  const formatPhoneNumber = value => {
+    if (!value) return value;
+    const phoneNumber = value.replace(/[^\d]/g, "");
+    const phoneNumberLength = phoneNumber.length;
+    if (phoneNumberLength < 4) return phoneNumber;
+    if (phoneNumberLength < 8) {
+      return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`;
+    }
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3, 7)}-${phoneNumber.slice(7, 11)}`;
+  };
 
   const onSubmit = async data => {
     console.log("이메일 인증 상태:", isEmailSent);
@@ -669,9 +669,9 @@ const CeoSignup = () => {
                   placeholder="휴대폰번호를 정확히 입력해주세요"
                   {...register("phone")}
                   disabled={isPhoneVerified} // 인증 완료 시 비활성화
-                  // onChange={e => {
-                  //   handleChangePhone(e);
-                  // }}
+                  onChange={e => {
+                    handleChangePhone(e);
+                  }}
                 />
                 <div className="form-button">
                   <CeoButton
