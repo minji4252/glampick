@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import CeoBookingDetail from "../../components/ceo/CeoBookingDetail";
 import BookingCalendar from "../../components/calendar/BookingCalendar";
 import { useEffect, useState } from "react";

@@ -8,7 +8,7 @@ import {
 } from "../../apis/ceochartapi";
 import BookingChart from "../../components/ceo/BookingChart";
 import CancelChart from "../../components/ceo/CancelChart";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import SalesChart from "../../components/ceo/SalesChart";
 import {
   ChartCalendarStyle,
@@ -17,7 +17,7 @@ import {
   ListContent,
   StateStyle,
   TapStyle,
-} from "../../styles/ceo/ChartStyles";
+} from "../../styles/ceo/ChartStyle";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
 import SearchCalendar from "../../components/search/SearchCalendar";
 import LoadingNobg from "../../components/common/LoadingNobg";

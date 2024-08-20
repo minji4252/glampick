@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { postOwnerCheckSms, postOwnerSendSms } from "../../apis/ceoapi";
 import { ceoAccessTokenState } from "../../atoms/loginState";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import CeoWithdrawModal from "../../components/ceo/CeoWithdrawModal";
 import AlertModal from "../../components/common/AlertModal";
 import { CeoButton } from "../../components/common/Button";

@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
 import { FiMinusCircle } from "react-icons/fi";
 import * as yup from "yup";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import { CeoButton } from "../../components/common/Button";
 import { colorSystem, size } from "../../styles/color";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
@@ -15,180 +15,12 @@ import AlertModal from "../../components/common/AlertModal";
 import useModal from "../../hooks/UseModal";
 import { useGlamping } from "../../contexts/GlampingContext";
 import LoadingNobg from "../../components/common/LoadingNobg";
-
-const WrapStyle = styled.div`
-  .inner {
-    flex-direction: column;
-  }
-  h3 {
-    width: 100%;
-    margin: 50px 0 65px 120px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: ${colorSystem.g900};
-  }
-
-  form {
-    max-width: 800px;
-    width: 100%;
-
-    .submit-btn {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      margin-top: 60px;
-      margin-bottom: 30vh;
-      button {
-        width: 30%;
-        height: 50px;
-        font-size: 1.1rem;
-      }
-    }
-  }
-
-  @media all and (max-width: 1910px) {
-    display: flex;
-    .inner {
-      margin-left: 82px;
-    }
-  }
-
-  ${size.mid} {
-    flex-direction: column;
-    h3 {
-      margin-top: 250px;
-    }
-  }
-`;
-
-const CeoGlampingLoading = styled.div`
-  div {
-    position: static !important;
-  }
-`;
-
-const WaitingStyle = styled.div`
-  margin: 20vh 0 50vh 0;
-  padding: 30px;
-  border-radius: 20px;
-  border: 2px solid ${colorSystem.g200};
-  color: ${colorSystem.g800};
-  width: 60%;
-
-  h1 {
-    font-size: 1.8rem;
-    font-weight: 600;
-  }
-
-  .under-line {
-    width: 100%;
-    height: 3px;
-    background-color: ${colorSystem.ceo};
-    margin-top: 15px;
-    margin-bottom: 40px;
-  }
-
-  .waiting-text {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  p {
-    font-size: 1.2rem;
-    line-height: 2rem;
-  }
-
-  h4 {
-    font-size: 1rem;
-  }
-
-  span {
-    color: ${colorSystem.ceo700};
-    font-weight: 600;
-  }
-`;
-
-const CeoBoxStyle = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  padding: 20px;
-  padding-bottom: 30px;
-  border-radius: 20px;
-  border: 1px solid ${colorSystem.g400};
-  margin-bottom: 30px;
-
-  > div {
-    display: flex;
-    gap: 15px;
-  }
-
-  label {
-    font-weight: 600;
-    color: ${colorSystem.g800};
-    margin-bottom: 10px;
-  }
-
-  input,
-  textarea {
-    max-width: 640px;
-    width: 100%;
-    border: 0px;
-    background-color: ${colorSystem.g100};
-    height: 40px;
-    border-radius: 10px;
-    padding: 15px;
-  }
-
-  select {
-    max-width: 120px;
-    width: 100%;
-    height: 40px;
-  }
-
-  textarea {
-    height: 140px;
-    resize: none;
-  }
-
-  h4 {
-    color: ${colorSystem.placeholder};
-  }
-
-  span {
-    position: absolute;
-    bottom: 7px;
-    color: ${colorSystem.error};
-    font-size: 0.8rem;
-    margin-left: 10px;
-    font-weight: 600;
-  }
-
-  .cost-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .cost-input {
-    max-width: 100px;
-  }
-
-  .glamp-img-label {
-    margin-bottom: 0;
-  }
-
-  .glamp-address-div {
-    input {
-      cursor: pointer;
-      caret-color: transparent;
-    }
-  }
-`;
+import {
+  CeoBoxStyle,
+  CeoGlampingLoading,
+  WaitingStyle,
+  WrapStyle,
+} from "../../styles/ceo/CeoGlampingStyle";
 
 const ImageUploadStyle = styled.div`
   position: relative;
@@ -275,13 +107,16 @@ const ImageUploadStyle = styled.div`
 
 const CeoGlamping = () => {
   const { glampId, setGlampId } = useGlamping();
-  const [glampImg, setGlampImg] = useState([]);
   const ceoAccessToken = useFetchAccessToken();
   const [isSubmit, setIsSubmit] = useState(false);
   const [glampingData, setGlampingData] = useState(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const { isModalOpen, modalMessage, openModal, closeModal } = useModal();
+  // 이미지관련
+  const [glampImg, setGlampImg] = useState([]);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [profileImage, setProfileImage] = useState(null);
 
   // 글램핑 정보 가져오는 함수
   const getGlampingData = async () => {
@@ -294,6 +129,7 @@ const CeoGlamping = () => {
         },
       });
 
+      setProfileImage(response.data.glampImage);
       setGlampingData(response.data);
       setGlampId(response.data.glampId);
 
@@ -371,23 +207,30 @@ const CeoGlamping = () => {
 
   // 이미지 업로드
   const handleImageUpload = e => {
-    const files = Array.from(e.target.files);
-    // 이미지가 현재 배열에 있는 이미지 개수를 더해 3장 이하로 제한
-    if (glampImg.length + files.length > maxImageCount) {
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(file);
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+      console.log(file);
+    }
+
+    if (glampImg.length + 1 > maxImageCount) {
       openModal({
         message: `이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`,
         onCheck: closeModal,
       });
-
       return;
     }
-    const newImages = [
-      ...glampImg,
-      ...files.slice(0, maxImageCount - glampImg.length),
-    ];
+
+    const newImages = [...glampImg, file];
     setGlampImg(newImages);
     setUploadedImageCount(newImages.length);
-    setIsImageUploaded(true);
+    setIsImageUploaded(newImages.length > 0);
     setValue("glampImg", newImages, { shouldValidate: true });
     trigger("glampImg");
   };
@@ -478,42 +321,78 @@ const CeoGlamping = () => {
     trigger(fieldName);
   };
 
+  // 대표이미지 수정 함수
+  const updateGlampingImage = async (imageFile, glampId, ceoAccessToken) => {
+    const formData = new FormData();
+    formData.append("image", imageFile);
+    formData.append("glampId", glampId);
+
+    try {
+      const response = await axios.patch(
+        "/api/owner/glamping/image",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
+
+      if (response.data.code === "SU") {
+        console.log("이미지 수정 성공:", response.data.message);
+      } else {
+        console.log("이미지 수정 실패:", response.data.message);
+      }
+    } catch (error) {
+      console.error("이미지 수정 중 오류 발생:", error);
+    }
+  };
+
   // 글램핑장 수정 함수
   const updateGlamping = async data => {
     try {
       if (!ceoAccessToken) return;
 
-      const formData = new FormData();
-
-      formData.append(
-        "requestDto",
-        JSON.stringify({
-          glampName: data.glampName,
-          glampCall: data.glampCall,
-          glampLocation: data.glampLocation,
-          region: data.region,
-          extraCharge: data.extraCharge,
-          intro: data.intro,
-          basic: data.basic,
-          notice: data.notice,
-          traffic: data.traffic,
-        }),
-      );
-      formData.append("glampId", glampId);
-
-      const response = await axios.put(`/api/owner/glamping`, formData, {
-        headers: {
-          Authorization: `Bearer ${ceoAccessToken}`,
-          "Content-Type": "application/json",
+      const response = await axios.put(
+        `/api/owner/glamping`,
+        {
+          requestDto: {
+            glampName: data.glampName,
+            glampCall: data.glampCall,
+            glampLocation: data.glampLocation,
+            region: data.region,
+            extraCharge: data.extraCharge,
+            intro: data.intro,
+            basic: data.basic,
+            notice: data.notice,
+            traffic: data.traffic,
+          },
+          glampId: glampId,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${ceoAccessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
       if (response.data.code === "SU") {
+        console.log("캠핑장 수정 성공:", response.data.message);
+        if (profileImage) {
+          await updateGlampingImage(profileImage, glampId, ceoAccessToken);
+        }
         openModal({
           message: response.data.message,
           onCheck: closeModal,
         });
-        setIsSubmit(true);
+      } else {
+        console.log("캠핑장 수정 실패:", response.data.message);
+        openModal({
+          message: response.data.message,
+          onCheck: closeModal,
+        });
       }
       console.log("서버 응답:", response.data);
     } catch (error) {
@@ -523,11 +402,10 @@ const CeoGlamping = () => {
             message: error.response.data.message,
             onCheck: closeModal,
           });
-          setIsSubmit(true);
         }
       } else {
         openModal({
-          message: "처리 실패. 자세한 사항은 관리자에게 문의해주세요.",
+          message: "수정이 완료되지 않았습니다",
           onCheck: closeModal,
         });
       }
@@ -682,11 +560,12 @@ const CeoGlamping = () => {
                         {glampImg.map((image, index) => (
                           <div key={index} className="uploaded-image">
                             <img
-                              src={
-                                typeof image === "string"
-                                  ? image
-                                  : URL.createObjectURL(image)
-                              }
+                              // src={
+                              //   typeof image === "string"
+                              //     ? image
+                              //     : URL.createObjectURL(image)
+                              // }
+                              src={previewImage || profileImage}
                               alt="uploaded"
                             />
                             <button

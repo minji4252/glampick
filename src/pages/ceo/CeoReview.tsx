@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import emptyImg from "../../images/emptyImg.png";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import ReviewCard from "../../components/ReviewCard";
 import notBookingImg from "../../images/notbookingImg.png";
 import { useEffect, useState } from "react";
