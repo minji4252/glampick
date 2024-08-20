@@ -169,11 +169,6 @@ const SearchMap: React.FC<SearchMapProps> = ({
       glampId: string,
       glampName: string,
     ) => {
-      console.log("Lat:", lat);
-      console.log("Lng:", lng);
-      console.log("GlampId:", glampId);
-      console.log("GlampName:", glampName);
-      console.log("location:", location);
       const position = new window.kakao.maps.LatLng(lat, lng);
       const content = `
         <div class="custom-overlay" onclick="handleInfoWindowClick('${glampId}')">

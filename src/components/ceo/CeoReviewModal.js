@@ -68,6 +68,7 @@ const CeoReviewModal = ({
   reviewId,
   glampId,
   setCanWriteReview,
+  onApproval,
 }) => {
   const [reviewText, setReviewText] = useState("");
   const [ceoAccessToken, setCeoAccessToken] =
@@ -128,6 +129,7 @@ const CeoReviewModal = ({
 
   const handleAlertClose = () => {
     setAlertModalOpen(false);
+    onApproval();
     onClose();
   };
 

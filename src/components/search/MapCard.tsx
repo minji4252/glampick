@@ -32,7 +32,7 @@ const MapCard: React.FC<MapCardProps> = ({
 
   // 예약 버튼
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("예약하기");
+    // console.log("예약하기");
   };
 
   const MapCardUrl = `/places/${glampId}?inDate=${inDate}&outDate=${outDate}&people=${people}`;

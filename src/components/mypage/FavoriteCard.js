@@ -33,7 +33,7 @@ export const FavoriteCard = ({
   }, []);
 
   const handleHeartClick = async () => {
-    console.log("삭제?");
+    // console.log("삭제?");
     setLoading(true);
     try {
       const response = await axios.get(`/api/glamping/favorite`, {
@@ -46,11 +46,11 @@ export const FavoriteCard = ({
         },
       });
 
-      console.log("삭제됨??");
+      // console.log("삭제됨??");
       if (response.data.resultValue === 0) {
         setIsFavorite(false);
         onRemoveFavorite(glampId);
-        console.log("삭제됨?????");
+        // console.log("삭제됨?????");
       }
       setLoading(false);
     } catch (error) {
@@ -60,7 +60,21 @@ export const FavoriteCard = ({
     window.location.reload();
   };
 
+  const regionNames = {
+    all: "전국",
+    seoul: "서울/경기",
+    gangwon: "강원",
+    chungbuk: "충북",
+    chungnam: "충남",
+    gyeongbuk: "경북",
+    gyeongnam: "경남",
+    jeonbuk: "전북",
+    jeonnam: "전남",
+    jeju: "제주",
+  };
+
   if (!isFavorite) return null;
+  const locationName = regionNames[glampLocation] || glampLocation;
 
   return (
     <FavoriteArticle key={glampId}>
@@ -77,7 +91,7 @@ export const FavoriteCard = ({
         >
           <div className="article-place">
             <MdPlace />
-            {glampLocation}
+            {locationName}
           </div>
         </div>
       </Link>

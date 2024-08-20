@@ -158,7 +158,6 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
-      console.log(file);
     }
   };
 
@@ -174,7 +173,7 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
     formData.append("file", bannerImage);
 
     try {
-      const response = await fetch("/api/admin", {
+      const response = await fetch("/api/admin/banner", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${adminAccessToken}`,
@@ -187,30 +186,32 @@ const AdminBannerModal = ({ isOpen, onClose }) => {
         setPreviewImage(null);
         setFileName("이미지 사이즈: 950x200");
         setAlertMessage("배너가 추가되었습니다.");
-        onClose();
-        // 성공 메시지 설정 및 모달 열기
+        setIsAlertModalOpen(true);
       } else {
         const errorData = await response.json();
         const errorMessage = errorData.message || "파일 업로드에 실패했습니다.";
         setAlertMessage(errorMessage);
+        setIsAlertModalOpen(true);
       }
     } catch (error) {
       console.error("업로드 오류 발생:", error);
       setAlertMessage("업로드 중 오류가 발생했습니다.");
-    } finally {
       setIsAlertModalOpen(true);
     }
   };
+
   // 모달 닫으면 파일 다시
   const handleClose = () => {
     setBannerImage(null);
     setPreviewImage(null);
     setFileName("이미지 사이즈: 950x200");
-    onClose();
+    setIsAlertModalOpen(false); // AlertModal 닫기
+    onClose(); // AdminBannerModal 닫기
   };
 
   const handleConfirmClose = () => {
     setIsAlertModalOpen(false);
+    onClose(); // AdminBannerModal도 닫기
   };
 
   if (!isOpen) return null;

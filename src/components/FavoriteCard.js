@@ -111,7 +111,6 @@ const ArticleContent = styled.div`
     }
   }
 `;
-// 지역명 한글로
 
 export const FavoriteCard = ({
   reviewCount,
@@ -122,6 +121,7 @@ export const FavoriteCard = ({
   glampName,
   glampId,
 }) => {
+  // 지역명 한글로
   const regionNames = {
     all: "전국",
     seoul: "서울/경기",
