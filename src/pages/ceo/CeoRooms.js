@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import CeoCategories from "../../components/ceo/CeoCategories";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import {
   CeoActionButton,
   CeoButton,
@@ -203,7 +203,7 @@ const CeoRooms = () => {
     setSelectedRoomId(roomId);
     setIsCheckModalOpen(true);
     setCheckModalMessage(
-      `'${selectedRoom.roomName}' 객실을 \n 정말 삭제하시겠습니까?`,
+      `'${selectedRoom.roomName}' 객실을 \n 삭제하시겠습니까?`,
     );
   };
 

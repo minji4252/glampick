@@ -5,146 +5,21 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
 import { FiMinusCircle } from "react-icons/fi";
-import * as yup from "yup";
-import CeoCategories from "../../components/ceo/CeoCategories";
-import { CeoActionButton, CeoButton } from "../../components/common/Button";
-import { colorSystem, size } from "../../styles/color";
-import useFetchAccessToken from "../../utils/CeoAccessToken";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import * as yup from "yup";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import AlertModal from "../../components/common/AlertModal";
+import { CeoActionButton, CeoButton } from "../../components/common/Button";
 import { useGlamping } from "../../contexts/GlampingContext";
-
-const WrapStyle = styled.div`
-  .inner {
-    flex-direction: column;
-  }
-  h3 {
-    width: 100%;
-    margin-top: 50px;
-    margin-left: 120px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: ${colorSystem.g900};
-    margin-bottom: 65px;
-  }
-
-  em {
-    color: ${colorSystem.g400};
-    margin-left: 5px;
-    font-weight: 500;
-  }
-
-  form {
-    max-width: 800px;
-    width: 100%;
-
-    .submit-btn {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      margin-top: 60px;
-      margin-bottom: 30vh;
-      button {
-        width: 30%;
-        height: 50px;
-        font-size: 1.1rem;
-      }
-    }
-  }
-
-  @media all and (max-width: 1910px) {
-    display: flex;
-    .inner {
-      margin-left: 82px;
-    }
-  }
-
-  ${size.mid} {
-    flex-direction: column;
-    h3 {
-      margin-top: 250px;
-    }
-  }
-`;
-
-const CeoBoxStyle = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  padding: 20px;
-  padding-bottom: 30px;
-  border-radius: 20px;
-  border: 1px solid ${colorSystem.g400};
-  margin-bottom: 30px;
-
-  label {
-    font-weight: 600;
-    color: ${colorSystem.g800};
-    margin-bottom: 10px;
-  }
-
-  input,
-  textarea {
-    max-width: 640px;
-    width: 100%;
-    border: 0px;
-    background-color: ${colorSystem.g100};
-    height: 40px;
-    border-radius: 10px;
-    padding: 15px;
-  }
-
-  textarea {
-    height: 140px;
-    resize: none;
-  }
-
-  h4 {
-    color: ${colorSystem.placeholder};
-  }
-
-  span {
-    position: absolute;
-    bottom: 7px;
-    color: ${colorSystem.error};
-    font-size: 0.8rem;
-    margin-left: 10px;
-    font-weight: 600;
-  }
-
-  .number-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .number-input {
-    max-width: 150px;
-    text-align: center;
-  }
-
-  .room-img-label {
-    margin-bottom: 0;
-  }
-
-  .weekday-error {
-    margin-left: 40px;
-  }
-
-  .weekend-error {
-    margin-left: 265px;
-  }
-
-  .peopleNum-error {
-    margin-left: 0px;
-  }
-
-  .peopleMax-error {
-    margin-left: 150px;
-  }
-`;
+import {
+  CeoBoxStyle,
+  CheckInRoomStyle,
+  PeopleNumberStyle,
+  RoomOptionStyle,
+  WrapStyle,
+} from "../../styles/ceo/CeoRoomStyle";
+import { colorSystem } from "../../styles/color";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const ImageUploadStyle = styled.div`
   position: relative;
@@ -231,66 +106,22 @@ const ImageUploadStyle = styled.div`
   }
 `;
 
-const PeopleNumberStyle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  input {
-    max-width: 65px !important;
-    width: 100%;
-  }
-`;
-
-const CheckInRoomStyle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  label {
-    margin-bottom: 1px;
-    margin-right: 7px;
-  }
-
-  .number-group {
-    gap: 5px;
-  }
-`;
-
-const RoomOptionStyle = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  color: ${colorSystem.g600};
-
-  .option {
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 100px;
-    margin: 5px;
-    font-weight: 600;
-    transition:
-      background-color 0.3s,
-      color 0.3s;
-    border: 1px solid ${colorSystem.g400};
-
-    &.selected {
-      background-color: ${colorSystem.primary};
-      color: ${colorSystem.white};
-      border: 1px solid transparent;
-      font-weight: 500;
-    }
-  }
-`;
-
 const CeoRoom = () => {
   const location = useLocation();
-  const [roomImg, setRoomImg] = useState([]);
   const [service, setService] = useState([]);
   const ceoAccessToken = useFetchAccessToken();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
   const { glampId } = useGlamping();
+  const { roomId } = useParams();
+  // -------------이미지 관련 변수 -------------------
+  const [roomImg, setRoomImg] = useState([]);
+  const maxImageCount = 10;
+  // 이미지 갯수
+  const [uploadedImageCount, setUploadedImageCount] = useState(roomImg.length);
+  // 이미지 업로드 상태 추가
+  const [isImageUploaded, setIsImageUploaded] = useState(false);
 
   const isEditMode = location.pathname.includes("/edit/");
   const SERVICE_MAPPING = {
@@ -357,13 +188,6 @@ const CeoRoom = () => {
 
   // ---------------------------------이미지----------------------------------------
 
-  // 추가된 이미지 개수와 전체 등록 가능한 이미지 개수 상태 추가
-  const maxImageCount = 10;
-  const [uploadedImageCount, setUploadedImageCount] = useState(roomImg.length);
-
-  // 이미지 업로드 상태 추가
-  const [isImageUploaded, setIsImageUploaded] = useState(false);
-
   // 이미지 업로드
   const handleImageUpload = e => {
     const files = Array.from(e.target.files);
@@ -403,8 +227,6 @@ const CeoRoom = () => {
 
   // -----------------------------------------------------------------------------
 
-  const { roomId } = useParams();
-
   const reverseServiceMapping = Object.keys(SERVICE_MAPPING).reduce(
     (acc, key) => {
       acc[SERVICE_MAPPING[key]] = key;
@@ -414,15 +236,15 @@ const CeoRoom = () => {
   );
 
   //객실 정보 불러오기
-  const getRoomDetails = async (roomId, ceoAccessToken) => {
+  const getRoomDetails = async () => {
     try {
-      console.log("보낼 데이터:", { roomId, ceoAccessToken });
-      // 글램핑장 id임시
-      const response = await axios.get(`/api/owner/room/2/${roomId}`, {
+      if (!ceoAccessToken) return;
+      const response = await axios.get(`/api/owner/room/${glampId}/${roomId}`, {
         headers: {
           Authorization: `Bearer ${ceoAccessToken}`,
         },
       });
+
       const data = response.data;
 
       setValue("roomName", data.roomName);
@@ -439,8 +261,13 @@ const CeoRoom = () => {
         data.service.map(code => reverseServiceMapping[code] || ""),
       );
 
-      setRoomImg(data.roomImgName.map(url => ({ url })));
-      setIsImageUploaded(data.roomImgName.length > 0);
+      setRoomImg(
+        data.roomImg.map(image => ({
+          url: image.roomImgName,
+          imageId: image.imageId,
+        })),
+      );
+      setIsImageUploaded(data.roomImg.length > 0);
     } catch (error) {
       console.log(error);
       throw error;
@@ -474,52 +301,61 @@ const CeoRoom = () => {
     }
   }, [errors.roomImg]);
 
-  // 수정 함수
+  // 객실 수정 함수
   const modifyRoomDetails = async (roomId, data, ceoAccessToken) => {
     const formData = new FormData();
 
-    //추가된 이미지
+    // 기존 이미지 추가 (imageId가 있는 경우)
+    // console.log("roomImg", roomImg.imageId)
+    roomImg.forEach(image => {
+      if (image.imageId) {
+        formData.append("existingImg", image.imageId);
+      }
+    });
+
+    // 추가된 이미지
     data.roomImg.forEach(image => {
       if (image.file) {
         formData.append("addImg", image.file, image.file.name);
       }
     });
 
-    const removeImgIds = []; // 여기에 삭제할 이미지의 ID 배열을 추가하세요
-    formData.append(
-      "req",
-      JSON.stringify({
-        requestDto: {
-          glampId: glampId,
-          roomName: data.roomName,
-          weekdayPrice: data.weekdayPrice,
-          weekendPrice: data.weekendPrice,
-          peopleNum: data.peopleNum,
-          peopleMax: data.peopleMax,
-          inTime: `${data.inTime}:00:00`,
-          outTime: `${data.outTime}:00:00`,
-          service: data.service.map(code => SERVICE_MAPPING[code] || code),
-        },
-        roomId: roomId,
-        removeImg: removeImgIds,
-      }),
-    );
+    // 삭제할 이미지 ID 설정
+    const removeImgIds = roomImg
+      .filter(image => image.imageId)
+      .map(image => image.imageId);
+
+    const requestPayload = {
+      requestDto: {
+        glampId: glampId,
+        roomName: data.roomName,
+        weekdayPrice: data.weekdayPrice,
+        weekendPrice: data.weekendPrice,
+        peopleNum: data.peopleNum,
+        peopleMax: data.peopleMax,
+        inTime: `${data.inTime}:00:00`,
+        outTime: `${data.outTime}:00:00`,
+        service: data.service.map(code => SERVICE_MAPPING[code] || code),
+      },
+      roomId: roomId,
+      removeImg: removeImgIds,
+    };
+
+    formData.append("req", JSON.stringify(requestPayload));
+
+    // FormData의 내용을 콘솔로 출력 //임시
+    // for (let [key, value] of formData.entries()) {
+    //   if (value instanceof File) {
+    //     console.log(`키: ${key}, 파일 이름: ${value.name}`);
+    //   } else {
+    //     console.log(`키: ${key}, 값: ${value}`);
+    //   }
+    // }
 
     try {
       if (!ceoAccessToken) return;
+
       console.log("수정 데이터:", formData);
-
-      const logFileDetails = formData => {
-        for (let [key, value] of formData.entries()) {
-          if (value instanceof File) {
-            console.log(`File - ${key}: ${value.name} (${value.size} bytes)`);
-          } else {
-            console.log(`${key}: ${value}`);
-          }
-        }
-      };
-
-      logFileDetails(formData);
 
       const response = await axios.put(
         // eslint-disable-next-line no-undef
