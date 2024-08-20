@@ -14,6 +14,8 @@ import useFetchCeoAccessToken from "../../utils/CeoAccessToken";
 import CheckModal from "../../components/common/CheckModal";
 import AlertModal from "../../components/common/AlertModal";
 import PeakModal from "../../components/ceo/PeakModal";
+import { useGlamping } from "../../contexts/GlampingContext";
+import LoadingNobg from "../../components/common/LoadingNobg";
 
 const WrapStyle = styled.div`
   .inner {
@@ -39,6 +41,13 @@ const WrapStyle = styled.div`
     }
   }
 `;
+
+const CeoRoomsLoading = styled.div`
+  div {
+    position: static !important;
+  }
+`;
+
 const RoomsTitle = styled.div`
   width: 100%;
   display: flex;
@@ -163,22 +172,25 @@ const CeoRooms = () => {
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [rooms, setRooms] = useState([]);
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const ceoAccessToken = useFetchCeoAccessToken();
+  const { glampId } = useGlamping();
 
   // 객실 정보 리스트 불러오기
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         if (!ceoAccessToken) return;
-        // 임시
-        const response = await axios.get(`/api/owner/room/2`, {
+        const response = await axios.get(`/api/owner/room/${glampId}`, {
           headers: {
             Authorization: `Bearer ${ceoAccessToken}`,
           },
         });
         setRooms(response.data.room);
       } catch (error) {
-        console.error(error);
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -232,48 +244,57 @@ const CeoRooms = () => {
   return (
     <WrapStyle>
       <CeoCategories />
-      <div className="inner">
-        <RoomsTitle>
-          <h3>객실 관리</h3>
-          <CeoActionButton onClick={handleOpenModal} label="성수기 설정" />
-        </RoomsTitle>
-        <RoomListStyle>
-          <RoomAddStyle>
-            <Link to="/ceoroom/new">
-              <RoomAddBtnStyle>
-                <FaPlus />
-                <span>객실 등록</span>
-              </RoomAddBtnStyle>
-            </Link>
-          </RoomAddStyle>
-          {rooms.map(room => (
-            <RoomsStyle key={room.roomId}>
-              <div
-                className="rooms-item"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  backgroundImage: `url(${room.roomImg})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                }}
-              />
-              <div className="rooms-item-btn">
-                <Link to={`/ceoroom/edit/${room.roomId}`}>
-                  <CeoActionButton label="수정" />
-                </Link>
-                <DeleteButton
-                  label="삭제"
-                  onClick={() => handleDeleteClick(room.roomId)}
-                />
-              </div>
 
-              <span>{room.roomName}</span>
-              <div className="rooms-item" />
-            </RoomsStyle>
-          ))}
-        </RoomListStyle>
+      <div className="inner">
+        {loading ? (
+          <CeoRoomsLoading>
+            <LoadingNobg />
+          </CeoRoomsLoading>
+        ) : (
+          <>
+            <RoomsTitle>
+              <h3>객실 관리</h3>
+              <CeoActionButton onClick={handleOpenModal} label="성수기 설정" />
+            </RoomsTitle>
+            <RoomListStyle>
+              <RoomAddStyle>
+                <Link to="/ceoroom/new">
+                  <RoomAddBtnStyle>
+                    <FaPlus />
+                    <span>객실 등록</span>
+                  </RoomAddBtnStyle>
+                </Link>
+              </RoomAddStyle>
+              {rooms.map(room => (
+                <RoomsStyle key={room.roomId}>
+                  <div
+                    className="rooms-item"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      backgroundImage: `url(${room.roomImg})`,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "cover",
+                    }}
+                  />
+                  <div className="rooms-item-btn">
+                    <Link to={`/ceoroom/edit/${room.roomId}`}>
+                      <CeoActionButton label="수정" />
+                    </Link>
+                    <DeleteButton
+                      label="삭제"
+                      onClick={() => handleDeleteClick(room.roomId)}
+                    />
+                  </div>
+
+                  <span>{room.roomName}</span>
+                  <div className="rooms-item" />
+                </RoomsStyle>
+              ))}
+            </RoomListStyle>
+          </>
+        )}
       </div>
       {isModalOpen && (
         <PeakModal onClose={handleCloseModal} ceoAccessToken={ceoAccessToken} />

@@ -12,6 +12,7 @@ import { colorSystem, size } from "../../styles/color";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import AlertModal from "../../components/common/AlertModal";
+import { useGlamping } from "../../contexts/GlampingContext";
 
 const WrapStyle = styled.div`
   .inner {
@@ -289,6 +290,7 @@ const CeoRoom = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
+  const { glampId } = useGlamping();
 
   const isEditMode = location.pathname.includes("/edit/");
   const SERVICE_MAPPING = {
@@ -483,13 +485,12 @@ const CeoRoom = () => {
       }
     });
 
-    // 기존 이미지 삭제 처리 (삭제할 이미지의 ID를 서버에서 제공하는 것으로 가정)
     const removeImgIds = []; // 여기에 삭제할 이미지의 ID 배열을 추가하세요
     formData.append(
       "req",
       JSON.stringify({
         requestDto: {
-          glampId: 2, // 임시 글램핑장 ID
+          glampId: glampId,
           roomName: data.roomName,
           weekdayPrice: data.weekdayPrice,
           weekendPrice: data.weekendPrice,
@@ -548,8 +549,7 @@ const CeoRoom = () => {
       formData.append(
         "req",
         JSON.stringify({
-          // 임시
-          glampId: 2,
+          glampId: glampId,
           roomName: data.roomName,
           weekdayPrice: data.weekdayPrice,
           weekendPrice: data.weekendPrice,

@@ -53,7 +53,6 @@ const aggregateDataByMonth = (data: BookingDataItem[]): BookingDataItem[] => {
 };
 
 const BookingChart: React.FC<BookingChartProps> = ({ data, period }) => {
-  console.log("현재 기간은", period);
   const chartData = [
     {
       id: "예약 수",

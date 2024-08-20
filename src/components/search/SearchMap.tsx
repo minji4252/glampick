@@ -44,7 +44,7 @@ const SearchMapStyle = styled.div`
   }
 `;
 
-// 타입 스크립트 카카오 오류
+// 타입스크립트 카카오 오류
 declare global {
   interface Window {
     kakao: any;
@@ -59,8 +59,9 @@ declare global {
 }
 
 interface Marker {
-  lat: number;
-  lng: number;
+  lat?: number;
+  lng?: number;
+  location?: string;
   glampId: string;
   glampName: string;
   price: number;
@@ -109,26 +110,57 @@ const SearchMap: React.FC<SearchMapProps> = ({
     };
 
     const map = new window.kakao.maps.Map(mapContainer.current, mapOption);
+    const geocoder = new window.kakao.maps.services.Geocoder();
 
-    // 마커랑 오버레이
-    markers.forEach(marker => {
-      const position = new window.kakao.maps.LatLng(marker.lat, marker.lng);
+    // 마커와 오버레이 추가
+    const processMarkers = async () => {
+      for (const marker of markers) {
+        if (marker.location) {
+          // 주소를 위도/경도로 변환
+          geocoder.addressSearch(
+            marker.location,
+            (result: any, status: string) => {
+              if (status === window.kakao.maps.services.Status.OK) {
+                const { y, x } = result[0];
+                const position = new window.kakao.maps.LatLng(y, x);
 
-      // 가격 뜨기
-      const priceLabel = `
-        <div class="price-label" onclick="handlePriceLabelClick('${marker.lat}', '${marker.lng}', '${marker.glampId}', '${marker.glampName}')">
-          ${formattedPrice(marker.price)}
-        </div>
-      `;
+                // 가격 뜨기
+                const priceLabel = `
+                <div class="price-label" onclick="handlePriceLabelClick('${y}', '${x}', '${marker.glampId}', '${marker.glampName}')">
+                  ${formattedPrice(marker.price)}
+                </div>
+              `;
+                const priceOverlay = new window.kakao.maps.CustomOverlay({
+                  position: position,
+                  content: priceLabel,
+                  zIndex: 200,
+                });
+                priceOverlay.setMap(map);
+              } else {
+                console.error("주소 검색 실패", status);
+              }
+            },
+          );
+        } else if (marker.lat !== undefined && marker.lng !== undefined) {
+          const position = new window.kakao.maps.LatLng(marker.lat, marker.lng);
 
-      const priceOverlay = new window.kakao.maps.CustomOverlay({
-        position: position,
-        content: priceLabel,
-        zIndex: 200,
-      });
+          // 가격 뜨기
+          const priceLabel = `
+            <div class="price-label" onclick="handlePriceLabelClick('${marker.lat}', '${marker.lng}', '${marker.glampId}', '${marker.glampName}')">
+              ${formattedPrice(marker.price)}
+            </div>
+          `;
+          const priceOverlay = new window.kakao.maps.CustomOverlay({
+            position: position,
+            content: priceLabel,
+            zIndex: 200,
+          });
+          priceOverlay.setMap(map);
+        }
+      }
+    };
 
-      priceOverlay.setMap(map);
-    });
+    processMarkers();
 
     // 가격 클릭하면 글램핑장 이름 뜨기
     window.handlePriceLabelClick = (
@@ -141,20 +173,19 @@ const SearchMap: React.FC<SearchMapProps> = ({
       console.log("Lng:", lng);
       console.log("GlampId:", glampId);
       console.log("GlampName:", glampName);
+      console.log("location:", location);
       const position = new window.kakao.maps.LatLng(lat, lng);
       const content = `
         <div class="custom-overlay" onclick="handleInfoWindowClick('${glampId}')">
           ${glampName}
         </div>
       `;
-
       const customOverlay = new window.kakao.maps.CustomOverlay({
         position: position,
         content: content,
         yAnchor: 1.9,
         zIndex: 1000,
       });
-
       customOverlay.setMap(map);
     };
 
