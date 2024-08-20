@@ -62,6 +62,9 @@ export const SignupWrapStyle = styled.div`
       font-size: 1.1rem;
       margin-top: 20px;
       margin-bottom: 9px;
+      ${size.mid} {
+        font-size: 1rem;
+      }
     }
 
     input {
@@ -72,12 +75,20 @@ export const SignupWrapStyle = styled.div`
       padding: 10px;
       font-size: 0.9rem;
       border-radius: 10px;
+      ${size.mid} {
+        width: calc(100% - 140px - 10px);
+        font-size: 0.8rem;
+      }
     }
   }
 
   .input-group {
     display: flex;
     justify-content: space-between;
+    ${size.mid} {
+      width: 100%;
+      /* 다른 input과 너비 동일하게 맞춤 */
+    }
 
     input {
       width: calc(100% - 150px - 10px);
@@ -87,12 +98,20 @@ export const SignupWrapStyle = styled.div`
       padding: 10px;
       font-size: 0.9rem;
       border-radius: 10px;
+      ${size.mid} {
+        width: calc(100% - 140px - 10px);
+        font-size: 0.8rem;
+      }
     }
 
     .form-button > button {
       width: 140px;
       height: 40px;
       font-size: 0.95rem;
+      ${size.mid} {
+        width: 130px;
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -105,6 +124,28 @@ export const SignupWrapStyle = styled.div`
     font-size: 1.2rem;
     ${size.mid} {
       font-size: 1.1rem;
+      margin-bottom: 80px;
+    }
+  }
+  // 작성완료 버튼
+  .completed-button > button {
+    width: 100%;
+    height: 50px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    ${size.mid} {
+      font-size: 1.1rem;
+    }
+  }
+  .add-info {
+    width: 100%;
+    margin-left: 10px;
+    color: ${colorSystem.error};
+    font-size: 0.95rem;
+    margin-bottom: 100px;
+    ${size.mid} {
+      font-size: 0.9rem;
       margin-bottom: 80px;
     }
   }

@@ -110,23 +110,17 @@ const SnsSignUpPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // const code = new URL(window.location.href).searchParams.get("code");
-  // // console.log(code);
-  // const headers = {
-  //   "Content-Type": "application/x-www-form-urlencoded",
-  // };
-
   useEffect(() => {
     // 현재 URL을 가져옴
     const url = new URL(window.location.href);
     const userIdFromUrl = url.searchParams.get("user_id");
     const accessTokenFromUrl = url.searchParams.get("access_token");
     const infoStatusFromUrl = url.searchParams.get("info_status");
+    console.log("userIdFromUrl:", userIdFromUrl);
 
     if (userIdFromUrl) {
       // user_id를 상태에 저장
       setUserId(userIdFromUrl);
-      console.log("userId:", userId);
     }
 
     if (accessTokenFromUrl) {
@@ -137,45 +131,25 @@ const SnsSignUpPage = () => {
       const payload = JSON.parse(atob(accessTokenFromUrl.split(".")[1]));
       const signedUser = JSON.parse(payload.signedUser);
       console.log("signedUser :", signedUser);
+      console.log("signedUser :", signedUser.userId);
       // 사용자 역할을 Recoil 상태에 저장
       setUserRole(signedUser.role); // userRoleState를 업데이트
       localStorage.setItem("userRole", signedUser.role);
     }
     // info_status가 true이면 메인 페이지로 리다이렉트
     if (infoStatusFromUrl === "true") {
-      window.location.href = "/"; // 메인 페이지로 이동
+      navigate("/", { replace: true });
     }
-  }, []);
+    // if (infoStatusFromUrl === "false") {
+    //   navigate("/sns-signup", { replace: true });
+    // }
+  }, [navigate]);
 
-  // userId를 상태 업데이트 후 확인하기 위한 useEffect 추가
   useEffect(() => {
     if (userId) {
       console.log("userId:", userId);
     }
   }, [userId]);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (authCode) {
-  //       try {
-  //         // 액세스 토큰 가져오기
-  //         const accessToken = await getAccessToken(authCode);
-  //         // 사용자 정보 가져오기
-  //         const userInfo = await getMemberWithAccessToken(accessToken);
-
-  //         // userId가 제대로 받아와졌는지 확인
-  //         console.log("Received userId:", userInfo.id);
-
-  //         setValue("userId", userInfo.id);
-  //         // 사용자 정보 상태 업데이트
-  //         setUserData(userInfo);
-  //       } catch (err) {
-  //         setError(err.message || "Error fetching data");
-  //       }
-  //     }
-  //   };
-  //   fetchData();
-  // }, [authCode, setValue]);
 
   // 핸드폰 인증 타이머 초기화 및 정리
   useEffect(() => {
@@ -519,7 +493,7 @@ const SnsSignUpPage = () => {
     <WrapStyle>
       {loading && <Loading />}
       <div className="container">
-        <h2>회원가입</h2>
+        <h2>추가 정보 기입</h2>
         <SignupWrapStyle>
           <form onSubmit={handleSubmit(onHandleSubmit)}>
             <div className="form-group">
@@ -746,8 +720,11 @@ const SnsSignUpPage = () => {
                 </ul>
               </div>
             </TermsGroupStyle>
-            <div className="signup-button">
-              <MainButton label="회원가입" />
+            <div className="completed-button">
+              <MainButton label="작성 완료" />
+            </div>
+            <div className="add-info">
+              추가 정보가 기입되지 않은 경우 회원가입 처리가 되지 않습니다.
             </div>
           </form>
         </SignupWrapStyle>

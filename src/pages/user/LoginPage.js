@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
+import base64 from "base-64";
 import { useEffect, useState } from "react";
+import { RiKakaoTalkFill } from "react-icons/ri";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { postSignIn } from "../../apis/userapi";
@@ -17,13 +19,8 @@ import AlertModal from "../../components/common/AlertModal";
 import { ActionButton, MainButton } from "../../components/common/Button";
 import Loading from "../../components/common/Loading";
 import useModal from "../../hooks/UseModal";
-import KakaoIcon from "../../images/btn_kakao.svg";
-import NaverIcon from "../../images/btn_naver.png";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
-import base64 from "base-64";
-import { getKakaoLoginLink } from "../../apis/kkoapi";
-import { RiKakaoTalkFill } from "react-icons/ri";
 
 export const WrapStyle = styled.div`
   position: relative;
@@ -187,6 +184,7 @@ export const WrapStyle = styled.div`
   .sns-login-list {
     width: 100%;
     display: flex;
+    align-items: center;
     margin-top: 24px;
     gap: 30px;
     justify-content: center;
@@ -195,43 +193,34 @@ export const WrapStyle = styled.div`
       gap: 25px;
     }
   }
+  /* 카카오로그인 버튼 */
   .sns-login-item {
+    width: 100%;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 7px;
     background-color: #fbe400;
-    width: 100%;
-    height: 50px;
     font-size: 1.2rem;
-    border-radius: 20px;
+    font-weight: 500;
+    border-radius: 30px;
     margin-top: 15px;
-  }
-  .sns-login-link {
-  }
-
-  // sns 로그인 아이콘
-  .kakao-icon {
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    background: url(${KakaoIcon}) no-repeat center;
-    background-size: contain;
     ${size.mid} {
-      width: 42px;
-      height: 42px;
+      font-size: 1.1rem;
+      height: 45px;
+    }
+    // sns 로그인 아이콘
+    .kakao {
+    }
+    .kakaoicon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      background-size: contain;
     }
   }
-  /* .naver-icon {
-    width: 48px;
-    height: 48px;
-    background: url(${NaverIcon}) no-repeat center;
-    background-size: contain;
-    ${size.mid} {
-      width: 42px;
-      height: 42px;
-    }
-  } */
 
   /* 이메일 기억하기 */
   .remember-me {
@@ -254,7 +243,7 @@ export const WrapStyle = styled.div`
 
   /* ceo 로그인 */
   .ceo-login {
-    margin-top: 50px;
+    margin-top: 20px;
     margin-bottom: 50px;
 
     .ceo-login-btn > button {
@@ -301,7 +290,6 @@ const LoginPage = () => {
 
   // 페이지 로드 시 로컬 스토리지에서 이메일 불러오기
   useEffect(() => {
-    console.log("user_role:", userRole);
     const savedEmail = localStorage.getItem("savedEmail");
     if (savedEmail) {
       setUserEmail(savedEmail);
@@ -446,21 +434,15 @@ const LoginPage = () => {
               </div>
               <div className="sns-login">
                 <p>sns 로그인</p>
-                <div className="sns-login-item">
-                  <a
-                    href={`http://112.222.157.156:5124/oauth2/authorization/kakao?redirect_uri=http://localhost:3000/sns-signup`}
-                  >
+                <a
+                  href={`http://112.222.157.156:5124/oauth2/authorization/kakao?redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}`}
+                >
+                  <div className="sns-login-item">
                     <div className="kakao" />
                     <RiKakaoTalkFill className="kakaoicon" />
                     카카오로그인
-                  </a>
-                </div>
-                {/* <li className="sns-login-item">
-                    <a href="#" className="sns-login-link">
-                      <div className="naver-icon" />
-                    </a>
-                  </li> */}
-                {/* </ul> */}
+                  </div>
+                </a>
               </div>
               <div className="ceo-login">
                 <Link to="/ceologin" className="ceo-login-btn">
