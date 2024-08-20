@@ -2,20 +2,43 @@ import styled from "@emotion/styled";
 import { colorSystem, size } from "./color";
 
 export const GlampingKingStyle = styled.div`
+  overflow-y: hidden;
   .inner {
     flex-direction: column;
     margin-top: 20px;
+    max-width: 1250px;
 
     .store-inner,
-    .banner-inner,
     .signup-inner,
     .exit-inner {
       width: 100%;
       margin-top: 50px;
       margin-bottom: 100px;
       padding: 0 50px;
+      display: inline-flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 30px;
+    }
+
+    .store-inner {
       display: grid;
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: 1fr 2fr 3fr;
+      flex-direction: column;
+      @media all and (max-width: 1910px) {
+        display: inline-flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+    }
+
+    .banner-inner {
+      width: 100%;
+      margin-top: 50px;
+      margin-bottom: 100px;
+      padding: 0 50px;
+      display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 30px;
@@ -63,12 +86,20 @@ export const GlampingKingStyle = styled.div`
     .store-inner h5,
     .signup-inner h5,
     .exit-inner h5 {
+      width: 400px;
       margin-left: 10px;
       font-size: 17px;
     }
   }
 
   @media all and (max-width: 1910px) {
+    /* margin: 65px 0 200px 0; */
+    width: 100%;
+    display: inline-flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    /* gap: 60px; */
+    /* padding: 0 60px; */
     .inner {
       margin-top: 50px;
       margin-left: 82px;

@@ -73,6 +73,10 @@ const SignupContent = styled.div`
         flex-direction: row;
       }
 
+      .business-img {
+        margin-top: 10px;
+      }
+
       .signup-btn {
         display: flex;
         justify-content: center;
@@ -255,6 +259,7 @@ const AdminSignupModal = ({ isOpen, onClose, ownerId, onApproval }) => {
                 <h4>사업자등록증: </h4>
                 {ownerInfo.businessPaperImage && (
                   <img
+                    className="business-img"
                     src={ownerInfo.businessPaperImage}
                     alt="사업자등록증"
                     style={{ width: "100%", borderRadius: "5px" }}

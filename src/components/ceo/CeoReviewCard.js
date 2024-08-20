@@ -173,6 +173,7 @@ const CeoReviewCard = ({
   starPoint,
   reviewImages,
   userProfileImage,
+  setCanWriteReview,
 }) => {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
@@ -276,6 +277,7 @@ const CeoReviewCard = ({
           onClose={handleCloseCreateReviewModal}
           glampId={glampId}
           reviewId={reviewId}
+          setCanWriteReview={setCanWriteReview}
         />
       </ReviewCardStyle>
       <UnderLine />
