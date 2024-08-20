@@ -119,15 +119,17 @@ function App() {
       "/chart",
       "/ceoinfo",
     ];
-    const loginPages = ["/login", "/signup", "/sns-signup"];
-    const ceoLoginPages = ["/ceologin", "/ceosignup"];
-    // 로그인 상태에서 로그인 페이지 및 회원가입 페이지 접근 제어
-    if (forUser && isLogin && loginPages.includes(location.pathname)) {
-      return <Navigate to="/" replace />; // 아무 것도 렌더링하지 않아서 현재 페이지에 머물게 함
-    }
-    if (!forUser && isCeoLogin && ceoLoginPages.includes(location.pathname)) {
-      return <Navigate to="/" replace />; // 아무 것도 렌더링하지 않아서 현재 페이지에 머물게 함
-    }
+
+    // const loginPages = ["/login", "/signup", "/sns-signup"];
+    // const ceoLoginPages = ["/ceologin", "/ceosignup"];
+    // // 로그인 상태에서 로그인 페이지 및 회원가입 페이지 접근 제어
+    // if (forUser && isLogin && loginPages.includes(location.pathname)) {
+    //   return <Navigate to="/" replace />; // 아무 것도 렌더링하지 않아서 현재 페이지에 머물게 함
+    // }
+    // if (!forUser && isCeoLogin && ceoLoginPages.includes(location.pathname)) {
+    //   return <Navigate to="/" replace />; // 아무 것도 렌더링하지 않아서 현재 페이지에 머물게 함
+    // }
+
     // 현재 페이지가 사용자 페이지인지 사장님 페이지인지 확인
     const isUserPage = userPages.some(page =>
       location.pathname.startsWith(page),
