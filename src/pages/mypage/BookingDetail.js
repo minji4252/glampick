@@ -1,18 +1,17 @@
 import styled from "@emotion/styled";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import BookingDetailForm from "../../components/BookingDetailForm";
-import Categories from "../../components/mypage/Categories";
-import notBookingImg from "../../images/notbookingImg.png";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { colorSystem, size } from "../../styles/color";
-import { getCookie } from "../../utils/cookie";
-import { MainButton } from "../../components/common/Button";
 import { Link } from "react-router-dom";
-import Loading from "../../components/common/Loading";
-import ListPagination from "../../components/common/ListPagination";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
+import BookingDetailForm from "../../components/BookingDetailForm";
+import { MainButton } from "../../components/common/Button";
+import ListPagination from "../../components/common/ListPagination";
+import Loading from "../../components/common/Loading";
+import Categories from "../../components/mypage/Categories";
+import notBookingImg from "../../images/notbookingImg.png";
+import { colorSystem, size } from "../../styles/color";
 
 const WrapStyle = styled.div`
   .inner {
@@ -120,6 +119,7 @@ export const NotContentStyle = styled.div`
   /* margin-top: 65px; */
   margin-bottom: 250px;
   letter-spacing: 2px;
+
   .logo-img {
     background: url(${notBookingImg}) no-repeat center;
     background-size: cover;

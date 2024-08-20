@@ -3,12 +3,12 @@ import { colorSystem, size } from "../../styles/color";
 import emptyImg from "../../images/emptyImg.png";
 import CeoCategories from "../../components/ceo/CeoCategories";
 import ReviewCard from "../../components/ReviewCard";
+import notBookingImg from "../../images/notbookingImg.png";
 import { useEffect, useState } from "react";
 import { ceoAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import axios from "axios";
 import ListPagination from "../../components/common/ListPagination";
-import { NotContentStyle } from "../mypage/BookingDetail";
 import CeoReviewCard from "../../components/ceo/CeoReviewCard";
 
 const WrapStyle = styled.div`
@@ -113,25 +113,93 @@ const NoReviewsStyle = styled.div`
   }
 `;
 
-const CeoReview = () => {
-  const [canWriteReview, setCanWriteReview] = useState(false);
-  const [reviews, setReviews] = useState([]);
-  const [ceoAccessToken, setCeoAccessToken] =
-    useRecoilState(ceoAccessTokenState);
+const NotContentStyle = styled.div`
+  /* width: 150%; */
+  background-color: ${colorSystem.background};
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  /* margin-top: 65px; */
+  margin-bottom: 250px;
+  letter-spacing: 2px;
+  padding-bottom: 50px;
+  .logo-img {
+    background: url(${notBookingImg}) no-repeat center;
+    background-size: cover;
+    width: 150px;
+    height: 100px;
+    margin-top: 100px;
+  }
 
-  const [activeTab, setActiveTab] = useState("allreview");
+  a {
+    max-width: 180px;
+    width: 100%;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 10px;
+  }
+  .room-search-btn {
+    margin-top: 40px;
+    margin-bottom: 60px;
+    position: relative;
+    button {
+      width: 100%;
+      height: 40px;
+      text-align: left;
+      -webkit-justify-content: left;
+    }
+    svg {
+      width: 38px;
+      height: 38px;
+      color: ${colorSystem.white};
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: 10%;
+      pointer-events: none;
+    }
+  }
+`;
+
+interface Review {
+  reviewId: string;
+  userNickName: string;
+  glampName: string;
+  glampId: string;
+  roomName: string;
+  createdAt: string;
+  userReviewContent: string;
+  ownerReviewContent: string;
+  starPoint: number;
+  reviewImages: string[];
+  userProfileImage: string;
+}
+
+interface SearchResults {
+  totalReviewCount: number;
+}
+
+const CeoReview: React.FC = () => {
+  const [canWriteReview, setCanWriteReview] = useState<boolean>(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [ceoAccessToken, setCeoAccessToken] = useRecoilState<string | null>(
+    ceoAccessTokenState,
+  );
+
+  const [activeTab, setActiveTab] = useState<string>("allreview");
   const [allReviews, setAllReviews] = useState([]);
   const [nocommentReviews, setNocommentReviews] = useState([]);
 
-  const handleTabClick = tab => {
-    setActiveTab(tab);
-    // setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
-  };
-  const [searchResults, setSearchResults] = useState({
+  const [searchResults, setSearchResults] = useState<SearchResults>({
     totalReviewCount: 0,
   });
-  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
-  const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
+  const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지
+  const [postPerPage] = useState<number>(5); // 페이지네이션 페이지당 보여질 목록 수
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -151,6 +219,11 @@ const CeoReview = () => {
 
     fetchCeoAccessToken();
   }, [setCeoAccessToken]);
+
+  const handleTabClick = (tab: string) => {
+    setActiveTab(tab);
+    // setCurrentPage(1); // 탭 변경 시 현재 페이지 초기화
+  };
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -258,7 +331,7 @@ const CeoReview = () => {
             ) : (
               <NotContentStyle>
                 <div className="logo-img" />
-                <h4>답변할 리뷰가?? 없습니다?</h4>
+                <h4>답변할 리뷰가 없습니다</h4>
               </NotContentStyle>
             )}
           </div>

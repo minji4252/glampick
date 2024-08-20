@@ -7,6 +7,7 @@ import { ModalWrapper } from "../common/PasswordCheckModal";
 import axios from "axios";
 import { ceoAccessTokenState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
+import AlertModal from "../common/AlertModal";
 
 const ReviewModalStyle = styled.div`
   position: fixed;
@@ -71,6 +72,7 @@ const CeoReviewModal = ({
   const [reviewText, setReviewText] = useState("");
   const [ceoAccessToken, setCeoAccessToken] =
     useRecoilState(ceoAccessTokenState);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCeoAccessToken = async () => {
@@ -118,11 +120,17 @@ const CeoReviewModal = ({
       );
       console.log("성공: ", response.data);
       setCanWriteReview(true);
-      onClose();
+      setAlertModalOpen(true);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const handleAlertClose = () => {
+    setAlertModalOpen(false);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -150,6 +158,11 @@ const CeoReviewModal = ({
           </ReviewModalContent>
         </ReviewModalStyle>
       </ModalWrapper>
+      <AlertModal
+        isOpen={alertModalOpen}
+        onClose={handleAlertClose}
+        message="리뷰 답변이 등록되었습니다."
+      />
     </div>
   );
 };

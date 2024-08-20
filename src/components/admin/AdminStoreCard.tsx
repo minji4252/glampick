@@ -6,7 +6,7 @@ import AdminSignupModal from "./AdminSignupModal";
 import AdminStoreModal from "./AdminStoreModal";
 
 const AdminStoreCardStyle = styled.div`
-  width: 450px;
+  width: 430px;
   height: 170px;
   display: flex;
   align-items: center;
