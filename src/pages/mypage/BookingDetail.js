@@ -188,35 +188,35 @@ const BookingDetail = () => {
     fetchAccessToken();
   }, []);
 
+  const getUserBook = async () => {
+    if (!accessToken) return;
+    try {
+      const response = await axios.get(`/api/user/book`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setLoading(false);
+      // console.log(response);
+
+      const {
+        reservationBeforeResultSetList,
+        reservationCompleteResultSetList,
+        reservationCancelResultSetList,
+      } = response.data;
+
+      // 이용 예정 내역
+      setUpcomingBookings(reservationBeforeResultSetList || []);
+      // 이용 완료 내역
+      setCompletedBookings(reservationCompleteResultSetList || []);
+      // 예약 취소 내역
+      setCancelledBookings(reservationCancelResultSetList || []);
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const getUserBook = async () => {
-      if (!accessToken) return;
-      try {
-        const response = await axios.get(`/api/user/book`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setLoading(false);
-        // console.log(response);
-
-        const {
-          reservationBeforeResultSetList,
-          reservationCompleteResultSetList,
-          reservationCancelResultSetList,
-        } = response.data;
-
-        // 이용 예정 내역
-        setUpcomingBookings(reservationBeforeResultSetList || []);
-        // 이용 완료 내역
-        setCompletedBookings(reservationCompleteResultSetList || []);
-        // 예약 취소 내역
-        setCancelledBookings(reservationCancelResultSetList || []);
-      } catch (error) {
-        // console.log(error);
-      }
-    };
-
     getUserBook();
   }, [accessToken]);
 
@@ -248,6 +248,8 @@ const BookingDetail = () => {
     );
     // 취소된 예약을 취소 목록에 추가
     setCancelledBookings(prevBookings => [...prevBookings, cancelledBooking]);
+
+    getUserBook();
   };
 
   // 현재 보여줄 예약 목록

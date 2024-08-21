@@ -353,7 +353,7 @@ const LoginPage = () => {
     // 토큰에서 사용자 정보 파싱
     const payload = JSON.parse(base64.decode(result.accessToken.split(".")[1]));
     const signedUser = JSON.parse(payload.signedUser);
-    console.log("signedUser :", signedUser);
+    // console.log("signedUser :", signedUser);
 
     // 사용자 역할을 Recoil 상태에 저장
     setUserRole(signedUser.role); // userRoleState를 업데이트

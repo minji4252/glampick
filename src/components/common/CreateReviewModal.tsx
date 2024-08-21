@@ -167,7 +167,7 @@ const ReviewModalContent = styled.div`
 interface CreateReviewModalProps {
   isOpen: boolean;
   onClose: () => void;
-  reservationId: string;
+  reservationId: number;
   reviewStarPoint: number;
   glampName: string;
   roomName: string;
@@ -387,7 +387,6 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
               </div>
             </div>
             <MainButton label="등록하기" />
-
           </form>
         </ReviewModalContent>
       </ReviewModalStyle>

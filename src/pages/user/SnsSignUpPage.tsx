@@ -316,7 +316,7 @@ const SnsSignUpPage = () => {
   // 전화번호 자동 변경
   const handleChangePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     const phoneNumber = formatPhoneNumber(e.target.value);
-    console.log(phoneNumber);
+    // console.log(phoneNumber);
     setValue("userPhone", phoneNumber);
   };
 

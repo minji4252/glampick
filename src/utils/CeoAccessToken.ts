@@ -13,10 +13,10 @@ const useFetchCeoAccessToken = () => {
         if (token) {
           setCeoAccessToken(token);
         } else {
-          console.log("엑세스 토큰 없음");
+          // console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
+        // console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
     fetchAccessToken();
