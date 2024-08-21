@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { adminAccessTokenState } from "../../atoms/loginState";
 import { colorSystem } from "../../styles/color";
@@ -105,16 +105,54 @@ const ReasonInput = styled.input`
   border-radius: 5px;
 `;
 
-const AdminStoreModal = ({ isOpen, onClose, glampId, onApproval }) => {
-  const [adminAccessToken, setAdminAccessToken] = useRecoilState(
+interface AdminStoreModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  glampId: string;
+  onApproval: () => void;
+}
+
+interface GlampInfo {
+  glampName: string;
+  glampCall: string;
+  glampImage: string | null;
+  glampLocation: string;
+  region: keyof typeof regionNames;
+  extraCharge: string;
+  glampIntro: string;
+  infoBasic: string;
+  infoNotice: string;
+  traffic: string;
+}
+
+const regionNames = {
+  all: "전국",
+  seoul: "서울/경기",
+  gangwon: "강원",
+  chungbuk: "충북",
+  chungnam: "충남",
+  gyeongbuk: "경북",
+  gyeongnam: "경남",
+  jeonbuk: "전북",
+  jeonnam: "전남",
+  jeju: "제주",
+};
+
+const AdminStoreModal: React.FC<AdminStoreModalProps> = ({
+  isOpen,
+  onClose,
+  glampId,
+  onApproval,
+}) => {
+  const [adminAccessToken, setAdminAccessToken] = useRecoilState<string | null>(
     adminAccessTokenState,
   );
-  const [glampInfo, setGlampInfo] = useState({
+  const [glampInfo, setGlampInfo] = useState<GlampInfo>({
     glampName: "",
     glampCall: "",
     glampImage: null,
     glampLocation: "",
-    region: "",
+    region: "all",
     extraCharge: "",
     glampIntro: "",
     infoBasic: "",
@@ -122,27 +160,13 @@ const AdminStoreModal = ({ isOpen, onClose, glampId, onApproval }) => {
     traffic: "",
   });
   // 거절 이유
-  const [reason, setReason] = useState("");
-  const [isReasonVisible, setIsReasonVisible] = useState(false);
+  const [reason, setReason] = useState<string>("");
+  const [isReasonVisible, setIsReasonVisible] = useState<boolean>(false);
   // 확인 모달
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   // 로딩
-  const [loading, setLoading] = useState(false);
-
-  // 지역 이름
-  const regionNames = {
-    all: "전국",
-    seoul: "서울/경기",
-    gangwon: "강원",
-    chungbuk: "충북",
-    chungnam: "충남",
-    gyeongbuk: "경북",
-    gyeongnam: "경남",
-    jeonbuk: "전북",
-    jeonnam: "전남",
-    jeju: "제주",
-  };
+  const [loading, setLoading] = useState<boolean>(false);
 
   // 토큰 정보 불러오기
   useEffect(() => {
@@ -249,7 +273,8 @@ const AdminStoreModal = ({ isOpen, onClose, glampId, onApproval }) => {
     setLoading(false);
   };
 
-  const handleReasonChange = e => setReason(e.target.value);
+  const handleReasonChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setReason(e.target.value);
 
   const handleConfirmClose = () => {
     setIsAlertModalOpen(false);
@@ -263,7 +288,9 @@ const AdminStoreModal = ({ isOpen, onClose, glampId, onApproval }) => {
     <>
       <StoreModalStyle onClick={onClose}>
         {loading && <LoadingNobg />}
-        <StoreContent onClick={e => e.stopPropagation()}>
+        <StoreContent
+          onClick={(e: MouseEvent<HTMLDivElement>) => e.stopPropagation()}
+        >
           <CloseButton onClick={onClose}>×</CloseButton>
           <div className="store-modal-header">
             <h2>글램핑장 정보 상세보기</h2>

@@ -47,12 +47,12 @@ const AdminStoreCardStyle = styled.div`
 
 interface AdminStoreCardProps {
   ownerId: string;
-  glampId: number;
+  glampId: string;
   ownerName: string;
   businessNumber: string;
   glampName: string;
   region: string;
-  onApproval: (glampId: number) => void;
+  onApproval: (glampId: string) => void;
 }
 
 const AdminStoreCard: React.FC<AdminStoreCardProps> = ({
@@ -94,8 +94,8 @@ const AdminStoreCard: React.FC<AdminStoreCardProps> = ({
       <AdminStoreModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        glampId={glampId}
-        onApproval={onApproval}
+        glampId={glampId.toString()}
+        onApproval={() => onApproval(glampId)}
       />
     </>
   );

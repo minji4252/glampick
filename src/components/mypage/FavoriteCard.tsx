@@ -8,7 +8,32 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "../common/Loading";
 
-export const FavoriteCard = ({
+interface FavoriteCardProps {
+  reviewCount: number;
+  price: number;
+  starPoint: number;
+  glampImage: string;
+  glampLocation: string;
+  glampName: string;
+  glampId: number;
+  onRemoveFavorite: (glampId: number) => void;
+  accessToken: string | null;
+}
+
+const regionNames = {
+  all: "전국",
+  seoul: "서울/경기",
+  gangwon: "강원",
+  chungbuk: "충북",
+  chungnam: "충남",
+  gyeongbuk: "경북",
+  gyeongnam: "경남",
+  jeonbuk: "전북",
+  jeonnam: "전남",
+  jeju: "제주",
+} as const;
+
+export const FavoriteCard: React.FC<FavoriteCardProps> = ({
   reviewCount,
   price,
   starPoint,
@@ -27,7 +52,8 @@ export const FavoriteCard = ({
   const formattedStarPoint = Number(starPoint).toFixed(1);
 
   // 임시 이미지
-  const [roomMainImage, setRoomMainImage] = useState(null);
+  const [roomMainImage, setRoomMainImage] = useState<string | null>(null);
+
   useEffect(() => {
     setRoomMainImage("pic/glamping/1/room/1/room1.jpg");
   }, []);
@@ -60,21 +86,9 @@ export const FavoriteCard = ({
     window.location.reload();
   };
 
-  const regionNames = {
-    all: "전국",
-    seoul: "서울/경기",
-    gangwon: "강원",
-    chungbuk: "충북",
-    chungnam: "충남",
-    gyeongbuk: "경북",
-    gyeongnam: "경남",
-    jeonbuk: "전북",
-    jeonnam: "전남",
-    jeju: "제주",
-  };
-
   if (!isFavorite) return null;
-  const locationName = regionNames[glampLocation] || glampLocation;
+  const locationName =
+    regionNames[glampLocation as keyof typeof regionNames] || glampLocation;
 
   return (
     <FavoriteArticle key={glampId}>

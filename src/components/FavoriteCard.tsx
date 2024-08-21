@@ -112,7 +112,31 @@ const ArticleContent = styled.div`
   }
 `;
 
-export const FavoriteCard = ({
+interface FavoriteCardProps {
+  reviewCount: number;
+  price: string;
+  starPoint: number;
+  glampImage?: string;
+  glampLocation: keyof typeof regionNames;
+  glampName: string;
+  glampId: string;
+}
+
+// 지역명 한글로
+const regionNames = {
+  all: "전국",
+  seoul: "서울/경기",
+  gangwon: "강원",
+  chungbuk: "충북",
+  chungnam: "충남",
+  gyeongbuk: "경북",
+  gyeongnam: "경남",
+  jeonbuk: "전북",
+  jeonnam: "전남",
+  jeju: "제주",
+};
+
+export const FavoriteCard: React.FC<FavoriteCardProps> = ({
   reviewCount,
   price,
   starPoint,
@@ -121,27 +145,12 @@ export const FavoriteCard = ({
   glampName,
   glampId,
 }) => {
-  // 지역명 한글로
-  const regionNames = {
-    all: "전국",
-    seoul: "서울/경기",
-    gangwon: "강원",
-    chungbuk: "충북",
-    chungnam: "충남",
-    gyeongbuk: "경북",
-    gyeongnam: "경남",
-    jeonbuk: "전북",
-    jeonnam: "전남",
-    jeju: "제주",
-  };
-
   return (
     <FavoriteArticle key={glampId}>
       <Link to="/glampingdetail">
         <div className="article-image">
           <div className="article-place">
             <MdPlace />
-            {/* {glampLocation} */}
             {regionNames[glampLocation] || ""}
           </div>
         </div>

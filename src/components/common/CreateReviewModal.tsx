@@ -5,7 +5,6 @@ import { FaCamera, FaRegStar, FaStar } from "react-icons/fa";
 import { FiMinusCircle } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
 import { colorSystem } from "../../styles/color";
-import { getCookie } from "../../utils/cookie";
 import { MainButton } from "./Button";
 import { ModalWrapper } from "./PasswordCheckModal";
 import { useRecoilState } from "recoil";
@@ -387,7 +386,6 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
               </div>
             </div>
             <MainButton label="등록하기" />
-
           </form>
         </ReviewModalContent>
       </ReviewModalStyle>
