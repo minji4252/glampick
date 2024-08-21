@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
@@ -22,7 +22,7 @@ import { ActionButton, MainButton } from "../components/common/Button";
 import CheckModal from "../components/common/CheckModal";
 import emptyheart from "../images/icon/heart-empty.png";
 import fillheart from "../images/icon/heart-fill.png";
-import { FcCalendar } from "react-icons/fc";
+
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
 import SearchCalendar from "../components/search/SearchCalendar";
@@ -76,40 +76,6 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const { glampId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    const savedScrollPosition = sessionStorage.getItem("scrollPosition");
-    console.log("왜? savedScrollPosition ", savedScrollPosition);
-    if (savedScrollPosition) {
-      window.scrollTo(0, parseInt(savedScrollPosition));
-      // window.scrollTo(0, 0);
-    }
-    // window.addEventListener("scroll", checkScroll);
-    return () => {
-      // window.removeEventListener("scroll", checkScroll);
-    };
-  }, []);
-
-  // 임시
-  useLayoutEffect(() => {
-    const savedScrollPosition = sessionStorage.getItem("scrollPosition");
-    if (savedScrollPosition) {
-      window.scrollTo(0, parseInt(savedScrollPosition));
-    }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
-
-  // ------------------
-
   // 기본값 설정 함수
   const getDefaultDate = daysToAdd => {
     const date = new Date();
@@ -148,6 +114,11 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
         setRoomImages(roomImageUrls);
         setIsLiked(data.isFav === 1);
         setIsDataLoaded(true);
+
+        const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScrollPosition));
+        }, 0);
       } catch (error) {
         console.log(error);
       }
@@ -294,7 +265,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   };
 
   const handleRoomAroundClick = () => {
-    roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
+    // roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleLoginConfirm = () => {
@@ -401,7 +372,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
 
   const handelClickDetail = (path, state) => {
     console.log("scrollY : ", window.scrollY);
-    sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    sessionStorage.setItem("scrollPosition", window.scrollY);
     console.log("path : ", path);
     console.log("state : ", state);
     navigate(path, { state });
@@ -566,7 +537,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
                       <span>객실정보</span>
                       <p>
                         기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}
-                        인 (유료), 1인당 추가 요금 {room.extraCharge}원
+                        {/* 임시 */}인 (유료), 1인당 추가 요금 10000원
                       </p>
                     </div>
                     <div>
@@ -684,8 +655,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             />
           </div>
         </div>
-        <FcCalendar />
-        {/* <AiOutlineSearch /> */}
+        <AiOutlineSearch />
       </StickyOptionStyle>
     </GlampingDetailStyle>
   );
