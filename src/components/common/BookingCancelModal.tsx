@@ -159,7 +159,7 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
 
   // 예약 취소 함수
   const handleConfirm = async (e: FormEvent) => {
-    console.log("예약취소 확인");
+    // console.log("예약취소 확인");
     e.preventDefault();
     if (!accessToken) return;
 
@@ -178,9 +178,9 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
           },
         },
       );
-      console.log(response);
+      // console.log(response);
       if (response.data.code === "SU") {
-        console.log("예약취소 성공", response);
+        // console.log("예약취소 성공", response);
         setIsSuccess(true); // 성공 상태 업데이트
         onConfirm();
         onBookingCancelled(reservationId, comment); // 예약 취소 시 호출

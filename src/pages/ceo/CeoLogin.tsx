@@ -71,7 +71,7 @@ const CeoLogin = () => {
   };
 
   // 로그인시 처리할 함수
-  const handleCeoLogin = async e => {
+  const handleCeoLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // setLoading(true);
 
@@ -118,7 +118,7 @@ const CeoLogin = () => {
     closeModal();
   };
 
-  const loginSuccessFn = result => {
+  const loginSuccessFn = (result: any) => {
     // 토큰에서 사용자 정보 파싱
     const payload = JSON.parse(base64.decode(result.accessToken.split(".")[1]));
     const signedCeo = JSON.parse(payload.signedUser);
