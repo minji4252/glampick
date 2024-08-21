@@ -43,7 +43,7 @@ export const postOwnerAuthCode = async ({ ceoEmail, authCode }) => {
       ceoEmail: ceoEmail,
       authKey: authCode,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -59,7 +59,7 @@ export const postOwnerSendSms = async ({ phone }) => {
   try {
     const reqData = `/api/auth/owner/send-sms?ownerPhone=${phone}`;
     const response = await axios.post(reqData, { phone });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -78,10 +78,11 @@ export const postOwnerCheckSms = async ({ phone, phoneAuthCode }) => {
       ownerPhone: phone,
       phoneKey: phoneAuthCode,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
@@ -116,7 +117,7 @@ export const postOwnerSignUp = async ({
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     console.log(error);

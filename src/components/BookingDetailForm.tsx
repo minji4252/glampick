@@ -311,9 +311,6 @@ export const BookingDetailForm: React.FC<BookingDetailFormProps> = ({
         onConfirm={handleBookingCancelSuccess} // 취소 성공 시 콜백 호출
         comment={booking.comment}
         reservationId={booking.reservationId}
-        onBookingCancelled={() => {
-          console.log("");
-        }}
       />
     </FormContents>
   );
