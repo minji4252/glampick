@@ -35,12 +35,6 @@ export const ChartWrapStyle = styled.div`
   }
 `;
 
-export const ChartLoading = styled.div`
-  div {
-    position: static !important;
-  }
-`;
-
 export const StateStyle = styled.div`
   width: 100%;
   display: flex;

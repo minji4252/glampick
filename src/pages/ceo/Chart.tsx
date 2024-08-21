@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaStar, FaBookmark } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaBookmark, FaStar } from "react-icons/fa";
 import {
   getBookingData,
   getCancelData,
@@ -8,40 +8,70 @@ import {
 } from "../../apis/ceochartapi";
 import BookingChart from "../../components/ceo/BookingChart";
 import CancelChart from "../../components/ceo/CancelChart";
-import CeoCategories from "../../components/mypage/CeoCategories";
 import SalesChart from "../../components/ceo/SalesChart";
+import Loading from "../../components/common/Loading";
+import CeoCategories from "../../components/mypage/CeoCategories";
+import SearchCalendar from "../../components/search/SearchCalendar";
 import {
   ChartCalendarStyle,
-  ChartLoading,
   ChartWrapStyle,
   ListContent,
   StateStyle,
   TapStyle,
 } from "../../styles/ceo/ChartStyle";
 import useFetchAccessToken from "../../utils/CeoAccessToken";
-import SearchCalendar from "../../components/search/SearchCalendar";
-import LoadingNobg from "../../components/common/LoadingNobg";
+
+interface BookingDataItem {
+  checkInDate: string;
+  reservationCount: string;
+}
+
+interface RevenueDataItem {
+  times: string;
+  roomName: string;
+  pay: string;
+}
+
+interface CancelDataItem {
+  cancelCount: string;
+  nameing: string | null;
+}
+
+interface CancelData {
+  room: CancelDataItem[];
+  formattedResult: number;
+}
 
 const Chart = () => {
-  const [currentTab, setCurrentTab] = useState(0);
-  const [starPointAvg, setStarPointAvg] = useState(0);
-  const [heart, setHeart] = useState(0);
-  const [bookingData, setBookingData] = useState([]);
-  const [totalBookingData, setTotalBookingData] = useState(0);
-  const [revenueData, setRevenueData] = useState([]);
-  const [totalRevenueData, setTotalRevenueData] = useState(0);
-  const [cancelData, setCancelData] = useState([]);
-  const [startDayId, setStartDayId] = useState(null);
-  const [endDayId, setEndDayId] = useState(null);
-  const [currentPeriod, setCurrentPeriod] = useState("weekly");
-  const [currentPeriodBtn, setCurrentPeriodBtn] = useState("weekly");
+  const [currentTab, setCurrentTab] = useState<number>(0);
+  const [starPointAvg, setStarPointAvg] = useState<number>(0);
+  const [heart, setHeart] = useState<number>(0);
+  const [bookingData, setBookingData] = useState<BookingDataItem[]>([]);
+  const [totalBookingData, setTotalBookingData] = useState<number>(0);
+  const [revenueData, setRevenueData] = useState<RevenueDataItem[]>([]);
+  const [totalRevenueData, setTotalRevenueData] = useState<number>(0);
+  const [cancelData, setCancelData] = useState<CancelData>({
+    room: [],
+    formattedResult: 0,
+  });
+  const [startDayId, setStartDayId] = useState<string | null>(null);
+  const [endDayId, setEndDayId] = useState<string | null>(null);
+  const [currentPeriod, setCurrentPeriod] = useState<
+    "daily" | "weekly" | "monthly"
+  >("weekly");
+  const [currentPeriodBtn, setCurrentPeriodBtn] = useState<
+    "weekly" | "monthly" | "custom"
+  >("weekly");
   const ceoAccessToken = useFetchAccessToken();
-  const [loading, setLoading] = useState(true);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [selectedDate, setSelectedDate] = useState([null, null]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showCalendar, setShowCalendar] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<[Date | null, Date | null]>([
+    null,
+    null,
+  ]);
 
   // 날짜 형식 변환
-  const formatDate = date => date.toISOString().split("T")[0];
+  const formatDate = (date: Date): string => date.toISOString().split("T")[0];
 
   // 주간 버튼 클릭 시
   const handleWeeklyClick = () => {
@@ -81,8 +111,8 @@ const Chart = () => {
   // 기간 직접 설정시
   useEffect(() => {
     if (selectedDate[0] && selectedDate[1]) {
-      const startDate = new Date(selectedDate[0]);
-      const endDate = new Date(selectedDate[1]);
+      const startDate = new Date(selectedDate[0] as Date);
+      const endDate = new Date(selectedDate[1] as Date);
 
       startDate.setDate(startDate.getDate() + 1);
       endDate.setDate(endDate.getDate() + 1);
@@ -95,7 +125,7 @@ const Chart = () => {
       setCurrentPeriodBtn("custom");
 
       const diffInDays = Math.ceil(
-        (endDate - startDate) / (1000 * 60 * 60 * 24),
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
       );
 
       if (diffInDays < 7) {
@@ -116,7 +146,13 @@ const Chart = () => {
     {
       name: "예약",
       count: `${totalBookingData ?? 0}`,
-      content: <BookingChart data={bookingData} period={currentPeriod} />,
+      content: (
+        <BookingChart
+          data={bookingData}
+          period={currentPeriod}
+          isWeekly={currentPeriod === "weekly"}
+        />
+      ),
     },
     {
       name: "매출",
@@ -130,7 +166,7 @@ const Chart = () => {
     },
   ];
 
-  const selectMenuHandler = index => {
+  const selectMenuHandler = (index: number) => {
     setCurrentTab(index);
   };
 
@@ -142,8 +178,8 @@ const Chart = () => {
         const fetchBookingData = async () => {
           const response = await getBookingData(
             ceoAccessToken,
-            startDayId,
-            endDayId,
+            startDayId ?? "",
+            endDayId ?? "",
           );
           if (response.code === "SU") {
             setBookingData(response.popularRooms);
@@ -154,8 +190,8 @@ const Chart = () => {
         const fetchRevenueData = async () => {
           const response = await getRevenueData(
             ceoAccessToken,
-            startDayId,
-            endDayId,
+            startDayId ?? "",
+            endDayId ?? "",
           );
           if (response.code === "SU") {
             setRevenueData(response.revenue);
@@ -166,8 +202,8 @@ const Chart = () => {
         const fetchCancelData = async () => {
           const response = await getCancelData(
             ceoAccessToken,
-            startDayId,
-            endDayId,
+            startDayId ?? "",
+            endDayId ?? "",
           );
           if (response.code === "SU") {
             setCancelData(response);
@@ -216,9 +252,7 @@ const Chart = () => {
       <CeoCategories />
       <div className="inner">
         {loading ? (
-          <ChartLoading>
-            <LoadingNobg />
-          </ChartLoading>
+          <Loading />
         ) : (
           <>
             <div className="chart-title">

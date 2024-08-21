@@ -53,12 +53,6 @@ export const WrapStyle = styled.div`
   }
 `;
 
-export const CeoGlampingLoading = styled.div`
-  div {
-    position: static !important;
-  }
-`;
-
 export const WaitingStyle = styled.div`
   margin: 20vh 0 50vh 0;
   padding: 30px;

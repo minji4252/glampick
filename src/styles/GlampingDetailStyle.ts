@@ -49,13 +49,6 @@ export const GlampingDetailStyle = styled.div`
   }
 `;
 
-// 로딩
-export const GlampingDetailLoading = styled.div`
-  div {
-    position: static !important;
-  }
-`;
-
 // 룸 옵션
 export const RoomProperty = styled.div`
   width: 100%;

@@ -15,6 +15,7 @@ import {
   NotContentStyle,
   WrapStyle,
 } from "../../styles/ceo/CeoReviewStyle";
+import Loading from "../../components/common/Loading";
 
 interface Review {
   reviewId: number;
@@ -40,6 +41,7 @@ const CeoReview = () => {
   const [ceoAccessToken, setCeoAccessToken] = useRecoilState<string | null>(
     ceoAccessTokenState,
   );
+  const [loading, setLoading] = useState(true);
 
   const [activeTab, setActiveTab] = useState<string>("allreview");
   const [searchResults, setSearchResults] = useState<SearchResults>({
@@ -83,6 +85,8 @@ const CeoReview = () => {
       setSearchResults({ totalReviewCount: response.data.totalReviewsCount });
     } catch (error) {
       console.error("리뷰 리스트 갱신 오류:", error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -99,99 +103,105 @@ const CeoReview = () => {
 
   return (
     <WrapStyle>
-      <CeoCategories />
-      <div className="inner">
-        <h3>리뷰 관리</h3>
-        <div className="tabs">
-          <div
-            className={`tab ${activeTab === "allreview" ? "active" : ""}`}
-            onClick={() => {
-              handleTabClick("allreview");
-            }}
-          >
-            전체 리뷰
-          </div>
-          <div
-            className={`tab ${activeTab === "nocommentreview" ? "active" : ""}`}
-            onClick={() => {
-              handleTabClick("nocommentreview");
-            }}
-          >
-            미답변 리뷰
-          </div>
-        </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <CeoCategories />
+          <div className="inner">
+            <h3>리뷰 관리</h3>
+            <div className="tabs">
+              <div
+                className={`tab ${activeTab === "allreview" ? "active" : ""}`}
+                onClick={() => {
+                  handleTabClick("allreview");
+                }}
+              >
+                전체 리뷰
+              </div>
+              <div
+                className={`tab ${activeTab === "nocommentreview" ? "active" : ""}`}
+                onClick={() => {
+                  handleTabClick("nocommentreview");
+                }}
+              >
+                미답변 리뷰
+              </div>
+            </div>
 
-        {/* 전체 리뷰 */}
-        {activeTab === "allreview" && (
-          <div className="container">
-            {reviews?.length > 0 ? (
-              reviews.map((review, index) => (
-                <CeoReviewCard
-                  key={index}
-                  reviewId={review.reviewId}
-                  userNickName={review.userNickName}
-                  glampName={review.glampName}
-                  glampId={review.glampId}
-                  roomName={review.roomName}
-                  createdAt={review.createdAt}
-                  userReviewContent={review.userReviewContent}
-                  ownerReviewContent={review.ownerReviewContent}
-                  starPoint={review.starPoint}
-                  reviewImages={review.reviewImages}
-                  userProfileImage={review.userProfileImage}
-                  setCanWriteReview={setCanWriteReview}
-                  onApproval={refreshReviewList}
-                />
-              ))
-            ) : (
-              <NoReviewsStyle>
-                <div className="no-review-img" />
-                <h4>작성한 후기가 없습니다</h4>
-                <p>숙소 이용 후 후기를 남겨주세요</p>
-              </NoReviewsStyle>
+            {/* 전체 리뷰 */}
+            {activeTab === "allreview" && (
+              <div className="container">
+                {reviews?.length > 0 ? (
+                  reviews.map((review, index) => (
+                    <CeoReviewCard
+                      key={index}
+                      reviewId={review.reviewId}
+                      userNickName={review.userNickName}
+                      glampName={review.glampName}
+                      glampId={review.glampId}
+                      roomName={review.roomName}
+                      createdAt={review.createdAt}
+                      userReviewContent={review.userReviewContent}
+                      ownerReviewContent={review.ownerReviewContent}
+                      starPoint={review.starPoint}
+                      reviewImages={review.reviewImages}
+                      userProfileImage={review.userProfileImage}
+                      setCanWriteReview={setCanWriteReview}
+                      onApproval={refreshReviewList}
+                    />
+                  ))
+                ) : (
+                  <NoReviewsStyle>
+                    <div className="no-review-img" />
+                    <h4>작성한 후기가 없습니다</h4>
+                    <p>숙소 이용 후 후기를 남겨주세요</p>
+                  </NoReviewsStyle>
+                )}
+              </div>
+            )}
+            {/* 미답변 리뷰 */}
+            {activeTab === "nocommentreview" && (
+              <div className="container">
+                {reviews?.length > 0 ? (
+                  reviews.map((review, index) => (
+                    <CeoReviewCard
+                      key={index}
+                      reviewId={review.reviewId}
+                      userNickName={review.userNickName}
+                      glampName={review.glampName}
+                      glampId={review.glampId}
+                      roomName={review.roomName}
+                      createdAt={review.createdAt}
+                      userReviewContent={review.userReviewContent}
+                      ownerReviewContent={review.ownerReviewContent}
+                      starPoint={review.starPoint}
+                      reviewImages={review.reviewImages}
+                      userProfileImage={review.userProfileImage}
+                      setCanWriteReview={setCanWriteReview}
+                      onApproval={refreshReviewList}
+                    />
+                  ))
+                ) : (
+                  <NotContentStyle>
+                    <div className="logo-img" />
+                    <h4>답변할 리뷰가 없습니다</h4>
+                  </NotContentStyle>
+                )}
+              </div>
+            )}
+            {reviews?.length > 0 && (
+              <ListPagination
+                currentPage={currentPage}
+                totalItems={searchResults.totalReviewCount || 1}
+                itemsPerPage={postPerPage}
+                onPageChange={setCurrentPage}
+                totalPages={totalPages}
+              />
             )}
           </div>
-        )}
-        {/* 미답변 리뷰 */}
-        {activeTab === "nocommentreview" && (
-          <div className="container">
-            {reviews?.length > 0 ? (
-              reviews.map((review, index) => (
-                <CeoReviewCard
-                  key={index}
-                  reviewId={review.reviewId}
-                  userNickName={review.userNickName}
-                  glampName={review.glampName}
-                  glampId={review.glampId}
-                  roomName={review.roomName}
-                  createdAt={review.createdAt}
-                  userReviewContent={review.userReviewContent}
-                  ownerReviewContent={review.ownerReviewContent}
-                  starPoint={review.starPoint}
-                  reviewImages={review.reviewImages}
-                  userProfileImage={review.userProfileImage}
-                  setCanWriteReview={setCanWriteReview}
-                  onApproval={refreshReviewList}
-                />
-              ))
-            ) : (
-              <NotContentStyle>
-                <div className="logo-img" />
-                <h4>답변할 리뷰가 없습니다</h4>
-              </NotContentStyle>
-            )}
-          </div>
-        )}
-        {reviews?.length > 0 && (
-          <ListPagination
-            currentPage={currentPage}
-            totalItems={searchResults.totalReviewCount || 1}
-            itemsPerPage={postPerPage}
-            onPageChange={setCurrentPage}
-            totalPages={totalPages}
-          />
-        )}
-      </div>
+        </>
+      )}
     </WrapStyle>
   );
 };

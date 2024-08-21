@@ -1,17 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
+import { FcCalendar } from "react-icons/fc";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { TbCopy } from "react-icons/tb";
-import { FcCalendar } from "react-icons/fc";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import "swiper/css";
 import "swiper/css/pagination";
 import { Pagination } from "swiper/modules";
@@ -25,9 +19,9 @@ import fillheart from "../images/icon/heart-fill.png";
 
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
+import Loading from "../components/common/Loading";
 import SearchCalendar from "../components/search/SearchCalendar";
 import GlampingDetailStyle, {
-  GlampingDetailLoading,
   InfoGroup,
   OptionItems,
   ReviewSwiper,
@@ -53,10 +47,8 @@ import GlampingDetailStyle, {
   SwiperEndStyle,
   UnderLine,
 } from "../styles/GlampingDetailStyle";
-import LoadingNobg from "../components/common/LoadingNobg";
 
 const GlampingDetail = ({ isLogin, isCeoLogin }) => {
-  const location = useLocation();
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
@@ -265,7 +257,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   };
 
   const handleRoomAroundClick = () => {
-    // roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
+    roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleLoginConfirm = () => {
@@ -300,11 +292,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   };
 
   if (!isDataLoaded) {
-    return (
-      <GlampingDetailLoading>
-        <LoadingNobg />
-      </GlampingDetailLoading>
-    );
+    return <Loading />;
   }
 
   const {
@@ -371,10 +359,8 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   }
 
   const handelClickDetail = (path, state) => {
-    console.log("scrollY : ", window.scrollY);
+    // console.log("scrollY : ", window.scrollY);
     sessionStorage.setItem("scrollPosition", window.scrollY);
-    console.log("path : ", path);
-    console.log("state : ", state);
     navigate(path, { state });
   };
   return (

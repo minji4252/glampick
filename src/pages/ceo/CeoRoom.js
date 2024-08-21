@@ -123,6 +123,7 @@ const CeoRoom = () => {
   const [uploadedImageCount, setUploadedImageCount] = useState(roomImg.length);
   // 이미지 업로드 상태 추가
   const [isImageUploaded, setIsImageUploaded] = useState(false);
+  const [removeIds, setRemoveIds] = useState([]);
 
   const isEditMode = location.pathname.includes("/edit/");
   const SERVICE_MAPPING = {
@@ -151,7 +152,7 @@ const CeoRoom = () => {
   // yup schema 셋팅
   const schema = yup.object().shape({
     roomName: yup.string().required("객실 이름을 입력해 주세요"),
-    roomImg: yup.array().min(1, "객실 사진을 등록해 주세요"),
+    // roomImg: yup.array().min(1, "객실 사진을 등록해 주세요"),
     weekdayPrice: yup
       .number()
       .typeError("숫자를 입력해 주세요")
@@ -213,13 +214,24 @@ const CeoRoom = () => {
   // 이미지 삭제
   const handleImageDelete = index => {
     const updatedImages = [...roomImg];
-    updatedImages.splice(index, 1);
+    const deletedImage = updatedImages.splice(index, 1)[0];
+
+    // 삭제할 이미지의 ID를 상태에 저장
+    if (deletedImage.imageId) {
+      setRemoveIds(prevIds => [...prevIds, deletedImage.imageId]);
+    }
+
     setRoomImg(updatedImages);
     setUploadedImageCount(updatedImages.length);
     setIsImageUploaded(updatedImages.length > 0);
     setValue("roomImg", updatedImages, { shouldValidate: true });
     trigger("roomImg");
   };
+
+  // 임시
+  useEffect(() => {
+    console.log("삭제할 이미지 ID 상태:", removeIds);
+  }, [removeIds]);
 
   // 이미지 상태 업데이트
   useEffect(() => {
@@ -320,11 +332,6 @@ const CeoRoom = () => {
       }
     });
 
-    // 삭제할 이미지 ID 설정
-    const removeImgIds = roomImg
-      .filter(image => image.imageId)
-      .map(image => image.imageId);
-
     console.log("glampId는요", glampId);
 
     const requestPayload = {
@@ -340,7 +347,7 @@ const CeoRoom = () => {
         service: data.service.map(code => SERVICE_MAPPING[code] || code),
       },
       roomId: roomId,
-      removeImg: removeImgIds,
+      removeImg: removeIds,
     };
 
     formData.append("req", JSON.stringify(requestPayload));
