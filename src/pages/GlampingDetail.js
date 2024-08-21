@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
@@ -7,6 +7,7 @@ import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { TbCopy } from "react-icons/tb";
 import {
   Link,
+  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
@@ -21,7 +22,7 @@ import { ActionButton, MainButton } from "../components/common/Button";
 import CheckModal from "../components/common/CheckModal";
 import emptyheart from "../images/icon/heart-empty.png";
 import fillheart from "../images/icon/heart-fill.png";
-
+import { FcCalendar } from "react-icons/fc";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
 import SearchCalendar from "../components/search/SearchCalendar";
@@ -55,6 +56,7 @@ import GlampingDetailStyle, {
 import LoadingNobg from "../components/common/LoadingNobg";
 
 const GlampingDetail = ({ isLogin, isCeoLogin }) => {
+  const location = useLocation();
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
@@ -72,8 +74,41 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const mapElement = useRef(null);
 
   const { glampId } = useParams();
-  // const [searchParams] = useSearchParams();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+    console.log("왜? savedScrollPosition ", savedScrollPosition);
+    if (savedScrollPosition) {
+      window.scrollTo(0, parseInt(savedScrollPosition));
+      // window.scrollTo(0, 0);
+    }
+    // window.addEventListener("scroll", checkScroll);
+    return () => {
+      // window.removeEventListener("scroll", checkScroll);
+    };
+  }, []);
+
+  // 임시
+  useLayoutEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+    if (savedScrollPosition) {
+      window.scrollTo(0, parseInt(savedScrollPosition));
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
+  // ------------------
 
   // 기본값 설정 함수
   const getDefaultDate = daysToAdd => {
@@ -364,6 +399,13 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
     return `${year}-${month}-${day}`;
   }
 
+  const handelClickDetail = (path, state) => {
+    console.log("scrollY : ", window.scrollY);
+    sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    console.log("path : ", path);
+    console.log("state : ", state);
+    navigate(path, { state });
+  };
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -469,9 +511,9 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             roomItems.slice(0, visibleRoomsCount).map((room, index) => (
               <RoomCard key={index}>
                 <RoomCardLeft>
-                  <Link
-                    to={`/roomdetail/${glampId}`}
-                    state={{ glampName: glampingData.glampName }}
+                  <div
+                  // to={`/roomdetail/${glampId}`}
+                  // state={{ glampName: glampingData.glampName }}
                   >
                     <div
                       className="roomcard-img"
@@ -482,10 +524,15 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                       }}
+                      onClick={() =>
+                        handelClickDetail(`/roomdetail/${glampId}`, {
+                          glampName: glampingData.glampName,
+                        })
+                      }
                     >
                       <span>사진 더보기</span>
                     </div>
-                  </Link>
+                  </div>
                 </RoomCardLeft>
                 <RoomCardRight>
                   <span>{room.roomName}</span>
@@ -519,7 +566,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
                       <span>객실정보</span>
                       <p>
                         기준 {room.roomNumPeople}인 ~ 최대 {room.roomMaxPeople}
-                        {/* 임시 */}인 (유료), 1인당 추가 요금 10000원
+                        인 (유료), 1인당 추가 요금 {room.extraCharge}원
                       </p>
                     </div>
                     <div>
@@ -637,7 +684,8 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             />
           </div>
         </div>
-        <AiOutlineSearch />
+        <FcCalendar />
+        {/* <AiOutlineSearch /> */}
       </StickyOptionStyle>
     </GlampingDetailStyle>
   );

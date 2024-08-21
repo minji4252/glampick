@@ -65,7 +65,8 @@ const ImageUploadStyle = styled.div`
     left: 105px;
     top: 0;
     border: 2px dashed ${colorSystem.g150};
-    width: 620px;
+    max-width: 620px;
+    width: 100%;
     height: 195px;
     border-radius: 5px;
   }
@@ -301,12 +302,11 @@ const CeoRoom = () => {
     }
   }, [errors.roomImg]);
 
-  // 객실 수정 함수
+  // ------------------ 객실 수정 함수 -----------------------------
   const modifyRoomDetails = async (roomId, data, ceoAccessToken) => {
     const formData = new FormData();
 
     // 기존 이미지 추가 (imageId가 있는 경우)
-    // console.log("roomImg", roomImg.imageId)
     roomImg.forEach(image => {
       if (image.imageId) {
         formData.append("existingImg", image.imageId);
@@ -324,6 +324,8 @@ const CeoRoom = () => {
     const removeImgIds = roomImg
       .filter(image => image.imageId)
       .map(image => image.imageId);
+
+    console.log("glampId는요", glampId);
 
     const requestPayload = {
       requestDto: {
@@ -344,18 +346,16 @@ const CeoRoom = () => {
     formData.append("req", JSON.stringify(requestPayload));
 
     // FormData의 내용을 콘솔로 출력 //임시
-    // for (let [key, value] of formData.entries()) {
-    //   if (value instanceof File) {
-    //     console.log(`키: ${key}, 파일 이름: ${value.name}`);
-    //   } else {
-    //     console.log(`키: ${key}, 값: ${value}`);
-    //   }
-    // }
+    for (let [key, value] of formData.entries()) {
+      if (value instanceof File) {
+        console.log(`키: ${key}, 파일 이름: ${value.name}`);
+      } else {
+        console.log(`키: ${key}, 값: ${value}`);
+      }
+    }
 
     try {
       if (!ceoAccessToken) return;
-
-      console.log("수정 데이터:", formData);
 
       const response = await axios.put(
         // eslint-disable-next-line no-undef
@@ -375,6 +375,8 @@ const CeoRoom = () => {
       console.error("에러 발생:", error);
     }
   };
+
+  // -------------------------------------------------------------
 
   //Post 함수
   const onSubmit = async data => {

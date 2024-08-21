@@ -21,6 +21,8 @@ import {
   WaitingStyle,
   WrapStyle,
 } from "../../styles/ceo/CeoGlampingStyle";
+import { useRecoilState } from "recoil";
+import { isCategoryState } from "../../atoms/ceoCategoryState";
 
 const ImageUploadStyle = styled.div`
   position: relative;
@@ -108,9 +110,17 @@ const ImageUploadStyle = styled.div`
 const CeoGlamping = () => {
   const { glampId, setGlampId } = useGlamping();
   const ceoAccessToken = useFetchAccessToken();
-  const [isSubmit, setIsSubmit] = useState(false);
   const [glampingData, setGlampingData] = useState(null);
+
+  // 심사대기중 모드
+  const [isSubmit, setIsSubmit] = useState(false);
+  // 수정 모드
   const [isEditMode, setIsEditMode] = useState(false);
+  // 반려 모드
+  const [isReturn, setIsReturn] = useState(false);
+  // 카테고리 비활성화 모드
+  const [disableCategory, setDisableCategory] = useRecoilState(isCategoryState);
+
   const [loading, setLoading] = useState(true);
   const { isModalOpen, modalMessage, openModal, closeModal } = useModal();
   // 이미지관련
@@ -133,9 +143,12 @@ const CeoGlamping = () => {
       setGlampingData(response.data);
       setGlampId(response.data.glampId);
 
-      // 1. state값이 true면 수정모드
+      // 1. state값이 true면 심사대기완료 -> 수정모드
       if (response.data.state) {
+        console.log("수정모드");
         setIsEditMode(true);
+        setDisableCategory(false);
+        // setIsSubmit(false);
       }
 
       // 2. exclusionStatus 값이 0 이면 심사대기중
@@ -144,7 +157,9 @@ const CeoGlamping = () => {
         response.data.exclusionStatus === 0 &&
         response.data
       ) {
+        console.log("심사대기중모드");
         setIsSubmit(true);
+        setDisableCategory(true);
       }
 
       // 3. exclusionStatus 값이 -1 이면 승인 반려 -> 수정모드
@@ -153,7 +168,11 @@ const CeoGlamping = () => {
         response.data.exclusionStatus === -1 &&
         response.data
       ) {
+        console.log("반려모드");
+        // setIsSubmit(false);
+        setIsReturn(true);
         setIsEditMode(true);
+        setDisableCategory(true);
       }
     } catch (error) {
       console.log(error);
@@ -220,10 +239,13 @@ const CeoGlamping = () => {
     }
 
     if (glampImg.length + 1 > maxImageCount) {
-      openModal({
-        message: `이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`,
-        onCheck: closeModal,
-      });
+      if (!isEditMode) {
+        openModal({
+          message: `이미지는 최대 ${maxImageCount}장까지 등록 가능합니다.`,
+          onCheck: closeModal,
+        });
+      }
+
       return;
     }
 
@@ -457,6 +479,7 @@ const CeoGlamping = () => {
             onCheck: closeModal,
           });
           setIsSubmit(true);
+          setDisableCategory(true);
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -466,6 +489,7 @@ const CeoGlamping = () => {
               onCheck: closeModal,
             });
             setIsSubmit(true);
+            setDisableCategory(true);
           }
         } else {
           openModal({

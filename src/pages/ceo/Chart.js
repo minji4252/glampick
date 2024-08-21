@@ -108,6 +108,10 @@ const Chart = () => {
     }
   }, [selectedDate]);
 
+  const formattedCancelResult = isNaN(cancelData.formattedResult)
+    ? 0
+    : cancelData.formattedResult;
+
   const menuArr = [
     {
       name: "예약",
@@ -121,7 +125,7 @@ const Chart = () => {
     },
     {
       name: "취소율",
-      count: `${cancelData.formattedResult}%`,
+      count: `${formattedCancelResult}%`,
       content: <CancelChart data={cancelData} />,
     },
   ];

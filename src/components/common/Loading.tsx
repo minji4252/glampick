@@ -5,7 +5,7 @@ import { colorSystem } from "../../styles/color";
 const LoadingWrapper = styled.div`
   display: flex;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
   position: fixed;

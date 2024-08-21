@@ -623,27 +623,29 @@ export const RoomLocation = styled.div`
 `;
 
 export const StickyOptionStyle = styled.div`
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: fixed;
   top: 50%;
   right: 30px;
   border-radius: 12px;
-  border: 2px solid ${colorSystem.beige};
   padding: 20px;
   background-color: ${colorSystem.white};
   z-index: 999;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: ${colorSystem.g700};
 
   .sticky-date div input {
-    font-weight: 500;
-    color: ${colorSystem.g700};
+    font-weight: 400;
+    color: ${colorSystem.g900};
     font-family: "Radio Canada", sans-serif !important;
     cursor: pointer;
-    margin-top: 10px;
-    background-color: ${colorSystem.beige};
+    margin-top: 5px;
+    font-size: 1.1rem;
 
     &:hover {
-      background-color: ${colorSystem.g150};
+      color: ${colorSystem.p500};
     }
-    border-radius: 8px;
   }
   .sticky-people {
     margin-top: 20px;
@@ -652,31 +654,30 @@ export const StickyOptionStyle = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
-    border-radius: 8px;
-    background-color: ${colorSystem.beige};
-
-    &:hover {
-      background-color: ${colorSystem.g150};
-    }
+    margin-top: 5px;
   }
   .sticky-people div input {
     font-size: 16px;
-    font-weight: 500;
-    color: ${colorSystem.g700};
+    font-weight: 400;
+    color: ${colorSystem.g900};
     background-color: transparent;
     border: 0;
     font-family: "Radio Canada", sans-serif !important;
     cursor: pointer;
     line-height: 40px;
+    font-size: 1.2rem;
+
+    &:hover {
+      color: ${colorSystem.p500};
+    }
   }
 
   svg {
     position: absolute;
-    right: 10px;
-    top: -18px;
-    font-size: 3rem;
-    color: ${colorSystem.g400};
+    right: 20px;
+    top: -17px;
+    font-size: 2.5rem;
+    color: ${colorSystem.g200};
   }
 `;
 
