@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineSearch } from "react-icons/ai";
 import { FaStar } from "react-icons/fa";
 import { FaLocationDot, FaRegCalendar } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { TbCopy } from "react-icons/tb";
+import { FcCalendar } from "react-icons/fc";
 import {
   Link,
   useLocation,
@@ -655,7 +655,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             />
           </div>
         </div>
-        <AiOutlineSearch />
+        <FcCalendar />
       </StickyOptionStyle>
     </GlampingDetailStyle>
   );
