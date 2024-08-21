@@ -13,7 +13,7 @@ export const postSignIn = async ({ userEmail, userPw }) => {
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -21,7 +21,7 @@ export const postSignIn = async ({ userEmail, userPw }) => {
 export const postSignOut = async () => {
   try {
     const response = await axios.post("/api/auth/sign-out");
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -34,14 +34,14 @@ export const postMailSend = async ({ userEmail }) => {
   try {
     const reqData = `/api/auth/mail-send?userEmail=${userEmail}`;
     const response = await axios.post(reqData, { userEmail });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -53,14 +53,14 @@ export const postAuthCode = async ({ userEmail, authCode }) => {
       userEmail: userEmail,
       authKey: authCode,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
     if (error.response) {
       return error.response;
     }
-    console.log("코드인증에러", error);
+    // console.log("코드인증에러", error);
   }
 };
 
@@ -69,14 +69,14 @@ export const postSendSms = async ({ userPhone }) => {
   try {
     const reqData = `/api/auth/send-sms?userPhone=${userPhone}`;
     const response = await axios.post(reqData, { userPhone });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -88,14 +88,14 @@ export const postCheckSms = async ({ userPhone, authNumber }) => {
       userPhone: userPhone,
       phoneKey: authNumber,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -122,7 +122,7 @@ export const postSignUp = async ({
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -142,10 +142,10 @@ export const postSocailSignUp = async ({
       userPw: userPw,
       userNickname: userNickname,
     });
-    console.log("회원가입 전송데이터:", response);
+    // console.log("회원가입 전송데이터:", response);
     return response;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -158,7 +158,7 @@ export const postPasswordCheck = async ({ userPw }) => {
     // console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -168,6 +168,6 @@ export const deleteUser = async () => {
     const response = await axios.delete(`/api/user`);
     // console.log(response);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };

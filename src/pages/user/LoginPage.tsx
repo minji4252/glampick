@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import base64 from "base-64";
 import { useEffect, useState } from "react";
 import { RiKakaoTalkFill } from "react-icons/ri";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import base64 from "base-64";
 import { postSignIn } from "../../apis/userapi";
 import {
   accessTokenState,
@@ -273,7 +273,9 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useRecoilState(userRememberMeState);
 
   // 로그인 상태 업데이트
-  const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [accessToken, setAccessToken] = useRecoilState<string | null>(
+    accessTokenState,
+  );
   const [isLogin, setIsLogin] = useRecoilState(isLoginState);
   const [userRole, setUserRole] = useRecoilState(userRoleState); // 사용자 역할 상태를 가져오고 설정
 
@@ -316,7 +318,7 @@ const LoginPage = () => {
   };
 
   // 로그인시 처리할 함수
-  const handleLogin = async e => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -329,10 +331,8 @@ const LoginPage = () => {
     const result = await postSignIn({ userEmail, userPw });
     // console.log(result.code);
     if (result.code === "SU") {
-      console.log(result);
+      // console.log(result);
       openModal({ message: "로그인 성공하였습니다!" });
-      console.log("모달 열기 호출 후 상태:", isModalOpen);
-      console.log("모달 메시지:", modalMessage);
       // 데이터 보관해 둠
       setSaveResult(result);
     } else {
@@ -349,7 +349,7 @@ const LoginPage = () => {
     closeModal();
   };
 
-  const loginSuccessFn = result => {
+  const loginSuccessFn = (result: any) => {
     // 토큰에서 사용자 정보 파싱
     const payload = JSON.parse(base64.decode(result.accessToken.split(".")[1]));
     const signedUser = JSON.parse(payload.signedUser);

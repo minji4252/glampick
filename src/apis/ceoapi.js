@@ -85,8 +85,6 @@ export const postOwnerCheckSms = async ({ phone, phoneAuthCode }) => {
   }
 };
 
-// ceo 사업자등록번호 확인 api 호출
-
 // ceo 회원가입 api 호출
 export const postOwnerSignUp = async ({
   file,

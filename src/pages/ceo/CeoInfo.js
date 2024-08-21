@@ -1,22 +1,21 @@
 import styled from "@emotion/styled";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { postOwnerCheckSms, postOwnerSendSms } from "../../apis/ceoapi";
 import { ceoAccessTokenState } from "../../atoms/loginState";
-import CeoCategories from "../../components/mypage/CeoCategories";
 import CeoWithdrawModal from "../../components/ceo/CeoWithdrawModal";
 import AlertModal from "../../components/common/AlertModal";
 import { CeoButton } from "../../components/common/Button";
 import Loading from "../../components/common/Loading";
 import PasswordCheckModal from "../../components/common/PasswordCheckModal";
-import { ceoValidationSchema } from "../../components/validation/ceoValidationSchema";
+import CeoCategories from "../../components/mypage/CeoCategories";
+import { ceoInfoValidationSchema } from "../../components/validation/ceoInfoValidationSchema";
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
 import { ErrorMessage, modalMessages } from "./CeoSignup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { ceoInfoValidationSchema } from "../../components/validation/ceoInfoValidationSchema";
 
 const WrapStyle = styled.div`
   .inner {

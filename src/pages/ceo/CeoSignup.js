@@ -24,10 +24,12 @@ const CeoSignUpStyle = styled.div`
 
   .container {
     display: flex;
-    width: 760px;
+    width: 100%; // 부모 요소 너비를 100%로 설정
+    max-width: 760px;
     margin: 0 auto;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
 
   h2 {
@@ -145,7 +147,7 @@ export const SignupWrapStyle = styled.div`
     font-size: 0.95rem;
     margin-bottom: 100px;
     ${size.mid} {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-bottom: 80px;
     }
   }
@@ -158,6 +160,9 @@ export const ErrorMessage = styled.span`
   font-size: 0.9rem;
   margin-left: 3px;
   margin-top: 5px;
+  ${size.mid} {
+    font-size: 0.8rem;
+  }
 `;
 
 // 폼의 초기값
