@@ -7,6 +7,7 @@ import { RiDoubleQuotesL, RiDoubleQuotesR } from "react-icons/ri";
 import { TbCopy } from "react-icons/tb";
 import {
   Link,
+  useLocation,
   useNavigate,
   useParams,
   useSearchParams,
@@ -55,6 +56,7 @@ import GlampingDetailStyle, {
 import LoadingNobg from "../components/common/LoadingNobg";
 
 const GlampingDetail = ({ isLogin, isCeoLogin }) => {
+  const location = useLocation();
   const [glampingData, setGlampingData] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [roomMainImage, setRoomMainImage] = useState(null);
@@ -72,7 +74,6 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   const mapElement = useRef(null);
 
   const { glampId } = useParams();
-  // const [searchParams] = useSearchParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // 기본값 설정 함수
@@ -113,6 +114,11 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
         setRoomImages(roomImageUrls);
         setIsLiked(data.isFav === 1);
         setIsDataLoaded(true);
+
+        const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+        setTimeout(() => {
+          window.scrollTo(0, parseInt(savedScrollPosition));
+        }, 0);
       } catch (error) {
         console.log(error);
       }
@@ -259,7 +265,7 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
   };
 
   const handleRoomAroundClick = () => {
-    roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
+    // roomLocationRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleLoginConfirm = () => {
@@ -364,6 +370,13 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
     return `${year}-${month}-${day}`;
   }
 
+  const handelClickDetail = (path, state) => {
+    console.log("scrollY : ", window.scrollY);
+    sessionStorage.setItem("scrollPosition", window.scrollY);
+    console.log("path : ", path);
+    console.log("state : ", state);
+    navigate(path, { state });
+  };
   return (
     <GlampingDetailStyle>
       <div className="inner">
@@ -469,9 +482,9 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
             roomItems.slice(0, visibleRoomsCount).map((room, index) => (
               <RoomCard key={index}>
                 <RoomCardLeft>
-                  <Link
-                    to={`/roomdetail/${glampId}`}
-                    state={{ glampName: glampingData.glampName }}
+                  <div
+                  // to={`/roomdetail/${glampId}`}
+                  // state={{ glampName: glampingData.glampName }}
                   >
                     <div
                       className="roomcard-img"
@@ -482,10 +495,15 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                       }}
+                      onClick={() =>
+                        handelClickDetail(`/roomdetail/${glampId}`, {
+                          glampName: glampingData.glampName,
+                        })
+                      }
                     >
                       <span>사진 더보기</span>
                     </div>
-                  </Link>
+                  </div>
                 </RoomCardLeft>
                 <RoomCardRight>
                   <span>{room.roomName}</span>

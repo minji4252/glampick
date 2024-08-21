@@ -3,6 +3,8 @@ import { IoIosArrowForward } from "react-icons/io";
 import { NavLink } from "react-router-dom";
 import { useCeo } from "../../contexts/CeoContext";
 import { colorSystem } from "../../styles/color";
+import { useRecoilValue } from "recoil";
+import { isCategoryState } from "../../atoms/ceoCategoryState";
 
 const CategoriesStyle = styled.div`
   position: fixed;
@@ -81,9 +83,18 @@ const categorieTab = [
   { name: "chart", text: "매장 분석" },
   { name: "ceoinfo", text: "내 정보 관리" },
 ];
+
 const CeoCategories = () => {
   const { ceoInfo } = useCeo();
   const ceoPreEmail = ceoInfo.ownerEmail.split("@")[0];
+  const disableCategory = useRecoilValue(isCategoryState);
+
+  const visibleCategories = disableCategory
+    ? categorieTab.filter(
+        category =>
+          category.name === "ceoglamping" || category.name === "ceoinfo",
+      )
+    : categorieTab;
 
   return (
     <CategoriesStyle>
@@ -93,7 +104,7 @@ const CeoCategories = () => {
       </div>
 
       <UnderLine />
-      {categorieTab.map(category => (
+      {visibleCategories.map(category => (
         <NavLinkStyle key={category.name} to={`/${category.name}`}>
           <span>{category.text}</span> <IoIosArrowForward />
         </NavLinkStyle>

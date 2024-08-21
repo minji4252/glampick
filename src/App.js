@@ -120,16 +120,16 @@ function App() {
       "/ceoinfo",
     ];
 
-    // const loginPages = ["/login", "/signup", "/sns-signup"];
-    // const ceoLoginPages = ["/ceologin", "/ceosignup"];
-    // // 로그인 상태에서 로그인 페이지 및 회원가입 페이지 접근 제어
-    // if (forUser && isLogin && loginPages.includes(location.pathname)) {
-    //   return <Navigate to="/" replace />;
-    // }
-    // if (!forUser && isCeoLogin && ceoLoginPages.includes(location.pathname)) {
-    //   return <Navigate to="/" replace />;
-    // }
 
+    const loginPages = ["/login", "/signup"];
+    const ceoLoginPages = ["/ceologin", "/ceosignup"];
+    // 로그인 상태에서 로그인 페이지 및 회원가입 페이지 접근 제어
+    if (forUser && isLogin && loginPages.includes(location.pathname)) {
+      return <Navigate to="/" replace />; // 아무 것도 렌더링하지 않아서 현재 페이지에 머물게 함
+    }
+    if (!forUser && isCeoLogin && ceoLoginPages.includes(location.pathname)) {
+      return <Navigate to="/" replace />; // 아무 것도 렌더링하지 않아서 현재 페이지에 머물게 함
+    }
     // 현재 페이지가 사용자 페이지인지 사장님 페이지인지 확인
     const isUserPage = userPages.some(page =>
       location.pathname.startsWith(page),
@@ -155,6 +155,7 @@ function App() {
           handleLogout={handleLogout}
         />
         <Routes>
+            
           {/* 메인 */}
           <Route
             path="/"
@@ -166,6 +167,7 @@ function App() {
               />
             }
           ></Route>
+
           {/* 사용자 로그인, 회원가입 */}
           <Route
             path="/login"
@@ -191,6 +193,7 @@ function App() {
               </RedirectIfLoggedIn>
             }
           ></Route>
+
           {/* 검색 결과 */}
           <Route path="/search" element={<SearchPage />} />
           <Route
@@ -201,9 +204,11 @@ function App() {
           />
           <Route path="/roomdetail/:glampId" element={<RoomDetail />}></Route>
           <Route path="/review/:glampId" element={<Review />}></Route>
+
           {/* 결제 페이지 */}
           <Route path="/payment/:glampId" element={<PaymentPage />} />
           <Route path="/paymentcompleted" element={<PaymentDone />}></Route>
+
           {/* 유저 페이지 */}
           <Route
             path="/bookingdetail"
@@ -245,6 +250,7 @@ function App() {
               </RedirectIfLoggedIn>
             }
           />
+
           {/* 사장님 로그인, 회원가입 */}
           <Route
             path="/ceosignup"
@@ -262,6 +268,7 @@ function App() {
               </RedirectIfLoggedIn>
             }
           />
+
           {/* 사장님 페이지 */}
           <Route
             path="/ceoglamping"
@@ -343,12 +350,14 @@ function App() {
               </RedirectIfLoggedIn>
             }
           />
+
           {/* 관리자 페이지 */}
           <Route path="/glampingking" element={<GlampingKing />} />
           <Route path="/adminstore" element={<AdminStore />} />
           <Route path="/adminsignup" element={<AdminSignup />} />
           <Route path="/adminexit" element={<AdminExit />} />
           <Route path="/adminbanner" element={<AdminBanner />} />
+            
           {/* 잘못된 경로 */}
           <Route path="/*" element={<NotfoundPage />} />
         </Routes>

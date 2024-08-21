@@ -297,7 +297,11 @@ const CeoRooms = () => {
         )}
       </div>
       {isModalOpen && (
-        <PeakModal onClose={handleCloseModal} ceoAccessToken={ceoAccessToken} />
+        <PeakModal
+          onClose={handleCloseModal}
+          ceoAccessToken={ceoAccessToken}
+          glampId={glampId}
+        />
       )}
       <CheckModal
         isOpen={isCheckModalOpen}

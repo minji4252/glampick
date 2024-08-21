@@ -29,6 +29,7 @@ const RoomDetail = () => {
   const location = useLocation();
   const { glampId } = useParams();
   const glampName = location.state.glampName;
+  console.log("glampName", glampName);
 
   useEffect(() => {
     const getRoomImages = async () => {

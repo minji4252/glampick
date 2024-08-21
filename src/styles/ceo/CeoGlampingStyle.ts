@@ -16,6 +16,7 @@ export const WrapStyle = styled.div`
   form {
     max-width: 800px;
     width: 100%;
+    margin-right: 30px;
 
     .submit-btn {
       width: 100%;
@@ -171,6 +172,10 @@ export const CeoBoxStyle = styled.div`
     input {
       cursor: pointer;
       caret-color: transparent;
+    }
+
+    button {
+      min-width: 80px;
     }
   }
 `;
