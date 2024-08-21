@@ -6,7 +6,6 @@ import {
   isLoginState,
   userRoleState,
 } from "../atoms/loginState";
-import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   allowedRoles: string[];

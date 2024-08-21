@@ -124,10 +124,6 @@ interface BookingCancelModalProps {
   onConfirm: () => void;
   reservationId: string;
   comment?: string | undefined;
-  onBookingCancelled: (
-    reservationId: string,
-    comment?: string | undefined,
-  ) => void;
 }
 
 const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
@@ -135,7 +131,6 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
   onClose,
   onConfirm,
   reservationId,
-  onBookingCancelled, // 예약 취소 시 호출될 콜백 함수
 }) => {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   // 예약 취소 성공 여부 상태 추가
@@ -182,7 +177,7 @@ const BookingCancelModal: React.FC<BookingCancelModalProps> = ({
         // console.log("예약취소 성공", response);
         setIsSuccess(true); // 성공 상태 업데이트
         onConfirm();
-        onBookingCancelled(reservationId, comment); // 예약 취소 시 호출
+        // onBookingCancelled(reservationId, comment); // 예약 취소 시 호출
       } else if (response.data.code === "NB") {
         // console.log("존재하지 않는 예약내역입니다.");
       }
