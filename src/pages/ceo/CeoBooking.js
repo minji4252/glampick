@@ -5,9 +5,10 @@ import CeoBookingDetail from "../../components/ceo/CeoBookingDetail";
 import BookingCalendar from "../../components/calendar/BookingCalendar";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ceoAccessTokenState } from "../../atoms/loginState";
+import { ceoAccessTokenState, loadingState } from "../../atoms/loginState";
 import { useRecoilState } from "recoil";
 import moment from "moment";
+import Loading from "../../components/common/Loading";
 
 const WrapStyle = styled.div`
   .inner {
@@ -118,8 +119,10 @@ const CeoBooking = () => {
   const [bookingDetails, setBookingDetails] = useState([]);
   const [page, setPage] = useState(1); // 페이지 상태 추가
   const [ceoAccessToken] = useRecoilState(ceoAccessTokenState);
+  const [loading, setLoading] = useRecoilState(loadingState);
 
   const handleDateSelect = async date => {
+    setLoading(true);
     setSelectedDate(date);
     const formattedDate = moment(date).format("YYYY-MM-DD");
 
@@ -143,6 +146,8 @@ const CeoBooking = () => {
       setBookingDetails(bookingDetails);
     } catch (error) {
       console.error("Error fetching booking details:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,6 +160,7 @@ const CeoBooking = () => {
 
   return (
     <WrapStyle>
+      {loading && <Loading />}
       <CeoCategories />
       <div className="inner">
         <h3>예약 관리</h3>

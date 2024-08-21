@@ -1,42 +1,38 @@
 import styled from "@emotion/styled";
+import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import {
-  fetchAccessToken,
-  getAccessToken,
-  getMemberWithAccessToken,
-} from "../../apis/kkoapi";
-import { MainButton } from "../../components/common/Button";
-import { colorSystem, size } from "../../styles/color";
-import { TermsGroupStyle } from "../../styles/signupstyle";
-import { ErrorMessage, SignupWrapStyle, modalMessages } from "../ceo/CeoSignup";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import useModal from "../../hooks/UseModal";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import {
   postCheckSms,
   postSendSms,
-  postSignUp,
   postSocailSignUp,
 } from "../../apis/userapi";
-import Loading from "../../components/common/Loading";
-import AlertModal from "../../components/common/AlertModal";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { userValidationSchema } from "../../components/validation/userValidationSchema";
-import { TimerWrap } from "../ceo/CeoInfo";
-import TermsModal from "../../components/common/TermsModal";
-import axios from "axios";
 import { accessTokenState, userRoleState } from "../../atoms/loginState";
-import { useRecoilState } from "recoil";
+import AlertModal from "../../components/common/AlertModal";
+import { MainButton } from "../../components/common/Button";
+import Loading from "../../components/common/Loading";
+import TermsModal from "../../components/common/TermsModal";
+import { userValidationSchema } from "../../components/validation/userValidationSchema";
+import useModal from "../../hooks/UseModal";
+import { colorSystem, size } from "../../styles/color";
+import { TermsGroupStyle } from "../../styles/signupstyle";
+import { TimerWrap } from "../ceo/CeoInfo";
+import { ErrorMessage, SignupWrapStyle } from "../ceo/CeoSignup";
 
 const WrapStyle = styled.div`
   position: relative;
 
   .container {
     display: flex;
-    width: 760px;
+    width: 100%; // 부모 요소 너비를 100%로 설정
+    max-width: 760px;
     margin: 0 auto;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
   }
 
   h2 {
@@ -54,9 +50,89 @@ const WrapStyle = styled.div`
   }
 `;
 
+// ModalMessages 타입 정의
+type ModalMessagesType = {
+  mailSend: {
+    SU: string;
+    DE: string;
+    EE: string;
+    IE: string;
+    default: string;
+  };
+  emailAuth: {
+    SU: string;
+    IC: string;
+    VF: string;
+    default: string;
+  };
+  businessNumber: {
+    SU: string;
+    INVALID: string;
+    ERROR: string;
+  };
+  smsSend: {
+    SU: string;
+    DT: string;
+    IPH: string;
+    default: string;
+  };
+  phoneAuth: {
+    SU: string;
+    IC: string;
+    VF: string;
+    default: string;
+  };
+  patchOwner: {
+    SU: string;
+  };
+};
+
+// modalMessages 객체를 타입 정의와 함께 가져오기
+const modalMessages: ModalMessagesType = {
+  mailSend: {
+    SU: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+    DE: "중복된 이메일입니다.",
+    EE: "메일 주소를 입력해주세요.",
+    IE: "메일 형식이 올바르지 않습니다.",
+    default: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  emailAuth: {
+    SU: "인증이 완료되었습니다.",
+    IC: "인증코드가 올바르지 않습니다.",
+    VF: "인증코드를 입력해주세요.",
+    default: "인증에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  businessNumber: {
+    SU: "사업자등록번호 인증이 완료되었습니다.",
+    INVALID: "유효하지 않은 사업자등록번호입니다.",
+    ERROR: "사업자등록번호 확인에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  smsSend: {
+    SU: "인증코드가 발송되었습니다. \n 문자메세지를 확인해주세요",
+    DT: "중복된 전화번호 입니다.",
+    IPH: "전화번호 형식이 올바르지 않습니다.",
+    default: "문자 발송에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  phoneAuth: {
+    SU: "인증이 완료되었습니다.",
+    IC: "인증코드가 올바르지 않습니다.",
+    VF: "인증코드를 입력해주세요.",
+    default: "인증에 실패하였습니다. \n 다시 시도해주세요.",
+  },
+  patchOwner: {
+    SU: "수정이 완료되었습니다.",
+  },
+};
+
 // 모달 열기 함수
-const handleModalOpen = (code, type, openModal) => {
-  const message = modalMessages[type][code] || modalMessages[type].default;
+const handleModalOpen = (
+  code: string,
+  type: keyof ModalMessagesType,
+  openModal: (options: { message: string }) => void,
+) => {
+  // modalMessages의 타입을 명확히 하기 위해 type을 keyof ModalMessagesType으로 설정
+  const message =
+    modalMessages[type][code as keyof (typeof modalMessages)[typeof type]];
   openModal({ message });
 };
 
@@ -71,7 +147,7 @@ const SnsSignUpPage = () => {
     resolver: yupResolver(userValidationSchema),
     mode: "onChange",
     defaultValues: {
-      userId: "",
+      // userId: "",
       userName: "",
       userPw: "",
       userPhone: "",
@@ -83,7 +159,7 @@ const SnsSignUpPage = () => {
   const [isSmsSent, setIsSmsSent] = useState(false);
   // 핸드폰 인증을 위한 타이머 변수
   const [phoneTimer, setPhoneTimer] = useState(0);
-  const [phoneTimerId, setPhoneTimerId] = useState(null);
+  const [phoneTimerId, setPhoneTimerId] = useState<NodeJS.Timer | null>(null);
   // 인증 완료 여부 상태 추가
   const [isPhoneVerified, setIsPhoneVerified] = useState(false);
   const [isPhoneAuthCodeVerified, setIsPhoneAuthCodeVerified] = useState(false);
@@ -104,7 +180,7 @@ const SnsSignUpPage = () => {
   // 카카오 인증키 알아내기
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const authCode = URLSearchParams.get("code");
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
@@ -116,7 +192,7 @@ const SnsSignUpPage = () => {
     const userIdFromUrl = url.searchParams.get("user_id");
     const accessTokenFromUrl = url.searchParams.get("access_token");
     const infoStatusFromUrl = url.searchParams.get("info_status");
-    console.log("userIdFromUrl:", userIdFromUrl);
+    // console.log("userIdFromUrl:", userIdFromUrl);
 
     if (userIdFromUrl) {
       // user_id를 상태에 저장
@@ -130,8 +206,8 @@ const SnsSignUpPage = () => {
       // access_token에서 user_role을 추출하여 저장
       const payload = JSON.parse(atob(accessTokenFromUrl.split(".")[1]));
       const signedUser = JSON.parse(payload.signedUser);
-      console.log("signedUser :", signedUser);
-      console.log("signedUser :", signedUser.userId);
+      // console.log("signedUser :", signedUser);
+      // console.log("signedUser :", signedUser.userId);
       // 사용자 역할을 Recoil 상태에 저장
       setUserRole(signedUser.role); // userRoleState를 업데이트
       localStorage.setItem("userRole", signedUser.role);
@@ -147,7 +223,7 @@ const SnsSignUpPage = () => {
 
   useEffect(() => {
     if (userId) {
-      console.log("userId:", userId);
+      // console.log("userId:", userId);
     }
   }, [userId]);
 
@@ -178,13 +254,15 @@ const SnsSignUpPage = () => {
   };
 
   // 휴대폰 인증코드 발송
-  const handlePhoneClick = async e => {
+  const handlePhoneClick = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const phone = watch("phone");
+      const phone = watch("userPhone");
       const result = await postSendSms({ userPhone: phone });
-      console.log(result);
+      // console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
       if (result.data.code === "SU") {
         // Sms 발송 성공
@@ -201,16 +279,18 @@ const SnsSignUpPage = () => {
   };
 
   // 휴대폰 인증코드 확인
-  const handlePhoneAuthCodeClick = async e => {
+  const handlePhoneAuthCodeClick = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.preventDefault();
-    const phone = watch("phone");
+    const phone = watch("userPhone");
     const smsAuthCode = watch("phoneAuthCode");
     try {
       const result = await postCheckSms({
         userPhone: phone,
         authNumber: smsAuthCode,
       });
-      console.log(result);
+      // console.log(result);
 
       if (result.data.code === "SU") {
         // 인증이 성공한 경우에만 처리
@@ -234,14 +314,14 @@ const SnsSignUpPage = () => {
   };
 
   // 전화번호 자동 변경
-  const handleChangePhone = e => {
+  const handleChangePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
     const phoneNumber = formatPhoneNumber(e.target.value);
-    // console.log(phoneNumber);
-    setValue("phone", phoneNumber);
+    console.log(phoneNumber);
+    setValue("userPhone", phoneNumber);
   };
 
   // 전화번호 형식
-  const formatPhoneNumber = value => {
+  const formatPhoneNumber = (value: any) => {
     if (!value) return value;
     const phoneNumber = value.replace(/[^\d]/g, "");
     const phoneNumberLength = phoneNumber.length;
@@ -253,7 +333,7 @@ const SnsSignUpPage = () => {
   };
 
   // 약관보기 모달
-  const openTermsModal = modalType => {
+  const openTermsModal = (modalType: any) => {
     setSelectedModal(modalType);
     setIsModalOpen(true);
   };
@@ -263,7 +343,7 @@ const SnsSignUpPage = () => {
   };
 
   // 약관 전체동의 체크박스 핸들러
-  const handleAgreeAllChange = e => {
+  const handleAgreeAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = e.target.checked;
     setIsAgreeAllChecked(isChecked);
     setCheckboxes({
@@ -274,7 +354,7 @@ const SnsSignUpPage = () => {
   };
 
   // 약관 개별동의 체크박스 핸들러
-  const handleCheckboxChange = e => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
     const updateCheckboxes = {
       ...checkboxes,
@@ -420,13 +500,13 @@ const SnsSignUpPage = () => {
     주소: 대구광역시 중구 중앙대로 394 제일빌딩 5F`;
 
   // 회원가입 버튼 클릭 이벤트
-  const onHandleSubmit = async data => {
-    console.log("onSubmit 함수 호출됨");
-    console.log("userId:", userId);
-    console.log("userName:", data.userName);
-    console.log("userName:", data.userPw);
-    console.log("userPhone:", data.userPhone); // watch("phone") 대신 data.phone 사용
-    console.log("userNickname:", data.userNickname);
+  const onHandleSubmit = async (data: any) => {
+    // console.log("onSubmit 함수 호출됨");
+    // console.log("userId:", userId);
+    // console.log("userName:", data.userName);
+    // console.log("userName:", data.userPw);
+    // console.log("userPhone:", data.userPhone); // watch("phone") 대신 data.phone 사용
+    // console.log("userNickname:", data.userNickname);
 
     // 핸드폰 인증여부 체크
     if (!isPhoneVerified || !isPhoneAuthCodeVerified) {
@@ -442,11 +522,8 @@ const SnsSignUpPage = () => {
       });
       return;
     }
-    console.log("isPhoneVerified:", isPhoneVerified);
-    console.log("isPhoneAuthCodeVerified:", isPhoneAuthCodeVerified);
-
-    // 백엔드에 보낼 회원가입 데이터
-    console.log("전송시 데이터 ", data);
+    // console.log("isPhoneVerified:", isPhoneVerified);
+    // console.log("isPhoneAuthCodeVerified:", isPhoneAuthCodeVerified);
 
     try {
       setLoading(true);
@@ -457,8 +534,8 @@ const SnsSignUpPage = () => {
         userPhone: data.userPhone,
         userNickname: data.userNickname,
       });
-      if (result.data.code === "SU") {
-        console.log("회원가입 성공:", result);
+      if (result && result.data.code === "SU") {
+        // console.log("회원가입 성공:", result);
         openModal({
           message: "회원가입에 성공하였습니다!",
         });
@@ -468,7 +545,7 @@ const SnsSignUpPage = () => {
       }, 1000); // 1초 후에 페이지 이동
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response?.data);
+        // console.log(error.response?.data);
         if (error.response?.data.code === "DN") {
           openModal({
             message: "중복된 닉네임입니다.",
@@ -572,7 +649,7 @@ const SnsSignUpPage = () => {
               <ErrorMessage>{errors.userPhone.message}</ErrorMessage>
             )}
             <div className="form-group">
-              <label>인증 코드</label>
+              <label>인증코드</label>
               <div className="input-group">
                 <input
                   type="text"
