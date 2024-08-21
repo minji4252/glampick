@@ -160,10 +160,12 @@ const CeoBoxStyle = styled.div`
   }
 `;
 
-const PeakModal = ({ onClose, ceoAccessToken }) => {
+const PeakModal = ({ onClose, ceoAccessToken, glampId }) => {
   useEffect(() => {
     getPeakData();
   }, []);
+
+  console.log("받아온 아이디", glampId);
 
   const [selectedDate, setSelectedDate] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -253,10 +255,8 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
     try {
       if (!ceoAccessToken) return;
 
-      // 임시
-      const grampId = 2;
       const response = await axios.patch(
-        `/api/owner/room/${grampId}/peak?peakStartDay=${peakStartDay}&peakEndDay=${peakEndDay}&peakCost=${data.peakCost}`,
+        `/api/owner/room/${glampId}/peak?peakStartDay=${peakStartDay}&peakEndDay=${peakEndDay}&peakCost=${data.peakCost}`,
         null,
         {
           headers: {
@@ -281,9 +281,7 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
   const getPeakData = async () => {
     try {
       if (!ceoAccessToken) return;
-      //임시
-      const grampId = 2;
-      const response = await axios.get(`/api/owner/room/${grampId}/peak`, {
+      const response = await axios.get(`/api/owner/room/${glampId}/peak`, {
         headers: {
           Authorization: `Bearer ${ceoAccessToken}`,
         },
@@ -307,9 +305,7 @@ const PeakModal = ({ onClose, ceoAccessToken }) => {
   const handleDelete = async () => {
     try {
       if (!ceoAccessToken) return;
-      // 임시
-      const grampId = 2;
-      const response = await axios.delete(`/api/owner/room/${grampId}/peak`, {
+      const response = await axios.delete(`/api/owner/room/${glampId}/peak`, {
         headers: {
           Authorization: `Bearer ${ceoAccessToken}`,
         },
