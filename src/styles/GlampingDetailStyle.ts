@@ -581,7 +581,7 @@ export const InfoGroup = styled.div`
 
   .info-notice {
     h4 {
-      line-height: 0.8rem;
+      /* line-height: 0.8rem; */
     }
   }
 `;
@@ -626,7 +626,7 @@ export const StickyOptionStyle = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: fixed;
   top: 50%;
-  right: 30px;
+  right: 40px;
   border-radius: 12px;
   padding: 20px;
   background-color: ${colorSystem.white};

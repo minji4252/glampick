@@ -39,6 +39,12 @@ export const WrapStyle = styled.div`
     }
   }
 
+  ${size.large} {
+    .inner {
+      margin-left: 100px;
+    }
+  }
+
   ${size.mid} {
     flex-direction: column;
     h3 {
@@ -154,6 +160,13 @@ export const CeoBoxStyle = styled.div`
     font-weight: 600;
   }
 
+  select {
+    border: 1px solid ${colorSystem.g300};
+    font-size: 0.9rem;
+    margin-left: 5px;
+    padding-left: 5px;
+  }
+
   .cost-group {
     display: flex;
     gap: 10px;
@@ -175,7 +188,7 @@ export const CeoBoxStyle = styled.div`
     }
 
     button {
-      min-width: 80px;
+      min-width: 85px;
     }
   }
 `;

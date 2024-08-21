@@ -158,6 +158,12 @@ export const CheckInRoomStyle = styled.div`
   .number-group {
     gap: 5px;
   }
+
+  select {
+    border: 1px solid ${colorSystem.g200};
+    font-size: 0.9rem;
+    margin-left: 5px;
+  }
 `;
 
 export const RoomOptionStyle = styled.div`

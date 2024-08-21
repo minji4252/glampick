@@ -139,7 +139,8 @@ const CeoGlamping = () => {
         },
       });
 
-      setProfileImage(response.data.glampImage);
+      console.log("response.data.glampImage", response.data.glampImage);
+      setPreviewImage(response.data.glampImage);
       setGlampingData(response.data);
       setGlampId(response.data.glampId);
 
@@ -250,6 +251,7 @@ const CeoGlamping = () => {
     }
 
     const newImages = [...glampImg, file];
+    console.log("새로 등록newImages", newImages);
     setGlampImg(newImages);
     setUploadedImageCount(newImages.length);
     setIsImageUploaded(newImages.length > 0);
@@ -322,6 +324,7 @@ const CeoGlamping = () => {
       console.log("glampingData", glampingData);
       setValue("glampName", glampingData.glampName);
       setValue("glampImg", [glampingData.glampImage]);
+      console.log("수정모드 이미지 등록", [glampingData.glampImage]);
       setGlampImg([glampingData.glampImage]);
       setUploadedImageCount([glampingData.glampImage].length);
       setIsImageUploaded([glampingData.glampImage].length > 0);
@@ -346,6 +349,7 @@ const CeoGlamping = () => {
   // 대표이미지 수정 함수
   const updateGlampingImage = async (imageFile, glampId, ceoAccessToken) => {
     const formData = new FormData();
+    console.log("뭐지?", imageFile);
     formData.append("image", imageFile);
     formData.append("glampId", glampId);
 
@@ -375,7 +379,7 @@ const CeoGlamping = () => {
   const updateGlamping = async data => {
     try {
       if (!ceoAccessToken) return;
-
+      console.log("글램핑 수정 함수 실행");
       const response = await axios.put(
         `/api/owner/glamping`,
         {
@@ -402,7 +406,7 @@ const CeoGlamping = () => {
 
       if (response.data.code === "SU") {
         console.log("캠핑장 수정 성공:", response.data.message);
-        if (profileImage) {
+        if (previewImage) {
           await updateGlampingImage(profileImage, glampId, ceoAccessToken);
         }
         openModal({
@@ -436,11 +440,10 @@ const CeoGlamping = () => {
 
   //Post 함수
   const onSubmit = async data => {
-    if (isEditMode) {
+    if (isEditMode && !isReturn) {
       await updateGlamping(data);
     } else {
       const formData = new FormData();
-
       formData.append(
         "req",
         JSON.stringify({
@@ -456,14 +459,17 @@ const CeoGlamping = () => {
         }),
       );
 
-      glampImg.forEach(image => {
-        formData.append("glampImg", image, image.name);
-      });
+      // glampImg.forEach(image => {
+      //   formData.append("glampImg", image, image.name);
+      // });
+
+      console.log("profileImage,profileImage", profileImage);
+      formData.append("glampImg", profileImage);
 
       try {
         if (!ceoAccessToken) return;
         console.log("전송 데이터:", formData);
-
+        console.log("글램핑 등록&재등록 함수");
         const response = await axios.post(`/api/owner/glamping`, formData, {
           headers: {
             Authorization: `Bearer ${ceoAccessToken}`,
@@ -488,8 +494,7 @@ const CeoGlamping = () => {
               message: error.response.data.message,
               onCheck: closeModal,
             });
-            setIsSubmit(true);
-            setDisableCategory(true);
+            return;
           }
         } else {
           openModal({
@@ -589,7 +594,7 @@ const CeoGlamping = () => {
                               //     ? image
                               //     : URL.createObjectURL(image)
                               // }
-                              src={previewImage || profileImage}
+                              src={previewImage}
                               alt="uploaded"
                             />
                             <button
@@ -720,7 +725,10 @@ const CeoGlamping = () => {
                   </CeoBoxStyle>
 
                   <div className="submit-btn">
-                    <CeoButton label={isEditMode ? "수정하기" : "승인 요청"} />
+                    {/* <CeoButton label={isEditMode ? "수정하기" : "승인 요청"} /> */}
+                    <CeoButton
+                      label={isEditMode && !isReturn ? "수정하기" : "승인 요청"}
+                    />
                   </div>
                 </form>
               </>
