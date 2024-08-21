@@ -16,6 +16,7 @@ import TermsModal from "../components/common/TermsModal";
 import useModal from "../hooks/UseModal";
 import kakaopay from "../images/kakaopay.png";
 
+import Loading from "../components/common/Loading";
 import {
   InfoStyle,
   InputGroup,
@@ -28,7 +29,6 @@ import {
   UnderLine,
   WrapStyle,
 } from "../styles/PaymentPageStyle";
-import LoadingNobg from "../components/common/LoadingNobg";
 
 const PaymentPage = () => {
   const [selectedPayment, setSelectedPayment] = useState("");
@@ -41,7 +41,7 @@ const PaymentPage = () => {
   const [sameAsOrderer, setSameAsOrderer] = useState(false);
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
   const [stayDuration, setStayDuration] = useState(0);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [reservationInfo, setReservationInfo] = useState({
     roomPrice: 0,
@@ -150,7 +150,7 @@ const PaymentPage = () => {
         // 몇박 며칠인지 계산
         const duration = response.data.roomPrice.length;
         setStayDuration(duration);
-        setIsDataLoaded(true);
+        setLoading(true);
       } catch (error) {
         console.log(error);
       }
@@ -325,7 +325,7 @@ const PaymentPage = () => {
   return (
     <WrapStyle>
       <div className="inner">
-        {isDataLoaded ? (
+        {loading ? (
           <>
             <InfoStyle>
               <div className="payment-title">
@@ -491,9 +491,7 @@ const PaymentPage = () => {
             </PaymentFormStyle>
           </>
         ) : (
-          <div className="payment-loading">
-            <LoadingNobg />
-          </div>
+          <Loading />
         )}
       </div>
       <AlertModal

@@ -6,23 +6,22 @@ import { useDaumPostcodePopup } from "react-daum-postcode";
 import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
 import { FiMinusCircle } from "react-icons/fi";
+import { useRecoilState } from "recoil";
 import * as yup from "yup";
-import CeoCategories from "../../components/mypage/CeoCategories";
-import { CeoButton } from "../../components/common/Button";
-import { colorSystem, size } from "../../styles/color";
-import useFetchAccessToken from "../../utils/CeoAccessToken";
+import { isCategoryState } from "../../atoms/ceoCategoryState";
 import AlertModal from "../../components/common/AlertModal";
-import useModal from "../../hooks/UseModal";
+import { CeoButton } from "../../components/common/Button";
+import Loading from "../../components/common/Loading";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import { useGlamping } from "../../contexts/GlampingContext";
-import LoadingNobg from "../../components/common/LoadingNobg";
+import useModal from "../../hooks/UseModal";
 import {
   CeoBoxStyle,
-  CeoGlampingLoading,
   WaitingStyle,
   WrapStyle,
 } from "../../styles/ceo/CeoGlampingStyle";
-import { useRecoilState } from "recoil";
-import { isCategoryState } from "../../atoms/ceoCategoryState";
+import { colorSystem } from "../../styles/color";
+import useFetchAccessToken from "../../utils/CeoAccessToken";
 
 const ImageUploadStyle = styled.div`
   position: relative;
@@ -139,17 +138,14 @@ const CeoGlamping = () => {
         },
       });
 
-      console.log("response.data.glampImage", response.data.glampImage);
       setPreviewImage(response.data.glampImage);
       setGlampingData(response.data);
       setGlampId(response.data.glampId);
 
       // 1. state값이 true면 심사대기완료 -> 수정모드
       if (response.data.state) {
-        console.log("수정모드");
         setIsEditMode(true);
         setDisableCategory(false);
-        // setIsSubmit(false);
       }
 
       // 2. exclusionStatus 값이 0 이면 심사대기중
@@ -158,7 +154,6 @@ const CeoGlamping = () => {
         response.data.exclusionStatus === 0 &&
         response.data
       ) {
-        console.log("심사대기중모드");
         setIsSubmit(true);
         setDisableCategory(true);
       }
@@ -169,8 +164,6 @@ const CeoGlamping = () => {
         response.data.exclusionStatus === -1 &&
         response.data
       ) {
-        console.log("반려모드");
-        // setIsSubmit(false);
         setIsReturn(true);
         setIsEditMode(true);
         setDisableCategory(true);
@@ -236,7 +229,6 @@ const CeoGlamping = () => {
         setPreviewImage(reader.result);
       };
       reader.readAsDataURL(file);
-      console.log(file);
     }
 
     if (glampImg.length + 1 > maxImageCount) {
@@ -251,7 +243,6 @@ const CeoGlamping = () => {
     }
 
     const newImages = [...glampImg, file];
-    console.log("새로 등록newImages", newImages);
     setGlampImg(newImages);
     setUploadedImageCount(newImages.length);
     setIsImageUploaded(newImages.length > 0);
@@ -321,10 +312,8 @@ const CeoGlamping = () => {
   //수정모드
   useEffect(() => {
     if (isEditMode && glampingData) {
-      console.log("glampingData", glampingData);
       setValue("glampName", glampingData.glampName);
       setValue("glampImg", [glampingData.glampImage]);
-      console.log("수정모드 이미지 등록", [glampingData.glampImage]);
       setGlampImg([glampingData.glampImage]);
       setUploadedImageCount([glampingData.glampImage].length);
       setIsImageUploaded([glampingData.glampImage].length > 0);
@@ -349,7 +338,6 @@ const CeoGlamping = () => {
   // 대표이미지 수정 함수
   const updateGlampingImage = async (imageFile, glampId, ceoAccessToken) => {
     const formData = new FormData();
-    console.log("뭐지?", imageFile);
     formData.append("image", imageFile);
     formData.append("glampId", glampId);
 
@@ -459,17 +447,10 @@ const CeoGlamping = () => {
         }),
       );
 
-      // glampImg.forEach(image => {
-      //   formData.append("glampImg", image, image.name);
-      // });
-
-      console.log("profileImage,profileImage", profileImage);
       formData.append("glampImg", profileImage);
 
       try {
         if (!ceoAccessToken) return;
-        console.log("전송 데이터:", formData);
-        console.log("글램핑 등록&재등록 함수");
         const response = await axios.post(`/api/owner/glamping`, formData, {
           headers: {
             Authorization: `Bearer ${ceoAccessToken}`,
@@ -522,9 +503,7 @@ const CeoGlamping = () => {
       <CeoCategories />
       <div className="inner">
         {loading ? (
-          <CeoGlampingLoading>
-            <LoadingNobg />
-          </CeoGlampingLoading>
+          <Loading />
         ) : (
           <>
             {isSubmit ? (

@@ -5,15 +5,16 @@ import { colorSystem } from "../../styles/color";
 const LoadingWrapper = styled.div`
   display: flex;
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
   position: fixed;
-  background: rgba(255, 255, 255, 0.8);
   z-index: 9999;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* background: rgba(255, 255, 255, 0.8); */
+  background-color: ${colorSystem.white};
 
   > div {
     font-size: 1rem;

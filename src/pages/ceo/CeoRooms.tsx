@@ -1,21 +1,17 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import CeoCategories from "../../components/mypage/CeoCategories";
-import {
-  CeoActionButton,
-  CeoButton,
-  DeleteButton,
-} from "../../components/common/Button";
-import { colorSystem, size } from "../../styles/color";
-import { FaPlus } from "react-icons/fa6";
 import axios from "axios";
-import useFetchCeoAccessToken from "../../utils/CeoAccessToken";
-import CheckModal from "../../components/common/CheckModal";
-import AlertModal from "../../components/common/AlertModal";
+import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 import PeakModal from "../../components/ceo/PeakModal";
+import AlertModal from "../../components/common/AlertModal";
+import { CeoActionButton, DeleteButton } from "../../components/common/Button";
+import CheckModal from "../../components/common/CheckModal";
+import Loading from "../../components/common/Loading";
+import CeoCategories from "../../components/mypage/CeoCategories";
 import { useGlamping } from "../../contexts/GlampingContext";
-import LoadingNobg from "../../components/common/LoadingNobg";
+import { colorSystem, size } from "../../styles/color";
+import useFetchCeoAccessToken from "../../utils/CeoAccessToken";
 
 const WrapStyle = styled.div`
   .inner {
@@ -39,12 +35,6 @@ const WrapStyle = styled.div`
     h3 {
       margin-top: 250px;
     }
-  }
-`;
-
-const CeoRoomsLoading = styled.div`
-  div {
-    position: static !important;
   }
 `;
 
@@ -165,14 +155,20 @@ const RoomsStyle = styled.div`
   }
 `;
 
+interface Room {
+  roomId: string;
+  roomName: string;
+  roomImg: string;
+}
+
 const CeoRooms = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
-  const [checkModalMessage, setCheckModalMessage] = useState("");
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const [rooms, setRooms] = useState([]);
-  const [selectedRoomId, setSelectedRoomId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isCheckModalOpen, setIsCheckModalOpen] = useState<boolean>(false);
+  const [checkModalMessage, setCheckModalMessage] = useState<string>("");
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState<boolean>(false);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const ceoAccessToken = useFetchCeoAccessToken();
   const { glampId } = useGlamping();
 
@@ -198,13 +194,15 @@ const CeoRooms = () => {
   }, []);
 
   // 삭제 확인
-  const handleDeleteClick = roomId => {
+  const handleDeleteClick = (roomId: string) => {
     const selectedRoom = rooms.find(room => room.roomId === roomId);
-    setSelectedRoomId(roomId);
-    setIsCheckModalOpen(true);
-    setCheckModalMessage(
-      `'${selectedRoom.roomName}' 객실을 \n 삭제하시겠습니까?`,
-    );
+    if (selectedRoom) {
+      setSelectedRoomId(roomId);
+      setIsCheckModalOpen(true);
+      setCheckModalMessage(
+        `'${selectedRoom.roomName}' 객실을 \n 삭제하시겠습니까?`,
+      );
+    }
   };
 
   // 객실 삭제
@@ -247,9 +245,7 @@ const CeoRooms = () => {
 
       <div className="inner">
         {loading ? (
-          <CeoRoomsLoading>
-            <LoadingNobg />
-          </CeoRoomsLoading>
+          <Loading />
         ) : (
           <>
             <RoomsTitle>
