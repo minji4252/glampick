@@ -13,7 +13,6 @@ import PasswordCheckModal from "../../components/common/PasswordCheckModal";
 import Categories from "../../components/mypage/Categories";
 import useModal from "../../hooks/UseModal";
 import { colorSystem, size } from "../../styles/color";
-import { getCookie, removeCookie } from "../../utils/cookie";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
 
@@ -429,9 +428,6 @@ const UserInfo = () => {
       });
       // console.log(response);
       if (response.data.code === "SU") {
-        // console.log("회원 탈퇴 처리완료", response);
-        // 쿠키에서 엑세스 토큰 삭제
-        removeCookie("access-Token");
         // 엑세스 토큰 상태 초기화
         setAccessToken("");
         // 삭제 완료 후 모달 닫기

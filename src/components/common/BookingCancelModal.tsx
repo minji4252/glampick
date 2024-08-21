@@ -3,7 +3,6 @@ import axios from "axios";
 import { FormEvent, useEffect, useState } from "react";
 import { colorSystem } from "../../styles/color";
 import { ActionButton, DeleteButton } from "./Button";
-import { getCookie } from "../../utils/cookie";
 import { ModalLine } from "../../styles/modalstyle";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
