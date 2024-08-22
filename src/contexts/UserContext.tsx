@@ -16,6 +16,7 @@ interface UserInfo {
 interface UserContextType {
   userInfo: UserInfo;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo>>;
+  getUser: () => Promise<void>; // 필수로 설정
 }
 
 const defaultUserContextValue: UserContextType = {
@@ -25,6 +26,8 @@ const defaultUserContextValue: UserContextType = {
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setUserInfo: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  getUser: async () => {}, // 빈 함수로 기본값 제공
 };
 
 const UserContext = createContext<UserContextType>(defaultUserContextValue);
@@ -40,28 +43,31 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     userNickname: "",
   });
 
+  const getUser = async () => {
+    try {
+      if (!accessToken) return;
+      const response = await axios.get(`/api/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setUserInfo({
+        userEmail: response.data.userEmail,
+        userNickname: response.data.userNickname,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const getUserInfo = async () => {
-      try {
-        if (!accessToken) return;
-        const response = await axios.get(`/api/user`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setUserInfo({
-          userEmail: response.data.userEmail,
-          userNickname: response.data.userNickname,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getUserInfo();
+    if (accessToken) {
+      getUser(); // 페이지 로딩 시 사용자 정보를 가져옵니다.
+    }
   }, [accessToken]);
 
   return (
-    <UserContext.Provider value={{ userInfo, setUserInfo }}>
+    <UserContext.Provider value={{ userInfo, setUserInfo, getUser }}>
       {children}
     </UserContext.Provider>
   );

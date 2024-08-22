@@ -357,31 +357,32 @@ const UserInfo = () => {
     fetchAccessToken();
   }, []);
 
+  const getUser = async () => {
+    try {
+      if (!accessToken) return;
+      const response = await axios.get(`/api/user`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      // console.log(response);
+      setUserInfo({
+        userProfileImage: response.data.userProfileImage,
+        userEmail: response.data.userEmail,
+        userName: response.data.userName,
+        userNickname: response.data.userNickname,
+        userPw: "",
+        userPhone: formatPhone(response.data.userPhone),
+      });
+      // 기본 프로필 이미지 설정 (서버응답에 따라 달라질 수 있음)
+      setProfileImage(response.data.profileImageUrl);
+    } catch (error) {
+      //console.log(error);
+    }
+  };
+
   // 유저 정보 불러오기
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        if (!accessToken) return;
-        const response = await axios.get(`/api/user`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        // console.log(response);
-        setUserInfo({
-          userProfileImage: response.data.userProfileImage,
-          userEmail: response.data.userEmail,
-          userName: response.data.userName,
-          userNickname: response.data.userNickname,
-          userPw: "",
-          userPhone: formatPhone(response.data.userPhone),
-        });
-        // 기본 프로필 이미지 설정 (서버응답에 따라 달라질 수 있음)
-        setProfileImage(response.data.profileImageUrl);
-      } catch (error) {
-        //console.log(error);
-      }
-    };
     getUser();
   }, [accessToken]);
 
