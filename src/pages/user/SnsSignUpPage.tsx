@@ -261,6 +261,12 @@ const SnsSignUpPage = () => {
     setLoading(true);
     try {
       const phone = watch("userPhone").replace(/-/g, "");
+      if (!phone) {
+        openModal({
+          message: "휴대폰 번호를 입력해주세요.",
+        });
+        return; // 빈 값일 경우 서버 요청을 보내지 않도록 처리
+      }
       const result = await postSendSms({ userPhone: phone });
       // console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);

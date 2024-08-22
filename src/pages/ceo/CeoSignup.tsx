@@ -350,9 +350,16 @@ const CeoSignup = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+
     setLoading(true);
     try {
       const email = watch("ceoEmail");
+      if (!email) {
+        openModal({
+          message: "이메일을 입력해주세요.",
+        });
+        return; // 빈 값일 경우 서버 요청을 보내지 않도록 처리
+      }
       const result = await postOwnerMailSend({ ceoEmail: email });
       // console.log(result);
       handleModalOpen(result.data.code, "mailSend", openModal);
@@ -381,7 +388,12 @@ const CeoSignup = () => {
     e.preventDefault();
     const email = watch("ceoEmail");
     const authCode = watch("emailAuthCode");
-
+    if (!authCode) {
+      openModal({
+        message: "인증코드를 입력해주세요.",
+      });
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 처리
+    }
     try {
       const result = await postOwnerAuthCode({ ceoEmail: email, authCode });
       // console.log(result);
@@ -418,6 +430,12 @@ const CeoSignup = () => {
   ) => {
     e.preventDefault();
     const businessNumber = watch("businessNumber");
+    if (!businessNumber) {
+      openModal({
+        message: "사업자등록번호를 입력해주세요.",
+      });
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 처리
+    }
     const serviceKey =
       "XQOQV4Xnr3Q6b%2BMG2%2B6EV3HEaxW1RjQ6FZFmUpraSqUGeCBZRw2Tmh8tf6KuSVyKhXn4IjdqLzLIxSvF4shDtQ%3D%3D";
     setLoading(true);
@@ -510,6 +528,12 @@ const CeoSignup = () => {
     setLoading(true);
     try {
       const phone = watch("phone").replace(/-/g, "");
+      if (!phone) {
+        openModal({
+          message: "휴대폰 번호를 입력해주세요.",
+        });
+        return; // 빈 값일 경우 서버 요청을 보내지 않도록 처리
+      }
       const result = await postOwnerSendSms({ phone });
       // console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
@@ -536,8 +560,16 @@ const CeoSignup = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+
     const phone = watch("phone").replace(/-/g, "");
     const phoneAuthCode = watch("phoneAuthCode");
+    if (!phoneAuthCode) {
+      openModal({
+        message: "인증코드를 입력해주세요.",
+      });
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 처리
+    }
+
     try {
       const result = await postOwnerCheckSms({
         phone,

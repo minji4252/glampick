@@ -140,41 +140,45 @@ export const WrapStyle = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin: 0 auto;
-  }
-  .login-search {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-  }
-  .search-email {
-  }
-  .search-pw {
-  }
-  /* 회원가입 */
-  .signup {
-    width: 100%;
-    margin: 0 auto;
-    position: relative;
-  }
-
-  .search-email p,
-  .search-pw p {
-    color: ${colorSystem.g700};
-    font-size: 1rem;
-    margin: 10px 5px;
-    ${size.mid} {
-      font-size: 1rem;
+    .login-search {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      margin-top: 10px;
     }
-  }
-  .signup p {
-    position: absolute;
-    right: 0;
-    // 로그인버튼 하단에 위치 고정
-    color: ${colorSystem.g700};
-    font-size: 1.1rem;
-    padding: 10px;
-    ${size.mid} {
+    .search-email {
+      padding-right: 3px;
+      margin-left: 5px;
+      border-right: 1px solid ${colorSystem.g500};
+    }
+    .search-pw {
+      padding-left: 3px;
+    }
+    /* 회원가입 */
+    .signup {
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-email p,
+    .search-pw p {
+      color: ${colorSystem.g700};
       font-size: 1rem;
+      ${size.mid} {
+        font-size: 1rem;
+      }
+    }
+    .signup p {
+      position: absolute;
+      right: 0;
+      // 로그인버튼 하단에 위치 고정
+      color: ${colorSystem.g700};
+      font-size: 1.1rem;
+      padding: 10px;
+      ${size.mid} {
+        font-size: 1rem;
+      }
     }
   }
 

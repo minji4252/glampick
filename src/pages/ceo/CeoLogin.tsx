@@ -197,10 +197,12 @@ const CeoLogin = () => {
                 onClose={loginSuccessModalClose}
                 message={modalMessage}
               />
-              <div className="signup">
-                <Link to="/ceosignup" className="ceosignup-btn">
-                  <p>회원가입</p>
-                </Link>
+              <div className="login-bottom">
+                <div className="signup">
+                  <Link to="/ceosignup" className="signup-btn">
+                    <p>회원가입</p>
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

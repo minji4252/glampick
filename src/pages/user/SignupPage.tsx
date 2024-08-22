@@ -277,6 +277,12 @@ const SignupPage = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+    if (!userEmail) {
+      openModal({
+        message: "이메일을 입력해주세요.",
+      });
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 리턴
+    }
     setLoading(true);
     try {
       const result = await postMailSend({ userEmail });
@@ -378,6 +384,12 @@ const SignupPage = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+    if (!userPhone) {
+      openModal({
+        message: "휴대폰 번호를 입력해주세요.",
+      });
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 리턴
+    }
     setLoading(true);
     const result = await postSendSms({ userPhone });
     // console.log(result.data);
