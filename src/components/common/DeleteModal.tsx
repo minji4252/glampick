@@ -15,7 +15,7 @@ export const DeleteModalStyle = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: ${colorSystem.white};
-  z-index: 99999;
+  z-index: 9999999;
   max-width: 260px;
   width: 260px;
   max-height: 330px;

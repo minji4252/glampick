@@ -331,13 +331,13 @@ const GlampingDetail = ({ isLogin, isCeoLogin }) => {
 
   // 접기
   const showLessRooms = () => {
-    setVisibleRoomsCount(5);
     const scrollPosition =
       roomSelectRef.current.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({
       top: scrollPosition,
       behavior: "smooth",
     });
+    setVisibleRoomsCount(5);
   };
 
   // 모든 객실 품절

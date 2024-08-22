@@ -60,6 +60,7 @@ export const WaitingStyle = styled.div`
   border: 2px solid ${colorSystem.g200};
   color: ${colorSystem.g800};
   width: 60%;
+  height: 100%;
 
   h1 {
     font-size: 1.8rem;

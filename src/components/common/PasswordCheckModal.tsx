@@ -21,6 +21,7 @@ export const ModalWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 9999999;
 `;
 
 const ModalContent = styled.div`

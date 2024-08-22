@@ -137,36 +137,39 @@ const CeoGlamping = () => {
           Authorization: `Bearer ${ceoAccessToken}`,
         },
       });
+      console.log("response값", response);
 
-      setPreviewImage(response.data.glampImage);
-      setGlampingData(response.data);
-      setGlampId(response.data.glampId);
+      setPreviewImage(response.data.result.glampImage);
+      setGlampingData(response.data.result);
+      setGlampId(response.data.result.glampId);
 
+      if (response.data.result.state === false) {
+        console.log("상태는", response.data.result.state);
+        setDisableCategory(true);
+      }
       // 1. state값이 true면 심사대기완료 -> 수정모드
-      if (response.data.state) {
+      if (response.data.result.state) {
         setIsEditMode(true);
-        setDisableCategory(false);
+        console.log("수정모드");
       }
 
       // 2. exclusionStatus 값이 0 이면 심사대기중
       if (
-        !response.data.state &&
-        response.data.exclusionStatus === 0 &&
-        response.data
+        !response.data.result.state &&
+        response.data.result.exclusionStatus === 0
       ) {
         setIsSubmit(true);
-        setDisableCategory(true);
+        console.log("심사대기중모드");
       }
 
       // 3. exclusionStatus 값이 -1 이면 승인 반려 -> 수정모드
       if (
-        !response.data.state &&
-        response.data.exclusionStatus === -1 &&
-        response.data
+        !response.data.result.state &&
+        response.data.result.exclusionStatus === -1
       ) {
         setIsReturn(true);
         setIsEditMode(true);
-        setDisableCategory(true);
+        console.log("반려모드");
       }
     } catch (error) {
       console.log(error);
