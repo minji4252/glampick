@@ -124,7 +124,7 @@ const CeoBooking = () => {
   const [loading, setLoading] = useRecoilState(loadingState);
 
   const handleDateSelect = async (date: Date) => {
-    setLoading(true);
+    // setLoading(true);
     setSelectedDate(date);
     const formattedDate = moment(date).format("YYYY-MM-DD");
 
@@ -149,7 +149,7 @@ const CeoBooking = () => {
     } catch (error) {
       console.error("Error fetching booking details:", error);
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 

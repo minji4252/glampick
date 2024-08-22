@@ -18,6 +18,7 @@ import {
 } from "../../styles/signupstyle";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/common/Loading";
+import axios from "axios";
 
 const SignupPage = () => {
   // 폼 입력 상태 관리 설정 (사용자)
@@ -277,33 +278,39 @@ const SignupPage = () => {
   ) => {
     e.preventDefault();
     setLoading(true);
-    const result = await postMailSend({ userEmail });
-    // console.log(result.data);
-    // console.log(result.data.code);
-
-    if (result.data.code === "SU") {
-      openModal({
-        message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
-      });
-      // 메일발송 성공
-      setIsEmailSent(true);
-      setEmailTimer(299);
-    } else if (result.data.code === "DE") {
-      openModal({
-        message: "중복된 이메일입니다.",
-      });
-    } else if (result.data.code === "EE") {
-      openModal({
-        message: "메일 주소를 입력해주세요.",
-      });
-    } else if (result.data.code === "IE") {
-      openModal({
-        message: "메일 형식이 올바르지 않습니다.",
-      });
-    } else {
-      openModal({
-        message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
-      });
+    try {
+      const result = await postMailSend({ userEmail });
+      // console.log(result.data);
+      // console.log(result.data.code);
+      if (result.data.code === "SU") {
+        openModal({
+          message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+        });
+        // 메일발송 성공
+        setIsEmailSent(true);
+        setEmailTimer(299);
+      } else if (result.data.code === "DE") {
+        openModal({
+          message: "중복된 이메일입니다.",
+        });
+      } else if (result.data.code === "EE") {
+        openModal({
+          message: "메일 주소를 입력해주세요.",
+        });
+      } else if (result.data.code === "IE") {
+        openModal({
+          message: "메일 형식이 올바르지 않습니다.",
+        });
+      } else {
+        openModal({
+          message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
+        });
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // console.error("Phone auth error:", error);
+        openModal({ message: error.response?.data.message });
+      }
     }
     setLoading(false);
   };
@@ -313,33 +320,49 @@ const SignupPage = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    const result = await postAuthCode({ userEmail, authCode });
-    // console.log(result.data);
-    if (result.data.code === "SU") {
-      setIsEmailVerified(true);
-      setIsAuthCodeVerified(true);
-      openModal({
-        message: "인증이 완료되었습니다.",
-      });
-      setIsEmailSent(false);
-      setEmailTimer(0);
-      if (emailTimerId) {
-        // 타이머 중지
-        clearInterval(emailTimerId);
-        setEmailTimerId(null);
-      }
-    } else if (result.data.code === "IC") {
-      openModal({
-        message: "인증코드가 올바르지 않습니다.",
-      });
-    } else if (result.data.code === "VF") {
+    // 인증코드가 빈 값인지 확인
+    if (!authCode) {
       openModal({
         message: "인증코드를 입력해주세요.",
       });
-    } else {
-      openModal({
-        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
-      });
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 리턴
+    }
+
+    try {
+      const result = await postAuthCode({ userEmail, authCode });
+      // console.log(result.data);
+      if (result.data.code === "SU") {
+        setIsEmailVerified(true);
+        setIsAuthCodeVerified(true);
+        openModal({
+          message: "인증이 완료되었습니다.",
+        });
+        setIsEmailSent(false);
+        setEmailTimer(0);
+        if (emailTimerId) {
+          // 타이머 중지
+          clearInterval(emailTimerId);
+          setEmailTimerId(null);
+        }
+      } else if (result.data.code === "IC") {
+        openModal({
+          message: "인증코드가 올바르지 않습니다.",
+        });
+      } else if (result.data.code === "VF") {
+        openModal({
+          message: "인증코드를 입력해주세요.",
+        });
+      } else {
+        openModal({
+          message: "인증에 실패하였습니다. \n 다시 시도해주세요",
+        });
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        openModal({ message: error.response?.data.message });
+      } else {
+        openModal({ message: "인증에 실패하였습니다. \n 다시 시도해주세요" });
+      }
     }
   };
 
@@ -386,30 +409,44 @@ const SignupPage = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-
-    const result = await postCheckSms({ userPhone, authNumber });
-    // console.log(result);
-    if (result.data.code === "SU") {
-      setIsPhoneVerified(true);
-      setIsAuthNumberVerified(true);
+    // 인증코드가 빈 값인지 확인
+    if (!authNumber) {
       openModal({
-        message: "인증이 완료되었습니다.",
+        message: "인증코드를 입력해주세요.",
       });
-      setIsSmsSent(false);
-      setPhoneTimer(0);
-      if (phoneTimerId) {
-        // 타이머 중지
-        clearInterval(phoneTimerId);
-        setPhoneTimerId(null);
+      return; // 빈 값일 경우 서버 요청을 보내지 않도록 리턴
+    }
+    try {
+      const result = await postCheckSms({ userPhone, authNumber });
+      // console.log(result);
+      if (result.data.code === "SU") {
+        setIsPhoneVerified(true);
+        setIsAuthNumberVerified(true);
+        openModal({
+          message: "인증이 완료되었습니다.",
+        });
+        setIsSmsSent(false);
+        setPhoneTimer(0);
+        if (phoneTimerId) {
+          // 타이머 중지
+          clearInterval(phoneTimerId);
+          setPhoneTimerId(null);
+        }
+      } else if (result.data.code === "IC") {
+        openModal({
+          message: "인증코드가 올바르지 않습니다.",
+        });
+      } else {
+        openModal({
+          message: "인증에 실패하였습니다. \n 다시 시도해주세요",
+        });
       }
-    } else if (result.data.code === "IC") {
-      openModal({
-        message: "인증코드가 올바르지 않습니다.",
-      });
-    } else {
-      openModal({
-        message: "인증에 실패하였습니다. \n 다시 시도해주세요",
-      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        openModal({ message: error.response?.data.message });
+      } else {
+        openModal({ message: "인증에 실패하였습니다. \n 다시 시도해주세요" });
+      }
     }
   };
 

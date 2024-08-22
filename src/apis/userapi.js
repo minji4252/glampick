@@ -10,7 +10,7 @@ export const postSignIn = async ({ userEmail, userPw }) => {
     return response.data;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
-    // console.log(error);
+    console.log(error);
     throw error;
   }
 };
@@ -166,3 +166,71 @@ export const deleteUser = async () => {
     throw error;
   }
 };
+
+// 비밀번호 찾기 이메일 발송
+export const PostSearchMailSms = async ({ userEmail }) => {
+  try {
+    const reqData = `/api/auth/search/mail-send?userEmail=${userEmail}`;
+    const response = await axios.post(reqData, { userEmail });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    console.log(error);
+    throw error;
+  }
+};
+// 비밀번호 찾기 이메일 인증코드 확인
+export const PostSearchMailCheck = async ({ userEmail, authCode }) => {
+  try {
+    const reqData = `/api/auth/search/mail-check?userEmail=${userEmail}&emailKey=${authCode}`;
+    const response = await axios.post(reqData, {
+      userEmail: userEmail,
+      authKey: authCode,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    console.log(error);
+    throw error;
+  }
+};
+
+// 이메일 찾기 핸드폰 인증 api 호출
+export const postSearchEmail = async ({ userPhone }) => {
+  try {
+    const reqData = `/api/auth/send-sms?userPhone=${userPhone}`;
+    const response = await axios.post(reqData, { userPhone });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    if (error.response) {
+      return error.response;
+    }
+  }
+};
+
+// 이메일 찾기 핸드폰 인증코드 확인 api 호출
+export const postSearchCheckSms = async ({ userPhone, authCode }) => {
+  try {
+    const reqData = `/api/auth/search/check-sms?userPhone=${userPhone}&phoneKey=${authCode}`;
+    const response = await axios.post(reqData, {
+      userPhone: userPhone,
+      phoneKey: authCode,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    console.log(error);
+    // console.log(error.response);
+    // console.log(error.response.data);
+    // console.log(error.response.data.code);
+    // console.log(error.response.data.message);
+    throw error;
+  }
+};
+
+// 비밀번호 재설정

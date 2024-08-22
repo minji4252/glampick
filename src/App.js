@@ -53,6 +53,10 @@ import AdminBanner from "./pages/admin/AdminBanner";
 import { postSignOut } from "./apis/userapi";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { GlampingProvider } from "./contexts/GlampingContext";
+import SearchEmail from "./pages/user/SearchEmail";
+import SearchPw from "./pages/user/SearchPw";
+import CeoSearchEmail from "./pages/ceo/CeoSearchEmail";
+import CeoSearchPw from "./pages/ceo/CeoSearchPw";
 
 function App() {
   // user
@@ -120,7 +124,6 @@ function App() {
       "/ceoinfo",
     ];
 
-
     const loginPages = ["/login", "/signup"];
     const ceoLoginPages = ["/ceologin", "/ceosignup"];
     // 로그인 상태에서 로그인 페이지 및 회원가입 페이지 접근 제어
@@ -155,7 +158,6 @@ function App() {
           handleLogout={handleLogout}
         />
         <Routes>
-            
           {/* 메인 */}
           <Route
             path="/"
@@ -191,6 +193,22 @@ function App() {
               <RedirectIfLoggedIn forUser={true}>
                 <SnsSignupPage />
               </RedirectIfLoggedIn>
+            }
+          ></Route>
+          <Route
+            path="/search-email"
+            element={
+              // <RedirectIfLoggedIn forUser={true}>
+              <SearchEmail />
+              // </RedirectIfLoggedIn>
+            }
+          ></Route>
+          <Route
+            path="/search-pw"
+            element={
+              // <RedirectIfLoggedIn forUser={true}>
+              <SearchPw />
+              // </RedirectIfLoggedIn>
             }
           ></Route>
 
@@ -266,6 +284,22 @@ function App() {
               <RedirectIfLoggedIn forUser={false}>
                 <CeoLogin />
               </RedirectIfLoggedIn>
+            }
+          />
+          <Route
+            path="/search-email"
+            element={
+              // <RedirectIfLoggedIn forUser={true}>
+              <CeoSearchEmail />
+              // </RedirectIfLoggedIn>
+            }
+          />
+          <Route
+            path="/search-pw"
+            element={
+              // <RedirectIfLoggedIn forUser={true}>
+              <CeoSearchPw />
+              // </RedirectIfLoggedIn>
             }
           />
 
@@ -357,7 +391,7 @@ function App() {
           <Route path="/adminsignup" element={<AdminSignup />} />
           <Route path="/adminexit" element={<AdminExit />} />
           <Route path="/adminbanner" element={<AdminBanner />} />
-            
+
           {/* 잘못된 경로 */}
           <Route path="/*" element={<NotfoundPage />} />
         </Routes>

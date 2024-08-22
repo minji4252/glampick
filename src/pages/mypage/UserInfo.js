@@ -16,7 +16,7 @@ import { colorSystem, size } from "../../styles/color";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../../atoms/loginState";
 
-const WrapStyle = styled.div`
+export const WrapStyle = styled.div`
   .inner {
     flex-direction: column;
   }
@@ -28,6 +28,13 @@ const WrapStyle = styled.div`
     font-size: 1.2rem;
     font-weight: 700;
     color: ${colorSystem.g900};
+  }
+
+  .search {
+    font-size: 1.4rem;
+    font-weight: 500;
+    padding: 5px;
+    border-bottom: 3px solid ${colorSystem.g600};
   }
 
   .container {
