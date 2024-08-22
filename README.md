@@ -20,12 +20,6 @@
 > <h2>프로젝트 관련 링크</h2>
 
 <div>
-    <a href="https://www.canva.com/design/DAGLMP7V7Zs/igga4VbcFUuWIcHbjXjZ5w/edit?utm_content=DAGLMP7V7Zs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" >
-        <img src="src/images/icon/logos_canva.png" /> CANVA
-    </a>
-</div>
-<br>
-<div>
     <a href="https://www.figma.com/design/K6EFAkf02fxCtULowqFS5o/Layout?node-id=164-329&t=o7Jby7RWwhW8lphA-1" target="_blank" >
         <img src="src/images/icon/logos_figma.png" /> FIGMA
     </a>
@@ -35,7 +29,18 @@
     <a href="https://lively-gladiolus-389.notion.site/4f83507008e448abbdbfd4194fcb5391" target="_blank">
         <img src="src/images/icon/logos_notion.png" /> NOTION
     </a>
-
+</div>
+<br>
+<div>
+    <a href="https://www.canva.com/design/DAGLMP7V7Zs/igga4VbcFUuWIcHbjXjZ5w/edit?utm_content=DAGLMP7V7Zs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" >
+            <img src="src/images/icon/logos_canva.png" /> 2차 CANVA
+    </a>
+</div>
+<br>
+<div>
+    <a href="https://www.canva.com/design/DAGOSDxa2yo/vss2xOSUSd_W4HAOBT0oBA/edit?utm_content=DAGOSDxa2yo&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" >
+        <img src="src/images/icon/logos_canva.png" /> 3차 CANVA
+    </a>
 </div>
 
 <br>
@@ -57,27 +62,45 @@
 > <h2>Front-End 역할 및 주요 기능</h2>
 
 <h3>조수현 (팀장)</h3>
-
+<h4>2차</h4>
 1. 메인
 2. 검색 결과
 3. 유저 관심 글램핑장
 4. 404
 5. Git 관리
+<h4>3차</h4>
+1. 메인 - 배너
+2. 검색 페이지 - 지도
+3. 사장님 페이지 - 리뷰
+4. 관리자 페이지
+5. Git 관리
 
 <h3>조원영</h3>
-
+<h4>2차</h4>
 1. 로그인 및 회원가입
 2. 글램핑장 후기
 3. 유저 예약 내역
 4. 유저 정보
 5. FE 노션 관리
+<h4>3차</h4>
+1. 카카오 로그인
+2. 사장님 회원가입
+3. 사장님 페이지
+    - 정보 수정
+    - 예약 관리
 
 <h3>김민지</h3>
-
+<h4>2차</h4>
 1. 글램핑장 상세
 2. 객실 상세
 3. 예약 및 결제
 4. 유저 후기
+<h4>3차</h4>
+1. 사장님 페이지
+    - 글램핑장 등록/수정
+    - 객실 등록/수정
+    - 글램핑장 분석
+2. 통계 관리
 
 <br>
 <br>
@@ -96,20 +119,22 @@
 <img src="https://img.shields.io/badge/ESLint-4B3263?style=for-the-badge&logo=eslint&logoColor=white">
 <img src="https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white">
 <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens">
-<img src="https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white">
+<img src="https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white"> <br/>
+<img src="https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white">
+<img src="https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white">
+
  </div>
 
 ### <div align=center> 협업 도구 </div>
 
  <div align=center> 
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-
 <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
 <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
-
+<br/>
 <img src="https://img.shields.io/badge/figma-%23F24E1E?style=for-the-badge&logo=figma&logoColor=white">
-
 <img src="https://img.shields.io/badge/Slack-4A154B.svg?&style=for-the-badge&logo=Slack&logoColor=white">
+<img src ="https://img.shields.io/badge/Canva-%2300C4CC.svg?style=for-the-badge&logo=Canva&logoColor=white">
  </div>
 
 <br>
