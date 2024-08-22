@@ -41,6 +41,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   });
 
   useEffect(() => {
+    console.log("작동됨");
     const getUserInfo = async () => {
       try {
         if (!accessToken) return;

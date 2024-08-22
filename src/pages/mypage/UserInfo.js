@@ -360,7 +360,7 @@ const UserInfo = () => {
             Authorization: `Bearer ${accessToken}`,
           },
         });
-        console.log(response);
+        // console.log(response);
         setUserInfo({
           userProfileImage: response.data.userProfileImage,
           userEmail: response.data.userEmail,
@@ -514,7 +514,10 @@ const UserInfo = () => {
   const handleSmsSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-    const result = await postSendSms({ userPhone: userInfo.userPhone });
+    // 하이픈(-)을 제거한 전화번호
+    const sanitizedPhone = userInfo.userPhone.replace(/-/g, "");
+
+    const result = await postSendSms({ userPhone: sanitizedPhone });
     // console.log(result.data);
     if (result.data.code === "SU") {
       openModal({
@@ -542,9 +545,10 @@ const UserInfo = () => {
   // 핸드폰 인증코드 처리할 함수
   const handleAuthNumberSubmit = async e => {
     e.preventDefault();
-
+    // 하이픈(-)을 제거한 전화번호
+    const sanitizedPhone = userInfo.userPhone.replace(/-/g, "");
     const result = await postCheckSms({
-      userPhone: userInfo.userPhone,
+      userPhone: sanitizedPhone,
       authNumber,
     });
     // console.log(result);
