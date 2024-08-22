@@ -12,6 +12,7 @@ interface ButtonProps {
 interface ButtonComponentProps {
   label?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  type?: "button" | "submit" | "reset";
 }
 
 const ButtonStyle = styled.button<ButtonProps>`
@@ -126,6 +127,7 @@ const CeoActionButton: React.FC<ButtonComponentProps> = ({
 const AdminButton: React.FC<ButtonComponentProps> = ({
   label = "버튼",
   onClick,
+  type = "button",
 }) => {
   return <AdminButtonStyle onClick={onClick}>{label}</AdminButtonStyle>;
 };

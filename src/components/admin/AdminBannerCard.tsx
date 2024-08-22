@@ -41,7 +41,7 @@ interface AdminBannerCardProps {
   bannerId: string;
   createdAt: string;
   bannerUrl: string;
-  onDelete?: (bannerId: string) => void;
+  onDelete: (bannerId: string) => void;
 }
 
 const AdminBannerCard: React.FC<AdminBannerCardProps> = ({
@@ -86,10 +86,10 @@ const AdminBannerCard: React.FC<AdminBannerCardProps> = ({
   };
 
   return (
-    <AdminBannerCardStyle key={bannerId}>
+    <AdminBannerCardStyle>
       <div className="banner-card">
         <div className="banner-card-content">
-          <DeleteButton label="삭제하기" onClick={handleDelete} />
+          <DeleteButton label="삭제하기" onClick={() => onDelete(bannerId)} />
           <div className="banner-num">배너 {bannerId}</div>
           <div className="banner-date">등록일: {createdAt}</div>
         </div>

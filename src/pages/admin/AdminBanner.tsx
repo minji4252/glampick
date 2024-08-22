@@ -6,6 +6,8 @@ import { useRecoilState } from "recoil";
 import axios from "axios";
 import AdminBannerCard from "../../components/admin/AdminBannerCard";
 import AdminBannerModal from "../../components/admin/AdminBannerModal";
+import CheckModal from "../../components/common/CheckModal";
+import AlertModal from "../../components/common/AlertModal";
 
 interface Banner {
   bannerId: string;
@@ -21,6 +23,10 @@ const AdminBanner: React.FC = () => {
   // 배너 추가 모달
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  const [selectedBannerId, setSelectedBannerId] = useState<string | null>(null); // 선택한 배너 ID 상태
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false); // 확인 모달 상태
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState<boolean>(false);
+
   // 토큰 정보 불러오기
   useEffect(() => {
     const fetchAdminAccessToken = async () => {
@@ -28,9 +34,6 @@ const AdminBanner: React.FC = () => {
         const token = localStorage.getItem("accessToken");
         if (token) {
           setAdminAccessToken(token);
-          console.log("accessToken 있음");
-        } else {
-          console.log("accessToken 없음");
         }
       } catch (error) {
         console.log(error);
@@ -39,7 +42,6 @@ const AdminBanner: React.FC = () => {
     fetchAdminAccessToken();
   }, [setAdminAccessToken]);
 
-  // 배너 리스트 가져오기
   const getBanners = async () => {
     try {
       const response = await axios.get<{ list: Banner[] }>(
@@ -62,7 +64,6 @@ const AdminBanner: React.FC = () => {
     }
   }, [adminAccessToken]);
 
-  // 배너 추가 모달 열고 닫기
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -78,9 +79,35 @@ const AdminBanner: React.FC = () => {
     }
   };
 
-  // 배너 삭제
-  const handleDelete = (deletedBannerId: string) => {
-    setList(list.filter(item => item.bannerId !== deletedBannerId));
+  const handleDelete = (bannerId: string) => {
+    setSelectedBannerId(bannerId);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (selectedBannerId) {
+      try {
+        await axios.delete(`/api/admin/banner?bannerId=${selectedBannerId}`, {
+          headers: {
+            Authorization: `Bearer ${adminAccessToken}`,
+          },
+        });
+        setList(list.filter(item => item.bannerId !== selectedBannerId));
+        setIsAlertModalOpen(true); // 알림 모달 열기
+      } catch (error) {
+        console.error("배너 삭제 오류: ", error);
+      } finally {
+        setIsConfirmModalOpen(false);
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setIsConfirmModalOpen(false);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertModalOpen(false);
   };
 
   return (
@@ -111,6 +138,17 @@ const AdminBanner: React.FC = () => {
         </div>
       </div>
       <AdminBannerModal isOpen={isModalOpen} onClose={closeModal} />
+      <CheckModal
+        isOpen={isConfirmModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        message="정말로 이 배너를 삭제하시겠습니까?"
+      />
+      <AlertModal
+        isOpen={isAlertModalOpen}
+        onClose={handleAlertClose} // 확인 버튼 클릭 시 모달 닫기
+        message="배너가 삭제되었습니다."
+      />
     </GlampingKingStyle>
   );
 };
