@@ -134,13 +134,38 @@ export const WrapStyle = styled.div`
     }
   }
 
+  .login-bottom {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+  .login-search {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  .search-email {
+  }
+  .search-pw {
+  }
   /* 회원가입 */
   .signup {
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
     position: relative;
   }
 
+  .search-email p,
+  .search-pw p {
+    color: ${colorSystem.g700};
+    font-size: 1rem;
+    margin: 10px 5px;
+    ${size.mid} {
+      font-size: 1rem;
+    }
+  }
   .signup p {
     position: absolute;
     right: 0;
@@ -428,15 +453,25 @@ const LoginPage = () => {
                   <MainButton label="로그인" />
                 </div>
               </form>
-              {/* <AlertModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                message={modalMessage}
-              /> */}
-              <div className="signup">
-                <Link to="/signup" className="signup-btn">
-                  <p>회원가입</p>
-                </Link>
+
+              <div className="login-bottom">
+                <div className="login-search">
+                  <div className="search-email">
+                    <Link to="/search-email" className="search-email-btn">
+                      <p>아이디 찾기</p>
+                    </Link>
+                  </div>
+                  <div className="search-pw">
+                    <Link to="/search-pw" className="search-pw-btn">
+                      <p>비밀번호 찾기</p>
+                    </Link>
+                  </div>
+                </div>
+                <div className="signup">
+                  <Link to="/signup" className="signup-btn">
+                    <p>회원가입</p>
+                  </Link>
+                </div>
               </div>
               <div className="sns-login">
                 <p>sns 로그인</p>

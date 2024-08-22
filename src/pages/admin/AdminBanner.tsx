@@ -93,7 +93,7 @@ const AdminBanner: React.FC = () => {
           },
         });
         setList(list.filter(item => item.bannerId !== selectedBannerId));
-        setIsAlertModalOpen(true); // 알림 모달 열기
+        setIsAlertModalOpen(true);
       } catch (error) {
         console.error("배너 삭제 오류: ", error);
       } finally {
@@ -142,11 +142,11 @@ const AdminBanner: React.FC = () => {
         isOpen={isConfirmModalOpen}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
-        message="정말로 이 배너를 삭제하시겠습니까?"
+        message="이 배너를 삭제하시겠습니까?"
       />
       <AlertModal
         isOpen={isAlertModalOpen}
-        onClose={handleAlertClose} // 확인 버튼 클릭 시 모달 닫기
+        onClose={handleAlertClose}
         message="배너가 삭제되었습니다."
       />
     </GlampingKingStyle>
