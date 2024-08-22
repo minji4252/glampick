@@ -21,6 +21,7 @@ import Loading from "../../components/common/Loading";
 import useModal from "../../hooks/UseModal";
 import GlampickLogo from "../../images/glampick_logo.png";
 import { colorSystem, size } from "../../styles/color";
+import axios from "axios";
 
 export const WrapStyle = styled.div`
   position: relative;
@@ -320,23 +321,28 @@ const LoginPage = () => {
   // 로그인시 처리할 함수
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
 
     // 입력 필드 검사
     if (!userEmail || !userPw) {
       setErrorMessage("이메일과 비밀번호를 모두 입력해주세요.");
       return;
     }
-
-    const result = await postSignIn({ userEmail, userPw });
-    // console.log(result.code);
-    if (result.code === "SU") {
-      // console.log(result);
-      openModal({ message: "로그인 성공하였습니다!" });
-      // 데이터 보관해 둠
-      setSaveResult(result);
-    } else {
-      setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
+    setLoading(true);
+    try {
+      const result = await postSignIn({ userEmail, userPw });
+      if (result.code === "SU") {
+        // console.log(result);
+        openModal({ message: "로그인 성공하였습니다!" });
+        // 데이터 보관해 둠
+        setSaveResult(result);
+      } else {
+        setErrorMessage("아이디와 비밀번호가 일치하지 않습니다22.");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setErrorMessage("아이디와 비밀번호가 일치하지 않습니다.");
+      }
+      // console.log(error);
     }
     setLoading(false);
   };

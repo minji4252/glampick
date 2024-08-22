@@ -719,11 +719,11 @@ const CeoSignup = () => {
               </TimerWrap>
             )}
             {isEmailSent && emailTimer === 0 && (
-              <div>
+              <TimerWrap>
                 <p className="time-over">
                   인증 시간이 만료되었습니다. 다시 발송해주세요.
                 </p>
-              </div>
+              </TimerWrap>
             )}
             {/* {errors.emailAuthCode && (
               <ErrorMessage>{errors.emailAuthCode.message}</ErrorMessage>

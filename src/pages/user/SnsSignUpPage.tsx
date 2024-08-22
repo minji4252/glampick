@@ -260,7 +260,7 @@ const SnsSignUpPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const phone = watch("userPhone");
+      const phone = watch("userPhone").replace(/-/g, "");
       const result = await postSendSms({ userPhone: phone });
       // console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
@@ -283,8 +283,15 @@ const SnsSignUpPage = () => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    const phone = watch("userPhone");
+    const phone = watch("userPhone").replace(/-/g, "");
     const smsAuthCode = watch("phoneAuthCode");
+
+    // 입력값이 없을 경우 처리
+    if (!smsAuthCode) {
+      openModal({ message: "인증 코드를 입력해주세요." });
+      return;
+    }
+
     try {
       const result = await postCheckSms({
         userPhone: phone,
@@ -309,7 +316,10 @@ const SnsSignUpPage = () => {
         setIsPhoneAuthCodeVerified(false);
       }
     } catch (error) {
-      openModal({ message: modalMessages.phoneAuth.default });
+      if (axios.isAxiosError(error)) {
+        // console.error("Phone auth error:", error);
+        openModal({ message: error.response?.data.message });
+      }
     }
   };
 
@@ -550,16 +560,19 @@ const SnsSignUpPage = () => {
           openModal({
             message: "중복된 닉네임입니다.",
           });
+          return;
         }
         if (error.response?.data.code === "DBE") {
           openModal({
             message: "서버 오류입니다. \n 관리자에게 문의주세요.",
           });
+          return;
         }
       } else {
         openModal({
           message: "회원가입에 실패하였습니다. \n 다시 시도해주세요.",
         });
+        return;
       }
     } finally {
       setLoading(false);
@@ -676,11 +689,11 @@ const SnsSignUpPage = () => {
               </TimerWrap>
             )}
             {isSmsSent && phoneTimer === 0 && (
-              <div>
+              <TimerWrap>
                 <p className="time-over">
                   인증 시간이 만료되었습니다. 다시 발송해주세요.
                 </p>
-              </div>
+              </TimerWrap>
             )}
             {/* 약관 동의 */}
             <TermsGroupStyle>
