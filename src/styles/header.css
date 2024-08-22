@@ -17,6 +17,10 @@
   justify-content: space-between;
   margin: 0px 50px;
 }
+.header-logo,
+.header-nav {
+  z-index: 99999;
+}
 .header-logo-link {
   display: flex;
   align-items: center;
@@ -33,6 +37,7 @@
   border-radius: 10px;
   font-size: 16px;
   color: #fff;
+  cursor: pointer;
 }
 
 .header-login p {
@@ -52,6 +57,7 @@
   border-radius: 10px;
   font-size: 16px;
   color: #fff;
+  cursor: pointer;
   /* z-index: 99; */
 }
 

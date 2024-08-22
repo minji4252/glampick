@@ -14,6 +14,7 @@ const CategoriesStyle = styled.div`
   flex-direction: column;
   gap: 15px;
   padding: 1rem;
+  z-index: 99999;
 
   > div {
     cursor: default;
@@ -88,6 +89,7 @@ const categories = [
 
 const Categories = () => {
   const { userInfo } = useUser();
+  console.log("userInfo", userInfo);
   const userPreEmail = userInfo.userEmail.split("@")[0];
 
   return (

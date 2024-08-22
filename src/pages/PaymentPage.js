@@ -336,21 +336,6 @@ const PaymentPage = () => {
               </div>
               <div className="payment-room-info">
                 <h2>픽한 글램핑</h2>
-                {/* <PaymentCard
-              glampName={glampName}
-              inDate={inDate}
-              outDate={outDate}
-              checkInTime={checkInTime}
-              checkOutTime={checkOutTime}
-              people={people}
-              roomName={roomName}
-              roomPrice={roomPrice}
-              roomMainImage={roomMainImage}
-              formatRoomPrice={formatRoomPrice}
-              formatExtraPrice={formatExtraPrice}
-              formatPayAmount={formatPayAmount}
-              stayDuration={stayDuration}
-            /> */}
 
                 <PaymentCard
                   glampName={glampName}

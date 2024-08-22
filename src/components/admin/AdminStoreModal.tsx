@@ -18,7 +18,7 @@ const StoreModalStyle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999999;
 `;
 
 const StoreContent = styled.div`

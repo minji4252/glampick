@@ -15,6 +15,8 @@ const CategoriesStyle = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  z-index: 99999;
+
   > div {
     cursor: default;
     -webkit-user-select: none;

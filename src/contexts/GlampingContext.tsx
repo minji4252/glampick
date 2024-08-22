@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 interface GlampingContextType {
   glampId: string | null;
@@ -14,7 +20,17 @@ const GlampingContext = createContext<GlampingContextType>(defaultContextValue);
 export const GlampingProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [glampId, setGlampId] = useState<string | null>(null);
+  const [glampId, setGlampId] = useState<string | null>(() => {
+    return sessionStorage.getItem("glampId") || null;
+  });
+
+  useEffect(() => {
+    if (glampId) {
+      sessionStorage.setItem("glampId", glampId);
+    } else {
+      sessionStorage.removeItem("glampId");
+    }
+  }, [glampId]);
 
   return (
     <GlampingContext.Provider value={{ glampId, setGlampId }}>
