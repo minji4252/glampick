@@ -189,6 +189,7 @@ const Review = () => {
     const getGlampingReview = async () => {
       try {
         const response = await axios.get(
+          // eslint-disable-next-line no-undef
           `${process.env.PUBLIC_URL}/api/glamping/${glampId}/review`,
           {
             params: {
@@ -265,6 +266,7 @@ const Review = () => {
                 key={index}
                 className={`review-img${index + 1}`}
                 style={{
+                  // eslint-disable-next-line no-undef
                   backgroundImage: `url(${process.env.PUBLIC_URL}${img})`,
                   position: "relative",
                 }}

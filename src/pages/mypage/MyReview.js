@@ -125,19 +125,17 @@ const MyReview = () => {
   });
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const [postPerPage] = useState(5); // 페이지네이션 페이지당 보여질 목록 수
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAccessToken = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        setLoading(true);
         if (token) {
           setAccessToken(token);
         } else {
           console.log("accessToken 없음");
         }
-        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -160,11 +158,12 @@ const MyReview = () => {
             },
           },
         );
-        // console.log(response.data.reviewListItems);
         setReviews(response.data.reviewListItems);
         setSearchResults(response.data.totalReviewsCount);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 

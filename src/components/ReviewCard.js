@@ -3,15 +3,14 @@ import styled from "@emotion/styled";
 import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa6";
 import { DeleteButton } from "./common/Button";
-import useModal from "../hooks/UseModal";
-import CheckModal from "./common/CheckModal";
-import AlertModal from "./common/AlertModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import defaultProfile from "../images/icon/default-img.png";
 import { useRecoilState } from "recoil";
 import { accessTokenState } from "../atoms/loginState";
+import CheckModal from "./common/CheckModal";
+import AlertModal from "./common/AlertModal";
 
 const ReviewCardStyle = styled.div`
   display: flex;
@@ -40,12 +39,13 @@ const ReviewCardStyle = styled.div`
     }
   }
 
-  //일반 리뷰에서는 숙소이름 가리기
+  // 일반 리뷰에서는 숙소 이름 가리기
   h5 {
     display: none;
     font-weight: 600;
   }
 `;
+
 const UserSection = styled.div`
   .review-title {
     max-width: 570px;
@@ -62,7 +62,7 @@ const UserSection = styled.div`
       letter-spacing: 1.5px;
     }
 
-    //일반 리뷰에서는 삭제 버튼 가리기
+    // 일반 리뷰에서는 삭제 버튼 가리기
     button {
       height: 25px;
       display: none;
@@ -100,10 +100,6 @@ const UserSection = styled.div`
       max-width: 570px;
       line-height: 1.5rem;
       font-size: 0.9rem;
-      /* overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical; */
     }
 
     button {
@@ -209,18 +205,12 @@ const ReviewCard = ({
   reviewImages,
   userProfileImage,
 }) => {
-  const { isModalOpen, modalMessage, CheckAction, openModal, closeModal } =
-    useModal();
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
+  const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
-  const {
-    isModalOpen: isAlertOpen,
-    modalMessage: alertMessage,
-    openModal: openAlert,
-    closeModal: closeAlert,
-  } = useModal();
-
-  //2024-00-00 형식으로 변경
+  // 2024-00-00 형식으로 변경
   const date = new Date(createdAt);
   const formattedDate = date.toISOString().split("T")[0];
 
@@ -254,38 +244,34 @@ const ReviewCard = ({
       }
     };
     fetchAccessToken();
-  }, []);
+  }, [setAccessToken]);
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
+    setModalMessage("정말 삭제하시겠습니까?");
+    setIsCheckModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setIsCheckModalOpen(false);
     if (!accessToken) return;
-    axios.defaults.withCredentials = true;
 
-    openModal({
-      message: "정말 삭제하시겠습니까?",
-      onCheck: async () => {
-        alert("삭제중");
-        try {
-          const response = await axios.delete(
-            `/api/user/delete?reviewId=${reviewId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            },
-          );
-          // console.log(response);
-          closeModal();
-          window.location.reload();
-          // openAlert("삭제가 완료되었습니다.");
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        } catch (error) {
-          closeModal();
-          openAlert("삭제 중 오류가 발생했습니다.");
-        }
-      },
-    });
+    try {
+      const response = await axios.delete(
+        `/api/user/delete?reviewId=${reviewId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      setIsAlertModalOpen(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      setModalMessage("삭제 중 오류가 발생했습니다.");
+      setIsAlertModalOpen(true);
+    }
   };
 
   return (
@@ -359,20 +345,19 @@ const ReviewCard = ({
             </OwnerSection>
           )}
         </div>
-
-        <CheckModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onConfirm={CheckAction}
-          message={modalMessage}
-        />
-        <AlertModal
-          isOpen={isAlertOpen}
-          onClose={closeAlert}
-          message={alertMessage}
-        />
       </ReviewCardStyle>
       <UnderLine />
+      <CheckModal
+        isOpen={isCheckModalOpen}
+        onClose={() => setIsCheckModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        message={modalMessage}
+      />
+      <AlertModal
+        isOpen={isAlertModalOpen}
+        onClose={() => setIsAlertModalOpen(false)}
+        message={modalMessage}
+      />
     </>
   );
 };
