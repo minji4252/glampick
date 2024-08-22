@@ -30,36 +30,41 @@ const SearchEmail = () => {
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
-  // 핸드폰 인증시 처리할 함수
-  const handleSmsSubmit = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
+  // 준비중 모달
+  const readyModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setLoading(true);
-    const result = await postSearchEmail({ userPhone });
-    // console.log(result.data);
-    if (result.data.code === "SU") {
-      openModal({
-        message: "인증코드가 발송되었습니다. \n 문자메세지를 확인해주세요",
-      });
-      // Sms 발송 성공
-      setIsSmsSent(true);
-      setPhoneTimer(299);
-    } else if (result.data.code === "IPH") {
-      openModal({
-        message: "전화번호 형식이 올바르지 않습니다.",
-      });
-    } else if (result.data.code === "DT") {
-      openModal({
-        message: "중복된 전화번호 입니다.",
-      });
-    } else {
-      openModal({
-        message: "발송 실패하였습니다. 다시 시도해주세요",
-      });
-    }
-    setLoading(false);
+    openModal({ message: "준비중인 기능입니다." });
   };
+  // 핸드폰 인증시 처리할 함수
+  // const handleSmsSubmit = async (
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  // ) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   const result = await postSearchEmail({ userPhone });
+  //   // console.log(result.data);
+  //   if (result.data.code === "SU") {
+  //     openModal({
+  //       message: "인증코드가 발송되었습니다. \n 문자메세지를 확인해주세요",
+  //     });
+  //     // Sms 발송 성공
+  //     setIsSmsSent(true);
+  //     setPhoneTimer(299);
+  //   } else if (result.data.code === "IPH") {
+  //     openModal({
+  //       message: "전화번호 형식이 올바르지 않습니다.",
+  //     });
+  //   } else if (result.data.code === "DT") {
+  //     openModal({
+  //       message: "중복된 전화번호 입니다.",
+  //     });
+  //   } else {
+  //     openModal({
+  //       message: "발송 실패하였습니다. 다시 시도해주세요",
+  //     });
+  //   }
+  //   setLoading(false);
+  // };
 
   // 핸드폰 인증코드 처리할 함수
   // const handleAuthNumberSubmit = async (
@@ -191,8 +196,11 @@ const SearchEmail = () => {
                     <div className="auth-number-btn">
                       <MainButton
                         label="인증번호 발송"
+                        // onClick={e => {
+                        //   handleSmsSubmit(e);
+                        // }}
                         onClick={e => {
-                          handleSmsSubmit(e);
+                          readyModal(e);
                         }}
                       />
                     </div>
@@ -249,7 +257,12 @@ const SearchEmail = () => {
                 </TimerWrap>
               )}
               <div className="modify-btn">
-                <MainButton label="확인" />
+                <MainButton
+                  label="확인"
+                  onClick={e => {
+                    readyModal(e);
+                  }}
+                />
                 {/* 확인버튼 클릭시 로그인 페이지로 이동 */}
               </div>
             </form>

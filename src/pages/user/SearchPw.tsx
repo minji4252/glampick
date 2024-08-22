@@ -39,48 +39,53 @@ const SearchPw = () => {
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
-  // 메일 인증시 처리할 함수
-  const handlEmailSubmit = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
+  const readyModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const result = await PostSearchMailSms({ userEmail });
-      // console.log(result.data);
-      // console.log(result.data.code);
-      if (result.data.code === "SU") {
-        openModal({
-          message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
-        });
-        // 메일발송 성공
-        setIsEmailSent(true);
-        setEmailTimer(299);
-      } else if (result.data.code === "DE") {
-        openModal({
-          message: "중복된 이메일입니다.",
-        });
-      } else if (result.data.code === "EE") {
-        openModal({
-          message: "메일 주소를 입력해주세요.",
-        });
-      } else if (result.data.code === "IE") {
-        openModal({
-          message: "메일 형식이 올바르지 않습니다.",
-        });
-      } else {
-        openModal({
-          message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
-        });
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        // console.error("Phone auth error:", error);
-        openModal({ message: error.response?.data.message });
-      }
-    }
-    setLoading(false);
+    openModal({ message: "준비중인 기능입니다." });
   };
+
+  // 메일 인증시 처리할 함수
+  // const handlEmailSubmit = async (
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  // ) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   try {
+  //     const result = await PostSearchMailSms({ userEmail });
+  //     // console.log(result.data);
+  //     // console.log(result.data.code);
+  //     if (result.data.code === "SU") {
+  //       openModal({
+  //         message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+  //       });
+  //       // 메일발송 성공
+  //       setIsEmailSent(true);
+  //       setEmailTimer(299);
+  //     } else if (result.data.code === "DE") {
+  //       openModal({
+  //         message: "중복된 이메일입니다.",
+  //       });
+  //     } else if (result.data.code === "EE") {
+  //       openModal({
+  //         message: "메일 주소를 입력해주세요.",
+  //       });
+  //     } else if (result.data.code === "IE") {
+  //       openModal({
+  //         message: "메일 형식이 올바르지 않습니다.",
+  //       });
+  //     } else {
+  //       openModal({
+  //         message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     if (axios.isAxiosError(error)) {
+  //       // console.error("Phone auth error:", error);
+  //       openModal({ message: error.response?.data.message });
+  //     }
+  //   }
+  //   setLoading(false);
+  // };
 
   // 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async (
@@ -204,8 +209,11 @@ const SearchPw = () => {
                     <div className="auth-number-btn">
                       <MainButton
                         label="인증번호 발송"
+                        // onClick={e => {
+                        //   handlEmailSubmit(e);
+                        // }}
                         onClick={e => {
-                          handlEmailSubmit(e);
+                          readyModal(e);
                         }}
                       />
                     </div>
@@ -298,7 +306,12 @@ const SearchPw = () => {
                 )}
               </div>
               <div className="modify-btn">
-                <MainButton label="수정하기" />
+                <MainButton
+                  label="수정하기"
+                  onClick={e => {
+                    readyModal(e);
+                  }}
+                />
               </div>
             </form>
             <AlertModal
