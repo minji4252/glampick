@@ -7,14 +7,14 @@ export const postOwnerSignin = async ({ ceoEmail, ceoPw }) => {
       ownerEmail: ceoEmail,
       ownerPw: ceoPw,
     });
-    console.log(response);
+    // console.log(response);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
+      // console.log(error.response?.data);
       return error.response?.data;
     } else {
-      console.error("Unexpected error", error);
+      // console.error("Unexpected error", error);
     }
   }
 };
@@ -24,14 +24,14 @@ export const postOwnerMailSend = async ({ ceoEmail }) => {
   try {
     const reqData = `/api/auth/owner/mail-send?ownerEmail=${ceoEmail}`;
     const response = await axios.post(reqData, { ceoEmail });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -50,7 +50,7 @@ export const postOwnerAuthCode = async ({ ceoEmail, authCode }) => {
     if (error.response) {
       return error.response;
     }
-    console.log("코드인증에러", error);
+    // console.log("코드인증에러", error);
   }
 };
 
@@ -66,7 +66,7 @@ export const postOwnerSendSms = async ({ phone }) => {
     if (error.response) {
       return error.response;
     }
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -95,7 +95,7 @@ export const postOwnerSignUp = async ({
   name,
   phone,
 }) => {
-  console.log("파일:", file);
+  // console.log("파일:", file);
   try {
     // FormData 객체 생성
     const formData = new FormData();

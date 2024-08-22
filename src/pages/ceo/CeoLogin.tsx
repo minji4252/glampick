@@ -40,7 +40,7 @@ const CeoLogin = () => {
 
   // Recoil 상태 변경 감지
   useEffect(() => {
-    console.log("CeoRole 상태 변경 감지 ", ceoRole);
+    // console.log("CeoRole 상태 변경 감지 ", ceoRole);
   }, [ceoRole]);
 
   // 페이지 로드 시 에러 메시지 초기화
@@ -86,8 +86,8 @@ const CeoLogin = () => {
       if (result.code === "SU") {
         // setLoading(false);
         openModal({ message: "로그인 성공하였습니다!" });
-        console.log("모달 열기 호출 후 상태:", isModalOpen);
-        console.log("모달 메시지:", modalMessage);
+        // console.log("모달 열기 호출 후 상태:", isModalOpen);
+        // console.log("모달 메시지:", modalMessage);
         // 데이터 보관해 둠
         setSaveResult(result);
       } else if (result.code === "SF") {
@@ -122,11 +122,11 @@ const CeoLogin = () => {
     // 토큰에서 사용자 정보 파싱
     const payload = JSON.parse(base64.decode(result.accessToken.split(".")[1]));
     const signedCeo = JSON.parse(payload.signedUser);
-    console.log("signedCeo :", signedCeo);
+    // console.log("signedCeo :", signedCeo);
 
     // Ceo역할을 Recoil 상태에 저장
     setCeoRole(signedCeo.role);
-    console.log("Updated ceoRole:", signedCeo.role);
+    // console.log("Updated ceoRole:", signedCeo.role);
 
     // 로그인 성공 시 로컬스토리지에 사장님 정보 저장
     localStorage.setItem("ceoAccessToken", result.accessToken);

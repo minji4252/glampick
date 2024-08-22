@@ -222,7 +222,7 @@ const CeoInfo = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   // 핸드폰 번호 상태
   const [phone, setPhone] = useState("");
-
+  const [newPhone, setNewPhone] = useState("");
   // Alert 모달 관련 상태와 함수
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
 
@@ -263,7 +263,7 @@ const CeoInfo = () => {
           phone: ownerPhone,
         });
 
-        console.log(response);
+        // console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -318,10 +318,23 @@ const CeoInfo = () => {
   const handlPhoneClick = async e => {
     e.preventDefault();
     setLoading(true);
+
+    // 새로 입력된 전화번호
+    const inputPhone = watch("phone").replace(/-/g, ""); // hyphen removed
+
+    if (inputPhone === phone) {
+      // 현재 전화번호와 동일할 경우 인증번호 전송하지 않음
+      openModal({
+        message:
+          "현재 휴대폰 번호와 동일합니다. \n 변경하실 번호를 입력해주세요.",
+      });
+      setLoading(false);
+      return;
+    }
     try {
-      const phone = watch("phone");
+      const phone = watch("phone").replace(/-/g, "");
       const result = await postOwnerSendSms({ phone });
-      console.log(result);
+      // console.log(result);
       handleModalOpen(result.data.code, "smsSend", openModal);
       if (result.data.code === "SU") {
         // Sms 발송 성공
@@ -364,7 +377,7 @@ const CeoInfo = () => {
   // 핸드폰 인증코드 확인
   const handlePhoneAuthCodeClick = async e => {
     e.preventDefault();
-    const phone = watch("phone");
+    const phone = watch("phone").replace(/-/g, "");
     const phoneAuthCode = watch("phoneAuthCode");
     try {
       const result = await postOwnerCheckSms({

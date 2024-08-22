@@ -40,7 +40,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({ onDateSelect }) => {
             },
           },
         );
-        console.log(response);
+        // console.log(response);
         // console.log(response.data.countList);
 
         // 기존 예약 데이터를 키로 변환하여 상태에 저장

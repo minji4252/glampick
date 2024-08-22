@@ -136,7 +136,7 @@ const CeoBooking = () => {
           },
         },
       );
-      console.log("예약상세내역 불러오기 api:", response);
+      // console.log("예약상세내역 불러오기 api:", response);
       // 올바른 데이터 구조로 변환
       const bookingDetails = [
         ...response.data.before,
