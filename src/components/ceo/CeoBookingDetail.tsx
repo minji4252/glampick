@@ -74,7 +74,7 @@ const NoBookingMessage = styled.div`
   margin: 10px 0px;
 `;
 
-interface BookingDetail {
+export interface BookingDetail {
   inputName: string;
   personnel: number;
   roomName: string;

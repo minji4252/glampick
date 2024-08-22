@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import { colorSystem, size } from "../../styles/color";
 import CeoCategories from "../../components/mypage/CeoCategories";
-import CeoBookingDetail from "../../components/ceo/CeoBookingDetail";
+import CeoBookingDetail, {
+  BookingDetail,
+} from "../../components/ceo/CeoBookingDetail";
 import BookingCalendar from "../../components/calendar/BookingCalendar";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -115,13 +117,13 @@ const WrapStyle = styled.div`
 `;
 
 const CeoBooking = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [bookingDetails, setBookingDetails] = useState([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetail[]>([]);
   const [page, setPage] = useState(1); // 페이지 상태 추가
   const [ceoAccessToken] = useRecoilState(ceoAccessTokenState);
   const [loading, setLoading] = useRecoilState(loadingState);
 
-  const handleDateSelect = async date => {
+  const handleDateSelect = async (date: Date) => {
     setLoading(true);
     setSelectedDate(date);
     const formattedDate = moment(date).format("YYYY-MM-DD");
