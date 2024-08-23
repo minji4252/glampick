@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ResponsiveLine } from "@nivo/line";
 
 interface BookingDataItem {
@@ -8,8 +8,18 @@ interface BookingDataItem {
 
 interface BookingChartProps {
   data: BookingDataItem[];
-  isWeekly: boolean;
   period: string;
+}
+
+interface ChartDataItem {
+  x: string;
+  y: number;
+}
+
+interface ChartData {
+  id: string;
+  color: string;
+  data: ChartDataItem[];
 }
 
 // 날짜 형식 변환 0000-00-00 -> 00-00
@@ -53,32 +63,40 @@ const aggregateDataByMonth = (data: BookingDataItem[]): BookingDataItem[] => {
 };
 
 const BookingChart: React.FC<BookingChartProps> = ({ data, period }) => {
-  const chartData = [
-    {
-      id: "예약 수",
-      color: "#f49998",
-      data:
-        period === "daily"
-          ? data.map(item => ({
-              x: formatDate(item.checkInDate),
-              y: Number(item.reservationCount),
-            }))
-          : period === "weekly"
-            ? aggregateDataByWeek(data).map(item => ({
-                x: item.checkInDate,
-                y: Number(item.reservationCount),
-              }))
-            : period === "monthly"
-              ? aggregateDataByMonth(data).map(item => ({
-                  x: item.checkInDate,
-                  y: Number(item.reservationCount),
-                }))
-              : data.map(item => ({
-                  x: formatDate(item.checkInDate),
-                  y: Number(item.reservationCount),
-                })),
-    },
-  ];
+  const [previousData, setPreviousData] = useState<BookingDataItem[]>([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
+
+  useEffect(() => {
+    if (JSON.stringify(previousData) !== JSON.stringify(data)) {
+      let processedData: ChartDataItem[] = [];
+
+      if (period === "daily") {
+        processedData = data.map(item => ({
+          x: formatDate(item.checkInDate),
+          y: Number(item.reservationCount),
+        }));
+      } else if (period === "weekly") {
+        processedData = aggregateDataByWeek(data).map(item => ({
+          x: item.checkInDate,
+          y: Number(item.reservationCount),
+        }));
+      } else if (period === "monthly") {
+        processedData = aggregateDataByMonth(data).map(item => ({
+          x: item.checkInDate,
+          y: Number(item.reservationCount),
+        }));
+      }
+
+      setChartData([
+        {
+          id: "예약 수",
+          color: "#f49998",
+          data: processedData,
+        },
+      ]);
+      setPreviousData(data);
+    }
+  }, [data, period, previousData]);
 
   const theme = {
     tooltip: {
