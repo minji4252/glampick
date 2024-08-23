@@ -18,7 +18,7 @@ const SignupModalStyle = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999999;
+  /* z-index: 9999999; */
 `;
 
 const SignupContent = styled.div`
