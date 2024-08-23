@@ -586,36 +586,61 @@ const SignupPage = () => {
       return;
     }
 
-    setLoading(true);
-    // 백엔드에 전달할 회원가입 유저 정보
-    const result = await postSignUp({
-      userEmail,
-      userPw,
-      userPhone,
-      userName,
-      userNickName,
-    });
-    setLoading(false);
-    // console.log(result.data);
-    if (result.data.code === "SU") {
-      openModal({
-        message: "회원가입에 성공하였습니다! \n 로그인 후 이용해주세요",
+    try {
+      setLoading(true);
+      // 백엔드에 전달할 회원가입 유저 정보
+      const result = await postSignUp({
+        userEmail,
+        userPw,
+        userPhone,
+        userName,
+        userNickName,
       });
-      setTimeout(() => {
-        navigate("/login", { state: { fromSignup: true } });
-      }, 1000); // 1초 후에 페이지 이동
-    } else if (result.data.code === "DN") {
-      openModal({
-        message: "이미 사용중인 닉네임입니다.",
-      });
-    } else if (result.data.code === "IN") {
-      openModal({
-        message: "닉네임이 형식에 맞지 않습니다.",
-      });
-    } else if (result.data.code === "IP") {
-      openModal({
-        message: "비밀번호가 형식에 맞지 않습니다.",
-      });
+
+      // console.log(result.data);
+      if (result.data.code === "SU") {
+        openModal({
+          message: "회원가입에 성공하였습니다! \n 로그인 후 이용해주세요",
+        });
+        setTimeout(() => {
+          navigate("/login", { state: { fromSignup: true } });
+        }, 1000); // 1초 후에 페이지 이동
+      } else if (result.data.code === "DN") {
+        openModal({
+          message: "이미 사용중인 닉네임입니다.",
+        });
+      } else if (result.data.code === "IN") {
+        openModal({
+          message: "닉네임이 형식에 맞지 않습니다.",
+        });
+      } else if (result.data.code === "IP") {
+        openModal({
+          message: "비밀번호가 형식에 맞지 않습니다.",
+        });
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data.code === "DN") {
+          openModal({
+            message: "이미 사용중인 닉네임입니다.",
+          });
+          return;
+        }
+        if (error.response?.data.code === "IN") {
+          openModal({
+            message: "닉네임이 형식에 맞지 않습니다.",
+          });
+          return;
+        }
+        if (error.response?.data.code === "IP") {
+          openModal({
+            message: "비밀번호가 형식에 맞지 않습니다.",
+          });
+          return;
+        }
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
