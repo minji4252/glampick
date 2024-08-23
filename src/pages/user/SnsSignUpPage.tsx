@@ -21,6 +21,7 @@ import { colorSystem, size } from "../../styles/color";
 import { TermsGroupStyle } from "../../styles/signupstyle";
 import { TimerWrap } from "../ceo/CeoInfo";
 import { ErrorMessage, SignupWrapStyle } from "../ceo/CeoSignup";
+import { useUser } from "../../contexts/UserContext";
 
 const WrapStyle = styled.div`
   position: relative;
@@ -173,7 +174,7 @@ const SnsSignUpPage = () => {
   const [isTermsModalOpen, setIsModalOpen] = useState(false);
   const [selectedModal, setSelectedModal] = useState(null);
   // 로딩
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   // 모달
   const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
   const [userRole, setUserRole] = useRecoilState(userRoleState);
@@ -185,6 +186,7 @@ const SnsSignUpPage = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { setUserInfo, getUser } = useUser();
 
   useEffect(() => {
     // 현재 URL을 가져옴
@@ -193,32 +195,41 @@ const SnsSignUpPage = () => {
     const accessTokenFromUrl = url.searchParams.get("access_token");
     const infoStatusFromUrl = url.searchParams.get("info_status");
     // console.log("userIdFromUrl:", userIdFromUrl);
+    const processLogin = async () => {
+      try {
+        if (userIdFromUrl) {
+          // user_id를 상태에 저장
+          setUserId(userIdFromUrl);
+        }
 
-    if (userIdFromUrl) {
-      // user_id를 상태에 저장
-      setUserId(userIdFromUrl);
-    }
+        if (accessTokenFromUrl) {
+          // access_token 로컬 스토리지에 저장
+          localStorage.setItem("accessToken", accessTokenFromUrl);
 
-    if (accessTokenFromUrl) {
-      // access_token 로컬 스토리지에 저장
-      localStorage.setItem("accessToken", accessTokenFromUrl);
-
-      // access_token에서 user_role을 추출하여 저장
-      const payload = JSON.parse(atob(accessTokenFromUrl.split(".")[1]));
-      const signedUser = JSON.parse(payload.signedUser);
-      // console.log("signedUser :", signedUser);
-      // console.log("signedUser :", signedUser.userId);
-      // 사용자 역할을 Recoil 상태에 저장
-      setUserRole(signedUser.role); // userRoleState를 업데이트
-      localStorage.setItem("userRole", signedUser.role);
-    }
-    // info_status가 true이면 메인 페이지로 리다이렉트
-    if (infoStatusFromUrl === "true") {
-      navigate("/", { replace: true });
-    }
-    // if (infoStatusFromUrl === "false") {
-    //   navigate("/sns-signup", { replace: true });
-    // }
+          // access_token에서 user_role을 추출하여 저장
+          const payload = JSON.parse(atob(accessTokenFromUrl.split(".")[1]));
+          const signedUser = JSON.parse(payload.signedUser);
+          // console.log("signedUser :", signedUser);
+          // console.log("signedUser :", signedUser.userId);
+          // 사용자 역할을 Recoil 상태에 저장
+          setUserRole(signedUser.role); // userRoleState를 업데이트
+          localStorage.setItem("userRole", signedUser.role);
+        }
+        // info_status가 true이면 메인 페이지로 리다이렉트
+        if (infoStatusFromUrl === "true") {
+          navigate("/", { replace: true });
+        }
+        // if (infoStatusFromUrl === "false") {
+        //   navigate("/sns-signup", { replace: true });
+        // }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // 로그인 처리가 끝나면 로딩 상태를 false로 설정
+        setLoading(false);
+      }
+    };
+    processLogin(); // 비동기 로그인 처리 함수 호출
   }, [navigate]);
 
   useEffect(() => {
@@ -555,10 +566,10 @@ const SnsSignUpPage = () => {
         openModal({
           message: "회원가입에 성공하였습니다!",
         });
+        await getUser();
       }
-      setTimeout(() => {
-        navigate("/", { state: { fromSignup: true } });
-      }, 1000); // 1초 후에 페이지 이동
+
+      navigate("/", { state: { fromSignup: true } });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // console.log(error.response?.data);

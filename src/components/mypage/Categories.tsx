@@ -89,7 +89,7 @@ const categories = [
 
 const Categories = () => {
   const { userInfo } = useUser();
-  console.log("userInfo", userInfo);
+  // console.log("userInfo", userInfo);
   const userPreEmail = userInfo.userEmail.split("@")[0];
 
   return (
