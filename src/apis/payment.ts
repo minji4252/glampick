@@ -7,7 +7,7 @@ declare global {
   }
 }
 
-//카카오페이
+//카카오 페이
 export const kakaopayMethod = (amount: number, buyerName: string): void => {
   const IMP = window.IMP;
   IMP.init("imp10657444");
