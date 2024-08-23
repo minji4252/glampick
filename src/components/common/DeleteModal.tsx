@@ -111,9 +111,9 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response);
+      // console.log(response);
       if (response.data.code === "SU") {
-        console.log("회원 탈퇴 처리완료", response);
+        // console.log("회원 탈퇴 처리완료", response);
         onConfirm(); // 부모 컴포넌트에서 모달 닫기 처리를 하도록 호출
         localStorage.removeItem("accessToken");
         localStorage.removeItem("userRole");
