@@ -146,13 +146,7 @@ const Chart = () => {
     {
       name: "예약",
       count: `${totalBookingData ?? 0}`,
-      content: (
-        <BookingChart
-          data={bookingData}
-          period={currentPeriod}
-          isWeekly={currentPeriod === "weekly"}
-        />
-      ),
+      content: <BookingChart data={bookingData} period={currentPeriod} />,
     },
     {
       name: "매출",

@@ -21,7 +21,7 @@ const formatDate = (date: string): string => {
 // 주차별 데이터 집계 함수
 const aggregateDataByWeek = (data: SalesDataItem[]): any[] => {
   const weeks: { [key: string]: { [roomName: string]: number } } = {};
-
+  console.log("data 두번 째", data);
   data.forEach(item => {
     const date = new Date(item.times);
     const week = `${Math.ceil(date.getDate() / 7)}주차`;
@@ -85,20 +85,27 @@ const aggregateDataByDate = (data: SalesDataItem[]): any[] => {
 
 const SalesChart: React.FC<SalesChartProps> = ({ data, period }) => {
   const [chartData, setChartData] = useState<any[]>([]);
+  const [previousData, setPreviousData] = useState<SalesDataItem[] | null>(
+    null,
+  );
+  console.log("data 처음", data);
 
   useEffect(() => {
-    let transformedData: SalesDataItem[] = [];
+    // 데이터가 이전과 다를 경우에만 업데이트
+    if (previousData !== data) {
+      let transformedData: SalesDataItem[] = [];
+      if (period === "daily") {
+        transformedData = aggregateDataByDate(data);
+      } else if (period === "weekly") {
+        transformedData = aggregateDataByWeek(data);
+      } else if (period === "monthly") {
+        transformedData = aggregateDataByMonth(data);
+      }
 
-    if (period === "daily") {
-      transformedData = aggregateDataByDate(data);
-    } else if (period === "weekly") {
-      transformedData = aggregateDataByWeek(data);
-    } else if (period === "monthly") {
-      transformedData = aggregateDataByMonth(data);
+      setPreviousData(data); // 이전 데이터 저장
+      setChartData(transformedData); // 새 데이터 설정
     }
-
-    setChartData(transformedData);
-  }, [data, period]);
+  }, [data, period, previousData]);
 
   return (
     <div style={{ width: "100%", height: 450 }}>
