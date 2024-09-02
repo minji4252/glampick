@@ -462,7 +462,7 @@ const LoginPage = () => {
                 <div className="login-search">
                   <div className="search-email">
                     <Link to="/search-email" className="search-email-btn">
-                      <p>아이디 찾기</p>
+                      <p>이메일 찾기</p>
                     </Link>
                   </div>
                   <div className="search-pw">
