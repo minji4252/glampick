@@ -199,11 +199,11 @@ export const PostSearchMailCheck = async ({ userEmail, authCode }) => {
 };
 
 // 이메일 찾기 핸드폰 인증 api 호출
-export const postSearchEmail = async ({ userPhone }) => {
+export const postSearchSendSms = async ({ userPhone }) => {
   try {
     const reqData = `/api/auth/send-sms?userPhone=${userPhone}`;
     const response = await axios.post(reqData, { userPhone });
-    // console.log(response);
+    console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -214,12 +214,12 @@ export const postSearchEmail = async ({ userPhone }) => {
 };
 
 // 이메일 찾기 핸드폰 인증코드 확인 api 호출
-export const postSearchCheckSms = async ({ userPhone, authCode }) => {
+export const postSearchCheckSms = async ({ userPhone, authNumber }) => {
   try {
-    const reqData = `/api/auth/search/check-sms?userPhone=${userPhone}&phoneKey=${authCode}`;
+    const reqData = `/api/auth/search/check-sms?userPhone=${userPhone}&phoneKey=${authNumber}`;
     const response = await axios.post(reqData, {
       userPhone: userPhone,
-      phoneKey: authCode,
+      phoneKey: authNumber,
     });
     // console.log(response);
     return response;
@@ -231,6 +231,20 @@ export const postSearchCheckSms = async ({ userPhone, authCode }) => {
     // console.log(error.response.data.code);
     // console.log(error.response.data.message);
     throw error;
+  }
+};
+
+// 이메일 찾기
+export const postSearchEmail = async ({ userName, userPhone }) => {
+  try {
+    const response = await axios.post(`/api/auth/search/email`, {
+      userName: userName,
+      userPhone: userPhone,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
   }
 };
 
