@@ -223,6 +223,10 @@ export const UserSection = styled.div`
   .review-content {
     font-size: 1rem;
 
+    a {
+      display: inline-block;
+    }
+
     .review-glamp-name {
       cursor: pointer;
       padding: 5px;
@@ -232,7 +236,7 @@ export const UserSection = styled.div`
       gap: 10px;
 
       &:hover {
-        color: ${colorSystem.p300};
+        color: ${colorSystem.ceo};
       }
     }
 
