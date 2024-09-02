@@ -173,6 +173,13 @@ const MyReview = () => {
   // 페이지 개수 계산
   const totalPages = Math.ceil(searchResults / postPerPage);
 
+  const handleDeleteReview = reviewId => {
+    setReviews(prevReviews =>
+      prevReviews.filter(review => review.reviewId !== reviewId),
+    );
+    setSearchResults(prevCount => prevCount - 1);
+  };
+
   return (
     <WrapStyle>
       {loading && <Loading />}
@@ -202,6 +209,7 @@ const MyReview = () => {
                 starPoint={review.starPoint}
                 reviewImages={review.reviewImages}
                 userProfileImage={review.userProfileImage}
+                onDelete={handleDeleteReview}
               />
             ))
           ) : (

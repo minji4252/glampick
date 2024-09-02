@@ -77,6 +77,10 @@ const UserSection = styled.div`
   .review-content {
     font-size: 1rem;
 
+    a {
+      display: inline-block;
+    }
+
     .review-glamp-name {
       cursor: pointer;
       padding: 5px;
@@ -204,6 +208,7 @@ const ReviewCard = ({
   starPoint,
   reviewImages,
   userProfileImage,
+  onDelete,
 }) => {
   const [accessToken, setAccessToken] = useRecoilState(accessTokenState);
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
@@ -264,10 +269,9 @@ const ReviewCard = ({
           },
         },
       );
+      setModalMessage("삭제가 완료되었습니다.");
       setIsAlertModalOpen(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+      onDelete(reviewId);
     } catch (error) {
       setModalMessage("삭제 중 오류가 발생했습니다.");
       setIsAlertModalOpen(true);
