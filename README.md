@@ -11,6 +11,37 @@
 <br>
 <br>
 
+> <h2>시연 영상</h2>
+
+ <h3>
+       사용자페이지 시연 영상
+    </h3>    
+    <span>        
+        <a href="https://youtu.be/XW3F1t2RL9c?si=JFWkITzdrvZ4AosU" target="_blank">
+            ✔ 시연영상 바로가기
+        </a>
+    </span>
+    <br/><br/>
+   <h3>
+       사장님페이지 시연 영상
+    </h3>    
+    <span>        
+        <a href="https://youtu.be/hfwuHk6UCdU?si=yN57Y3vQnkBkLBSO" target="_blank">
+            ✔ 시연영상 바로가기
+        </a>
+    </span>
+<br/><br/>
+    <h3>
+       관리자페이지 시연 영상
+    </h3>    
+    <span>        
+        <a href="https://youtu.be/JYwRBTJ8HQs?si=p52Y0npZzyfJc8L7" target="_blank">
+            ✔ 시연영상 바로가기
+        </a>
+    </span>
+<br/><br/>
+
+
 > <h2>프로젝트 기간</h2>
 
 <p style="font-size: 18px;"> 2차: 2024.06.21 ~ 2024.07.23 </p>
