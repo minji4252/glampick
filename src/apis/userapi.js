@@ -168,42 +168,12 @@ export const deleteUser = async () => {
   }
 };
 
-// 비밀번호 찾기 이메일 발송
-export const PostSearchMailSms = async ({ userEmail }) => {
-  try {
-    const reqData = `/api/auth/search/mail-send?userEmail=${userEmail}`;
-    const response = await axios.post(reqData, { userEmail });
-    // console.log(response);
-    return response;
-  } catch (error) {
-    // 에러 응답이 있는 경우 에러 응답을 반환
-    // console.log(error);
-    throw error;
-  }
-};
-// 비밀번호 찾기 이메일 인증코드 확인
-export const PostSearchMailCheck = async ({ userEmail, authCode }) => {
-  try {
-    const reqData = `/api/auth/search/mail-check?userEmail=${userEmail}&emailKey=${authCode}`;
-    const response = await axios.post(reqData, {
-      userEmail: userEmail,
-      authKey: authCode,
-    });
-    // console.log(response);
-    return response;
-  } catch (error) {
-    // 에러 응답이 있는 경우 에러 응답을 반환
-    // console.log(error);
-    throw error;
-  }
-};
-
 // 이메일 찾기 핸드폰 인증 api 호출
 export const postSearchSendSms = async ({ userPhone }) => {
   try {
-    const reqData = `/api/auth/send-sms?userPhone=${userPhone}`;
+    const reqData = `/api/auth/search/send-sms?userPhone=${userPhone}`;
     const response = await axios.post(reqData, { userPhone });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     // 에러 응답이 있는 경우 에러 응답을 반환
@@ -241,11 +211,57 @@ export const postSearchEmail = async ({ userName, userPhone }) => {
       userName: userName,
       userPhone: userPhone,
     });
-    console.log(response);
+    // console.log(response);
     return response;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 
-// 비밀번호 재설정
+// 비밀번호 찾기 이메일 발송
+export const PostSearchMailSms = async ({ userEmail }) => {
+  try {
+    const reqData = `/api/auth/search/mail-send?userEmail=${userEmail}`;
+    const response = await axios.post(reqData, { userEmail });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    // console.log(error);
+    throw error;
+  }
+};
+
+// 비밀번호 찾기 이메일 인증코드 확인
+export const PostSearchMailCheck = async ({ userEmail, authCode }) => {
+  try {
+    const reqData = `/api/auth/search/mail-check?userEmail=${userEmail}&emailKey=${authCode}`;
+    const response = await axios.post(reqData, {
+      userEmail: userEmail,
+      authKey: authCode,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    // console.log(error);
+    throw error;
+  }
+};
+
+// 비밀번호 변경
+export const PostSearchPassword = async ({ userName, userEmail, userPw }) => {
+  try {
+    const response = await axios.post(`/api/auth/search/password`, {
+      userName: userName,
+      userEmail: userEmail,
+      userPw: userPw,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

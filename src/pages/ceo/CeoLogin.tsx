@@ -187,17 +187,23 @@ const CeoLogin = () => {
                   />
                   <label htmlFor="rememberMe">이메일 기억하기</label>
                 </div>
-
                 <div className="login-btn">
                   <CeoButton label="로그인" />
                 </div>
               </form>
-              <AlertModal
-                isOpen={isModalOpen}
-                onClose={loginSuccessModalClose}
-                message={modalMessage}
-              />
               <div className="login-bottom">
+                <div className="login-search">
+                  <div className="search-email">
+                    <Link to="/ceosearch-email" className="search-email-btn">
+                      <p>이메일 찾기</p>
+                    </Link>
+                  </div>
+                  <div className="search-pw">
+                    <Link to="/ceosearch-pw" className="search-pw-btn">
+                      <p>비밀번호 찾기</p>
+                    </Link>
+                  </div>
+                </div>
                 <div className="signup">
                   <Link to="/ceosignup" className="signup-btn">
                     <p>회원가입</p>
@@ -207,6 +213,11 @@ const CeoLogin = () => {
             </div>
           </div>
         </div>
+        <AlertModal
+          isOpen={isModalOpen}
+          onClose={loginSuccessModalClose}
+          message={modalMessage}
+        />
       </main>
     </WrapStyle>
   );
