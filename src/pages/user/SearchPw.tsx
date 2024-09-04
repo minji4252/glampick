@@ -9,6 +9,7 @@ import { TimerWrap } from "../ceo/CeoInfo";
 import {
   PostSearchMailCheck,
   PostSearchMailSms,
+  PostSearchPassword,
   postAuthCode,
   postMailSend,
 } from "../../apis/userapi";
@@ -22,10 +23,15 @@ const SearchPw = () => {
   const [userPw, setUserPw] = useState("");
   const [userPwCheck, setUserPwCheck] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
+  // 문자열 형식 유효성 검사
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const authCodePattern = /^[0-9]{6}$/;
+  const passwordPattern =
+    /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   // 메일발송 여부 확인
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [emailValid, setEmailValid] = useState(true);
+  const [authCodeValid, setAuthCodeValid] = useState(true);
   const [passwordValid, setPasswordValid] = useState(true);
   // 인증 완료 여부 상태 추가
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -45,47 +51,47 @@ const SearchPw = () => {
   };
 
   // 메일 인증시 처리할 함수
-  // const handlEmailSubmit = async (
-  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  // ) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   try {
-  //     const result = await PostSearchMailSms({ userEmail });
-  //     // console.log(result.data);
-  //     // console.log(result.data.code);
-  //     if (result.data.code === "SU") {
-  //       openModal({
-  //         message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
-  //       });
-  //       // 메일발송 성공
-  //       setIsEmailSent(true);
-  //       setEmailTimer(299);
-  //     } else if (result.data.code === "DE") {
-  //       openModal({
-  //         message: "중복된 이메일입니다.",
-  //       });
-  //     } else if (result.data.code === "EE") {
-  //       openModal({
-  //         message: "메일 주소를 입력해주세요.",
-  //       });
-  //     } else if (result.data.code === "IE") {
-  //       openModal({
-  //         message: "메일 형식이 올바르지 않습니다.",
-  //       });
-  //     } else {
-  //       openModal({
-  //         message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     if (axios.isAxiosError(error)) {
-  //       // console.error("Phone auth error:", error);
-  //       openModal({ message: error.response?.data.message });
-  //     }
-  //   }
-  //   setLoading(false);
-  // };
+  const handlEmailSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const result = await PostSearchMailSms({ userEmail });
+      console.log(result.data);
+      // console.log(result.data.code);
+      if (result.data.code === "SU") {
+        openModal({
+          message: "인증코드가 발송되었습니다. \n 메일을 확인해주세요",
+        });
+        // 메일발송 성공
+        setIsEmailSent(true);
+        setEmailTimer(299);
+      } else if (result.data.code === "DE") {
+        openModal({
+          message: "중복된 이메일입니다.",
+        });
+      } else if (result.data.code === "EE") {
+        openModal({
+          message: "메일 주소를 입력해주세요.",
+        });
+      } else if (result.data.code === "IE") {
+        openModal({
+          message: "메일 형식이 올바르지 않습니다.",
+        });
+      } else {
+        openModal({
+          message: "메일 발송에 실패하였습니다. \n 다시 시도해주세요.",
+        });
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        // console.error("Phone auth error:", error);
+        openModal({ message: error.response?.data.message });
+      }
+    }
+    setLoading(false);
+  };
 
   // 인증코드 확인 시 처리할 함수
   const handleAuthCodeSubmit = async (
@@ -164,20 +170,64 @@ const SearchPw = () => {
     return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
   };
 
+  // 비밀번호 변경 폼 제출 함수
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!userName) {
+      openModal({ message: "이름을 입력해주세요" });
+      return;
+    }
+    if (!userEmail) {
+      openModal({ message: "이메일을 입력해주세요" });
+      return;
+    }
+    // 이메일 인증했는지 확인
+    if (!isEmailVerified || !isAuthCodeVerified) {
+      openModal({ message: "이메일 인증을 완료해주세요" });
+      return;
+    }
+    // 비밀번호 입력 확인
+    if (!userPw || !userPwCheck) {
+      openModal({ message: "비밀번호를 입력해주세요" });
+      return;
+    }
+    // 비밀번호 입력 확인
+    if (userPw !== userPwCheck) {
+      openModal({ message: "비밀번호가 일치하지 않습니다" });
+      return;
+    }
+    try {
+      const result = await PostSearchPassword({
+        userName,
+        userEmail,
+        userPw,
+      });
+      console.log(result);
+      if (result && result.data.code === "SU") {
+        openModal({
+          message: "비밀번호 수정이 완료되었습니다. \n 로그인 후 이용해주세요",
+        });
+        setTimeout(() => {
+          navigate("/login", { state: { fromSearchPw: true } });
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <WrapStyle>
       {loading && <Loading />}
       <div className="inner">
         <p className="search">비밀번호 재설정</p>
         <div className="container">
-          {/* 프로필 사진 등록 */}
-
           <div className="wrap">
             <form
               className="userInfo-form"
-              //   onSubmit={e => {
-              //     handleSubmit(e);
-              //   }}
+              onSubmit={e => {
+                handleSubmit(e);
+              }}
             >
               <div className="form-group">
                 <label htmlFor="name">이름</label>
@@ -187,6 +237,9 @@ const SearchPw = () => {
                   className="name-input"
                   value={userName}
                   style={{ backgroundColor: "#fff" }}
+                  onChange={e => {
+                    setUserName(e.target.value);
+                  }}
                 />
               </div>
               <div className="form-group">
@@ -209,11 +262,8 @@ const SearchPw = () => {
                     <div className="auth-number-btn">
                       <MainButton
                         label="인증번호 발송"
-                        // onClick={e => {
-                        //   handlEmailSubmit(e);
-                        // }}
                         onClick={e => {
-                          readyModal(e);
+                          handlEmailSubmit(e);
                         }}
                       />
                     </div>
@@ -234,12 +284,10 @@ const SearchPw = () => {
                       pattern="\d{6}"
                       placeholder="인증코드를 입력해주세요"
                       value={authCode}
-                      //   onChange={e => {
-                      //     setAuthNumber(e.target.value);
-                      //     setAuthNumberValid(
-                      //       authNumberPattern.test(e.target.value),
-                      //     );
-                      //   }}
+                      onChange={e => {
+                        setAuthCode(e.target.value);
+                        setAuthCodeValid(authCodePattern.test(e.target.value));
+                      }}
                     />
                     <div className="form-button">
                       <div className="auth-number-btn">
@@ -267,51 +315,51 @@ const SearchPw = () => {
                   </p>
                 </TimerWrap>
               )}
-              {/* 인증코드 확인이 완료되면 나타나기 */}
-              <div className="form-group">
-                <label htmlFor="password">비밀번호</label>
-                <input
-                  type="password"
-                  id="password"
-                  className="password-input"
-                  placeholder="비밀번호를 입력해주세요"
-                  value={userPw}
-                  //   onChange={e => {
-                  //     handlePasswordChange(e);
-                  //     setPasswordValid(passwordPattern.test(e.target.value));
-                  //     setPasswordMatch(e.target.value === userPwCheck);
-                  //   }}
-                />
-                {!passwordValid && (
-                  <p className="error-message">
-                    비밀번호는 최소 8자 이상, 대소문자 및 특수문자를 포함해야
-                    합니다.
-                  </p>
-                )}
-              </div>
-              <div className="form-group">
-                <label htmlFor="confirm-password">비밀번호 확인</label>
-                <input
-                  type="password"
-                  id="confirm-password"
-                  className="confirm-password-input"
-                  placeholder="비밀번호를 한번 더 입력해주세요"
-                  value={userPwCheck}
-                  //   onChange={e => {
-                  //     handleConfirmPasswordChange(e);
-                  //   }}
-                />
-                {!passwordMatch && (
-                  <ErrorMessage>비밀번호가 일치하지 않습니다.</ErrorMessage>
-                )}
-              </div>
+              {isAuthCodeVerified && (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="password">비밀번호</label>
+                    <input
+                      type="password"
+                      id="password"
+                      className="password-input"
+                      placeholder="비밀번호를 입력해주세요"
+                      value={userPw}
+                      onChange={e => {
+                        setUserPw(e.target.value);
+                        setPasswordValid(passwordPattern.test(e.target.value));
+                        setPasswordMatch(e.target.value === userPwCheck);
+                      }}
+                    />
+                    {!passwordValid && (
+                      <p className="error-message">
+                        비밀번호는 최소 8자 이상, 대소문자 및 특수문자를
+                        포함해야 합니다.
+                      </p>
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="confirm-password">비밀번호 확인</label>
+                    <input
+                      type="password"
+                      id="confirm-password"
+                      className="confirm-password-input"
+                      placeholder="비밀번호를 한번 더 입력해주세요"
+                      value={userPwCheck}
+                      onChange={e => {
+                        setUserPwCheck(e.target.value);
+                        setPasswordMatch(e.target.value === userPw);
+                      }}
+                    />
+                    {!passwordMatch && (
+                      <ErrorMessage>비밀번호가 일치하지 않습니다.</ErrorMessage>
+                    )}
+                  </div>
+                </>
+              )}
+
               <div className="modify-btn">
-                <MainButton
-                  label="수정하기"
-                  onClick={e => {
-                    readyModal(e);
-                  }}
-                />
+                <MainButton label="수정하기" />
               </div>
             </form>
             <AlertModal

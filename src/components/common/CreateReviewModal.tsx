@@ -217,10 +217,10 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
         if (token) {
           setAccessToken(token);
         } else {
-          console.log("엑세스 토큰 없음");
+          // console.log("엑세스 토큰 없음");
         }
       } catch (error) {
-        console.log("엑세스 토큰 가져오는 중 에러", error);
+        // console.log("엑세스 토큰 가져오는 중 에러", error);
       }
     };
     fetchAccessToken();
@@ -282,7 +282,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     images.forEach(image => {
       formData.append("mf", image);
     });
-
+    // console.log(formData.getAll("mf")); // 모든 이미지 파일 확인
     try {
       const response = await axios.post(`/api/user/review`, formData, {
         headers: {

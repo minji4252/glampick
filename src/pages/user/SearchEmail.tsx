@@ -33,13 +33,8 @@ const SearchEmail = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   // Alert 모달 관련 상태와 함수
-  const { openModal, closeModal, isModalOpen, modalMessage } = useModal();
-
-  // 준비중 모달
-  const readyModal = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-    openModal({ message: "준비중인 기능입니다." });
-  };
+  const { openModal, closeModal, isModalOpen, checkAction, modalMessage } =
+    useModal();
 
   // 핸드폰 인증시 처리할 함수
   const handleSmsSubmit = async (
@@ -66,9 +61,9 @@ const SearchEmail = () => {
       openModal({
         message: "전화번호 형식이 올바르지 않습니다.",
       });
-    } else if (result.data.code === "DT") {
+    } else if (result.data.code === "NU") {
       openModal({
-        message: "중복된 전화번호 입니다.",
+        message: "존재하지 않는 유저입니다.",
       });
     } else {
       openModal({
@@ -110,6 +105,10 @@ const SearchEmail = () => {
         openModal({
           message: "인증코드가 올바르지 않습니다.",
         });
+      } else if (result.data.code === "EF") {
+        openModal({
+          message: "인증시간이 만료되었습니다. \n 인증코드를 다시 발송해주세요",
+        });
       } else {
         openModal({
           message: "인증에 실패하였습니다. \n 다시 시도해주세요",
@@ -117,7 +116,13 @@ const SearchEmail = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        openModal({ message: error.response?.data.message });
+        console.log(error.response?.data);
+        if (error.response?.data.code === "NU") {
+          openModal({ message: error.response?.data.message });
+        }
+        if (error.response?.data.code === "IC") {
+          openModal({ message: error.response?.data.message });
+        }
       } else {
         openModal({ message: "인증에 실패하였습니다. \n 다시 시도해주세요" });
       }
@@ -170,15 +175,29 @@ const SearchEmail = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // 이름이 입력되었는지 확인
-
+    if (!userName) {
+      openModal({ message: "이름을 입력해주세요" });
+      return;
+    }
+    if (!userPhone) {
+      openModal({ message: "휴대폰 번호를 입력해주세요" });
+      return;
+    }
     // 핸드폰 인증했는지 확인
+    if (!isPhoneVerified || !isAuthNumberVerified) {
+      openModal({ message: "휴대폰 인증을 완료해주세요." });
+      return;
+    }
     // 핸드폰 인증코드 완료되었는지 확인
     try {
       const result = await postSearchEmail({ userName, userPhone });
-      console.log(result);
+      // console.log(result);
       if (result && result.data.code === "SU") {
         openModal({
-          message: result.data.message,
+          message: `입력하신 정보로 가입된 이메일은 \n ${result.data.userEmail} 입니다.`,
+          onCheck: () => {
+            navigate("/login"); // 확인 버튼 클릭 시 로그인 페이지로 이동
+          },
         });
       }
     } catch (error) {
@@ -236,9 +255,7 @@ const SearchEmail = () => {
                   </div>
                 </div>
                 {!phoneValid && (
-                  <ErrorMessage>
-                    핸드폰 번호를 바르게 기재해주세요 (11~13자의 숫자만 가능)
-                  </ErrorMessage>
+                  <ErrorMessage>핸드폰 번호를 바르게 기재해주세요</ErrorMessage>
                 )}
               </div>
               {isSmsSent && (

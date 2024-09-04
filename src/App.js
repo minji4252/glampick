@@ -287,7 +287,7 @@ function App() {
             }
           />
           <Route
-            path="/search-email"
+            path="/ceosearch-email"
             element={
               // <RedirectIfLoggedIn forUser={true}>
               <CeoSearchEmail />
@@ -295,7 +295,7 @@ function App() {
             }
           />
           <Route
-            path="/search-pw"
+            path="/ceosearch-pw"
             element={
               // <RedirectIfLoggedIn forUser={true}>
               <CeoSearchPw />

@@ -400,6 +400,8 @@ const LoginPage = () => {
     setTimeout(() => {
       if (location.state && location.state.fromSignup) {
         navigate("/");
+      } else if (location.state && location.state.fromSearchPw) {
+        navigate("/");
       } else {
         navigate(-1);
       }

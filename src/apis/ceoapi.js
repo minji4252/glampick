@@ -123,3 +123,94 @@ export const postOwnerSignUp = async ({
     console.log(error);
   }
 };
+
+// 이메일 찾기 핸드폰 인증 api 호출
+export const PostSearchOwnerSendSms = async ({ ceoPhone }) => {
+  try {
+    const reqData = `/api/auth/search/owner/send-sms?ownerPhone=${ceoPhone}`;
+    const response = await axios.post(reqData, { ceoPhone });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// 이메일 찾기 핸드폰 인증코드 확인 api 호출
+export const postSearchOwnerCheckSms = async ({ ceoPhone, authNumber }) => {
+  try {
+    const reqData = `/api/auth/search/owner/check-sms?ownerPhone=${ceoPhone}&phoneKey=${authNumber}`;
+    const response = await axios.post(reqData, {
+      userPhone: ceoPhone,
+      phoneKey: authNumber,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// 이메일 찾기
+export const postSearchOwnerEmail = async ({ ceoName, ceoPhone }) => {
+  try {
+    const response = await axios.post(`/api/auth/search/owner/email`, {
+      userName: ceoName,
+      userPhone: ceoPhone,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+// 비밀번호 찾기 이메일 발송
+export const PostSearchOwnerMailSms = async ({ ceoEmail }) => {
+  try {
+    const reqData = `/api/auth/search/owner/mail-send?ownerEmail=${ceoEmail}`;
+    const response = await axios.post(reqData, { ceoEmail });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    // console.log(error);
+    throw error;
+  }
+};
+
+// 비밀번호 찾기 이메일 인증코드 확인
+export const PostSearchOwnerMailCheck = async ({ ceoEmail, authCode }) => {
+  try {
+    const reqData = `/api/auth/search/owner/mail-check?ownerEmail=${ceoEmail}&emailKey=${authCode}`;
+    const response = await axios.post(reqData, {
+      userEmail: ceoEmail,
+      authKey: authCode,
+    });
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // 에러 응답이 있는 경우 에러 응답을 반환
+    // console.log(error);
+    throw error;
+  }
+};
+
+// 비밀번호 변경
+export const PostSearchOwnerPassword = async ({ ceoName, ceoEmail, ceoPw }) => {
+  try {
+    const response = await axios.post(`/api/auth/search/owner/password`, {
+      ownerName: ceoName,
+      ownerEmail: ceoEmail,
+      ownerPw: ceoPw,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
