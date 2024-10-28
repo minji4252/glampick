@@ -171,5 +171,3 @@
 <br>
 <br>
 <br>
-
-## <div align=center> 시연 영상 </div>
